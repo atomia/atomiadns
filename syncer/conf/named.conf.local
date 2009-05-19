@@ -1,0 +1,3 @@
+dlz "bdbhpt zone" {
+        database "bdbhpt T /var/lib/bind/ucpdns_bdb dns_data.db";
+};

@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Fetch information regarding if updates are disabled or not.
+
+h3.Declaration syntax
+{panel}
+int GetUpdatesDisabled()
+{panel}
+
+{include:GetUpdatesDisabled Method Example - UCP DNS API}

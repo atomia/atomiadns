@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "Reloading apache"
+apache2ctl graceful > /dev/null 2>&1
+
+if [ $? != 0 ]; then
+	echo "There was a problem reloading apache, you have to restart it manually."
+fi

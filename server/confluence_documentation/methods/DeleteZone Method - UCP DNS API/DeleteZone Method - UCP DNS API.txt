@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Deletes a zone from the database.
+
+h3.Declaration syntax
+{panel}
+void DeleteZone(
+	string zonename
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+
+{include:DeleteZone Method Example - UCP DNS API}

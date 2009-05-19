@@ -1,0 +1,27 @@
+Source: ucpdns-masterserver
+Section: non-free/perl
+Priority: optional
+Build-Depends: debhelper (>= 4.0.2)
+Build-Depends-Indep: perl (>= 5.8.6), perl-modules
+Maintainer: Jimmy Bergman <jimmy@pingdom.com>
+Standards-Version: 3.6.1
+
+Package: ucpdns-masterserver
+Architecture: all
+Depends: ucpdns-api (>= 0.9.5), ucpdns-database (>= 0.9.5)
+Description: Complete master SOAP server for UCP DNS
+
+Package: ucpdns-api
+Architecture: all
+Depends: perl-modules, perl-base, libconfig-general-perl, libdbi-perl, libsoap-lite-perl (>= 0.710.08-2), libdbd-pg-perl (>= 2.11.7-1), libmoose-perl, apache2, libapache2-mod-perl2
+Description: SOAP-server for UCP DNS
+
+Package: ucpdns-database
+Architecture: all
+Depends: postgresql (>= 8.3)
+Description: Standalone database-package for UCP DNS
+
+Package: ucpdns-client
+Architecture: all
+Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl
+Description: UCP DNS Command line client

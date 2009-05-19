@@ -1,0 +1,9 @@
+#!/bin/sh
+
+mkdir -p /var/lib/bind/ucpdns_bdb || exit 1
+chown bind:bind /var/lib/bind/ucpdns_bdb
+
+cat > /etc/default/bind9 <<EOF
+OPTIONS="-u bind"
+RESOLVCONF="no"
+EOF

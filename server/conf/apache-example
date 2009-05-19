@@ -1,0 +1,6 @@
+<Location /ucpdns>
+	SetHandler perl-script
+	PerlHandler Apache::SOAP
+	PerlSetVar dispatch_to "UCPDNS::Server"
+	PerlSetVar options "compress_threshold => 10000"
+</Location>

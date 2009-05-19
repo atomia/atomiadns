@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Restore a complete zone (or just set all records for some other reason).
+
+h3.Declaration syntax
+{panel}
+void RestoreZone(
+	string zonename,
+	[zone|zone Datatype - UCP DNS API] zone
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|zone|[zone|zone Datatype - UCP DNS API]|the zone to restore|
+
+{include:RestoreZone Method Example - UCP DNS API}

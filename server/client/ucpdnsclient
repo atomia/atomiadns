@@ -1,0 +1,178 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Config::General;
+
+my $config_file = "/etc/ucpdns.conf";
+my $soap_uri = undef;
+my $soap_method = undef;
+my $soap_method_arguments = undef;
+my $verbose = 0;
+my $help = undef;
+
+if (-f "$config_file") {
+	my $conf = new Config::General($config_file);
+	die("config file found at $config_file but it is unreadable" ) unless defined($conf);
+	my %config = $conf->getall;
+	$soap_uri = $config{"soap_uri"};
+}
+
+GetOptions (	"uri=s" => \$soap_uri,
+		"help|?" => \$help,
+		"method=s" => \$soap_method,
+		"verbose|v" => \$verbose,
+		"arg=s@"  => \$soap_method_arguments) || pod2usage(0);
+pod2usage(-verbose => 1) if $help;
+pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/ && defined($soap_method) && length($soap_method) > 0;
+
+if ($verbose) {
+	eval 'use SOAP::Lite +trace => [ "debug" ];';
+} else {
+	eval 'use SOAP::Lite;';
+}
+
+my $soap = SOAP::Lite
+	->  uri('urn:UCPDNS::Server')
+	->  proxy($soap_uri)
+	->  on_fault(sub {
+			my($soap, $res) = @_;
+			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
+		});
+
+my $args = parse_args($soap_method_arguments);
+my $res = $soap->$soap_method(@$args);
+print Dumper($res->result);
+exit 0;
+
+sub parse_args {
+	my $args = shift;
+
+	return [] unless defined($args) && ref($args) eq "ARRAY";
+
+	my $result = [];
+	foreach my $arg (@$args) {
+		$arg =~ s/^\s+(.*?)\s+/$1/;
+
+		if ($arg =~ /^\[(.*)\]$/) {
+			my @subargs = split(/,/, $1);
+			$arg = parse_args(\@subargs);
+		} elsif ($arg =~ /;/) {
+			my @hashkeys = split(/;/, $arg) ;
+
+			my $hashref = {};
+			foreach my $keyval (@hashkeys) {
+				if ($keyval =~ /^\s*(\w+)\s*=\s*(.*?)\s*$/) {
+					if ($2 =~ /^\[(.*)\]$/) {
+						my @subargs = split(/,/, $1);
+						$hashref->{$1} = parse_args(\@subargs);
+					} else {
+						$hashref->{$1} = $2;
+					}
+				} else {
+					die("struct parameter needs to have format 'key1 = value2; key2 = value2'");
+				}
+			}
+
+			$arg = $hashref;
+		}
+
+		push @$result, $arg;
+	}
+
+	return $result;
+}
+
+=encoding utf8
+
+=head1 NAME
+
+ucpdnsclient - An application for administering a UCP DNS installation
+
+=head1 SYNOPSIS
+
+=over 8
+
+=item ucpdnsclient --uri SOAP_URI --method SOAP_METHOD [--arg ARGUMENT [ --arg ARGUMENT ] ...] [-v] [--help]
+
+=back
+
+=head1 DESCRIPTION
+
+=head1 OPTIONS
+
+=over 8
+
+=item --uri SOAP_URI
+
+Specifies the URL of the UCP DNS Master server to administer zones in.
+
+=item --method SOAP_METHOD
+
+Specifies the method in the UCP DNS API to execute.
+
+=item --arg ARGUMENT
+
+Specifies the arguments to use in the method call. The arguments needs
+to be specified on the command line in the same order as in the method call.
+
+For scalar data (strings, integers, etc) then you just specify the value, an 
+example would be:
+--arg somezone.com
+
+For arrays you specify the data like "[ value1, value 2 ]". An example would be:
+--arg '[ ns1.someserver.com., ns2.someserver.com. ]'
+
+For structs you specify the data like "somekey1 => somevalue; somekey2 => somevalue2". An
+example would be:
+--arg 'label = testlabel; class = IN; ttl = 300; type = A; rdata = 127.0.0.1'
+
+An example of arrays of structs with (which is used for a couple of methods, like AddDnsRecords)
+would be:
+--arg '[ label = testlabel; class = IN; ttl = 300; type = A; rdata = 127.0.0.1 ]'
+
+This example only contains one struct in the array, but could have any number.
+
+=item --verbose
+
+Output a trace of what is done.
+
+=item --help
+
+Displays the synopsis and documentation for individual options.
+
+=back
+
+=head1 CONFIGURATION
+
+The application is configured using a optional config file stored at /etc/ucpdns.conf.
+
+The following options exist:
+
+=over 8
+
+=item soap_uri
+
+Specifies the URI of the SOAP Server to administer zones using.
+
+=back
+
+=head1 EXAMPLES
+
+ucpdnsclient --uri http://some.soap.server/ucpdns --method AddZone --arg commandlinetest`date +%s`.se --arg 3600 --arg ns1.someserver.com. --arg registry.someserver.com. --arg 3600 --arg 3600 --arg 3600 --arg 3600 --arg "ns1.someserver.com.,ns2.someserver.com.."
+
+ucpdnsclient --uri http://some.soap.server/ucpdns --method GetAllZones
+
+ucpdnsclient --uri http://some.soap.server/ucpdns --method AddDnsRecords --arg commandlinetest1242383924.se --arg "[ label = kaka1234; class = IN; ttl = 300; type = A; rdata = 127.0.0.1 ]"
+
+ucpdnsclient --uri http://some.soap.server/ucpdns --method GetZone --arg commandlinetest1242383924.se
+
+=head1 AUTHOR
+
+UCP DNS was developed by UCP AB. For support, please see http://www.troxo.com/.
+
+=cut

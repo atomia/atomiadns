@@ -1,0 +1,1161 @@
+<?xml version="1.0"?>
+<definitions name="UCPDNS"
+		targetNamespace="urn:UCPDNS::Server"
+		xmlns:tns="urn:UCPDNS::Server"
+		xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+	<types>
+		<xsd:schema targetNamespace="urn:UCPDNS::Server"
+			xmlns="urn:UCPDNS::Server" elementFormDefault="qualified">
+
+			<xsd:complexType name="InvalidParametersError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="InvalidParametersErrorFault" type="InvalidParametersError" />
+
+			<xsd:complexType name="SystemError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="SystemErrorFault" type="SystemError" />
+
+			<xsd:complexType name="InternalError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="InternalErrorFault" type="InternalError" />
+
+			<xsd:complexType name="LogicalError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="LogicalErrorFault" type="LogicalError" />
+
+			<xsd:complexType name="xsdUcpStringArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpResourceRecord">
+				<xsd:annotation><xsd:documentation>
+ucpResourceRecord is a struct with the following members:
+
+|| Member || Type || Description ||
+| id | int | the id of the record |
+| label | string | the label of the record |
+| class | string | the DNS class, almost always IN |
+| ttl | int | the time in seconds which it is valid to cache the record for |
+| type | string | the DNS type of the record |
+| rdata | string | the data of the record, an example for MX would be '10 mailserver.acompany.com.' |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="class" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="ttl" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="type" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="rdata" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpRecordArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="resourcerecord" type="ucpResourceRecord" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpHostname">
+				<xsd:annotation><xsd:documentation>
+ucpHostname is a struct with the following members:
+|| Member || Type || Description ||
+| zone | string | the name of the zone |
+| label | string | the name of the label |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpHostnameArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="ucpHostname" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpLabel">
+				<xsd:annotation><xsd:documentation>
+ucpLabel is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the label |
+| records | ucpRecordArray | an array of resourcerecords |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpZone">
+				<xsd:annotation><xsd:documentation>ucpZone is an array of ucpLabel-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="label" type="ucpLabel" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpZoneStruct">
+				<xsd:annotation><xsd:documentation>
+ucpZoneStruct is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | id of the zone |
+| name | string | name of the zone |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpZones">
+				<xsd:annotation><xsd:documentation>ucpZones is an array of ucpZoneStruct-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="ucpZoneStruct" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpChangedZone">
+				<xsd:annotation><xsd:documentation>
+ucpChangedZone is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the change-row |
+| name | string | the name of the zone this change-row applies to |
+| changetime | int | he unix timestamp of this change (will be used as serial in SOA) |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="changetime" type="xsd:int"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpChanges">
+				<xsd:annotation><xsd:documentation>ucpChanges is an array of ucpChangedZone-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzone" type="ucpChangedZone" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="GetUpdatesDisabled">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetUpdatesDisabledResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="disabled" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ReloadAllZones">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ReloadAllZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllZones">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="ucpZones"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetUpdatesDisabled">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="disabled" type="xsd:int"><xsd:annotation><xsd:documentation>1 if updates are to be disabled and 0 if not</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetUpdatesDisabledResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkUpdated">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changestatus" type="xsd:string"><xsd:annotation><xsd:documentation>ERROR or OK</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="errormessage" type="xsd:string"><xsd:annotation><xsd:documentation>error message to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkUpdatedResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedZones">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="ucpChanges"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserver">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to remove as a subscriber</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserver">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to add as a subscriber</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecordsBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array with the name of the zones to remove records from</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the records to remove, everything except id must match for a record to be deleted</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecordsBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="CopyDnsLabelBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="sourcezone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the source zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the label to copy</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="ucpHostnameArray"><xsd:annotation><xsd:documentation>an array of the hostnames to copy the label in the source zone to</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="CopyDnsLabelBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="CopyDnsZoneBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="sourcezone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the source zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array of the zone names to copy the source zone to</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="CopyDnsZoneBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecordsBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array containing the names of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the resourcerecords to set for the zones</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecordsBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetLabels">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetLabelsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringarray" type="xsdUcpStringArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the label</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="resourcerecords" type="ucpRecordArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to add</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change, id is not used</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to delete, only id is needed</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonettl" type="xsd:int"><xsd:annotation><xsd:documentation>the ttl of the SOA-record and the NS-records</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="mname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA mname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="rname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA rname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="refresh" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA refresh field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="retry" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA retry field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonettl" type="xsd:int"><xsd:annotation><xsd:documentation>the ttl of the SOA-record and the NS-records</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="mname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA mname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="rname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA rname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="refresh" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA refresh field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="retry" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA retry field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the added zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+		</xsd:schema>
+	</types>
+
+	<message name="LogicalErrorFaultMessage">
+		<part element="tns:LogicalErrorFault" name="fault" />
+	</message>
+
+	<message name="InvalidParametersErrorFaultMessage">
+		<part element="tns:InvalidParametersErrorFault" name="fault" />
+	</message>
+
+	<message name="SystemErrorFaultMessage">
+		<part element="tns:SystemErrorFault" name="fault" />
+	</message>
+
+	<message name="InternalErrorFaultMessage">
+		<part element="tns:InternalErrorFault" name="fault" />
+	</message>
+
+	<message name="AddZoneInput">
+		<documentation>Add a zone to the UCPDNS Master database.</documentation>
+		<part name="parameters" element="tns:AddZone"/>
+	</message>
+
+	<message name="AddZoneOutput">
+		<part name="parameters" element="tns:AddZoneResponse"/>
+	</message>
+
+	<message name="DeleteZoneInput">
+		<documentation>Deletes a zone from the database.</documentation>
+		<part name="parameters" element="tns:DeleteZone"/>
+	</message>
+
+	<message name="DeleteZoneOutput">
+		<part name="parameters" element="tns:DeleteZoneResponse"/>
+	</message>
+
+	<message name="EditZoneInput">
+		<documentation>Edits a zone. This is only for completeness, and could be done by editing the SOA and NS-records directly as well.</documentation>
+		<part name="parameters" element="tns:EditZone"/>
+	</message>
+
+	<message name="EditZoneOutput">
+		<part name="parameters" element="tns:EditZoneResponse"/>
+	</message>
+
+	<message name="AddDnsRecordsInput">
+		<documentation>Adds a list of records to a zone.</documentation>
+		<part name="parameters" element="tns:AddDnsRecords"/>
+	</message>
+
+	<message name="AddDnsRecordsOutput">
+		<part name="parameters" element="tns:AddDnsRecordsResponse"/>
+	</message>
+
+	<message name="EditDnsRecordsInput">
+		<documentation>Changes a list of records in a zone.</documentation>
+		<part name="parameters" element="tns:EditDnsRecords"/>
+	</message>
+
+	<message name="EditDnsRecordsOutput">
+		<part name="parameters" element="tns:EditDnsRecordsResponse"/>
+	</message>
+
+	<message name="SetDnsRecordsInput">
+		<documentation>Sets the records for all matching label/type/class-triples in a zone to that specified by the records passed.</documentation>
+		<part name="parameters" element="tns:SetDnsRecords"/>
+	</message>
+
+	<message name="SetDnsRecordsOutput">
+		<part name="parameters" element="tns:SetDnsRecordsResponse"/>
+	</message>
+
+	<message name="DeleteDnsRecordsInput">
+		<documentation>Deletes a list of records from a zone.</documentation>
+		<part name="parameters" element="tns:DeleteDnsRecords"/>
+	</message>
+
+	<message name="DeleteDnsRecordsOutput">
+		<part name="parameters" element="tns:DeleteDnsRecordsResponse"/>
+	</message>
+
+	<message name="GetDnsRecordsInput">
+		<documentation>Fetches a list of all records for a specified zone and label.</documentation>
+		<part name="parameters" element="tns:GetDnsRecords"/>
+	</message>
+
+	<message name="GetDnsRecordsOutput">
+		<part name="parameters" element="tns:GetDnsRecordsResponse"/>
+	</message>
+
+	<message name="GetLabelsInput">
+		<documentation>Fetches a list of all labels for a specified zone.</documentation>
+		<part name="parameters" element="tns:GetLabels"/>
+	</message>
+
+	<message name="GetLabelsOutput">
+		<part name="parameters" element="tns:GetLabelsResponse"/>
+	</message>
+
+	<message name="GetZoneInput">
+		<documentation>Fetches a complete zone from the database.</documentation>
+		<part name="parameters" element="tns:GetZone"/>
+	</message>
+
+	<message name="GetZoneOutput">
+		<part name="parameters" element="tns:GetZoneResponse"/>
+	</message>
+
+	<message name="RestoreZoneInput">
+		<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
+		<part name="parameters" element="tns:RestoreZone"/>
+	</message>
+
+	<message name="RestoreZoneOutput">
+		<part name="parameters" element="tns:RestoreZoneResponse"/>
+	</message>
+
+	<message name="SetDnsRecordsBulkInput">
+		<documentation>Sets the records for all matching label/type/class-triples in a list of zones to that specified by the records passed.</documentation>
+		<part name="parameters" element="tns:SetDnsRecordsBulk"/>
+	</message>
+
+	<message name="SetDnsRecordsBulkOutput">
+		<part name="parameters" element="tns:SetDnsRecordsBulkResponse"/>
+	</message>
+
+	<message name="CopyDnsZoneBulkInput">
+		<documentation>Copies a complete zone to one or more other zones, overwriting any preexisting data.</documentation>
+		<part name="parameters" element="tns:CopyDnsZoneBulk"/>
+	</message>
+
+	<message name="CopyDnsZoneBulkOutput">
+		<part name="parameters" element="tns:CopyDnsZoneBulkResponse"/>
+	</message>
+
+	<message name="CopyDnsLabelBulkInput">
+		<documentation>Copies all records from a label in the source zone to the same label in one or more other zones, overwriting any preexisting data.</documentation>
+		<part name="parameters" element="tns:CopyDnsLabelBulk"/>
+	</message>
+
+	<message name="CopyDnsLabelBulkOutput">
+		<part name="parameters" element="tns:CopyDnsLabelBulkResponse"/>
+	</message>
+
+	<message name="DeleteDnsRecordsBulkInput">
+		<documentation>Deletes all matching records from a list of zones. Everything except id must match for a record to be deleted.</documentation>
+		<part name="parameters" element="tns:DeleteDnsRecordsBulk"/>
+	</message>
+
+	<message name="DeleteDnsRecordsBulkOutput">
+		<part name="parameters" element="tns:DeleteDnsRecordsBulkResponse"/>
+	</message>
+
+	<message name="AddNameserverInput">
+		<documentation>Add a nameserver as a subscriber of changes to the data set in this server.</documentation>
+		<part name="parameters" element="tns:AddNameserver"/>
+	</message>
+
+	<message name="AddNameserverOutput">
+		<part name="parameters" element="tns:AddNameserverResponse"/>
+	</message>
+
+	<message name="DeleteNameserverInput">
+		<documentation>Remove a nameserver as a subscriber of changes to the data set in this server.</documentation>
+		<part name="parameters" element="tns:DeleteNameserver"/>
+	</message>
+
+	<message name="DeleteNameserverOutput">
+		<part name="parameters" element="tns:DeleteNameserverResponse"/>
+	</message>
+
+	<message name="GetChangedZonesInput">
+		<documentation>Fetches a list of all changed zones for a nameserver.</documentation>
+		<part name="parameters" element="tns:GetChangedZones"/>
+	</message>
+
+	<message name="GetChangedZonesOutput">
+		<part name="parameters" element="tns:GetChangedZonesResponse"/>
+	</message>
+
+	<message name="MarkUpdatedInput">
+		<documentation>Mark a change-row as handled, removing it if no error occured.</documentation>
+		<part name="parameters" element="tns:MarkUpdated"/>
+	</message>
+
+	<message name="MarkUpdatedOutput">
+		<part name="parameters" element="tns:MarkUpdatedResponse"/>
+	</message>
+
+	<message name="GetAllZonesInput">
+		<documentation>Get a list of all zones in the database.</documentation>
+		<part name="parameters" element="tns:GetAllZones"/>
+	</message>
+
+	<message name="GetAllZonesOutput">
+		<part name="parameters" element="tns:GetAllZonesResponse"/>
+	</message>
+
+	<message name="ReloadAllZonesInput">
+		<documentation>Mark all zones in the database as changed.</documentation>
+		<part name="parameters" element="tns:ReloadAllZones"/>
+	</message>
+
+	<message name="ReloadAllZonesOutput">
+		<part name="parameters" element="tns:ReloadAllZonesResponse"/>
+	</message>
+
+	<message name="GetUpdatesDisabledInput">
+		<documentation>Fetch information regarding if updates are disabled or not.</documentation>
+		<part name="parameters" element="tns:GetUpdatesDisabled"/>
+	</message>
+
+	<message name="GetUpdatesDisabledOutput">
+		<part name="parameters" element="tns:GetUpdatesDisabledResponse"/>
+	</message>
+
+	<message name="SetUpdatesDisabledInput">
+		<documentation>Set or reset the updates disabled flag.</documentation>
+		<part name="parameters" element="tns:SetUpdatesDisabled"/>
+	</message>
+
+	<message name="SetUpdatesDisabledOutput">
+		<part name="parameters" element="tns:SetUpdatesDisabledResponse"/>
+	</message>
+
+	<portType name="UCPDNSPortType">
+		<operation name="AddZone">
+			<input message="tns:AddZoneInput"/>
+			<output message="tns:AddZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteZone">
+			<input message="tns:DeleteZoneInput"/>
+			<output message="tns:DeleteZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="EditZone">
+			<input message="tns:EditZoneInput"/>
+			<output message="tns:EditZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="AddDnsRecords">
+			<input message="tns:AddDnsRecordsInput"/>
+			<output message="tns:AddDnsRecordsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="EditDnsRecords">
+			<input message="tns:EditDnsRecordsInput"/>
+			<output message="tns:EditDnsRecordsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="SetDnsRecords">
+			<input message="tns:SetDnsRecordsInput"/>
+			<output message="tns:SetDnsRecordsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteDnsRecords">
+			<input message="tns:DeleteDnsRecordsInput"/>
+			<output message="tns:DeleteDnsRecordsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetDnsRecords">
+			<input message="tns:GetDnsRecordsInput"/>
+			<output message="tns:GetDnsRecordsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetLabels">
+			<input message="tns:GetLabelsInput"/>
+			<output message="tns:GetLabelsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetZone">
+			<input message="tns:GetZoneInput"/>
+			<output message="tns:GetZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="RestoreZone">
+			<input message="tns:RestoreZoneInput"/>
+			<output message="tns:RestoreZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="SetDnsRecordsBulk">
+			<input message="tns:SetDnsRecordsBulkInput"/>
+			<output message="tns:SetDnsRecordsBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="CopyDnsZoneBulk">
+			<input message="tns:CopyDnsZoneBulkInput"/>
+			<output message="tns:CopyDnsZoneBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="CopyDnsLabelBulk">
+			<input message="tns:CopyDnsLabelBulkInput"/>
+			<output message="tns:CopyDnsLabelBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteDnsRecordsBulk">
+			<input message="tns:DeleteDnsRecordsBulkInput"/>
+			<output message="tns:DeleteDnsRecordsBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="AddNameserver">
+			<input message="tns:AddNameserverInput"/>
+			<output message="tns:AddNameserverOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteNameserver">
+			<input message="tns:DeleteNameserverInput"/>
+			<output message="tns:DeleteNameserverOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetChangedZones">
+			<input message="tns:GetChangedZonesInput"/>
+			<output message="tns:GetChangedZonesOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="MarkUpdated">
+			<input message="tns:MarkUpdatedInput"/>
+			<output message="tns:MarkUpdatedOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetAllZones">
+			<input message="tns:GetAllZonesInput"/>
+			<output message="tns:GetAllZonesOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="ReloadAllZones">
+			<input message="tns:ReloadAllZonesInput"/>
+			<output message="tns:ReloadAllZonesOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetUpdatesDisabled">
+			<input message="tns:GetUpdatesDisabledInput"/>
+			<output message="tns:GetUpdatesDisabledOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="SetUpdatesDisabled">
+			<input message="tns:SetUpdatesDisabledInput"/>
+			<output message="tns:SetUpdatesDisabledOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+	</portType>
+
+	<binding name="UCPDNSSoapBinding" type="tns:UCPDNSPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+		<operation name="AddZone">
+			<documentation>Add a zone to the UCPDNS Master database.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#AddZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteZone">
+			<documentation>Deletes a zone from the database.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#DeleteZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="EditZone">
+			<documentation>Edits a zone. This is only for completeness, and could be done by editing the SOA and NS-records directly as well.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#EditZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AddDnsRecords">
+			<documentation>Adds a list of records to a zone.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#AddDnsRecords"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="EditDnsRecords">
+			<documentation>Changes a list of records in a zone.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#EditDnsRecords"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="SetDnsRecords">
+			<documentation>Sets the records for all matching label/type/class-triples in a zone to that specified by the records passed.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#SetDnsRecords"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteDnsRecords">
+			<documentation>Deletes a list of records from a zone.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#DeleteDnsRecords"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetDnsRecords">
+			<documentation>Fetches a list of all records for a specified zone and label.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#GetDnsRecords"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetLabels">
+			<documentation>Fetches a list of all labels for a specified zone.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#GetLabels"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetZone">
+			<documentation>Fetches a complete zone from the database.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#GetZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="RestoreZone">
+			<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#RestoreZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="SetDnsRecordsBulk">
+			<documentation>Sets the records for all matching label/type/class-triples in a list of zones to that specified by the records passed.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#SetDnsRecordsBulk"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="CopyDnsZoneBulk">
+			<documentation>Copies a complete zone to one or more other zones, overwriting any preexisting data.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#CopyDnsZoneBulk"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="CopyDnsLabelBulk">
+			<documentation>Copies all records from a label in the source zone to the same label in one or more other zones, overwriting any preexisting data.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#CopyDnsLabelBulk"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteDnsRecordsBulk">
+			<documentation>Deletes all matching records from a list of zones. Everything except id must match for a record to be deleted.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#DeleteDnsRecordsBulk"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AddNameserver">
+			<documentation>Add a nameserver as a subscriber of changes to the data set in this server.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#AddNameserver"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteNameserver">
+			<documentation>Remove a nameserver as a subscriber of changes to the data set in this server.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#DeleteNameserver"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetChangedZones">
+			<documentation>Fetches a list of all changed zones for a nameserver.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#GetChangedZones"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="MarkUpdated">
+			<documentation>Mark a change-row as handled, removing it if no error occured.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#MarkUpdated"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetAllZones">
+			<documentation>Get a list of all zones in the database.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#GetAllZones"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="ReloadAllZones">
+			<documentation>Mark all zones in the database as changed.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#ReloadAllZones"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetUpdatesDisabled">
+			<documentation>Fetch information regarding if updates are disabled or not.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#GetUpdatesDisabled"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="SetUpdatesDisabled">
+			<documentation>Set or reset the updates disabled flag.</documentation>
+			<soap:operation soapAction="urn:UCPDNS::Server#SetUpdatesDisabled"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+	</binding>
+
+	<service name="UCPDNSService">
+		<documentation>UCP DNS Soap server</documentation>
+		<port name="UCPDNSPort" binding="tns:UCPDNSSoapBinding">
+			<soap:address location="http://ucpdns.soap.server/ucpdns"/>
+		</port>
+	</service>
+</definitions>

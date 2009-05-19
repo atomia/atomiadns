@@ -1,0 +1,190 @@
+#!/usr/bin/perl -w
+
+=encoding utf8
+
+=head1 NAME
+
+ucpdnssync - An application for synchronizing a local BDB database with the master zone database using SOAP.
+
+=head1 SYNOPSIS
+
+=over 8
+
+=item ucpdnssync full_reload_offline SERIAL DESTINATION
+
+=item ucpdnssync OPTION
+
+=back
+
+=head1 DESCRIPTION
+
+ucpdnssync is an application for synchronizing a local BDB database with the
+master zone database using SOAP.
+
+It contains options for both doing a full reload of all zones in the master
+database, and for just fetching the zones changed since the last update and
+reloading those.
+
+In addition you can use this tool for adding or removing the subscription of
+updates for a nameserver, and for enabling and disabling propagation of updates
+globally across all nameservers.
+
+=head1 OPTIONS
+
+=over 8
+
+=item full_reload_offline SERIAL DESTINATION
+
+Propagates all zones to a fresh BDB environment stored in the destination
+folder (should be empty before running).  All zones get the serial specified in
+their SOA-record.  This command should always be run with the same user BIND is
+running as.
+
+=item full_reload_online
+
+Marks all zones as changed so that the update-process propagates them on all nameservers.
+
+=item updated
+
+Fetches a list of changed zones and adds/removes them from the local BDB
+database.  This option is used by the daemon started at boot-time by /etc/init.d/ucpdns-nameserver.
+You should never run this manually.
+
+=item add_server
+
+Adds this server (configured using servername in /etc/ucpdns.conf) as a
+subscriber of the data set on the configured SOAP server.
+
+=item remove_server
+
+Remove the subscription of the data set on the configured SOAP server for this
+server (configured using servername in /etc/ucpdns.conf).
+
+=item disable_updates
+
+Disable propagation of changes to the nameservers.
+
+=item enable_updates
+
+Enable propagation of changes to the nameservers
+
+=back
+
+=head1 CONFIGURATION
+
+The application is configured using a config file stored at /etc/ucpdns.conf. All options are required.
+
+The following options exist:
+
+=over 8
+
+=item bdb_environment_path
+
+Specifies the path of the local BDB environment. The default is
+/var/lib/bind/ucpdns_bdb, and does probably not need to change.
+
+=item bdb_filename
+
+Specifies the filename (relative to bdb_environment_path) of the local BDB
+database. The default is dns_data.db, and does probably not need to change.
+
+=item soap_uri
+
+Specifies the URI of the SOAP Server to fetch changes from.
+
+=item servername
+
+Specifies the hostname used when subscribing and checking for changes.
+
+=back
+
+=head1 EXAMPLES
+
+To do a full reload to a new folder without missing any updates (assuming the
+default bdb_environment_path), do:
+
+1. ucpdnssync disable_updates
+
+2. Verify manually that no pending changes exist.
+
+3. Write down the output (unix timestamp) of `date +%s`
+
+4. Run `ucpdnssync full_reload_offline the_timestamp /var/lib/bind/ucpdns_bdb_new
+
+5. rm -rf /var/lib/bind/ucpdns_bdb_old ; mv /var/lib/bind/ucpdns_bdb /var/lib/bind/ucpdns_bdb_old ; mv /var/lib/bind/ucpdns_bdb_new /var/lib/bind/ucpdns_bdb
+
+6. rndc reload
+
+7. ucpdnssync enable_updates
+
+Or to accomplish the same thing using the online reload feature (much better and the preferred way):
+
+ucpdnssync full_reload_online
+
+To add the server as a subscriber:
+
+ucpdnssync add_server
+
+=head1 AUTHOR
+
+UCP DNS was developed by UCP AB. For support, please see http://www.troxo.com/.
+
+=cut
+
+use warnings;
+use strict;
+
+use UCPDNS::Syncer;
+
+if (scalar(@ARGV) < 1) {
+	print "usage: $0 mode\n";
+	print "where mode is one of full_reload_offline, full_reload_online, updated, add_server, remove_server, disable_updates, enable_updates\n";
+	exit 1;
+}
+
+$_ = $ARGV[0];
+
+SWITCH: {
+	/^(add_server|remove_server|disable_updates|enable_updates|full_reload_online)$/i && do {
+		my $syncer = UCPDNS::Syncer->new(configfile => "/etc/ucpdns.conf");
+		$syncer->$_();
+		last SWITCH;
+	};
+
+	/^full_reload_offline$/i && do {
+		if (scalar(@ARGV) < 3) {
+			print "usage: $0 full_reload timestamp destination_folder\n";
+			exit 1;
+		}
+
+		my $syncer = UCPDNS::Syncer->new(configfile => "/etc/ucpdns.conf", bdb_environment_path => $ARGV[2]);
+		$syncer->$_($ARGV[1]);
+		last SWITCH;
+	};
+
+	/^updated$/i && do {
+		FOREVER: while(1) {
+			eval {
+				my $syncer = UCPDNS::Syncer->new(configfile => "/etc/ucpdns.conf");
+
+				while (1) {
+					last if $syncer->updates_disabled();
+					$syncer->reload_updated_zones();
+					sleep 10;
+				}
+			};
+
+			if ($@) {
+				print "caught exception in ucpdnssync updated: $@\n";
+				sleep 5;
+			} else {
+				# Updates disabled, exit.
+				last;
+			}
+		}
+
+		last SWITCH;
+	};
+
+	die("parameter $_ is not supported");
+}

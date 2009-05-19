@@ -1,0 +1,6 @@
+
+[zonestruct|zonestruct Datatype - UCP DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | id of the zone |
+| name | string | name of the zone |
+				

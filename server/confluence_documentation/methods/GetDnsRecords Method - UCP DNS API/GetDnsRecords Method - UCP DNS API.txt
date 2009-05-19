@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Fetches a list of all records for a specified zone and label.
+
+h3.Declaration syntax
+{panel}
+[resourcerecord|resourcerecord Datatype - UCP DNS API][] GetDnsRecords(
+	string zonename,
+	string label
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|label|string|the name of the label|
+
+{include:GetDnsRecords Method Example - UCP DNS API}

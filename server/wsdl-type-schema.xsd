@@ -1,0 +1,548 @@
+	<types>
+		<xsd:schema targetNamespace="urn:UCPDNS::Server"
+			xmlns="urn:UCPDNS::Server" elementFormDefault="qualified">
+
+			<xsd:complexType name="InvalidParametersError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="InvalidParametersErrorFault" type="InvalidParametersError" />
+
+			<xsd:complexType name="SystemError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="SystemErrorFault" type="SystemError" />
+
+			<xsd:complexType name="InternalError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="InternalErrorFault" type="InternalError" />
+
+			<xsd:complexType name="LogicalError">
+				<xsd:sequence>
+					<xsd:element name="subtype" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="LogicalErrorFault" type="LogicalError" />
+
+			<xsd:complexType name="xsdUcpStringArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpResourceRecord">
+				<xsd:annotation><xsd:documentation>
+ucpResourceRecord is a struct with the following members:
+
+|| Member || Type || Description ||
+| id | int | the id of the record |
+| label | string | the label of the record |
+| class | string | the DNS class, almost always IN |
+| ttl | int | the time in seconds which it is valid to cache the record for |
+| type | string | the DNS type of the record |
+| rdata | string | the data of the record, an example for MX would be '10 mailserver.acompany.com.' |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="class" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="ttl" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="type" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="rdata" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpRecordArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="resourcerecord" type="ucpResourceRecord" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpHostname">
+				<xsd:annotation><xsd:documentation>
+ucpHostname is a struct with the following members:
+|| Member || Type || Description ||
+| zone | string | the name of the zone |
+| label | string | the name of the label |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpHostnameArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="ucpHostname" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpLabel">
+				<xsd:annotation><xsd:documentation>
+ucpLabel is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the label |
+| records | ucpRecordArray | an array of resourcerecords |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpZone">
+				<xsd:annotation><xsd:documentation>ucpZone is an array of ucpLabel-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="label" type="ucpLabel" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpZoneStruct">
+				<xsd:annotation><xsd:documentation>
+ucpZoneStruct is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | id of the zone |
+| name | string | name of the zone |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpZones">
+				<xsd:annotation><xsd:documentation>ucpZones is an array of ucpZoneStruct-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="ucpZoneStruct" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpChangedZone">
+				<xsd:annotation><xsd:documentation>
+ucpChangedZone is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the change-row |
+| name | string | the name of the zone this change-row applies to |
+| changetime | int | he unix timestamp of this change (will be used as serial in SOA) |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="changetime" type="xsd:int"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="ucpChanges">
+				<xsd:annotation><xsd:documentation>ucpChanges is an array of ucpChangedZone-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzone" type="ucpChangedZone" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="GetUpdatesDisabled">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetUpdatesDisabledResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="disabled" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ReloadAllZones">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ReloadAllZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllZones">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="ucpZones"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetUpdatesDisabled">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="disabled" type="xsd:int"><xsd:annotation><xsd:documentation>1 if updates are to be disabled and 0 if not</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetUpdatesDisabledResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkUpdated">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changestatus" type="xsd:string"><xsd:annotation><xsd:documentation>ERROR or OK</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="errormessage" type="xsd:string"><xsd:annotation><xsd:documentation>error message to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkUpdatedResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedZones">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="ucpChanges"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserver">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to remove as a subscriber</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserver">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to add as a subscriber</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecordsBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array with the name of the zones to remove records from</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the records to remove, everything except id must match for a record to be deleted</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecordsBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="CopyDnsLabelBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="sourcezone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the source zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the label to copy</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="ucpHostnameArray"><xsd:annotation><xsd:documentation>an array of the hostnames to copy the label in the source zone to</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="CopyDnsLabelBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="CopyDnsZoneBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="sourcezone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the source zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array of the zone names to copy the source zone to</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="CopyDnsZoneBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecordsBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array containing the names of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the resourcerecords to set for the zones</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecordsBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetLabels">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetLabelsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringarray" type="xsdUcpStringArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the label</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="resourcerecords" type="ucpRecordArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to add</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change, id is not used</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecords">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to delete, only id is needed</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDnsRecordsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonettl" type="xsd:int"><xsd:annotation><xsd:documentation>the ttl of the SOA-record and the NS-records</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="mname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA mname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="rname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA rname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="refresh" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA refresh field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="retry" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA retry field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonettl" type="xsd:int"><xsd:annotation><xsd:documentation>the ttl of the SOA-record and the NS-records</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="mname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA mname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="rname" type="xsd:string"><xsd:annotation><xsd:documentation>the SOA rname field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="refresh" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA refresh field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="retry" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA retry field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the added zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+		</xsd:schema>
+	</types>

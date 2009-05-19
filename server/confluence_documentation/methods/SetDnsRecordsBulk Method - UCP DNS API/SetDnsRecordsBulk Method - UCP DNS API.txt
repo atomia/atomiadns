@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Sets the records for all matching label/type/class-triples in a list of zones to that specified by the records passed.
+
+h3.Declaration syntax
+{panel}
+void SetDnsRecordsBulk(
+	string[] zones,
+	[resourcerecord|resourcerecord Datatype - UCP DNS API][] records
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zones|string[]|an array containing the names of the zone|
+|records|[resourcerecord|resourcerecord Datatype - UCP DNS API][]|the resourcerecords to set for the zones|
+
+{include:SetDnsRecordsBulk Method Example - UCP DNS API}
