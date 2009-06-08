@@ -26,7 +26,7 @@ CREATE TABLE ucpdns_schemaversion (
 	version INT
 );
 
-INSERT INTO ucpdns_schemaversion (version) VALUES (2);
+INSERT INTO ucpdns_schemaversion (version) VALUES (8);
 
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),

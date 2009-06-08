@@ -52,6 +52,12 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="xsdUcpIntArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="xsd:int" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:complexType name="ucpResourceRecord">
 				<xsd:annotation><xsd:documentation>
 ucpResourceRecord is a struct with the following members:
@@ -432,7 +438,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="AddDnsRecordsResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="intarray" type="xsdUcpIntArray"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

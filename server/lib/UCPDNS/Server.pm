@@ -12,7 +12,7 @@ my $signatures = {
 	"AddZone" => "void string int string string int int int int array",
 	"DeleteZone" => "void string",
 	"EditZone" => "void string int string string int int int int array",
-	"AddDnsRecords" => "void string array[resourcerecord]",
+	"AddDnsRecords" => "array[int] string array[resourcerecord]",
 	"EditDnsRecords" => "void string array[resourcerecord]",
 	"SetDnsRecords" => "void string array[resourcerecord]",
 	"DeleteDnsRecords" => "void string array[resourcerecord]",
@@ -53,6 +53,8 @@ foreach my $method (keys %{$signatures}) {
 				$UCPDNS::Server::instance->handleRecordArray($method, \@signature, @_);
 			} elsif ($return_type eq "array[string]") {
 				$UCPDNS::Server::instance->handleStringArray($method, \@signature, @_);
+			} elsif ($return_type eq "array[int]") {
+				$UCPDNS::Server::instance->handleIntArray($method, \@signature, @_);
 			} elsif ($return_type eq "zone") {
 				$UCPDNS::Server::instance->handleZone($method, \@signature, @_);
 			} elsif ($return_type eq "changes") {

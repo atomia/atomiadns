@@ -9,6 +9,7 @@ my $type_mappings = {
 	"xsd:string" => "string",
 	"xsd:int" => "int",
 	"xsdUcpStringArray" => "string[]",
+	"xsdUcpIntArray" => "int[]",
 	"ucpRecordArray" => "resourcerecord[]",
 	"ucpResourceRecord" => "resourcerecord",
 	"ucpZone" => "zone",

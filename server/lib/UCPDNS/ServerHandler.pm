@@ -125,6 +125,23 @@ sub handleStringArray {
 	return SOAP::Data->new(name => "stringarray", value => \@rowarray);
 }
 
+sub handleIntArray {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $rows = $sth->fetchall_arrayref();
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	my @rowarray = map {
+		SOAP::Data->new(name => "item", value => $_->[0])
+	} @$rows;
+
+	return SOAP::Data->new(name => "intarray", value => \@rowarray);
+}
+
 sub handleChanges {
 	my $self = shift;
 	my $method = shift;

@@ -83,16 +83,17 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the ucpdns schema. You will have to make sure that the schema matches /usr/share/ucpdns/schema manually"
 		exit 1
 	else
-		if [ $schema_version = 4 ]; then
+		if [ "$schema_version" = 8 ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
-		elif [ $schema_version = 1 ] || [ $schema_version = 2 ] || [ $schema_version = 3 ]; then
-			echo "Schema version is $schema_version, and the latest database schema is version 4. Upgrading."
-			if [ $schema_version -lt 3 ]; then 
-				recreate_procedure "deletezone"
-			fi
-
+		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 8 ]; then
+			echo "Schema version is $schema_version, and the latest database schema is version 8. Upgrading."
 			recreate_procedure "setupdatesdisabled"
-			set_schema_version 4
+			recreate_procedure "deletezone"
+			recreate_procedure "adddnsrecords"
+			recreate_procedure "copydnslabelbulk"
+			recreate_procedure "restorezone"
+
+			set_schema_version 7
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
 			exit 1

@@ -1,3 +1,9 @@
+ucpdns-masterserver (0.9.6) hardy; urgency=low
+
+  * Change AddDnsRecords to return int[] with ids of added record ordered like the record-array.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 8 Jun 2009 16:19:45 +0200
+
 ucpdns-masterserver (0.9.5) hardy; urgency=low
 
   * Fix .NET compatibility issues in RestoreZone, GetLabels and GetChangedZones

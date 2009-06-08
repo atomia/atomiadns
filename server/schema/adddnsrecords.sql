@@ -1,7 +1,8 @@
 CREATE OR REPLACE FUNCTION AddDnsRecords(
 	zonename varchar,
-	records varchar[][]
-) RETURNS void AS $$
+	records varchar[][],
+	out record_id int
+) RETURNS SETOF int AS $$
 DECLARE
 	record_label_id int;
 	record_zone_id int;
@@ -21,5 +22,7 @@ BEGIN
 
 		INSERT INTO record (label_id, ttl, class, type, rdata) VALUES (record_label_id, 
 					records[i][4]::int, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
+		record_id := currval('record_id_seq');
+		RETURN NEXT;
 	END LOOP;
 END; $$ LANGUAGE plpgsql;

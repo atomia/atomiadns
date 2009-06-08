@@ -28,7 +28,7 @@ BEGIN
 		END LOOP;
 
 		DELETE FROM record USING label INNER JOIN zone ON zone.id = zone_id WHERE label_id = label.id AND zone.name = targets[i][1] AND label = targets[i][2];
-		PERFORM AddDnsRecords(targets[i][1], records);
+		PERFORM * FROM AddDnsRecords(targets[i][1], records);
 		DELETE FROM label USING zone WHERE zone.id = zone_id AND zone.name = targets[i][1] AND NOT EXISTS (SELECT id FROM record WHERE label_id = label.id);
 
 	END LOOP;
