@@ -1,0 +1,12 @@
+Source: atomia-dyndns
+Section: non-free/perl
+Priority: optional
+Build-Depends: debhelper (>= 4.0.2)
+Build-Depends-Indep: perl (>= 5.8.6), perl-modules
+Maintainer: Jimmy Bergman <jimmy@sigint.se>
+Standards-Version: 3.6.1
+
+Package: atomia-dyndns
+Architecture: all
+Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libnet-dns-perl
+Description: Atomia DNS DDNS server
