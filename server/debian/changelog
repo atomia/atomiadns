@@ -1,3 +1,9 @@
+ucpdns-masterserver (0.9.7) hardy; urgency=low
+
+  * Add zone not found checks to GetLabels and GetZone
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 17 Aug 2009 11:40:13 +0200
+
 ucpdns-masterserver (0.9.6) hardy; urgency=low
 
   * Change AddDnsRecords to return int[] with ids of added record ordered like the record-array.

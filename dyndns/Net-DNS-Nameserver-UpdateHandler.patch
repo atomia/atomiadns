@@ -1,0 +1,71 @@
+--- Net/DNS/Nameserver.pm.orig	2009-07-24 10:49:50.000000000 +0200
++++ Net/DNS/Nameserver.pm	2009-08-17 11:24:31.000000000 +0200
+@@ -151,7 +151,7 @@
+ 	my $reply = Net::DNS::Packet->new();	# create empty reply packet
+ 	$reply->header->qr(1);
+ 
+-	my $headermask;
++	my ($headermask, $tsig_sign);
+ 	
+ 	unless ($query) {
+ 		print "ERROR: invalid packet\n" if $self->{"Verbose"};
+@@ -172,6 +172,7 @@
+ 	$reply->push("question", @q);
+ 
+ 	if ($query->header->opcode eq "QUERY" ||
++	    $query->header->opcode eq "UPDATE" ||
+ 	    $query->header->opcode eq "NS_NOTIFY_OP"   #RFC1996
+ 	    ) {
+ 		if ($query->header->qdcount == 1) {
+@@ -185,14 +186,22 @@
+ 			
+ 			my ($rcode, $ans, $auth, $add);
+ 			
+-			if  ($query->header->opcode eq "QUERY"){
++			if  ($query->header->opcode eq "QUERY") {
+ 			  ($rcode, $ans, $auth, $add, $headermask) =
+-			      &{$self->{"ReplyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
+-			}else{
+-			  $reply->header->rcode("SERVFAIL") unless 
+-			     ( ref $self->{"NotifyHandler"} eq "CODE");
+-		  ($rcode, $ans, $auth, $add, $headermask) =
+-			      &{$self->{"NotifyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
++				&{$self->{"ReplyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
++			} elsif ($query->header->opcode eq "UPDATE") {
++				if (ref $self->{"UpdateHandler"} eq "CODE") {
++					($rcode, $ans, $auth, $add, $headermask, $tsig_sign) =
++						&{$self->{"UpdateHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
++				} else {
++					$rcode = "NOTIMP";
++				}
++
++				$headermask->{'opcode'} = $query->header->opcode;
++			} else {
++				$reply->header->rcode("SERVFAIL") unless (ref $self->{"NotifyHandler"} eq "CODE");
++				($rcode, $ans, $auth, $add, $headermask) =
++					&{$self->{"NotifyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
+ 			}
+ 			print "$rcode\n" if $self->{"Verbose"};
+ 			
+@@ -233,6 +242,21 @@
+ 	
+ 	$reply->header->print if $self->{"Verbose"} && defined $headermask;
+ 
++	if (defined($tsig_sign) && ref($tsig_sign) eq "HASH" && defined($tsig_sign->{"keyname"}) &&
++		defined($tsig_sign->{"key"}) && defined($tsig_sign->{"request_mac"}) && 
++		defined($tsig_sign->{"time_signed"}) && $query->header->opcode eq "UPDATE") {
++		
++		if (scalar($reply->additional) != 0) {
++			print "ERROR: invalid response (additional was already set when TSIG signing)\n" if $self->{"Verbose"};
++			return;
++		}
++
++		$reply->sign_tsig($tsig_sign->{"keyname"}, $tsig_sign->{"key"});
++		$reply->{additional}[0]->{request_mac} = $tsig_sign->{"request_mac"};
++		$reply->{additional}[0]->{time_signed} = $tsig_sign->{"time_signed"};
++		return $reply;
++	}
++
+ 	return $reply;
+ }
+ 

@@ -8,7 +8,7 @@ Standards-Version: 3.6.1
 
 Package: ucpdns-masterserver
 Architecture: all
-Depends: ucpdns-api (>= 0.9.6), ucpdns-database (>= 0.9.6)
+Depends: ucpdns-api (>= 0.9.7), ucpdns-database (>= 0.9.7)
 Description: Complete master SOAP server for UCP DNS
 
 Package: ucpdns-api

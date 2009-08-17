@@ -7,8 +7,15 @@ CREATE OR REPLACE FUNCTION GetZone(
 	out record_type varchar,
 	out record_rdata varchar
 ) RETURNS SETOF record AS $$
-DECLARE r RECORD;
+DECLARE
+	r RECORD;
+	zone_check INT;
 BEGIN
+        SELECT id INTO zone_check FROM zone WHERE zone.name = zonename;
+        IF NOT FOUND THEN
+                RAISE EXCEPTION 'zone % not found', zonename;
+        END IF;
+
 	FOR r IN	SELECT record.id, label, class, ttl, type, rdata
 			FROM zone INNER JOIN label ON zone.id = zone_id INNER JOIN record ON label.id = label_id
 			WHERE zone.name = zonename
