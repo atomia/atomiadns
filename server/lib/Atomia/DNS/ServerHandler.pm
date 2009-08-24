@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-package UCPDNS::ServerHandler;
+package Atomia::DNS::ServerHandler;
 
 use Moose;
 use Config::General;
@@ -13,7 +13,7 @@ use Data::Dumper;
 
 has 'conn' => (is => 'rw', isa => 'Any', default => undef);
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
-has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/ucpdns.conf");
+has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
 
 sub BUILD {
 	my $self = shift;

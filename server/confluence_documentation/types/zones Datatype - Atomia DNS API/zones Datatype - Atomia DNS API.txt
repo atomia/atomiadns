@@ -1,0 +1,1 @@
+[zones|zones Datatype - Atomia DNS API] is an array of [zonestruct|zonestruct Datatype - Atomia DNS API]-structs.

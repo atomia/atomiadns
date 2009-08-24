@@ -8,7 +8,7 @@ use Getopt::Long;
 use Pod::Usage;
 use Config::General;
 
-my $config_file = "/etc/ucpdns.conf";
+my $config_file = "/etc/atomiadns.conf";
 my $soap_uri = undef;
 my $soap_method = undef;
 my $soap_method_arguments = undef;
@@ -149,7 +149,7 @@ Displays the synopsis and documentation for individual options.
 
 =head1 CONFIGURATION
 
-The application is configured using a optional config file stored at /etc/ucpdns.conf.
+The application is configured using a optional config file stored at /etc/atomiadns.conf.
 
 The following options exist:
 

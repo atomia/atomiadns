@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Get a list of all zones in the database.
+
+h3.Declaration syntax
+{panel}
+[zones|zones Datatype - Atomia DNS API] GetAllZones()
+{panel}
+
+{include:GetAllZones Method Example - Atomia DNS API}

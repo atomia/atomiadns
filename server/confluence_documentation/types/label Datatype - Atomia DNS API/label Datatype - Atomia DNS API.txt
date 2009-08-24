@@ -1,0 +1,6 @@
+
+[label|label Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the label |
+| records | [resourcerecord|resourcerecord Datatype - Atomia DNS API][] | an array of resourcerecords |
+				

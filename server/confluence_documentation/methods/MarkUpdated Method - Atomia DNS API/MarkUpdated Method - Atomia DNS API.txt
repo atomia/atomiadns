@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Mark a change-row as handled, removing it if no error occured.
+
+h3.Declaration syntax
+{panel}
+void MarkUpdated(
+	int changeid,
+	string changestatus,
+	string errormessage
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|changeid|int|the id of the change-row|
+|changestatus|string|ERROR or OK|
+|errormessage|string|error message to set if cstatus is ERROR|
+
+{include:MarkUpdated Method Example - Atomia DNS API}

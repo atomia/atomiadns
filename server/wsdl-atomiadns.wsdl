@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
-<definitions name="UCPDNS"
-		targetNamespace="urn:UCPDNS::Server"
-		xmlns:tns="urn:UCPDNS::Server"
+<definitions name="AtomiaDNS"
+		targetNamespace="urn:Atomia::DNS::Server"
+		xmlns:tns="urn:Atomia::DNS::Server"
 		xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 	<types>
-		<xsd:schema targetNamespace="urn:UCPDNS::Server"
-			xmlns="urn:UCPDNS::Server" elementFormDefault="qualified">
+		<xsd:schema targetNamespace="urn:Atomia::DNS::Server"
+			xmlns="urn:Atomia::DNS::Server" elementFormDefault="qualified">
 
 			<xsd:complexType name="InvalidParametersError">
 				<xsd:sequence>
@@ -58,9 +58,9 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpResourceRecord">
+			<xsd:complexType name="atomiaResourceRecord">
 				<xsd:annotation><xsd:documentation>
-ucpResourceRecord is a struct with the following members:
+atomiaResourceRecord is a struct with the following members:
 
 || Member || Type || Description ||
 | id | int | the id of the record |
@@ -80,15 +80,15 @@ ucpResourceRecord is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpRecordArray">
+			<xsd:complexType name="atomiaRecordArray">
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="resourcerecord" type="ucpResourceRecord" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="resourcerecord" type="atomiaResourceRecord" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpHostname">
+			<xsd:complexType name="atomiaHostname">
 				<xsd:annotation><xsd:documentation>
-ucpHostname is a struct with the following members:
+atomiaHostname is a struct with the following members:
 || Member || Type || Description ||
 | zone | string | the name of the zone |
 | label | string | the name of the label |
@@ -99,35 +99,35 @@ ucpHostname is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpHostnameArray">
+			<xsd:complexType name="atomiaHostnameArray">
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="ucpHostname" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="atomiaHostname" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpLabel">
+			<xsd:complexType name="atomiaLabel">
 				<xsd:annotation><xsd:documentation>
-ucpLabel is a struct with the following members:
+atomiaLabel is a struct with the following members:
 || Member || Type || Description ||
 | name | string | the name of the label |
-| records | ucpRecordArray | an array of resourcerecords |
+| records | atomiaRecordArray | an array of resourcerecords |
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
-					<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"/>
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpZone">
-				<xsd:annotation><xsd:documentation>ucpZone is an array of ucpLabel-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaZone">
+				<xsd:annotation><xsd:documentation>atomiaZone is an array of atomiaLabel-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="label" type="ucpLabel" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="label" type="atomiaLabel" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpZoneStruct">
+			<xsd:complexType name="atomiaZoneStruct">
 				<xsd:annotation><xsd:documentation>
-ucpZoneStruct is a struct with the following members:
+atomiaZoneStruct is a struct with the following members:
 || Member || Type || Description ||
 | id | int | id of the zone |
 | name | string | name of the zone |
@@ -138,16 +138,16 @@ ucpZoneStruct is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpZones">
-				<xsd:annotation><xsd:documentation>ucpZones is an array of ucpZoneStruct-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaZones">
+				<xsd:annotation><xsd:documentation>atomiaZones is an array of atomiaZoneStruct-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="ucpZoneStruct" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="atomiaZoneStruct" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpChangedZone">
+			<xsd:complexType name="atomiaChangedZone">
 				<xsd:annotation><xsd:documentation>
-ucpChangedZone is a struct with the following members:
+atomiaChangedZone is a struct with the following members:
 || Member || Type || Description ||
 | id | int | the id of the change-row |
 | name | string | the name of the zone this change-row applies to |
@@ -160,10 +160,10 @@ ucpChangedZone is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpChanges">
-				<xsd:annotation><xsd:documentation>ucpChanges is an array of ucpChangedZone-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaChanges">
+				<xsd:annotation><xsd:documentation>atomiaChanges is an array of atomiaChangedZone-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzone" type="ucpChangedZone" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzone" type="atomiaChangedZone" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -204,7 +204,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetAllZonesResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="ucpZones"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="atomiaZones"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -254,7 +254,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetChangedZonesResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="ucpChanges"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -295,7 +295,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array with the name of the zones to remove records from</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the records to remove, everything except id must match for a record to be deleted</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>the records to remove, everything except id must match for a record to be deleted</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -313,7 +313,7 @@ ucpChangedZone is a struct with the following members:
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="sourcezone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the source zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the label to copy</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="ucpHostnameArray"><xsd:annotation><xsd:documentation>an array of the hostnames to copy the label in the source zone to</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="atomiaHostnameArray"><xsd:annotation><xsd:documentation>an array of the hostnames to copy the label in the source zone to</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -347,7 +347,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array containing the names of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the resourcerecords to set for the zones</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>the resourcerecords to set for the zones</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -364,7 +364,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -388,7 +388,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetZoneResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -421,7 +421,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetDnsRecordsResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="resourcerecords" type="ucpRecordArray"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="resourcerecords" type="atomiaRecordArray"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -430,7 +430,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to add</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to add</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -447,7 +447,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -464,7 +464,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change, id is not used</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change, id is not used</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -481,7 +481,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to delete, only id is needed</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to delete, only id is needed</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -578,7 +578,7 @@ ucpChangedZone is a struct with the following members:
 	</message>
 
 	<message name="AddZoneInput">
-		<documentation>Add a zone to the UCPDNS Master database.</documentation>
+		<documentation>Add a zone to the Atomia DNS master database.</documentation>
 		<part name="parameters" element="tns:AddZone"/>
 	</message>
 
@@ -784,7 +784,7 @@ ucpChangedZone is a struct with the following members:
 		<part name="parameters" element="tns:SetUpdatesDisabledResponse"/>
 	</message>
 
-	<portType name="UCPDNSPortType">
+	<portType name="AtomiaDNSPortType">
 		<operation name="AddZone">
 			<input message="tns:AddZoneInput"/>
 			<output message="tns:AddZoneOutput"/>
@@ -993,175 +993,175 @@ ucpChangedZone is a struct with the following members:
 		</operation>
 	</portType>
 
-	<binding name="UCPDNSSoapBinding" type="tns:UCPDNSPortType">
+	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
 		<operation name="AddZone">
-			<documentation>Add a zone to the UCPDNS Master database.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#AddZone"/>
+			<documentation>Add a zone to the Atomia DNS master database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="DeleteZone">
 			<documentation>Deletes a zone from the database.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#DeleteZone"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="EditZone">
 			<documentation>Edits a zone. This is only for completeness, and could be done by editing the SOA and NS-records directly as well.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#EditZone"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#EditZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="AddDnsRecords">
 			<documentation>Adds a list of records to a zone.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#AddDnsRecords"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="EditDnsRecords">
 			<documentation>Changes a list of records in a zone.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#EditDnsRecords"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#EditDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="SetDnsRecords">
 			<documentation>Sets the records for all matching label/type/class-triples in a zone to that specified by the records passed.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#SetDnsRecords"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#SetDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="DeleteDnsRecords">
 			<documentation>Deletes a list of records from a zone.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#DeleteDnsRecords"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="GetDnsRecords">
 			<documentation>Fetches a list of all records for a specified zone and label.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#GetDnsRecords"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="GetLabels">
 			<documentation>Fetches a list of all labels for a specified zone.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#GetLabels"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetLabels"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="GetZone">
 			<documentation>Fetches a complete zone from the database.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#GetZone"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="RestoreZone">
 			<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#RestoreZone"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="SetDnsRecordsBulk">
 			<documentation>Sets the records for all matching label/type/class-triples in a list of zones to that specified by the records passed.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#SetDnsRecordsBulk"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#SetDnsRecordsBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="CopyDnsZoneBulk">
 			<documentation>Copies a complete zone to one or more other zones, overwriting any preexisting data.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#CopyDnsZoneBulk"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#CopyDnsZoneBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="CopyDnsLabelBulk">
 			<documentation>Copies all records from a label in the source zone to the same label in one or more other zones, overwriting any preexisting data.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#CopyDnsLabelBulk"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#CopyDnsLabelBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="DeleteDnsRecordsBulk">
 			<documentation>Deletes all matching records from a list of zones. Everything except id must match for a record to be deleted.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#DeleteDnsRecordsBulk"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDnsRecordsBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="AddNameserver">
 			<documentation>Add a nameserver as a subscriber of changes to the data set in this server.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#AddNameserver"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddNameserver"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="DeleteNameserver">
 			<documentation>Remove a nameserver as a subscriber of changes to the data set in this server.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#DeleteNameserver"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteNameserver"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="GetChangedZones">
 			<documentation>Fetches a list of all changed zones for a nameserver.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#GetChangedZones"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="MarkUpdated">
 			<documentation>Mark a change-row as handled, removing it if no error occured.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#MarkUpdated"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkUpdated"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="GetAllZones">
 			<documentation>Get a list of all zones in the database.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#GetAllZones"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetAllZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="ReloadAllZones">
 			<documentation>Mark all zones in the database as changed.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#ReloadAllZones"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#ReloadAllZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="GetUpdatesDisabled">
 			<documentation>Fetch information regarding if updates are disabled or not.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#GetUpdatesDisabled"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetUpdatesDisabled"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 
 		<operation name="SetUpdatesDisabled">
 			<documentation>Set or reset the updates disabled flag.</documentation>
-			<soap:operation soapAction="urn:UCPDNS::Server#SetUpdatesDisabled"/>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#SetUpdatesDisabled"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
 	</binding>
 
-	<service name="UCPDNSService">
-		<documentation>UCP DNS Soap server</documentation>
-		<port name="UCPDNSPort" binding="tns:UCPDNSSoapBinding">
-			<soap:address location="http://ucpdns.soap.server/ucpdns"/>
+	<service name="AtomiaDNSService">
+		<documentation>Atomia DNS Soap server</documentation>
+		<port name="AtomiaDNSPort" binding="tns:AtomiaDNSSoapBinding">
+			<soap:address location="http://atomiadns.soap.server/atomiadns"/>
 		</port>
 	</service>
 </definitions>

@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Sets the records for all matching label/type/class-triples in a zone to that specified by the records passed.
+
+h3.Declaration syntax
+{panel}
+void SetDnsRecords(
+	string zonename,
+	[resourcerecord|resourcerecord Datatype - Atomia DNS API][] records
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|records|[resourcerecord|resourcerecord Datatype - Atomia DNS API][]|an array of the records to change, id is not used|
+
+{include:SetDnsRecords Method Example - Atomia DNS API}

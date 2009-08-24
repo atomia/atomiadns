@@ -3,9 +3,9 @@
 use strict;
 use warnings;
 
-package UCPDNS::Server;
+package Atomia::DNS::Server;
 
-use UCPDNS::ServerHandler;
+use Atomia::DNS::ServerHandler;
 use Moose;
 
 my $signatures = {
@@ -34,7 +34,7 @@ my $signatures = {
 	"SetUpdatesDisabled" => "void int",
 };
 
-our $instance = UCPDNS::ServerHandler->new;
+our $instance = Atomia::DNS::ServerHandler->new;
 
 foreach my $method (keys %{$signatures}) {
 	my $textsignature = $signatures->{$method};
@@ -45,31 +45,31 @@ foreach my $method (keys %{$signatures}) {
 		my $self = shift;
 
 		my $retval = eval {
-			$UCPDNS::Server::instance->matchSignature($method, \@signature, @_);
+			$Atomia::DNS::Server::instance->matchSignature($method, \@signature, @_);
 
 			if ($return_type eq "void") {
-				$UCPDNS::Server::instance->handleVoid($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleVoid($method, \@signature, @_);
 			} elsif ($return_type eq "array[resourcerecord]") {
-				$UCPDNS::Server::instance->handleRecordArray($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleRecordArray($method, \@signature, @_);
 			} elsif ($return_type eq "array[string]") {
-				$UCPDNS::Server::instance->handleStringArray($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleStringArray($method, \@signature, @_);
 			} elsif ($return_type eq "array[int]") {
-				$UCPDNS::Server::instance->handleIntArray($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleIntArray($method, \@signature, @_);
 			} elsif ($return_type eq "zone") {
-				$UCPDNS::Server::instance->handleZone($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleZone($method, \@signature, @_);
 			} elsif ($return_type eq "changes") {
-				$UCPDNS::Server::instance->handleChanges($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleChanges($method, \@signature, @_);
 			} elsif ($return_type eq "zonestruct") {
-				$UCPDNS::Server::instance->handleZoneStruct($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleZoneStruct($method, \@signature, @_);
 			} elsif ($return_type eq "int") {
-				$UCPDNS::Server::instance->handleInt($method, \@signature, @_);
+				$Atomia::DNS::Server::instance->handleInt($method, \@signature, @_);
 			} else {
 				die("unknown return-type in signature: $return_type");
 			}
 		};
 
 		if ($@) {
-			$UCPDNS::Server::instance->mapExceptionToFault($@);
+			$Atomia::DNS::Server::instance->mapExceptionToFault($@);
 		} else {
 			return $retval;
 		}

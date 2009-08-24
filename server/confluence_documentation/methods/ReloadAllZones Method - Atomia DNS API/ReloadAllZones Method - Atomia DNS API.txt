@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Mark all zones in the database as changed.
+
+h3.Declaration syntax
+{panel}
+void ReloadAllZones()
+{panel}
+
+{include:ReloadAllZones Method Example - Atomia DNS API}

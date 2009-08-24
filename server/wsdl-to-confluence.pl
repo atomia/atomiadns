@@ -3,23 +3,23 @@
 use warnings;
 use strict;
 
-my $wsdl_filename = "wsdl-ucpdns.wsdl";
+my $wsdl_filename = "wsdl-atomiadns.wsdl";
 
 my $type_mappings = {
 	"xsd:string" => "string",
 	"xsd:int" => "int",
 	"xsdUcpStringArray" => "string[]",
 	"xsdUcpIntArray" => "int[]",
-	"ucpRecordArray" => "resourcerecord[]",
-	"ucpResourceRecord" => "resourcerecord",
-	"ucpZone" => "zone",
-	"ucpLabel" => "label",
-	"ucpHostnameArray" => "hostname[]",
-	"ucpHostname" => "hostname",
-	"ucpChanges" => "changes",
-	"ucpChangedZone" => "changedzone",
-	"ucpZoneStruct" => "zonestruct",
-	"ucpZones" => "zones",
+	"atomiaRecordArray" => "resourcerecord[]",
+	"atomiaResourceRecord" => "resourcerecord",
+	"atomiaZone" => "zone",
+	"atomiaLabel" => "label",
+	"atomiaHostnameArray" => "hostname[]",
+	"atomiaHostname" => "hostname",
+	"atomiaChanges" => "changes",
+	"atomiaChangedZone" => "changedzone",
+	"atomiaZoneStruct" => "zonestruct",
+	"atomiaZones" => "zones",
 };
 
 use XML::XPath;
@@ -35,7 +35,7 @@ foreach my $type (@$types) {
 	if (defined($documentation) && ref($documentation) eq "XML::XPath::NodeSet" && $documentation->size() == 1) {
 		$documentation = $documentation->string_value();
 		foreach my $mapping (keys %$type_mappings) {
-			my $mapping_link = ($mapping =~ /^ucp/ ? link_to_type($type_mappings->{$mapping}) : $type_mappings->{$mapping});
+			my $mapping_link = ($mapping =~ /^atomia/ ? link_to_type($type_mappings->{$mapping}) : $type_mappings->{$mapping});
 			$documentation =~ s/$mapping(?![a-z])/$mapping_link/g;
 		}
 
@@ -105,7 +105,7 @@ sub convert_to_typename {
 	my $type = shift;
 
 	die("unknown type $type") unless defined($type_mappings->{$type});
-	return $type =~ /^ucp/ ? link_to_type($type_mappings->{$type}) : $type_mappings->{$type};
+	return $type =~ /^atomia/ ? link_to_type($type_mappings->{$type}) : $type_mappings->{$type};
 }
 
 sub link_to_type {
@@ -120,7 +120,7 @@ sub link_to_type {
 		$suffix = "";
 	}
 
-	return "[$basetype|$basetype Datatype - UCP DNS API]$suffix";
+	return "[$basetype|$basetype Datatype - Atomia DNS API]$suffix";
 }
 
 sub print_method {
@@ -128,8 +128,8 @@ sub print_method {
 
 	mkdir($directory) unless -d $directory;
 	mkdir("$directory/methods") unless -d "$directory/methods";
-	mkdir("$directory/methods/$methodname Method - UCP DNS API") unless -d "$directory/methods/$methodname Method - UCP DNS API";
-	open OUTPUT, ">$directory/methods/$methodname Method - UCP DNS API/$methodname Method - UCP DNS API.txt";
+	mkdir("$directory/methods/$methodname Method - Atomia DNS API") unless -d "$directory/methods/$methodname Method - Atomia DNS API";
+	open OUTPUT, ">$directory/methods/$methodname Method - Atomia DNS API/$methodname Method - Atomia DNS API.txt";
 
 	print OUTPUT "{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}\n\n";
 
@@ -154,7 +154,7 @@ sub print_method {
 		print OUTPUT "\n";
 	}
 
-	print OUTPUT "{include:$methodname Method Example - UCP DNS API}\n";
+	print OUTPUT "{include:$methodname Method Example - Atomia DNS API}\n";
 
 	close OUTPUT;
 }
@@ -164,9 +164,9 @@ sub print_type {
 
 	mkdir($directory) unless -d $directory;
 	mkdir("$directory/types") unless -d "$directory/types";
-	mkdir("$directory/types/$typename Datatype - UCP DNS API") unless -d "$directory/methods/$typename Datatype - UCP DNS API";
+	mkdir("$directory/types/$typename Datatype - Atomia DNS API") unless -d "$directory/methods/$typename Datatype - Atomia DNS API";
 
-	open OUTPUT, ">$directory/types/$typename Datatype - UCP DNS API/$typename Datatype - UCP DNS API.txt";
+	open OUTPUT, ">$directory/types/$typename Datatype - Atomia DNS API/$typename Datatype - Atomia DNS API.txt";
 	print OUTPUT "$documentation";
 	close OUTPUT;
 }

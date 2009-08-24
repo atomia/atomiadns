@@ -7,37 +7,37 @@ createschema() {
 		exit 1
 	fi
 
-	if [ ! -f "/etc/ucpdns.conf" ]; then
-		cp /usr/share/ucpdns/conf/ucpdns.conf /etc
+	if [ ! -f "/etc/atomiadns.conf" ]; then
+		cp /usr/share/atomiadns/conf/atomiadns.conf /etc
 	fi
 
-	TMPFILE=`mktemp /tmp/ucpdns.XXXXXXXXXX` || exit 1
-	sed "s/%password/$password/g" < /etc/ucpdns.conf > "$TMPFILE" || exit 1
-	mv "$TMPFILE" /etc/ucpdns.conf || exit 1
-	chmod a+r /etc/ucpdns.conf || exit 1
+	TMPFILE=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
+	sed "s/%password/$password/g" < /etc/atomiadns.conf > "$TMPFILE" || exit 1
+	mv "$TMPFILE" /etc/atomiadns.conf || exit 1
+	chmod a+r /etc/atomiadns.conf || exit 1
 
-	sudo -u postgres psql -c "CREATE ROLE ucpdns WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
+	sudo -u postgres psql -c "CREATE ROLE atomiadns WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
 	if [ $? != 0 ]; then
-		echo "error creating role ucpdns, you will have to make sure that the schema matches /usr/share/ucpdns/schema manually"
+		echo "error creating role atomiadns, you will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	fi
 
 	sudo -u postgres createlang -d zonedata plpgsql > /dev/null 2>&1
 	if [ $? != 0 ]; then
-		echo "error adding plpgsql as language in zonedata, you will have to make sure that the schema matches /usr/share/ucpdns/schema manually"
+		echo "error adding plpgsql as language in zonedata, you will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	fi
 
-	/usr/share/ucpdns/schema/schema.sh > /dev/null 2>&1
+	/usr/share/atomiadns/schema/schema.sh > /dev/null 2>&1
 	if [ $? != 0 ]; then
-		echo "error importing schema, you will have to make sure that the schema matches /usr/share/ucpdns/schema manually"
+		echo "error importing schema, you will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	fi
 }
 
 recreate_procedure() {
-	if ! [ -f "/usr/share/ucpdns/schema/$1.sql" ]; then
-		echo "/usr/share/ucpdns/schema/$1.sql doesn't exist, you'll have to migrate the schema manually."
+	if ! [ -f "/usr/share/atomiadns/schema/$1.sql" ]; then
+		echo "/usr/share/atomiadns/schema/$1.sql doesn't exist, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
@@ -54,7 +54,7 @@ recreate_procedure() {
 		exit 1
 	fi
 
-	procedure_sql=`cat "/usr/share/ucpdns/schema/$1.sql"`
+	procedure_sql=`cat "/usr/share/atomiadns/schema/$1.sql"`
 	if [ $? != 0 ]; then
 		echo "error retrieving ddl for procedure $1, you'll have to migrate the schema manually."
 		exit 1
@@ -68,7 +68,7 @@ recreate_procedure() {
 }
 
 set_schema_version() {
-	sudo -u postgres psql -c "UPDATE ucpdns_schemaversion SET version = $1" zonedata > /dev/null 2>&1
+	sudo -u postgres psql -c "UPDATE atomiadns_schemaversion SET version = $1" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error updating schema-version to $1, you'll have to do it manually."
 		exit 1
@@ -78,9 +78,9 @@ set_schema_version() {
 sudo -u postgres createdb zonedata > /dev/null 2>&1
 if [ $? != 0 ]; then
 
-	schema_version=`sudo -u postgres psql -qAt zonedata -c "SELECT version FROM ucpdns_schemaversion" 2> /dev/null`
+	schema_version=`sudo -u postgres psql -qAt zonedata -c "SELECT version FROM atomiadns_schemaversion" 2> /dev/null`
 	if [ $? != 0 ] || [ -z "$schema_version" ]; then
-		echo "database zonedata already exist, but doesn't contain the ucpdns schema. You will have to make sure that the schema matches /usr/share/ucpdns/schema manually"
+		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
 		if [ "$schema_version" = 9 ]; then

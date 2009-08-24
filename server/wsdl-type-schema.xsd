@@ -1,6 +1,6 @@
 	<types>
-		<xsd:schema targetNamespace="urn:UCPDNS::Server"
-			xmlns="urn:UCPDNS::Server" elementFormDefault="qualified">
+		<xsd:schema targetNamespace="urn:Atomia::DNS::Server"
+			xmlns="urn:Atomia::DNS::Server" elementFormDefault="qualified">
 
 			<xsd:complexType name="InvalidParametersError">
 				<xsd:sequence>
@@ -50,9 +50,9 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpResourceRecord">
+			<xsd:complexType name="atomiaResourceRecord">
 				<xsd:annotation><xsd:documentation>
-ucpResourceRecord is a struct with the following members:
+atomiaResourceRecord is a struct with the following members:
 
 || Member || Type || Description ||
 | id | int | the id of the record |
@@ -72,15 +72,15 @@ ucpResourceRecord is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpRecordArray">
+			<xsd:complexType name="atomiaRecordArray">
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="resourcerecord" type="ucpResourceRecord" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="resourcerecord" type="atomiaResourceRecord" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpHostname">
+			<xsd:complexType name="atomiaHostname">
 				<xsd:annotation><xsd:documentation>
-ucpHostname is a struct with the following members:
+atomiaHostname is a struct with the following members:
 || Member || Type || Description ||
 | zone | string | the name of the zone |
 | label | string | the name of the label |
@@ -91,35 +91,35 @@ ucpHostname is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpHostnameArray">
+			<xsd:complexType name="atomiaHostnameArray">
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="ucpHostname" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="atomiaHostname" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpLabel">
+			<xsd:complexType name="atomiaLabel">
 				<xsd:annotation><xsd:documentation>
-ucpLabel is a struct with the following members:
+atomiaLabel is a struct with the following members:
 || Member || Type || Description ||
 | name | string | the name of the label |
-| records | ucpRecordArray | an array of resourcerecords |
+| records | atomiaRecordArray | an array of resourcerecords |
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
-					<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"/>
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpZone">
-				<xsd:annotation><xsd:documentation>ucpZone is an array of ucpLabel-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaZone">
+				<xsd:annotation><xsd:documentation>atomiaZone is an array of atomiaLabel-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="label" type="ucpLabel" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="label" type="atomiaLabel" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpZoneStruct">
+			<xsd:complexType name="atomiaZoneStruct">
 				<xsd:annotation><xsd:documentation>
-ucpZoneStruct is a struct with the following members:
+atomiaZoneStruct is a struct with the following members:
 || Member || Type || Description ||
 | id | int | id of the zone |
 | name | string | name of the zone |
@@ -130,16 +130,16 @@ ucpZoneStruct is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpZones">
-				<xsd:annotation><xsd:documentation>ucpZones is an array of ucpZoneStruct-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaZones">
+				<xsd:annotation><xsd:documentation>atomiaZones is an array of atomiaZoneStruct-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="ucpZoneStruct" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="atomiaZoneStruct" />
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpChangedZone">
+			<xsd:complexType name="atomiaChangedZone">
 				<xsd:annotation><xsd:documentation>
-ucpChangedZone is a struct with the following members:
+atomiaChangedZone is a struct with the following members:
 || Member || Type || Description ||
 | id | int | the id of the change-row |
 | name | string | the name of the zone this change-row applies to |
@@ -152,10 +152,10 @@ ucpChangedZone is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="ucpChanges">
-				<xsd:annotation><xsd:documentation>ucpChanges is an array of ucpChangedZone-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaChanges">
+				<xsd:annotation><xsd:documentation>atomiaChanges is an array of atomiaChangedZone-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzone" type="ucpChangedZone" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzone" type="atomiaChangedZone" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -196,7 +196,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetAllZonesResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="ucpZones"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="atomiaZones"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -246,7 +246,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetChangedZonesResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="ucpChanges"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -287,7 +287,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array with the name of the zones to remove records from</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the records to remove, everything except id must match for a record to be deleted</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>the records to remove, everything except id must match for a record to be deleted</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -305,7 +305,7 @@ ucpChangedZone is a struct with the following members:
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="sourcezone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the source zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the label to copy</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="ucpHostnameArray"><xsd:annotation><xsd:documentation>an array of the hostnames to copy the label in the source zone to</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="destinationzones" type="atomiaHostnameArray"><xsd:annotation><xsd:documentation>an array of the hostnames to copy the label in the source zone to</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -339,7 +339,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdUcpStringArray"><xsd:annotation><xsd:documentation>an array containing the names of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>the resourcerecords to set for the zones</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>the resourcerecords to set for the zones</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -356,7 +356,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -380,7 +380,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetZoneResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="ucpZone"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -413,7 +413,7 @@ ucpChangedZone is a struct with the following members:
 			<xsd:element name="GetDnsRecordsResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="resourcerecords" type="ucpRecordArray"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="resourcerecords" type="atomiaRecordArray"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -422,7 +422,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to add</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to add</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -439,7 +439,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -456,7 +456,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change, id is not used</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to change, id is not used</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -473,7 +473,7 @@ ucpChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="ucpRecordArray"><xsd:annotation><xsd:documentation>an array of the records to delete, only id is needed</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="records" type="atomiaRecordArray"><xsd:annotation><xsd:documentation>an array of the records to delete, only id is needed</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

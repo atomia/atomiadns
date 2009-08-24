@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Remove a nameserver as a subscriber of changes to the data set in this server.
+
+h3.Declaration syntax
+{panel}
+void DeleteNameserver(
+	string nameserver
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|nameserver|string|the servername to remove as a subscriber|
+
+{include:DeleteNameserver Method Example - Atomia DNS API}

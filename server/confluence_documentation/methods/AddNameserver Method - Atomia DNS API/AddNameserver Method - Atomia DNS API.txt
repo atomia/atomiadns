@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Add a nameserver as a subscriber of changes to the data set in this server.
+
+h3.Declaration syntax
+{panel}
+void AddNameserver(
+	string nameserver
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|nameserver|string|the servername to add as a subscriber|
+
+{include:AddNameserver Method Example - Atomia DNS API}

@@ -1,0 +1,33 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Edits a zone. This is only for completeness, and could be done by editing the SOA and NS-records directly as well.
+
+h3.Declaration syntax
+{panel}
+void EditZone(
+	string zonename,
+	int zonettl,
+	string mname,
+	string rname,
+	int refresh,
+	int retry,
+	int expire,
+	int minimum,
+	string[] nameservers
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|zonettl|int|the ttl of the SOA-record and the NS-records|
+|mname|string|the SOA mname field|
+|rname|string|the SOA rname field|
+|refresh|int|the SOA refresh field|
+|retry|int|the SOA retry field|
+|expire|int|the SOA expire field|
+|minimum|int|the SOA minimum field|
+|nameservers|string[]|an array of the hostnames of the nameservers for the added zone|
+
+{include:EditZone Method Example - Atomia DNS API}

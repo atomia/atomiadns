@@ -6,7 +6,7 @@ if [ -z "$1" ] || [ -z "$2" ] || [ ! -f "$2" ]; then
 fi
 
 methodawk='BEGIN {
-	methods["AddZone"] = "Add a zone to the UCPDNS Master database.";
+	methods["AddZone"] = "Add a zone to the Atomia DNS master database.";
 	methods["DeleteZone"] = "Deletes a zone from the database.";
 	methods["EditZone"] = "Edits a zone. This is only for completeness, and could be done by editing the SOA and NS-records directly as well.";
 	methods["AddDnsRecords"] = "Adds a list of records to a zone.";
@@ -33,9 +33,9 @@ methodawk='BEGIN {
 
 cat <<EOH
 <?xml version="1.0"?>
-<definitions name="UCPDNS"
-		targetNamespace="urn:UCPDNS::Server"
-		xmlns:tns="urn:UCPDNS::Server"
+<definitions name="AtomiaDNS"
+		targetNamespace="urn:Atomia::DNS::Server"
+		xmlns:tns="urn:Atomia::DNS::Server"
 		xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://schemas.xmlsoap.org/wsdl/">
@@ -50,23 +50,23 @@ for fault in LogicalError InvalidParametersError SystemError InternalError; do
 	faultmessages="$faultmessages\n\t\t\t<fault message=\"tns:$fault""FaultMessage\" name=\"$fault""Fault\" />"
 done
 
-grep "=>" lib/UCPDNS/Server.pm | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t<message name=\"" $2 "Input\">\n\t\t<documentation>" methods[$2] "</documentation>\n\t\t<part name=\"parameters\" element=\"tns:" $2 "\"/>\n\t</message>\n\n\t<message name=\"" $2 "Output\">\n\t\t<part name=\"parameters\" element=\"tns:" $2 "Response\"/>\n\t</message>" }'
+grep "=>" lib/Atomia/DNS/Server.pm | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t<message name=\"" $2 "Input\">\n\t\t<documentation>" methods[$2] "</documentation>\n\t\t<part name=\"parameters\" element=\"tns:" $2 "\"/>\n\t</message>\n\n\t<message name=\"" $2 "Output\">\n\t\t<part name=\"parameters\" element=\"tns:" $2 "Response\"/>\n\t</message>" }'
 
-echo -n '\n\t<portType name="UCPDNSPortType">'
+echo -n '\n\t<portType name="AtomiaDNSPortType">'
 
-grep "=>" lib/UCPDNS/Server.pm | grep -E "$1" | awk -v faults="$faultmessages" -F '"' '{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<input message=\"tns:" $2 "Input\"/>\n\t\t\t<output message=\"tns:" $2 "Output\"/>" faults "\n\t\t</operation>" }'
+grep "=>" lib/Atomia/DNS/Server.pm | grep -E "$1" | awk -v faults="$faultmessages" -F '"' '{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<input message=\"tns:" $2 "Input\"/>\n\t\t\t<output message=\"tns:" $2 "Output\"/>" faults "\n\t\t</operation>" }'
 
-echo '\t</portType>\n\n\t<binding name="UCPDNSSoapBinding" type="tns:UCPDNSPortType">\n\t\t<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>'
+echo '\t</portType>\n\n\t<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">\n\t\t<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>'
 
-grep "=>" lib/UCPDNS/Server.pm | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<documentation>" methods[$2] "</documentation>\n\t\t\t<soap:operation soapAction=\"urn:UCPDNS::Server#" $2 "\"/>\n\t\t\t<input><soap:body use=\"literal\"/></input>\n\t\t\t<output><soap:body use=\"literal\"/></output>\n\t\t</operation>" }'
+grep "=>" lib/Atomia/DNS/Server.pm | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<documentation>" methods[$2] "</documentation>\n\t\t\t<soap:operation soapAction=\"urn:Atomia::DNS::Server#" $2 "\"/>\n\t\t\t<input><soap:body use=\"literal\"/></input>\n\t\t\t<output><soap:body use=\"literal\"/></output>\n\t\t</operation>" }'
 
 cat <<EOF
 	</binding>
 
-	<service name="UCPDNSService">
-		<documentation>UCP DNS Soap server</documentation>
-		<port name="UCPDNSPort" binding="tns:UCPDNSSoapBinding">
-			<soap:address location="http://ucpdns.soap.server/ucpdns"/>
+	<service name="AtomiaDNSService">
+		<documentation>Atomia DNS Soap server</documentation>
+		<port name="AtomiaDNSPort" binding="tns:AtomiaDNSSoapBinding">
+			<soap:address location="http://atomiadns.soap.server/atomiadns"/>
 		</port>
 	</service>
 </definitions>
