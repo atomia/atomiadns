@@ -37,7 +37,7 @@ if ($verbose) {
 }
 
 my $soap = SOAP::Lite
-	->  uri('urn:UCPDNS::Server')
+	->  uri('urn:Atomia::DNS::Server')
 	->  proxy($soap_uri)
 	->  on_fault(sub {
 			my($soap, $res) = @_;
@@ -91,13 +91,13 @@ sub parse_args {
 
 =head1 NAME
 
-ucpdnsclient - An application for administering a UCP DNS installation
+atomiadnsclient - An application for administering a Atomia DNS installation
 
 =head1 SYNOPSIS
 
 =over 8
 
-=item ucpdnsclient --uri SOAP_URI --method SOAP_METHOD [--arg ARGUMENT [ --arg ARGUMENT ] ...] [-v] [--help]
+=item atomiadnsclient --uri SOAP_URI --method SOAP_METHOD [--arg ARGUMENT [ --arg ARGUMENT ] ...] [-v] [--help]
 
 =back
 
@@ -109,11 +109,11 @@ ucpdnsclient - An application for administering a UCP DNS installation
 
 =item --uri SOAP_URI
 
-Specifies the URL of the UCP DNS Master server to administer zones in.
+Specifies the URL of the Atomia DNS Master server to administer zones in.
 
 =item --method SOAP_METHOD
 
-Specifies the method in the UCP DNS API to execute.
+Specifies the method in the Atomia DNS API to execute.
 
 =item --arg ARGUMENT
 
@@ -163,16 +163,16 @@ Specifies the URI of the SOAP Server to administer zones using.
 
 =head1 EXAMPLES
 
-ucpdnsclient --uri http://some.soap.server/ucpdns --method AddZone --arg commandlinetest`date +%s`.se --arg 3600 --arg ns1.someserver.com. --arg registry.someserver.com. --arg 3600 --arg 3600 --arg 3600 --arg 3600 --arg "ns1.someserver.com.,ns2.someserver.com.."
+atomiadnsclient --uri http://some.soap.server/atomiadns --method AddZone --arg commandlinetest`date +%s`.se --arg 3600 --arg ns1.someserver.com. --arg registry.someserver.com. --arg 3600 --arg 3600 --arg 3600 --arg 3600 --arg "ns1.someserver.com.,ns2.someserver.com.."
 
-ucpdnsclient --uri http://some.soap.server/ucpdns --method GetAllZones
+atomiadnsclient --uri http://some.soap.server/atomiadns --method GetAllZones
 
-ucpdnsclient --uri http://some.soap.server/ucpdns --method AddDnsRecords --arg commandlinetest1242383924.se --arg "[ label = kaka1234; class = IN; ttl = 300; type = A; rdata = 127.0.0.1 ]"
+atomiadnsclient --uri http://some.soap.server/atomiadns --method AddDnsRecords --arg commandlinetest1242383924.se --arg "[ label = kaka1234; class = IN; ttl = 300; type = A; rdata = 127.0.0.1 ]"
 
-ucpdnsclient --uri http://some.soap.server/ucpdns --method GetZone --arg commandlinetest1242383924.se
+atomiadnsclient --uri http://some.soap.server/atomiadns --method GetZone --arg commandlinetest1242383924.se
 
 =head1 AUTHOR
 
-UCP DNS was developed by UCP AB. For support, please see http://www.troxo.com/.
+Atomia DNS was developed by Atomia AB. For support, please see http://www.troxo.com/.
 
 =cut

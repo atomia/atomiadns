@@ -22,11 +22,11 @@ CREATE TABLE updates_disabled (
 
 INSERT INTO updates_disabled (disabled) VALUES (0);
 
-CREATE TABLE ucpdns_schemaversion (
+CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO ucpdns_schemaversion (version) VALUES (8);
+INSERT INTO atomiadns_schemaversion (version) VALUES (8);
 
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),

@@ -7,8 +7,8 @@ use SOAP::Lite;
 use Data::Dumper;
 
 my $soap = SOAP::Lite
-	->  uri('urn:UCPDNS::Server')
-	->  proxy('http://soapdns.ucp.troxo.net/ucpdns')
+	->  uri('urn:Atomia::DNS::Server')
+	->  proxy('http://soapdns.atomia.troxo.net/atomiadns')
 	->  on_fault(sub {
 			my($soap, $res) = @_;
 			die "got fault of type " . $res->faultcode . ": " . (ref $res ? $res-> faultstring : $soap-> transport->status) . "\n";

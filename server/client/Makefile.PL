@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
-   'NAME' => 'ucpdnsclient',
+   'NAME' => 'atomiadnsclient',
    'VERSION' => '0.9.7',
-   'AUTHOR' => 'Jimmy Bergman <jimmy@pingdom.com>',
-   'EXE_FILES' => [ 'ucpdnsclient' ]
+   'AUTHOR' => 'Jimmy Bergman <jimmy@atomia.com>',
+   'EXE_FILES' => [ 'atomiadnsclient' ]
 );
