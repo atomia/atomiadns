@@ -1,10 +1,10 @@
-atomia-dyndns (0.9.1) hardy; urgency=low
+atomiadns-dyndns (0.9.1) hardy; urgency=low
 
   * Change location of the configuration file to match atomiadns-api and friends.
 
  -- Jimmy Bergman <jimmy@sigint.se>  Mon, 24 Aug 2009 11:41:35 +0200
 
-atomia-dyndns (0.9.0) hardy; urgency=low
+atomiadns-dyndns (0.9.0) hardy; urgency=low
 
   * First release
 
