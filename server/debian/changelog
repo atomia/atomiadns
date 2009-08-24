@@ -1,3 +1,9 @@
+atomiadns-masterserver (0.9.8) hardy; urgency=low
+
+  * Fix whitespace-parsing in atomiadnsclient and redirect to WSDL on GET-requests to the SOAPserver.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 24 Aug 2009 11:40:13 +0200
+
 atomiadns-masterserver (0.9.7) hardy; urgency=low
 
   * Add zone not found checks to GetLabels and GetZone

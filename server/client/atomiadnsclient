@@ -58,7 +58,7 @@ sub parse_args {
 	foreach my $arg (@$args) {
 		$arg =~ s/^\s+(.*?)\s+/$1/;
 
-		if ($arg =~ /^\[(.*)\]$/) {
+		if ($arg =~ /^\[\s*(.*)\s*\]$/) {
 			my @subargs = split(/,/, $1);
 			$arg = parse_args(\@subargs);
 		} elsif ($arg =~ /;/) {

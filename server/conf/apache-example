@@ -1,4 +1,9 @@
 <Location /atomiadns>
+	RewriteEngine on
+	RewriteCond %{REQUEST_METHOD} ^GET$ [NC]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule . /wsdl-atomiadns.wsdl [R,L]
+
 	SetHandler perl-script
 	PerlHandler Apache::SOAP
 	PerlSetVar dispatch_to "Atomia::DNS::Server"

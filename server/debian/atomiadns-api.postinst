@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ ! -e /etc/apache2/mods-enabled/rewrite.load ]; then
+	echo "Enabling mod_rewrite"
+	cd /etc/apache2/mods-enabled
+	ln -s ../mods-available/rewrite.load
+fi
+
 echo "Reloading apache"
 apache2ctl graceful > /dev/null 2>&1
 
