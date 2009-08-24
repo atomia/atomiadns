@@ -1,1 +1,0 @@
-[zone|zone Datatype - UCP DNS API] is an array of [label|label Datatype - UCP DNS API]-structs.

@@ -1,1 +1,0 @@
-[changes|changes Datatype - UCP DNS API] is an array of [changedzone|changedzone Datatype - UCP DNS API]-structs.

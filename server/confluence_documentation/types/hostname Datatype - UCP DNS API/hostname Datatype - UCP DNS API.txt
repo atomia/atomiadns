@@ -1,6 +1,0 @@
-
-[hostname|hostname Datatype - UCP DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| zone | string | the name of the zone |
-| label | string | the name of the label |
-				

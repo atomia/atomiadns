@@ -1,6 +1,0 @@
-
-[label|label Datatype - UCP DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| name | string | the name of the label |
-| records | [resourcerecord|resourcerecord Datatype - UCP DNS API][] | an array of resourcerecords |
-				
