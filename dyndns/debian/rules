@@ -47,7 +47,7 @@ install-stamp:
 #Run commands before making package
 
 	mkdir -p $(TMP)/etc
-	cp conf/ucpdns.conf $(TMP)/etc
+	cp conf/atomiadns.conf $(TMP)/etc
 
 	mkdir -p $(TMP)/usr/share/atomia
 	cp -a patches $(TMP)/usr/share/atomia

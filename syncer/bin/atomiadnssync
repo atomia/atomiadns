@@ -4,21 +4,21 @@
 
 =head1 NAME
 
-ucpdnssync - An application for synchronizing a local BDB database with the master zone database using SOAP.
+atomiadnssync - An application for synchronizing a local BDB database with the master zone database using SOAP.
 
 =head1 SYNOPSIS
 
 =over 8
 
-=item ucpdnssync full_reload_offline SERIAL DESTINATION
+=item atomiadnssync full_reload_offline SERIAL DESTINATION
 
-=item ucpdnssync OPTION
+=item atomiadnssync OPTION
 
 =back
 
 =head1 DESCRIPTION
 
-ucpdnssync is an application for synchronizing a local BDB database with the
+atomiadnssync is an application for synchronizing a local BDB database with the
 master zone database using SOAP.
 
 It contains options for both doing a full reload of all zones in the master
@@ -47,18 +47,18 @@ Marks all zones as changed so that the update-process propagates them on all nam
 =item updated
 
 Fetches a list of changed zones and adds/removes them from the local BDB
-database.  This option is used by the daemon started at boot-time by /etc/init.d/ucpdns-nameserver.
+database.  This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-nameserver.
 You should never run this manually.
 
 =item add_server
 
-Adds this server (configured using servername in /etc/ucpdns.conf) as a
+Adds this server (configured using servername in /etc/atomiadns.conf) as a
 subscriber of the data set on the configured SOAP server.
 
 =item remove_server
 
 Remove the subscription of the data set on the configured SOAP server for this
-server (configured using servername in /etc/ucpdns.conf).
+server (configured using servername in /etc/atomiadns.conf).
 
 =item disable_updates
 
@@ -72,7 +72,7 @@ Enable propagation of changes to the nameservers
 
 =head1 CONFIGURATION
 
-The application is configured using a config file stored at /etc/ucpdns.conf. All options are required.
+The application is configured using a config file stored at /etc/atomiadns.conf. All options are required.
 
 The following options exist:
 
@@ -81,7 +81,7 @@ The following options exist:
 =item bdb_environment_path
 
 Specifies the path of the local BDB environment. The default is
-/var/lib/bind/ucpdns_bdb, and does probably not need to change.
+/var/lib/bind/atomiadns_bdb, and does probably not need to change.
 
 =item bdb_filename
 
@@ -103,38 +103,38 @@ Specifies the hostname used when subscribing and checking for changes.
 To do a full reload to a new folder without missing any updates (assuming the
 default bdb_environment_path), do:
 
-1. ucpdnssync disable_updates
+1. atomiadnssync disable_updates
 
 2. Verify manually that no pending changes exist.
 
 3. Write down the output (unix timestamp) of `date +%s`
 
-4. Run `ucpdnssync full_reload_offline the_timestamp /var/lib/bind/ucpdns_bdb_new
+4. Run `atomiadnssync full_reload_offline the_timestamp /var/lib/bind/atomiadns_bdb_new
 
-5. rm -rf /var/lib/bind/ucpdns_bdb_old ; mv /var/lib/bind/ucpdns_bdb /var/lib/bind/ucpdns_bdb_old ; mv /var/lib/bind/ucpdns_bdb_new /var/lib/bind/ucpdns_bdb
+5. rm -rf /var/lib/bind/atomiadns_bdb_old ; mv /var/lib/bind/atomiadns_bdb /var/lib/bind/atomiadns_bdb_old ; mv /var/lib/bind/atomiadns_bdb_new /var/lib/bind/atomiadns_bdb
 
 6. rndc reload
 
-7. ucpdnssync enable_updates
+7. atomiadnssync enable_updates
 
 Or to accomplish the same thing using the online reload feature (much better and the preferred way):
 
-ucpdnssync full_reload_online
+atomiadnssync full_reload_online
 
 To add the server as a subscriber:
 
-ucpdnssync add_server
+atomiadnssync add_server
 
 =head1 AUTHOR
 
-UCP DNS was developed by UCP AB. For support, please see http://www.troxo.com/.
+Atomia DNS was developed by Atomia AB. For support, please see http://www.troxo.com/.
 
 =cut
 
 use warnings;
 use strict;
 
-use UCPDNS::Syncer;
+use Atomia::DNS::Syncer;
 
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
@@ -146,7 +146,7 @@ $_ = $ARGV[0];
 
 SWITCH: {
 	/^(add_server|remove_server|disable_updates|enable_updates|full_reload_online)$/i && do {
-		my $syncer = UCPDNS::Syncer->new(configfile => "/etc/ucpdns.conf");
+		my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
 		$syncer->$_();
 		last SWITCH;
 	};
@@ -157,7 +157,7 @@ SWITCH: {
 			exit 1;
 		}
 
-		my $syncer = UCPDNS::Syncer->new(configfile => "/etc/ucpdns.conf", bdb_environment_path => $ARGV[2]);
+		my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf", bdb_environment_path => $ARGV[2]);
 		$syncer->$_($ARGV[1]);
 		last SWITCH;
 	};
@@ -165,7 +165,7 @@ SWITCH: {
 	/^updated$/i && do {
 		FOREVER: while(1) {
 			eval {
-				my $syncer = UCPDNS::Syncer->new(configfile => "/etc/ucpdns.conf");
+				my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
 
 				while (1) {
 					last if $syncer->updates_disabled();
@@ -175,7 +175,7 @@ SWITCH: {
 			};
 
 			if ($@) {
-				print "caught exception in ucpdnssync updated: $@\n";
+				print "caught exception in atomiadnssync updated: $@\n";
 				sleep 5;
 			} else {
 				# Updates disabled, exit.

@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
-   'NAME' => 'UCPDNS::Syncer',
+   'NAME' => 'Atomia::DNS::Syncer',
    'VERSION' => '0.9.1',
    'AUTHOR' => 'Jimmy Bergman <jimmy@pingdom.com>',
-   'EXE_FILES' => [ 'bin/ucpdnssync' ]
+   'EXE_FILES' => [ 'bin/atomiadnssync' ]
 );

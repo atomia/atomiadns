@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-package UCPDNS::Syncer;
+package Atomia::DNS::Syncer;
 
 use Moose;
 use Config::General;
@@ -12,7 +12,7 @@ use BerkeleyDB;
 use Data::Dumper;
 
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
-has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/ucpdns.conf");
+has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
 has 'bdb_environment' => (is => 'rw', isa => 'Any', default => undef);
 has 'bdb_environment_path' => (is => 'rw', isa => 'Any', default => undef);
 has 'soap' => (is => 'rw', isa => 'Any', default => undef);
@@ -38,7 +38,7 @@ sub BUILD {
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap = SOAP::Lite
-		->  uri('urn:UCPDNS::Server')
+		->  uri('urn:Atomia::DNS::Server')
 		->  proxy($soap_uri)
 		->  on_fault(sub {
 				my ($soap, $res) = @_;

@@ -47,7 +47,7 @@ install-stamp:
 #Run commands before making package
 
 	mkdir -p $(TMP)/etc/bind
-	cp conf/ucpdns.conf $(TMP)/etc
+	cp conf/atomiadns.conf $(TMP)/etc
 	cp conf/named.conf.* $(TMP)/etc/bind
 
 	# Add commands to install the package into debian/$PACKAGE_NAME here

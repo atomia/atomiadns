@@ -14,7 +14,7 @@ use SOAP::Lite;
 use Config::General;
 use MIME::Base64;
 
-my $conf = new Config::General( "/etc/ucpdns.conf");
+my $conf = new Config::General( "/etc/atomiadns.conf");
 die("error parsing config") unless defined($conf);
 my %config = $conf->getall;
 
@@ -309,7 +309,7 @@ sub webservice {
 	my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
 
 	my $soap = SOAP::Lite
-		->  uri('urn:UCPDNS::Server')
+		->  uri('urn:Atomia::DNS::Server')
 		->  proxy($soap_uri)
 		->  on_fault(sub {
                         my($soap, $res) = @_;
