@@ -36,6 +36,7 @@ sub matchSignature {
 		my $sig = $signature->[$idx];
 		my $message = "parameter " . ($idx + 1) . " doesn't match signature $sig";
 
+		die($message) unless defined($param);
 		die($message) if $sig eq "int" && !($param =~ /^\d+$/);
 
 		if ($sig eq "array" || $sig eq "array[resourcerecord]" || $sig eq "zone" || $sig eq "array[hostname]") {
