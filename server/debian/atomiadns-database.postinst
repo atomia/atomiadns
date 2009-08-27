@@ -83,10 +83,10 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		if [ "$schema_version" = 9 ]; then
+		if [ "$schema_version" = 10 ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
-		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 9 ]; then
-			echo "Schema version is $schema_version, and the latest database schema is version 9. Upgrading."
+		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 10 ]; then
+			echo "Schema version is $schema_version, and the latest database schema is version 10. Upgrading."
 			recreate_procedure "setupdatesdisabled"
 			recreate_procedure "deletezone"
 			recreate_procedure "adddnsrecords"
@@ -95,7 +95,7 @@ if [ $? != 0 ]; then
 			recreate_procedure "getlabels"
 			recreate_procedure "getzone"
 
-			set_schema_version 9
+			set_schema_version 10
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
 			exit 1

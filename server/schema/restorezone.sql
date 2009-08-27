@@ -3,7 +3,10 @@ CREATE OR REPLACE FUNCTION RestoreZone(
 	records varchar[][]
 ) RETURNS void AS $$
 BEGIN
-	DELETE FROM record USING label INNER JOIN zone ON zone.id = zone_id WHERE label_id = label.id AND zone.name = zonename;
+        DELETE FROM record USING label INNER JOIN zone ON zone_id = zone.id WHERE label_id = label.id AND zone.name = zonename;
+        DELETE FROM label USING zone WHERE zone_id = zone.id AND zone.name = zonename;
+        DELETE FROM zone WHERE zone.name = zonename;
+
+	INSERT INTO zone (name) VALUES (zonename);
 	PERFORM * FROM AddDnsRecords(zonename, records);
-	DELETE FROM label USING zone WHERE zone.id = zone_id AND zone.name = zonename AND NOT EXISTS (SELECT id FROM record WHERE label_id = label.id);
 END; $$ LANGUAGE plpgsql;

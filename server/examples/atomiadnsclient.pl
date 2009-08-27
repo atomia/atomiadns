@@ -8,10 +8,10 @@ use Data::Dumper;
 
 my $soap = SOAP::Lite
 	->  uri('urn:Atomia::DNS::Server')
-	->  proxy('http://soapdns.atomia.troxo.net/atomiadns')
+	->  proxy('http://s272.pingdom.com/atomiadns')
 	->  on_fault(sub {
 			my($soap, $res) = @_;
-			die "got fault of type " . $res->faultcode . ": " . (ref $res ? $res-> faultstring : $soap-> transport->status) . "\n";
+			die "got fault of type " . (ref $res ? $res->faultcode : "transport") . ": " . (ref $res ? $res-> faultstring : $soap-> transport->status) . "\n";
 		});
 
 my $res;

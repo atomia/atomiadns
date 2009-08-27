@@ -1,3 +1,10 @@
+atomiadns-masterserver (0.9.9) hardy; urgency=low
+
+  * Change RestoreZone so that it is able to restore new (or now non existing) zones as well.
+  * Fix an annoying but harmless error-message in error log when submitting bad requests.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 27 Aug 2009 11:40:13 +0200
+
 atomiadns-masterserver (0.9.8) hardy; urgency=low
 
   * Fix whitespace-parsing in atomiadnsclient and redirect to WSDL on GET-requests to the SOAPserver.
