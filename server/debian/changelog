@@ -1,3 +1,9 @@
+atomiadns-masterserver (0.9.10) hardy; urgency=low
+
+  * Allow *.something as label and not only *.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 27 Aug 2009 14:40:13 +0200
+
 atomiadns-masterserver (0.9.9) hardy; urgency=low
 
   * Change RestoreZone so that it is able to restore new (or now non existing) zones as well.

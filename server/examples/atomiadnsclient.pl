@@ -83,7 +83,7 @@ my $sigint = [
             'records' => [
                          {
                            'ttl' => '60',
-                           'label' => '*',
+                           'label' => '*.www',
                            'class' => 'IN',
                            'id' => '5',
                            'type' => 'A',

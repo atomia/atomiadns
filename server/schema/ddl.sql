@@ -26,7 +26,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (10);
+INSERT INTO atomiadns_schemaversion (version) VALUES (11);
 
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),
@@ -76,7 +76,7 @@ CREATE TABLE zone (
 CREATE TABLE label (
         id SERIAL PRIMARY KEY NOT NULL,
         zone_id INT NOT NULL REFERENCES zone,
-        label VARCHAR(255) NOT NULL CONSTRAINT label_format CHECK (label ~* '^(([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*)|[@*]$'),
+        label VARCHAR(255) NOT NULL CONSTRAINT label_format CHECK (label ~* '^(([*][.])?([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*)|[@*]$'),
 	UNIQUE (zone_id, label)
 );
 
