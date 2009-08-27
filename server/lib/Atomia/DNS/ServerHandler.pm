@@ -383,7 +383,7 @@ sub generateException {
 	});
 
 	die SOAP::Fault -> faultcode($class . "." . $subclass)
-			-> faultstring($@)
+			-> faultstring($message)
 			-> faultdetail($detail);
 }
 
@@ -392,48 +392,50 @@ sub mapExceptionToFault {
 	my $exception = shift;
 
 # LogicalError.*
-	if ($@ =~ /duplicate key value violates unique constraint/) {
-		$self->generateException('LogicalError', 'Uniqueness', $@);
-	} elsif ($@ =~ /zone .* not found/) {
-		$self->generateException('LogicalError', 'ZoneNotFound', $@);
-	} elsif ($@ =~ /record .* doesn.t exist in zone/) {
-		$self->generateException('LogicalError', 'RecordNotFound', $@);
-	} elsif ($@ =~ /both as source and destination/) {
-		$self->generateException('LogicalError', 'SameSourceAndDestination', $@);
-	} elsif ($@ =~ /moving .* cross.* are not supported/) {
-		$self->generateException('LogicalError', 'CrossObjectMove', $@);
-	} elsif ($@ =~ /and CNAME is not allowed with other data/) {
-		$self->generateException('LogicalError', 'CNAMEAndOtherData', $@);
-	} elsif ($@ =~ /is different from existing ttl for this label\/class\/type triplet/) {
-		$self->generateException('LogicalError', 'DifferentTTLForSameLabelClassAndType', $@);
-	} elsif ($@ =~ /zone needs to have/) {
-		$self->generateException('LogicalError', 'ZoneRequiredRecords', $@);
-	} elsif ($@ =~ /all labels have to have records/) {
-		$self->generateException('LogicalError', 'EmptyLabel', $@);
+	if ($exception =~ /duplicate key value violates unique constraint/) {
+		$self->generateException('LogicalError', 'Uniqueness', $exception);
+	} elsif ($exception =~ /zone .* not found/) {
+		$self->generateException('LogicalError', 'ZoneNotFound', $exception);
+	} elsif ($exception =~ /record .* doesn.t exist in zone/) {
+		$self->generateException('LogicalError', 'RecordNotFound', $exception);
+	} elsif ($exception =~ /both as source and destination/) {
+		$self->generateException('LogicalError', 'SameSourceAndDestination', $exception);
+	} elsif ($exception =~ /moving .* cross.* are not supported/) {
+		$self->generateException('LogicalError', 'CrossObjectMove', $exception);
+	} elsif ($exception =~ /and CNAME is not allowed with other data/) {
+		$self->generateException('LogicalError', 'CNAMEAndOtherData', $exception);
+	} elsif ($exception =~ /is different from existing ttl for this label\/class\/type triplet/) {
+		$self->generateException('LogicalError', 'DifferentTTLForSameLabelClassAndType', $exception);
+	} elsif ($exception =~ /zone needs to have/) {
+		$self->generateException('LogicalError', 'ZoneRequiredRecords', $exception);
+	} elsif ($exception =~ /all labels have to have records/) {
+		$self->generateException('LogicalError', 'EmptyLabel', $exception);
 # InvalidParametersError.*
-	} elsif ($@ =~ /(refresh|retry|expire|minimum) value of .* is out of range/) {
-		$self->generateException('InvalidParametersError', 'Soa' . $1, $@);
-	} elsif ($@ =~ /is not an available type/) {
-		$self->generateException('InvalidParametersError', 'BadType', $@);
-	} elsif ($@ =~ /isn.t allowed rdata for (.*), synopsis/) {
-		$self->generateException('InvalidParametersError', 'BadRdataFor' . $1, $@);
-	} elsif ($@ =~ /bad changestatus .* when updating change with id/) {
-		$self->generateException('InvalidParametersError', 'BadChangeStatus', $@);
-	} elsif ($@ =~ /number of parameters doesn.t match the signature for/) {
-		$self->generateException('InvalidParametersError', 'BadNumberOfParameters', $@);
-	} elsif ($@ =~ /bad format of (\w+)\.(\w+)/) {
-		$self->generateException('InvalidParametersError', 'Bad' . $1 . $2, $@);
-	} elsif ($@ =~ /bad .*-array passed |.*\[\] can.t be empty/) {
-		$self->generateException('InvalidParametersError', 'BadArray', $@);
+	} elsif ($exception =~ /(refresh|retry|expire|minimum) value of .* is out of range/) {
+		$self->generateException('InvalidParametersError', 'Soa' . $1, $exception);
+	} elsif ($exception =~ /is not an available type/) {
+		$self->generateException('InvalidParametersError', 'BadType', $exception);
+	} elsif ($exception =~ /isn.t allowed rdata for (.*), synopsis/) {
+		$self->generateException('InvalidParametersError', 'BadRdataFor' . $1, $exception);
+	} elsif ($exception =~ /bad changestatus .* when updating change with id/) {
+		$self->generateException('InvalidParametersError', 'BadChangeStatus', $exception);
+	} elsif ($exception =~ /violates check constraint/) {
+		$self->generateException('InvalidParametersError', 'BadInput', $exception);
+	} elsif ($exception =~ /number of parameters doesn.t match the signature for/) {
+		$self->generateException('InvalidParametersError', 'BadNumberOfParameters', $exception);
+	} elsif ($exception =~ /bad format of (\w+)\.(\w+)/) {
+		$self->generateException('InvalidParametersError', 'Bad' . $1 . $2, $exception);
+	} elsif ($exception =~ /bad .*-array passed |.*\[\] can.t be empty/) {
+		$self->generateException('InvalidParametersError', 'BadArray', $exception);
 # SystemError.*
-	} elsif ($@ =~ /no .* returned from database|bad data returned from database|more than one .* returned for scalar|row without label returned|error polling database for changes/) {
-		$self->generateException('SystemError', 'DatabaseBadResult', $@);
-	} elsif ($@ =~ /error connecting to /) {
-		$self->generateException('SystemError', 'DatabaseConnection', $@);
-	} elsif ($@ =~ /error preparing statement for|error in dbi->prepare/) {
-		$self->generateException('SystemError', 'PreparingStatement', $@);
+	} elsif ($exception =~ /no .* returned from database|bad data returned from database|more than one .* returned for scalar|row without label returned|error polling database for changes/) {
+		$self->generateException('SystemError', 'DatabaseBadResult', $exception);
+	} elsif ($exception =~ /error connecting to /) {
+		$self->generateException('SystemError', 'DatabaseConnection', $exception);
+	} elsif ($exception =~ /error preparing statement for|error in dbi->prepare/) {
+		$self->generateException('SystemError', 'PreparingStatement', $exception);
 	} else {
-		$self->generateException('InternalError', 'UnknownException', $@);
+		$self->generateException('InternalError', 'UnknownException', $exception);
 	}
 }
 
