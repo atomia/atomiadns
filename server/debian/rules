@@ -27,6 +27,9 @@ build-stamp:
 	$(PERL) Makefile.PL INSTALLDIRS=vendor
 	$(MAKE) OPTIMIZE="-Wall -O2 -g"
 
+	cd client && $(PERL) Makefile.PL INSTALLDIRS=vendor
+	cd client && $(MAKE) OPTIMIZE="-Wall -O2 -g"
+
 	touch build-stamp
 
 clean:
@@ -58,10 +61,8 @@ install-stamp:
 	$(MAKE) test
 	$(MAKE) install DESTDIR=$(API_DIR) PREFIX=/usr
 
-	cd client
-	$(MAKE) test
-	$(MAKE) install DESTDIR=$(CLIENT_DIR) PREFIX=/usr
-	cd $(CURDIR)
+	cd client && $(MAKE) test
+	cd client && $(MAKE) install DESTDIR=$(CLIENT_DIR) PREFIX=/usr
 
 	# As this is a architecture independent package, we are not
 	# supposed to install stuff to /usr/lib. MakeMaker creates

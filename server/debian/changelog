@@ -1,3 +1,9 @@
+atomiadns-masterserver (0.9.11) hardy; urgency=low
+
+  * Fix broken atomiadnsclient-package.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 28 Aug 2009 14:40:13 +0200
+
 atomiadns-masterserver (0.9.10) hardy; urgency=low
 
   * Allow *.something as label and not only *.
