@@ -13,6 +13,7 @@ export PERL_MM_USE_DEFAULT=1
 
 API_DIR=$(CURDIR)/debian/atomiadns-api
 DB_DIR=$(CURDIR)/debian/atomiadns-database
+CLIENT_DIR=$(CURDIR)/debian/atomiadns-client
 
 ifndef PERL
 PERL = /usr/bin/perl
