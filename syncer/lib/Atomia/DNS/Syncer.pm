@@ -204,7 +204,7 @@ sub sync_updated_zones {
 				$abort_ret = -1;
 			}
 
-			$self->soap->MarkUpdated($change_id, "ERROR", $errormessage);
+			$self->soap->MarkUpdated($change_id, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
 			die("error performing rollback") unless $abort_ret == 0;
 		}
 	}

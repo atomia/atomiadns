@@ -1,3 +1,9 @@
+atomiadns-nameserver (0.9.2) hardy; urgency=low
+
+  * Don't mark transport errors when fetching an updated zone as failed. Instead leave as pending.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 4 Sep 2009 08:41:35 +0200
+
 atomiadns-nameserver (0.9.1) hardy; urgency=low
 
   * Sleep for 10 seconds between polls
