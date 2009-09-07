@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Set the nameserver group for a zone.
+
+h3.Declaration syntax
+{panel}
+void SetNameserverGroup(
+	string zone,
+	string nameservergroup
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zone|string|the zone to set the nameserver group for|
+|nameservergroup|string|the nameserver group that should host the zone|
+
+{include:SetNameserverGroup Method Example - Atomia DNS API}

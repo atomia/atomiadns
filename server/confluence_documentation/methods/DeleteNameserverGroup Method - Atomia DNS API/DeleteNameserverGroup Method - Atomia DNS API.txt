@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Removes an empty nameserver group.
+
+h3.Declaration syntax
+{panel}
+void DeleteNameserverGroup(
+	string groupname
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|groupname|string|the name of the nameserver group|
+
+{include:DeleteNameserverGroup Method Example - Atomia DNS API}

@@ -29,6 +29,10 @@ methodawk='BEGIN {
 	methods["ReloadAllZones"] = "Mark all zones in the database as changed.";
 	methods["GetUpdatesDisabled"] = "Fetch information regarding if updates are disabled or not.";
 	methods["SetUpdatesDisabled"] = "Set or reset the updates disabled flag.";
+	methods["GetNameserverGroup"] = "Get the nameserver group for a zone.";
+	methods["SetNameserverGroup"] = "Set the nameserver group for a zone.";
+	methods["AddNameserverGroup"] = "Add a nameserver group.";
+	methods["DeleteNameserverGroup"] = "Removes an empty nameserver group.";
 }'
 
 cat <<EOH

@@ -6,6 +6,7 @@ h3.Declaration syntax
 {panel}
 void RestoreZone(
 	string zonename,
+	string nameservergroup,
 	[zone|zone Datatype - Atomia DNS API] zone
 )
 {panel}
@@ -14,6 +15,7 @@ h3.Parameters
 
 || Parameter || Type || Description ||
 |zonename|string|the name of the zone|
+|nameservergroup|string|the nameserver group that should host the zone|
 |zone|[zone|zone Datatype - Atomia DNS API]|the zone to restore|
 
 {include:RestoreZone Method Example - Atomia DNS API}

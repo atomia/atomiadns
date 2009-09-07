@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Get the nameserver group for a zone.
+
+h3.Declaration syntax
+{panel}
+string GetNameserverGroup(
+	string zone
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zone|string|the zone to get the nameserver group for|
+
+{include:GetNameserverGroup Method Example - Atomia DNS API}

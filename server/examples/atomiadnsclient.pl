@@ -18,7 +18,7 @@ my $res;
 #$res = $soap->AddZone('sigint4.se', 3600, 'ns1.loopia.se.', 'registry2.loopia.se.', 10800, 3600, 604800, 86400, [ 'ns3.loopia.se', 'ns419.loopia.se' ]);
 #$res = $soap->DeleteZone('sigint5aaaaaa.se');
 #$res = $soap->AddZone('sigint5.se', 3600, 'ns1.loopia.se.', 'registry2.loopia.se.', 10800, 3600, 604800, 86400, [ 'ns3.loopia.se', 'ns419.loopia.se' ]);
-$res = $soap->AddDnsRecords('sigint4.se', [ SOAP::Data->new(name => 'resourcerecord', value => { label => '.', class => 'IN', ttl => 3600, type => 'A', rdata => '10 kaka456.sigint.se.' }) ]);
+$res = $soap->AddDnsRecords('sigint4.se', [ SOAP::Data->new(name => 'resourcerecord', value => { label => 'bar', class => 'IN', ttl => 3600, type => 'MX', rdata => '10 kaka456.sigint.se.' }) ]);
 #$res = $soap->EditDnsRecords('sigint.se', [ SOAP::Data->new(name => 'resourcerecord', value => { id => 5, label => 'kaka', class => 'IN', ttl => 3600, type => 'A', rdata => '127.0.0.1' }) ]);
 #$res = $soap->GetDnsRecords('sigint.se', 'kaka123');
 #$res = $soap->DeleteDnsRecords('sigint.se', $res->result);
@@ -97,5 +97,5 @@ my $sigint = [
 my @records = map { @{$_->{"records"}} } @$sigint;
 print "Records: " . Dumper(\@records);
 
-$res = $soap->RestoreZone('sigint5.se', $sigint);
+$res = $soap->RestoreZone('sigint5.se', "secondgroup", $sigint);
 print Dumper($res->result);

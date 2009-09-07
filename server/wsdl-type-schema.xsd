@@ -271,11 +271,77 @@ atomiaChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to add as a subscriber</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that this nameserver should subscribe to changes for</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
 
 			<xsd:element name="AddNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the zone to get the nameserver group for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroupResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringvalue" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="groupname" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the nameserver group</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserverGroupResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="groupname" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the nameserver group</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserverGroupResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the zone to set the nameserver group for</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetNameserverGroupResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
@@ -356,6 +422,7 @@ atomiaChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
@@ -498,6 +565,7 @@ atomiaChangedZone is a struct with the following members:
 						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -522,6 +590,7 @@ atomiaChangedZone is a struct with the following members:
 						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the added zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

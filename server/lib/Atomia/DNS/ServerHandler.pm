@@ -126,6 +126,25 @@ sub handleStringArray {
 	return SOAP::Data->new(name => "stringarray", value => \@rowarray);
 }
 
+sub handleString {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $rows = $sth->fetchall_arrayref();
+
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+	die("more than one row returned for scalar type") unless scalar(@$rows) == 1; 
+	die("more than one column returned for scalar type") unless scalar(@{$rows->[0]}) == 1; 
+
+	my $stringval = $rows->[0]->[0];
+	die("bad data returned from database, expected string") unless defined($stringval) && length($stringval) > 0;
+
+	return SOAP::Data->new(type => "string", value => $stringval);
+}
+
 sub handleIntArray {
 	my $self = shift;
 	my $method = shift;

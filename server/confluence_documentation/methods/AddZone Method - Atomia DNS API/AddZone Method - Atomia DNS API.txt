@@ -13,7 +13,8 @@ void AddZone(
 	int retry,
 	int expire,
 	int minimum,
-	string[] nameservers
+	string[] nameservers,
+	string nameservergroup
 )
 {panel}
 
@@ -29,5 +30,6 @@ h3.Parameters
 |expire|int|the SOA expire field|
 |minimum|int|the SOA minimum field|
 |nameservers|string[]|an array of the hostnames of the nameservers for the zone|
+|nameservergroup|string|the nameserver group that should host the zone|
 
 {include:AddZone Method Example - Atomia DNS API}

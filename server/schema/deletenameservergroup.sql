@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION AddNameserver(
-	servername varchar,
 	groupname varchar
 ) RETURNS void AS $$
 DECLARE
@@ -10,5 +9,5 @@ BEGIN
 		RAISE EXCEPTION 'nameserver group % not found', groupname;
 	END IF;
 
-	INSERT INTO nameserver (name, nameserver_group_id) VALUES (servername, nameserver_group_id_var);
+	DELETE FROM nameserver_group WHERE id = nameserver_group_id_var;
 END; $$ LANGUAGE plpgsql;

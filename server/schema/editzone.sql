@@ -7,10 +7,12 @@ CREATE OR REPLACE FUNCTION EditZone(
 	retry int,
 	expire int,
 	minimum bigint,
-	nameservers varchar[]
+	nameservers varchar[],
+	nameserver_group_name varchar
 ) RETURNS void AS $$
 DECLARE
 	origin_label_id int;
+	nameserver_group_id_var int;
 BEGIN
 	IF refresh < 0 THEN
 		RAISE EXCEPTION 'refresh value of % is out of range (0 .. 2147483647)', refresh;
@@ -26,6 +28,13 @@ BEGIN
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'zone % not found', zonename;
 	END IF;
+
+	SELECT nameserver_group.id INTO nameserver_group_id_var FROM nameserver_group WHERE name = nameserver_group_name;
+	IF NOT FOUND THEN
+		RAISE EXCEPTION 'nameserver group % not found', nameserver_group_name;
+	END IF;
+
+	UPDATE zone SET nameserver_group_id = nameserver_group_id_var WHERE name = zonename;
 
 	DELETE FROM record 
 	WHERE record.label_id = origin_label_id AND type IN ('NS', 'SOA');

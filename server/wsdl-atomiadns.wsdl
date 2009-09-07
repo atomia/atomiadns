@@ -279,11 +279,77 @@ atomiaChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to add as a subscriber</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that this nameserver should subscribe to changes for</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
 
 			<xsd:element name="AddNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the zone to get the nameserver group for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroupResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringvalue" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="groupname" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the nameserver group</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddNameserverGroupResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="groupname" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the nameserver group</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteNameserverGroupResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetNameserverGroup">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the zone to set the nameserver group for</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetNameserverGroupResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
@@ -364,6 +430,7 @@ atomiaChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"><xsd:annotation><xsd:documentation>the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
@@ -506,6 +573,7 @@ atomiaChangedZone is a struct with the following members:
 						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -530,6 +598,7 @@ atomiaChangedZone is a struct with the following members:
 						<xsd:element minOccurs="1" maxOccurs="1" name="expire" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA expire field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="minimum" type="xsd:int"><xsd:annotation><xsd:documentation>the SOA minimum field</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameservers" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of the hostnames of the nameservers for the added zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -784,6 +853,42 @@ atomiaChangedZone is a struct with the following members:
 		<part name="parameters" element="tns:SetUpdatesDisabledResponse"/>
 	</message>
 
+	<message name="GetNameserverGroupInput">
+		<documentation>Get the nameserver group for a zone.</documentation>
+		<part name="parameters" element="tns:GetNameserverGroup"/>
+	</message>
+
+	<message name="GetNameserverGroupOutput">
+		<part name="parameters" element="tns:GetNameserverGroupResponse"/>
+	</message>
+
+	<message name="SetNameserverGroupInput">
+		<documentation>Set the nameserver group for a zone.</documentation>
+		<part name="parameters" element="tns:SetNameserverGroup"/>
+	</message>
+
+	<message name="SetNameserverGroupOutput">
+		<part name="parameters" element="tns:SetNameserverGroupResponse"/>
+	</message>
+
+	<message name="AddNameserverGroupInput">
+		<documentation>Add a nameserver group.</documentation>
+		<part name="parameters" element="tns:AddNameserverGroup"/>
+	</message>
+
+	<message name="AddNameserverGroupOutput">
+		<part name="parameters" element="tns:AddNameserverGroupResponse"/>
+	</message>
+
+	<message name="DeleteNameserverGroupInput">
+		<documentation>Removes an empty nameserver group.</documentation>
+		<part name="parameters" element="tns:DeleteNameserverGroup"/>
+	</message>
+
+	<message name="DeleteNameserverGroupOutput">
+		<part name="parameters" element="tns:DeleteNameserverGroupResponse"/>
+	</message>
+
 	<portType name="AtomiaDNSPortType">
 		<operation name="AddZone">
 			<input message="tns:AddZoneInput"/>
@@ -991,6 +1096,42 @@ atomiaChangedZone is a struct with the following members:
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
+
+		<operation name="GetNameserverGroup">
+			<input message="tns:GetNameserverGroupInput"/>
+			<output message="tns:GetNameserverGroupOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="SetNameserverGroup">
+			<input message="tns:SetNameserverGroupInput"/>
+			<output message="tns:SetNameserverGroupOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="AddNameserverGroup">
+			<input message="tns:AddNameserverGroupInput"/>
+			<output message="tns:AddNameserverGroupOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteNameserverGroup">
+			<input message="tns:DeleteNameserverGroupInput"/>
+			<output message="tns:DeleteNameserverGroupOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
 	</portType>
 
 	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
@@ -1153,6 +1294,34 @@ atomiaChangedZone is a struct with the following members:
 		<operation name="SetUpdatesDisabled">
 			<documentation>Set or reset the updates disabled flag.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#SetUpdatesDisabled"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetNameserverGroup">
+			<documentation>Get the nameserver group for a zone.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserverGroup"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="SetNameserverGroup">
+			<documentation>Set the nameserver group for a zone.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#SetNameserverGroup"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AddNameserverGroup">
+			<documentation>Add a nameserver group.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddNameserverGroup"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteNameserverGroup">
+			<documentation>Removes an empty nameserver group.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteNameserverGroup"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

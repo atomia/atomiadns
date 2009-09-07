@@ -67,6 +67,34 @@ recreate_procedure() {
 	fi
 }
 
+recreate_ddl_procedure() {
+	procedure_sql=`awk '/^CREATE OR REPLACE FUNCTION '"$1"'/ { inproc = 1 } inproc { print } /^END.*LANGUAGE plpgsql;$/ { inproc = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	if [ $? != 0 ]; then
+		echo "error retrieving ddl for procedure $1, you'll have to migrate the schema manually."
+		exit 1
+	fi
+
+	sudo -u postgres psql -c "$procedure_sql" zonedata > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error recreating procedure $1, you'll have to migrate the schema manually."
+		exit 1
+	fi
+}
+
+create_table() {
+	table_sql=`awk '/^CREATE TABLE '"$1"'/ { intable = 1 } intable { print } /^\);$/ { intable = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	if [ $? != 0 ]; then
+		echo "error retrieving ddl for table $1, you'll have to migrate the schema manually."
+		exit 1
+	fi
+
+	sudo -u postgres psql -c "$table_sql" zonedata > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error creating table $1 using schema $table_sql, you'll have to migrate the schema manually."
+		exit 1
+	fi
+}
+
 alter_check_constraint() {
 	table="$1"
 	constraint_name="$2"
@@ -77,6 +105,29 @@ alter_check_constraint() {
 	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error altering check constraint $table/$constraint_name, you'll have to migrate the schema manually."
+		exit 1
+	fi
+}
+
+execute_query() {
+	query="$1"
+
+	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error executing migration query: $query, you'll have to migrate the schema manually."
+		exit 1
+	fi
+}
+
+alter_table_addcolumn() {
+	table="$1"
+	column="$2"
+
+	query="ALTER TABLE $table ADD COLUMN $column"
+
+	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error adding column $table.$column, you'll have to migrate the schema manually."
 		exit 1
 	fi
 }
@@ -97,21 +148,51 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		if [ "$schema_version" = 11 ]; then
+		if [ "$schema_version" = 13 ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
-		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 11 ]; then
-			echo "Schema version is $schema_version, and the latest database schema is version 11. Upgrading."
-			recreate_procedure "setupdatesdisabled"
-			recreate_procedure "deletezone"
-			recreate_procedure "adddnsrecords"
-			recreate_procedure "copydnslabelbulk"
-			recreate_procedure "restorezone"
-			recreate_procedure "getlabels"
-			recreate_procedure "getzone"
+		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 13 ]; then
+			echo "Schema version is $schema_version, and the latest database schema is version 13. Upgrading."
 
-			alter_check_constraint "label" "label_format" "(label ~* '^(([*][.])?([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*)|[@*]\$')" 
+			if [ "$schema_version" -lt 11 ]; then
+				recreate_procedure "setupdatesdisabled"
+				recreate_procedure "deletezone"
+				recreate_procedure "adddnsrecords"
+				recreate_procedure "copydnslabelbulk"
+				recreate_procedure "getlabels"
+				recreate_procedure "getzone"
 
-			set_schema_version 11
+				alter_check_constraint "label" "label_format" "(label ~* '^(([*][.])?([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*)|[@*]\$')" 
+			fi
+
+			if [ "$schema_version" -lt 12 ]; then
+				create_table "nameserver_group"
+				execute_query "INSERT INTO nameserver_group (name) VALUES ('default')"
+
+				alter_table_addcolumn "nameserver" "nameserver_group_id INT REFERENCES nameserver_group"
+				execute_query "UPDATE nameserver SET nameserver_group_id = (SELECT id FROM nameserver_group WHERE name = 'default') WHERE nameserver_group_id IS NULL"
+				execute_query "ALTER TABLE nameserver ALTER COLUMN nameserver_group_id SET NOT NULL"
+
+				alter_table_addcolumn "zone" "nameserver_group_id INT REFERENCES nameserver_group"
+				execute_query "UPDATE zone SET nameserver_group_id = (SELECT id FROM nameserver_group WHERE name = 'default') WHERE nameserver_group_id IS NULL"
+				execute_query "ALTER TABLE zone ALTER COLUMN nameserver_group_id SET NOT NULL"
+				execute_query "CREATE INDEX zone_nameserver_group_idx ON zone(nameserver_group_id)"
+
+				recreate_procedure "restorezone"
+				recreate_procedure "editzone"
+				recreate_procedure "addzone"
+				recreate_procedure "addnameserver"
+				recreate_procedure "getnameservergroup"
+				recreate_procedure "setnameservergroup"
+
+				recreate_ddl_procedure "verify_zone"
+			fi
+
+			if [ "$schema_version" -lt 13 ]; then
+				recreate_procedure "addnameservergroup"
+				recreate_procedure "deletenameservergroup"
+			fi
+
+			set_schema_version 13
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
 			exit 1

@@ -9,9 +9,9 @@ use Atomia::DNS::ServerHandler;
 use Moose;
 
 my $signatures = {
-	"AddZone" => "void string int string string int int int int array",
+	"AddZone" => "void string int string string int int int int array string",
 	"DeleteZone" => "void string",
-	"EditZone" => "void string int string string int int int int array",
+	"EditZone" => "void string int string string int int int int array string",
 	"AddDnsRecords" => "array[int] string array[resourcerecord]",
 	"EditDnsRecords" => "void string array[resourcerecord]",
 	"SetDnsRecords" => "void string array[resourcerecord]",
@@ -19,12 +19,12 @@ my $signatures = {
 	"GetDnsRecords" => "array[resourcerecord] string string",
 	"GetLabels" => "array[string] string",
 	"GetZone" => "zone string",
-	"RestoreZone" => "void string zone",
+	"RestoreZone" => "void string string zone",
 	"SetDnsRecordsBulk" => "void array array[resourcerecord]",
 	"CopyDnsZoneBulk" => "void string array",
 	"CopyDnsLabelBulk" => "void string string array[hostname]",
 	"DeleteDnsRecordsBulk" => "void array array[resourcerecord]",
-	"AddNameserver" => "void string",
+	"AddNameserver" => "void string string",
 	"DeleteNameserver" => "void string",
 	"GetChangedZones" => "changes string",
 	"MarkUpdated" => "void int string string",
@@ -32,6 +32,10 @@ my $signatures = {
 	"ReloadAllZones" => "void",
 	"GetUpdatesDisabled" => "int",
 	"SetUpdatesDisabled" => "void int",
+	"GetNameserverGroup" => "string string",
+	"SetNameserverGroup" => "void string string",
+	"AddNameserverGroup" => "void string",
+	"DeleteNameserverGroup" => "void string",
 };
 
 our $instance = Atomia::DNS::ServerHandler->new;
@@ -53,6 +57,8 @@ foreach my $method (keys %{$signatures}) {
 				$Atomia::DNS::Server::instance->handleRecordArray($method, \@signature, @_);
 			} elsif ($return_type eq "array[string]") {
 				$Atomia::DNS::Server::instance->handleStringArray($method, \@signature, @_);
+			} elsif ($return_type eq "string") {
+				$Atomia::DNS::Server::instance->handleString($method, \@signature, @_);
 			} elsif ($return_type eq "array[int]") {
 				$Atomia::DNS::Server::instance->handleIntArray($method, \@signature, @_);
 			} elsif ($return_type eq "zone") {
