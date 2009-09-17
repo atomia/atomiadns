@@ -26,7 +26,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (13);
+INSERT INTO atomiadns_schemaversion (version) VALUES (17);
 
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),
@@ -74,10 +74,26 @@ CREATE TABLE change (
 	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
 );
 
+CREATE TABLE slavezone_change (
+        id SERIAL PRIMARY KEY NOT NULL,
+        nameserver_id INT NOT NULL REFERENCES nameserver,
+        zone VARCHAR(255) NOT NULL,
+	status changetype NOT NULL DEFAULT 'PENDING',
+	errormessage TEXT NULL,
+	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
+);
+
 CREATE TABLE zone (
         id SERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group
+);
+
+CREATE TABLE slavezone (
+        id SERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
+	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
+	master VARCHAR(255) NOT NULL UNIQUE CONSTRAINT master_format CHECK (master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))$')
 );
 
 CREATE INDEX zone_nameserver_group_idx ON zone(nameserver_group_id);
@@ -229,3 +245,26 @@ ON zone
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE PROCEDURE verify_zone();
+
+CREATE OR REPLACE FUNCTION slavezone_update() RETURNS trigger AS $$
+BEGIN
+	IF TG_OP = 'DELETE' THEN
+		INSERT INTO slavezone_change (nameserver_id, zone)
+		SELECT nameserver.id, OLD.name FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		RETURN OLD;
+	ELSIF TG_OP = 'UPDATE' THEN
+		INSERT INTO slavezone_change (nameserver_id, zone)
+		SELECT nameserver.id, OLD.name FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+	END IF;
+
+	INSERT INTO slavezone_change (nameserver_id, zone)
+	SELECT nameserver.id, NEW.name FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
+
+	RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER slavezone_update_trigger AFTER INSERT OR UPDATE OR DELETE
+ON slavezone
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE PROCEDURE slavezone_update();

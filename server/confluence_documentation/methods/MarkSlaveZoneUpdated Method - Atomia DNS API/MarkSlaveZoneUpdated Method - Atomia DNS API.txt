@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Mark a slave zone change-row as handled, removing it if no error occured.
+
+h3.Declaration syntax
+{panel}
+void MarkSlaveZoneUpdated(
+	int changeid,
+	string changestatus,
+	string errormessage
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|changeid|int|the id of the change-row|
+|changestatus|string|ERROR or OK|
+|errormessage|string|error message to set if cstatus is ERROR|
+
+{include:MarkSlaveZoneUpdated Method Example - Atomia DNS API}

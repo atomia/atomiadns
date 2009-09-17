@@ -36,6 +36,10 @@ my $signatures = {
 	"SetNameserverGroup" => "void string string",
 	"AddNameserverGroup" => "void string",
 	"DeleteNameserverGroup" => "void string",
+	"AddSlaveZone" => "void string string string",
+	"DeleteSlaveZone" => "void string",
+	"GetChangedSlaveZones" => "changes string",
+	"MarkSlaveZoneUpdated" => "void int string string",
 };
 
 our $instance = Atomia::DNS::ServerHandler->new;

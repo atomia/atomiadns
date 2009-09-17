@@ -33,6 +33,10 @@ methodawk='BEGIN {
 	methods["SetNameserverGroup"] = "Set the nameserver group for a zone.";
 	methods["AddNameserverGroup"] = "Add a nameserver group.";
 	methods["DeleteNameserverGroup"] = "Removes an empty nameserver group.";
+	methods["AddSlaveZone"] = "Adds a new slave zone.";
+	methods["DeleteSlaveZone"] = "Removes a slave zone.";
+	methods["GetChangedSlaveZones"] = "Fetches a list of all changed slave zones for a nameserver.";
+	methods["MarkSlaveZoneUpdated"] = "Mark a slave zone change-row as handled, removing it if no error occured.";
 }'
 
 cat <<EOH

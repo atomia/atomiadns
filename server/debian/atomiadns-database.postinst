@@ -82,7 +82,7 @@ recreate_ddl_procedure() {
 }
 
 create_table() {
-	table_sql=`awk '/^CREATE TABLE '"$1"'/ { intable = 1 } intable { print } /^\);$/ { intable = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	table_sql=`awk '/^CREATE TABLE '"$1"' / { intable = 1 } intable { print } /^\);$/ { intable = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
 	if [ $? != 0 ]; then
 		echo "error retrieving ddl for table $1, you'll have to migrate the schema manually."
 		exit 1
@@ -91,6 +91,20 @@ create_table() {
 	sudo -u postgres psql -c "$table_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error creating table $1 using schema $table_sql, you'll have to migrate the schema manually."
+		exit 1
+	fi
+}
+
+create_trigger() {
+	trigger_sql=`awk '/^CREATE CONSTRAINT TRIGGER '"$1"'/ { intable = 1 } intable { print } /;$/ { intable = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	if [ $? != 0 ]; then
+		echo "error retrieving ddl for trigger $1, you'll have to migrate the schema manually."
+		exit 1
+	fi
+
+	sudo -u postgres psql -c "$trigger_sql" zonedata > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error creating trigger $1 using schema $table_sql, you'll have to migrate the schema manually."
 		exit 1
 	fi
 }
@@ -104,7 +118,7 @@ alter_check_constraint() {
 
 	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
-		echo "error altering check constraint $table/$constraint_name, you'll have to migrate the schema manually."
+		echo "error altering check constraint $table/$constraint_name using $query, you'll have to migrate the schema manually."
 		exit 1
 	fi
 }
@@ -148,10 +162,10 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		if [ "$schema_version" = 13 ]; then
+		if [ "$schema_version" = 17 ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
-		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 13 ]; then
-			echo "Schema version is $schema_version, and the latest database schema is version 13. Upgrading."
+		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt 17 ]; then
+			echo "Schema version is $schema_version, and the latest database schema is version 17. Upgrading."
 
 			if [ "$schema_version" -lt 11 ]; then
 				recreate_procedure "setupdatesdisabled"
@@ -192,7 +206,22 @@ if [ $? != 0 ]; then
 				recreate_procedure "deletenameservergroup"
 			fi
 
-			set_schema_version 13
+			if [ "$schema_version" -lt 14 ]; then
+				create_table "slavezone"
+				create_table "slavezone_change"
+				recreate_ddl_procedure "slavezone_update"
+				create_trigger "slavezone_update_trigger"
+			fi
+
+			if [ "$schema_version" -lt 17 ]; then
+				alter_check_constraint "slavezone" "master_format" "(master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))\$')"
+				recreate_procedure "addslavezone"
+				recreate_procedure "deleteslavezone"
+				recreate_procedure "getchangedslavezones"
+				recreate_procedure "markslavezoneupdated"
+			fi
+
+			set_schema_version 17
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
 			exit 1

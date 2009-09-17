@@ -235,6 +235,24 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="MarkSlaveZoneUpdated">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changestatus" type="xsd:string"><xsd:annotation><xsd:documentation>ERROR or OK</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="errormessage" type="xsd:string"><xsd:annotation><xsd:documentation>error message to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkSlaveZoneUpdatedResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="GetChangedZones">
 				<xsd:complexType>
 					<xsd:all>
@@ -244,6 +262,22 @@ atomiaChangedZone is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="GetChangedZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedSlaveZones">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedSlaveZonesResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
@@ -578,6 +612,24 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AddSlaveZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="master_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP-address of the master</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddSlaveZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="EditZone">
 				<xsd:complexType>
 					<xsd:all>
@@ -612,6 +664,22 @@ atomiaChangedZone is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="DeleteZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteSlaveZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteSlaveZoneResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>

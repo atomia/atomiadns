@@ -1,3 +1,9 @@
+atomiadns-masterserver (0.9.13) hardy; urgency=low
+
+  * Add support for slave zones.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 28 Aug 2009 14:40:13 +0200
+
 atomiadns-masterserver (0.9.12) hardy; urgency=low
 
   * Add support for having different zones on different nameservers.

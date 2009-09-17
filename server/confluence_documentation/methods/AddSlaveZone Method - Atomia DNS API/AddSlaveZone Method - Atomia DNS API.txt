@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Adds a new slave zone.
+
+h3.Declaration syntax
+{panel}
+void AddSlaveZone(
+	string zonename,
+	string master_ip,
+	string nameservergroup
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|master_ip|string|the IP-address of the master|
+|nameservergroup|string|the nameserver group that should host the zone|
+
+{include:AddSlaveZone Method Example - Atomia DNS API}
