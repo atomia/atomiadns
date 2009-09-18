@@ -230,6 +230,35 @@ sub handleZone {
 	return SOAP::Data->new(name => "zone", value => $zone);
 }
 
+sub handleSlaveZone {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+	} @$rows;
+
+	my $zones = [];
+	foreach my $row (@$rows) {
+		push (@$zones, SOAP::Data->new(name => "zone", value => $row));	
+	}
+
+	return SOAP::Data->new(name => "slavezones", value => $zones);
+}
+
 sub handleZoneStruct {
 	my $self = shift;
 	my $method = shift;

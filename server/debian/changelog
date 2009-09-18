@@ -1,3 +1,9 @@
+atomiadns-masterserver (0.9.14) hardy; urgency=low
+
+  * Add support for GetSlaveZone and ReloadAllSlaveZones.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 18 Sep 2009 14:40:13 +0200
+
 atomiadns-masterserver (0.9.13) hardy; urgency=low
 
   * Add support for slave zones.

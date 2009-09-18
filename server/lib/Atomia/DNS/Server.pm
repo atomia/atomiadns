@@ -40,6 +40,8 @@ my $signatures = {
 	"DeleteSlaveZone" => "void string",
 	"GetChangedSlaveZones" => "changes string",
 	"MarkSlaveZoneUpdated" => "void int string string",
+	"GetSlaveZone" => "slavezone string",
+	"ReloadAllSlaveZones" => "void",
 };
 
 our $instance = Atomia::DNS::ServerHandler->new;
@@ -67,6 +69,8 @@ foreach my $method (keys %{$signatures}) {
 				$Atomia::DNS::Server::instance->handleIntArray($method, \@signature, @_);
 			} elsif ($return_type eq "zone") {
 				$Atomia::DNS::Server::instance->handleZone($method, \@signature, @_);
+			} elsif ($return_type eq "slavezone") {
+				$Atomia::DNS::Server::instance->handleSlaveZone($method, \@signature, @_);
 			} elsif ($return_type eq "changes") {
 				$Atomia::DNS::Server::instance->handleChanges($method, \@signature, @_);
 			} elsif ($return_type eq "zonestruct") {

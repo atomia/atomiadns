@@ -1,0 +1,5 @@
+#!/bin/sh
+dpkg-buildpackage -rfakeroot -tc -us -uc
+mv ../*deb ../packages
+rm ../atomiadns-*
+cd client && make distclean

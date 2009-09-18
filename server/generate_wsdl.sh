@@ -37,6 +37,8 @@ methodawk='BEGIN {
 	methods["DeleteSlaveZone"] = "Removes a slave zone.";
 	methods["GetChangedSlaveZones"] = "Fetches a list of all changed slave zones for a nameserver.";
 	methods["MarkSlaveZoneUpdated"] = "Mark a slave zone change-row as handled, removing it if no error occured.";
+	methods["GetSlaveZone"] = "Fetches information about a slave zone."
+	methods["ReloadAllSlaveZones"] = "Mark all slave zones in the database as changed.";
 }'
 
 cat <<EOH
