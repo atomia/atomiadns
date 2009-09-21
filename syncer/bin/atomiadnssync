@@ -44,6 +44,10 @@ running as.
 
 Marks all zones as changed so that the update-process propagates them on all nameservers.
 
+=item full_reload_slavezones
+
+Marks all slave zones as changed so that the update-process propagates them on all nameservers.
+
 =item updated
 
 Fetches a list of changed zones and adds/removes them from the local BDB
@@ -96,6 +100,14 @@ Specifies the URI of the SOAP Server to fetch changes from.
 
 Specifies the hostname used when subscribing and checking for changes.
 
+=item slavezones_config
+
+Specifies the filename which contain a list of the configured slave zones.
+
+=item slavezones_dir
+
+Specifies the directory where zone files for the slave zones are stored.
+
 =back
 
 =head1 EXAMPLES
@@ -138,14 +150,14 @@ use Atomia::DNS::Syncer;
 
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
-	print "where mode is one of full_reload_offline, full_reload_online, updated, add_server, remove_server, disable_updates, enable_updates\n";
+	print "where mode is one of full_reload_offline, full_reload_online, full_reload_slavezones, add_server, remove_server, disable_updates, enable_updates\n";
 	exit 1;
 }
 
 $_ = $ARGV[0];
 
 SWITCH: {
-	/^(add_server|remove_server|disable_updates|enable_updates|full_reload_online)$/i && do {
+	/^(add_server|remove_server|disable_updates|enable_updates|full_reload_online|full_reload_slavezones)$/i && do {
 		my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
 		$syncer->$_();
 		last SWITCH;
@@ -170,6 +182,7 @@ SWITCH: {
 				while (1) {
 					last if $syncer->updates_disabled();
 					$syncer->reload_updated_zones();
+					$syncer->reload_updated_slavezones();
 					sleep 10;
 				}
 			};

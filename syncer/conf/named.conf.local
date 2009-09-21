@@ -1,3 +1,5 @@
 dlz "bdbhpt zone" {
         database "bdbhpt T /var/lib/bind/atomiadns_bdb dns_data.db";
 };
+
+include "/etc/bind/slave/named-slavezones.conf.local";

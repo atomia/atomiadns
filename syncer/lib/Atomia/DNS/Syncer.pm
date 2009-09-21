@@ -10,12 +10,16 @@ use Config::General;
 use SOAP::Lite;
 use BerkeleyDB;
 use Data::Dumper;
+use File::Basename;
+use File::Temp;
 
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
 has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
 has 'bdb_environment' => (is => 'rw', isa => 'Any', default => undef);
 has 'bdb_environment_path' => (is => 'rw', isa => 'Any', default => undef);
 has 'soap' => (is => 'rw', isa => 'Any', default => undef);
+has 'slavezones_config' => (is => 'rw', isa => 'Str', default => undef);
+has 'slavezones_dir' => (is => 'rw', isa => 'Str', default => undef);
 
 sub BUILD {
         my $self = shift;
@@ -24,6 +28,12 @@ sub BUILD {
         die("config not found at $self->configfile") unless defined($conf);
         my %config = $conf->getall;
         $self->config(\%config);
+
+	$self->slavezones_config($self->config->{"slavezones_config"});
+	die("you have to specify slavezones_config as an existing file") unless defined($self->slavezones_config) && -f $self->slavezones_config;
+
+	$self->slavezones_dir($self->config->{"slavezones_dir"});
+	die("you have to specify slavezones_dir as an existing directory") unless defined($self->slavezones_dir) && -d $self->slavezones_dir;
 
 	my $bdb_path = $self->bdb_environment_path ? $self->bdb_environment_path : $self->config->{"bdb_environment_path"};
 	die("you have to either pass a path in the bdb_environment_path parameter or set bdb_environment_path in the config") unless defined($bdb_path);
@@ -42,7 +52,7 @@ sub BUILD {
 		->  proxy($soap_uri)
 		->  on_fault(sub {
 				my ($soap, $res) = @_;
-				die("got fault of type " . (ref($res) ? $res->faultcode : "transport error") . ": " . (ref($res) ? $res->faultstring : $soap->transport->status));
+				die((ref($res) && UNIVERSAL::isa($res, 'SOAP::SOM')) ? $res : ("got fault of type transport error: " . $soap->transport->status));
 			});
 
 	die("error instantiating SOAP::Lite") unless defined($soap);
@@ -133,7 +143,9 @@ sub reload_updated_zones {
 	};
 
 	if ($@) {
-		print "Caught exception in reload_updated: $@\n";
+		my $exception = $@;
+		$exception = Dumper($exception) if ref($exception);
+		print "Caught exception in reload_updated: $exception\n";
 	}
 
 	$db_zone->db_close() if defined($db_zone);
@@ -195,6 +207,7 @@ sub sync_updated_zones {
 		if ($@) {
 			my $abort_ret = 0;
 			my $errormessage = $@;
+			$errormessage = Dumper($errormessage) if ref($errormessage);
 
 			eval {
 				$abort_ret = $transaction->txn_abort() if defined($transaction);
@@ -247,11 +260,25 @@ sub fetch_records_for_zone {
 	my $self = shift;
 	my $zonename = shift;
 
-	my $zone = $self->soap->GetZone($zonename);
-	die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
+	my $records = undef;
+	eval {
+		my $zone = $self->soap->GetZone($zonename);
+		die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
+		my @records = map { @{$_->{"records"}} } @{$zone->result};
+		$records = \@records;
+	};
 
-	my @records = map { @{$_->{"records"}} } @{$zone->result};
-	return \@records;
+	if ($@) {
+		my $exception = $@;
+		if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.ZoneNotFound') {
+			return [];
+		} else {
+			die $exception;
+		}
+	}
+	
+	die "error fetching zones" unless defined($records) && ref($records) eq "ARRAY";
+	return $records;
 }
 
 sub sync_zone {
@@ -335,6 +362,142 @@ sub full_reload_online {
 	my $self = shift;
 
 	$self->soap->ReloadAllZones();
+}
+
+sub full_reload_slavezones {
+	my $self = shift;
+
+	$self->soap->ReloadAllSlaveZones();
+}
+
+sub reload_updated_slavezones {
+	my $self = shift;
+
+	my $config_zones = $self->parse_slavezone_config();
+
+        my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+        die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+                $zones->result && ref($zones->result) eq "ARRAY";
+        $zones = $zones->result;
+
+	return if scalar(@$zones) == 0;
+
+	my $changes = [];
+
+        foreach my $zonerec (@$zones) {
+		my $zonename = $zonerec->{"name"};
+
+		my $zone;
+		eval {
+			$zone = $self->soap->GetSlaveZone($zonename);
+			die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
+			$zone = $zone->result;
+			die("bad response from GetSlaveZone") unless scalar(@$zone) == 1;
+			$zone = $zone->[0];
+
+			push @$changes, $zonerec->{"id"};
+		};
+
+		if ($@) {
+			my $exception = $@;
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.ZoneNotFound') {
+				$zone = undef;
+				push @$changes, $zonerec->{"id"};
+	                } else {
+				die $exception;
+			}
+		}
+
+		if (defined($zone)) {
+			die("error fetching zone for $zonename") unless ref($zone) eq "HASH" && defined($zone->{"master"});
+			$config_zones->{$zonename} = $zone->{"master"};
+		} else {
+			delete $config_zones->{$zonename};
+		}
+	}
+
+	my $filename = $self->write_slavezone_tempfile($config_zones);
+	$self->move_slavezone_into_place($filename);
+	$self->signal_bind_reconfig();
+
+	foreach my $change (@$changes) {
+		$self->soap->MarkSlaveZoneUpdated($change, "OK", "");
+	}
+}
+
+sub parse_slavezone_config {
+	my $self = shift;
+
+	open SLAVES, $self->slavezones_config || die "error opening " . $self->slavezones_config . ": $!";
+
+	my $state = 'startofzone';
+	my $zones = {};
+	my $zone = undef;
+
+	ROW: while (<SLAVES>) {
+		next ROW if /^\s*$/;
+		chomp;
+		$_ =~ s/^\s+//g;
+
+		if ($state eq 'startofzone') {
+			if (/^zone\s+"([^"]*)"/) {
+				$zone = $1;
+				$state = 'masters';
+			} else {
+				die "bad format of " . $self->slavezones_config . ", expecting $state";
+			}
+		} elsif ($state eq 'masters') {
+			my $slavepath = sprintf "%s/%s", $self->slavezones_dir, $zone;
+			next ROW if /^(type\s+slave|file\s+"$slavepath");$/;
+
+			if (/^masters\s+{([^}]*)};$/) {
+				$zones->{$zone} = $1;
+				$state = 'endofzone';
+			} else {
+				die "bad format of " . $self->slavezones_config . ", expecting $state";
+			}
+		} elsif ($state eq 'endofzone') {
+			my $slavepath = sprintf "%s/%s", $self->slavezones_dir, $zone;
+			next ROW if /^(type\s+slave|file\s+"$slavepath");$/;
+
+			if ($_ eq '};') {
+				$state = 'startofzone';
+			} else {
+				die "bad format of " . $self->slavezones_config . ", expecting $state";
+			}
+		} else {
+			die "unknown state: $state";
+		}
+	}
+
+	close SLAVES || die "error closing " . $self->slavezones_config . ": $!";
+
+	return $zones;
+}
+
+sub write_slavezone_tempfile {
+	my $self = shift;
+	my $zones = shift;
+
+	my $tempfile = File::Temp->new(TEMPLATE => 'atomiaslavesyncXXXXXXXX', SUFFIX => '.tmp', UNLINK => 0, DIR => dirname($self->slavezones_config)) || die "error creating temporary file: $!";
+
+	foreach my $zone (keys %$zones) {
+		printf $tempfile ("zone \"%s\" {\n\ttype slave;\n\tfile \"%s/%s\";\n\tmasters {%s;};\n};\n", $zone, $self->slavezones_dir, $zone, $zones->{$zone});
+	}
+
+	return $tempfile->filename;
+}
+
+sub move_slavezone_into_place {
+	my $self = shift;
+	my $tempfile = shift;
+
+	rename($tempfile, $self->slavezones_config) || die "error moving temporary slavezone file into place: $!";
+}
+
+sub signal_bind_reconfig {
+	my $self = shift;
+	system("rndc reconfig") == 0 || die "error reloading bind using rndc reconfig";
 }
 
 1;
