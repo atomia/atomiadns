@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Mark all slave zones in the database as changed.
+
+h3.Declaration syntax
+{panel}
+void ReloadAllSlaveZones()
+{panel}
+
+{include:ReloadAllSlaveZones Method Example - Atomia DNS API}

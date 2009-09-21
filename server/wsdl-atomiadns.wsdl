@@ -125,6 +125,26 @@ atomiaLabel is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaSlaveZones">
+				<xsd:annotation><xsd:documentation>atomiaSlaveZones is an array of atomiaSlaveZoneItem-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="zone" type="atomiaSlaveZoneItem" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaSlaveZoneItem">
+				<xsd:annotation><xsd:documentation>
+atomiaSlaveZoneItem is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the slave zone |
+| master | string | the ip-address of the master |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="master" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaZoneStruct">
 				<xsd:annotation><xsd:documentation>
 atomiaZoneStruct is a struct with the following members:
@@ -188,6 +208,20 @@ atomiaChangedZone is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="ReloadAllZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ReloadAllSlaveZones">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ReloadAllSlaveZonesResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
@@ -490,6 +524,22 @@ atomiaChangedZone is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetSlaveZone">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetSlaveZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaSlaveZones"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -993,6 +1043,24 @@ atomiaChangedZone is a struct with the following members:
 		<part name="parameters" element="tns:MarkSlaveZoneUpdatedResponse"/>
 	</message>
 
+	<message name="GetSlaveZoneInput">
+		<documentation>Fetches information about a slave zone.</documentation>
+		<part name="parameters" element="tns:GetSlaveZone"/>
+	</message>
+
+	<message name="GetSlaveZoneOutput">
+		<part name="parameters" element="tns:GetSlaveZoneResponse"/>
+	</message>
+
+	<message name="ReloadAllSlaveZonesInput">
+		<documentation>Mark all slave zones in the database as changed.</documentation>
+		<part name="parameters" element="tns:ReloadAllSlaveZones"/>
+	</message>
+
+	<message name="ReloadAllSlaveZonesOutput">
+		<part name="parameters" element="tns:ReloadAllSlaveZonesResponse"/>
+	</message>
+
 	<portType name="AtomiaDNSPortType">
 		<operation name="AddZone">
 			<input message="tns:AddZoneInput"/>
@@ -1272,6 +1340,24 @@ atomiaChangedZone is a struct with the following members:
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
+
+		<operation name="GetSlaveZone">
+			<input message="tns:GetSlaveZoneInput"/>
+			<output message="tns:GetSlaveZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="ReloadAllSlaveZones">
+			<input message="tns:ReloadAllSlaveZonesInput"/>
+			<output message="tns:ReloadAllSlaveZonesOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
 	</portType>
 
 	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
@@ -1490,6 +1576,20 @@ atomiaChangedZone is a struct with the following members:
 		<operation name="MarkSlaveZoneUpdated">
 			<documentation>Mark a slave zone change-row as handled, removing it if no error occured.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkSlaveZoneUpdated"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetSlaveZone">
+			<documentation>Fetches information about a slave zone.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetSlaveZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="ReloadAllSlaveZones">
+			<documentation>Mark all slave zones in the database as changed.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#ReloadAllSlaveZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

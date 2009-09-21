@@ -1,0 +1,6 @@
+
+[slavezone|slavezone Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the slave zone |
+| master | string | the ip-address of the master |
+				

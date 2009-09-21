@@ -20,6 +20,8 @@ my $type_mappings = {
 	"atomiaChangedZone" => "changedzone",
 	"atomiaZoneStruct" => "zonestruct",
 	"atomiaZones" => "zones",
+	"atomiaSlaveZones" => "slavezones",
+	"atomiaSlaveZoneItem" => "slavezone",
 };
 
 use XML::XPath;
