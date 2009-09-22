@@ -294,6 +294,21 @@ sub process_update {
 }
 
 sub main {
+	my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
+
+	my $soap_cacert = $config{"soap_cacert"};
+	if ($soap_uri =~ /^https/) {
+		die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option" unless defined($soap_cacert) && -f $soap_cacert;
+		$ENV{HTTPS_CA_FILE} = $soap_cacert;
+	}
+
+	my $soap_username = $config{"soap_username"};
+	my $soap_password = $config{"soap_password"};
+	if (defined($soap_username)) {
+		die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
+		eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+	}
+
 	my $ns = Net::DNS::Nameserver->new(
 		LocalAddr => "s272.pingdom.com",
 		LocalPort    => 5353,

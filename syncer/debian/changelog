@@ -1,3 +1,9 @@
+atomiadns-nameserver (0.9.4) hardy; urgency=low
+
+  * Implement HTTP authentication and SSL certificate verification.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 22 Sep 2009 08:41:35 +0200
+
 atomiadns-nameserver (0.9.3) hardy; urgency=low
 
   * Implement slave zone support.

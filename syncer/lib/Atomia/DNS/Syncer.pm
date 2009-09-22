@@ -47,6 +47,20 @@ sub BUILD {
 	$self->bdb_environment($env);
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
+	my $soap_cacert = $self->config->{"soap_cacert"};
+	if ($soap_uri =~ /^https/) {
+		die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option" unless defined($soap_cacert) && -f $soap_cacert;
+		$ENV{HTTPS_CA_FILE} = $soap_cacert;
+	}
+
+	my $soap_username = $self->config->{"soap_username"};
+	my $soap_password = $self->config->{"soap_password"};
+	if (defined($soap_username)) {
+		die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
+		eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+	}
+
+
 	my $soap = SOAP::Lite
 		->  uri('urn:Atomia::DNS::Server')
 		->  proxy($soap_uri)
@@ -336,8 +350,9 @@ sub updates_disabled {
 
 sub add_server {
 	my $self = shift;
+	my $group = shift;
 
-	$self->soap->AddNameserver($self->config->{"servername"} || die("you have to specify servername in config"));
+	$self->soap->AddNameserver($self->config->{"servername"} || die("you have to specify servername in config"), $group);
 }
 
 sub remove_server {

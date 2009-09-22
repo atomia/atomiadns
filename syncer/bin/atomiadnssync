@@ -54,10 +54,10 @@ Fetches a list of changed zones and adds/removes them from the local BDB
 database.  This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-nameserver.
 You should never run this manually.
 
-=item add_server
+=item add_server GROUP
 
 Adds this server (configured using servername in /etc/atomiadns.conf) as a
-subscriber of the data set on the configured SOAP server.
+subscriber of the data set defined by the nameserver group GROUP on the configured SOAP server.
 
 =item remove_server
 
@@ -135,7 +135,7 @@ atomiadnssync full_reload_online
 
 To add the server as a subscriber:
 
-atomiadnssync add_server
+atomiadnssync add_server somegroup
 
 =head1 AUTHOR
 
@@ -147,6 +147,7 @@ use warnings;
 use strict;
 
 use Atomia::DNS::Syncer;
+use Data::Dumper;
 
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
@@ -157,9 +158,14 @@ if (scalar(@ARGV) < 1) {
 $_ = $ARGV[0];
 
 SWITCH: {
-	/^(add_server|remove_server|disable_updates|enable_updates|full_reload_online|full_reload_slavezones)$/i && do {
-		my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
-		$syncer->$_();
+	/^(remove_server|disable_updates|enable_updates|full_reload_online|full_reload_slavezones)$/i && do {
+		my $command = $_;
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->$command();
+		};
+
+		handle_exception($@) if $@;
 		last SWITCH;
 	};
 
@@ -169,8 +175,27 @@ SWITCH: {
 			exit 1;
 		}
 
-		my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf", bdb_environment_path => $ARGV[2]);
-		$syncer->$_($ARGV[1]);
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf", bdb_environment_path => $ARGV[2]);
+			$syncer->$_($ARGV[1]);
+		};
+
+		handle_exception($@) if $@;
+		last SWITCH;
+	};
+
+	/^add_server$/i && do {
+		if (scalar(@ARGV) < 2) {
+			print "usage: $0 add_server group\n";
+			exit 1;
+		}
+
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->add_server($ARGV[1]);
+		};
+
+		handle_exception($@) if $@;
 		last SWITCH;
 	};
 
@@ -200,4 +225,12 @@ SWITCH: {
 	};
 
 	die("parameter $_ is not supported");
+}
+
+sub handle_exception {
+	my $exception = shift;
+
+	$exception = $exception->faultcode . ": " . $exception->faultstring if ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM');
+	$exception = Dumper($exception) if ref($exception);
+	print "Caught exception executing add_server: $exception\n";
 }
