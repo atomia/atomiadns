@@ -51,11 +51,13 @@ install-stamp:
 #Run commands before making package
 
 	mkdir -p $(API_DIR)/etc/apache2/conf.d
-	mkdir -p $(API_DIR)/usr/share/atomiadns
+	mkdir -p $(API_DIR)/usr/share/atomiadns/conf
+	mkdir -p $(API_DIR)/usr/share/atomiadns/examples
 	mkdir -p $(API_DIR)/var/www
 	cp conf/*.conf $(API_DIR)/etc
 	cp conf/apache-example $(API_DIR)/etc/apache2/conf.d/atomiadns
-	cp -pr examples conf $(API_DIR)/usr/share/atomiadns
+	cp examples/* $(API_DIR)/usr/share/atomiadns/examples
+	cp conf/* $(API_DIR)/usr/share/atomiadns/conf
 	cp *.wsdl $(API_DIR)/var/www
 
 	# Add commands to install the package into debian/$PACKAGE_NAME here
@@ -71,8 +73,8 @@ install-stamp:
 	rmdir --ignore-fail-on-non-empty --parents $(API_DIR)/usr/lib/perl5
 	rmdir --ignore-fail-on-non-empty --parents $(CLIENT_DIR)/usr/lib/perl5
 
-	mkdir -p $(DB_DIR)/usr/share/atomiadns
-	cp -pr schema $(DB_DIR)/usr/share/atomiadns
+	mkdir -p $(DB_DIR)/usr/share/atomiadns/schema
+	cp -pr schema/* $(DB_DIR)/usr/share/atomiadns/schema
 
 	touch install-stamp
 
