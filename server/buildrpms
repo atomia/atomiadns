@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ `dirname "$0"` != "." ]; then
+	echo "you have run this script from the dir it is placed in"
+	exit 1
+fi
+
+rm -f /usr/src/redhat/SOURCES/atomiadns-*
+rm -f /usr/src/redhat/SPECS/atomiadns-*
+cp SPECS/*.spec /usr/src/redhat/SPECS
+
+startdir="$PWD"
+
+cd ..
+tar cfpz /usr/src/redhat/SOURCES/atomiadns-server.tar.gz --exclude "*/confluence_documentation" --exclude "*/.svn" server
+
+cd /usr/src/redhat/SPECS
+rpmbuild -ba atomiadns-api.spec
+rpmbuild -ba atomiadns-client.spec
+rpmbuild -bb atomiadns-database.spec
+rpmbuild -bb atomiadns-masterserver.spec
+
+cd "$startdir"
+cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages
+cp /usr/src/redhat/SRPMS/atomiadns-* ../packages
+rm -f ../packages/*-debuginfo-*
