@@ -25,6 +25,7 @@ MAINLOOP: while (1) {
 
 	if ($@) {
 		print "Caught exception: $@";
+		sleep 5;
 	} else {
 		last MAINLOOP;
 	}
@@ -295,6 +296,7 @@ sub process_update {
 
 sub main {
 	my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
+	my $dyndns_port = $config{"dyndns_port"} || die("dyndns_port not defined in config");
 
 	my $soap_cacert = $config{"soap_cacert"};
 	if ($soap_uri =~ /^https/) {
@@ -310,8 +312,8 @@ sub main {
 	}
 
 	my $ns = Net::DNS::Nameserver->new(
-		LocalAddr => "s272.pingdom.com",
-		LocalPort    => 5353,
+		LocalAddr    => 0,
+		LocalPort    => $dyndns_port,
 		ReplyHandler => \&reply_handler,
 		UpdateHandler => \&update_handler,
 		Verbose      => 0,

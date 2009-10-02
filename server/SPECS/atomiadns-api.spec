@@ -55,7 +55,7 @@ All changes done through the API will be provisioned to the nameservers that are
 
 %files
 %defattr(-,root,root,-)
-/etc/atomiadns.conf
+%config(noreplace) /etc/atomiadns.conf
 /etc/httpd/conf.d/atomiadns.conf
 %{perl_vendorlib}/Atomia/DNS/Server.pm
 %{perl_vendorlib}/Atomia/DNS/ServerHandler.pm

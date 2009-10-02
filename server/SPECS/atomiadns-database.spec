@@ -47,6 +47,7 @@ The Atomia DNS database schema.
 /sbin/chkconfig --add postgresql
 /sbin/service postgresql initdb > /dev/null
 /sbin/service postgresql start 
+/sbin/chkconfig --level 345 postgresql on
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ `dirname "$0"` != "." ]; then
+	echo "you have run this script from the dir it is placed in"
+	exit 1
+fi
+
+rm -f /usr/src/redhat/SOURCES/atomiadns-*
+rm -f /usr/src/redhat/SPECS/atomiadns-*
+cp SPECS/*.spec /usr/src/redhat/SPECS
+
+startdir="$PWD"
+
+cd ..
+tar cfpz /usr/src/redhat/SOURCES/atomiadns-dyndns.tar.gz --exclude "*/.svn" dyndns
+
+cd /usr/src/redhat/SPECS
+rpmbuild -ba atomiadns-dyndns.spec
+
+cd "$startdir"
+cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages
+cp /usr/src/redhat/SRPMS/atomiadns-* ../packages
+rm -f ../packages/*-debuginfo-*
