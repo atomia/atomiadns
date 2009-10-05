@@ -3,3 +3,4 @@ bdb_environment_path = /var/named/atomiadns_bdb
 bdb_filename = dns_data.db
 slavezones_config = /var/named/slaves/named-slavezones.conf.local
 slavezones_dir = /var/named/slaves/zones
+rndc_path = /usr/sbin/rndc

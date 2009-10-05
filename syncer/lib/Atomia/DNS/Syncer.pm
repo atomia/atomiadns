@@ -20,6 +20,7 @@ has 'bdb_environment_path' => (is => 'rw', isa => 'Any', default => undef);
 has 'soap' => (is => 'rw', isa => 'Any', default => undef);
 has 'slavezones_config' => (is => 'rw', isa => 'Str', default => undef);
 has 'slavezones_dir' => (is => 'rw', isa => 'Str', default => undef);
+has 'rndc_path' => (is => 'rw', isa => 'Str', default => undef);
 
 sub BUILD {
         my $self = shift;
@@ -34,6 +35,9 @@ sub BUILD {
 
 	$self->slavezones_dir($self->config->{"slavezones_dir"});
 	die("you have to specify slavezones_dir as an existing directory") unless defined($self->slavezones_dir) && -d $self->slavezones_dir;
+
+	$self->rndc_path($self->config->{"rndc_path"});
+	die("you have to specify rndc_path as an existing file") unless defined($self->rndc_path) && -f $self->rndc_path;
 
 	my $bdb_path = $self->bdb_environment_path ? $self->bdb_environment_path : $self->config->{"bdb_environment_path"};
 	die("you have to either pass a path in the bdb_environment_path parameter or set bdb_environment_path in the config") unless defined($bdb_path);
@@ -512,7 +516,7 @@ sub move_slavezone_into_place {
 
 sub signal_bind_reconfig {
 	my $self = shift;
-	system("rndc reconfig") == 0 || die "error reloading bind using rndc reconfig";
+	system($self->rndc_path . " reconfig") == 0 || die "error reloading bind using rndc reconfig";
 }
 
 1;
