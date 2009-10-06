@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 0.9.16
+Version: 0.9.17
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -55,7 +55,6 @@ Atomia DNS DDNS server.
 
 %post
 /sbin/chkconfig --add atomiadyndns
-/sbin/service atomiadyndns start
 
 if [ -f /etc/atomiadns.conf ]; then
 	if [ -z "$(grep "^tsig_key" /etc/atomiadns.conf)" ]; then
@@ -63,6 +62,12 @@ if [ -f /etc/atomiadns.conf ]; then
 	fi
 else
 	cp /usr/share/atomia/conf/atomiadns.conf.atomiadyndns /etc/atomiadns.conf
+fi
+
+if [ "$1" = 1 ]; then
+	/sbin/service atomiadyndns start
+else
+	/sbin/service atomiadyndns restart
 fi
 
 exit 0
@@ -75,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.17-1
+- Fix atomiadns-dyndns upgrade functionality
 * Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.16-1
 - Test upgrade with the upgrade + build script
 * Thu Oct 01 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.15-1
