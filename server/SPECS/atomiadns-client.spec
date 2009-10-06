@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 0.9.15
+Version: 0.9.16
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -49,5 +49,7 @@ cd ..
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
 
 %changelog
+* Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.16-1
+- Test upgrade with the upgrade + build script
 * Thu Oct 01 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.15-1
 - Initial RPM package.

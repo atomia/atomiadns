@@ -8,7 +8,14 @@ createschema() {
 	fi
 
 	if [ ! -f "/etc/atomiadns.conf" ]; then
-		cp /usr/share/atomiadns/conf/atomiadns.conf /etc
+		if [ -f "/usr/share/atomiadns/conf/atomiadns.conf" ]; then
+			cp /usr/share/atomiadns/conf/atomiadns.conf /etc
+		elif [ -f "/usr/share/atomiadns/conf/atomiadns-database.conf" ]; then
+			cp /usr/share/atomiadns/conf/atomiadns-database.conf /etc/atomiadns.conf
+		else
+			echo "no config found"
+			exit 1
+		fi
 	fi
 
 	TMPFILE=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1

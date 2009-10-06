@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 0.9.15
+Version: 0.9.16
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -81,5 +81,7 @@ fi
 exit 0
 
 %changelog
+* Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.16-1
+- Test upgrade with the upgrade + build script
 * Thu Oct 01 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.15-1
 - Initial RPM package.
