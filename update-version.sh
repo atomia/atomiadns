@@ -38,14 +38,3 @@ find dyndns syncer server -name "*.spec" -type f | while read f; do
 	ed_script=`printf "$version_subs\n$goto_changelog\n$change_header\n- $message\n.\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
-
-cd dyndns
-./buildrpms
-cd ../syncer
-./buildrpms
-cd ../server
-./buildrpms
-cd ..
-
-svn add packages/*"$version"*
-svn commit -m "Build RPM version $version: $message"

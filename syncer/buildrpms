@@ -3,6 +3,9 @@
 if [ `dirname "$0"` != "." ]; then
 	echo "you have run this script from the dir it is placed in"
 	exit 1
+elif [ -z "$1" ]; then
+	echo "usage: $0 rhel4|rhel5"
+	exit 1
 fi
 
 rm -f /usr/src/redhat/SOURCES/atomiadns-*
@@ -18,6 +21,6 @@ cd /usr/src/redhat/SPECS
 rpmbuild --sign -ba atomiadns-nameserver.spec
 
 cd "$startdir"
-cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages
-cp /usr/src/redhat/SRPMS/atomiadns-* ../packages
+cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages/"$1"
+cp /usr/src/redhat/SRPMS/atomiadns-* ../packages/"$1"
 rm -f ../packages/*-debuginfo-*
