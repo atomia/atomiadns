@@ -12,4 +12,4 @@ mkdir -p /etc/bind/slave/zones
 chown -R bind:bind /etc/bind/slave
 
 touch /etc/bind/slave/named-slavezones.conf.local
-chown bind:bind /etc/bind/named-slavezones.conf.local
+chown bind:bind /etc/bind/slave/named-slavezones.conf.local
