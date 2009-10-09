@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Removes all change-rows for a zone and nameserver except the one with a specific id.
+
+h3.Declaration syntax
+{panel}
+void MarkAllUpdatedExcept(
+	string zone,
+	int changeid
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zone|string|zone to mark all updates as updated for|
+|changeid|int|the id of the change-row to keep|
+
+{include:MarkAllUpdatedExcept Method Example - Atomia DNS API}

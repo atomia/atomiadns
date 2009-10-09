@@ -28,6 +28,7 @@ my $signatures = {
 	"DeleteNameserver" => "void string",
 	"GetChangedZones" => "changes string",
 	"MarkUpdated" => "void int string string",
+	"MarkAllUpdatedExcept" => "void string int",
 	"GetAllZones" => "zonestruct",
 	"ReloadAllZones" => "void",
 	"GetUpdatesDisabled" => "int",

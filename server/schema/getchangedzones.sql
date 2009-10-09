@@ -6,8 +6,9 @@ CREATE OR REPLACE FUNCTION GetChangedZones(
 ) RETURNS SETOF record AS $$
 DECLARE r RECORD;
 BEGIN
-	FOR r IN	SELECT change.id, zone, changetime FROM change INNER JOIN nameserver ON nameserver_id = nameserver.id
-			WHERE nameserver.name = nameservername AND status = 'PENDING' ORDER BY changetime ASC
+	FOR r IN	SELECT MAX(change.id) AS id, zone, MAX(changetime) AS changetime FROM change INNER JOIN nameserver ON nameserver_id = nameserver.id 
+			WHERE nameserver.name = nameservername AND status = 'PENDING'
+			GROUP BY zone
 	LOOP
 		change_id := r.id;
 		change_name := r.zone;

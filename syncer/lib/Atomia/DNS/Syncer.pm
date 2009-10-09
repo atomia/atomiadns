@@ -213,6 +213,8 @@ sub sync_updated_zones {
 		eval {
 			$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
 
+			$self->soap->MarkAllUpdatedExcept($zone->{"name"}, $change_id);
+
 			$transaction = $self->bdb_environment->txn_begin() || die("error starting transaction");
 			$self->remove_records($db_data, $db_xfr, $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified"));
 			my $num_records = $self->sync_records($db_data, $db_xfr, [ $zone ]);

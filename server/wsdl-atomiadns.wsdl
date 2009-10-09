@@ -277,6 +277,23 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="MarkAllUpdatedExcept">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>zone to mark all updates as updated for</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row to keep</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkAllUpdatedExceptResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="MarkSlaveZoneUpdated">
 				<xsd:complexType>
 					<xsd:all>
@@ -935,6 +952,15 @@ atomiaChangedZone is a struct with the following members:
 		<part name="parameters" element="tns:MarkUpdatedResponse"/>
 	</message>
 
+	<message name="MarkAllUpdatedExceptInput">
+		<documentation>Removes all change-rows for a zone and nameserver except the one with a specific id.</documentation>
+		<part name="parameters" element="tns:MarkAllUpdatedExcept"/>
+	</message>
+
+	<message name="MarkAllUpdatedExceptOutput">
+		<part name="parameters" element="tns:MarkAllUpdatedExceptResponse"/>
+	</message>
+
 	<message name="GetAllZonesInput">
 		<documentation>Get a list of all zones in the database.</documentation>
 		<part name="parameters" element="tns:GetAllZones"/>
@@ -1233,6 +1259,15 @@ atomiaChangedZone is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="MarkAllUpdatedExcept">
+			<input message="tns:MarkAllUpdatedExceptInput"/>
+			<output message="tns:MarkAllUpdatedExceptOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="GetAllZones">
 			<input message="tns:GetAllZonesInput"/>
 			<output message="tns:GetAllZonesOutput"/>
@@ -1492,6 +1527,13 @@ atomiaChangedZone is a struct with the following members:
 		<operation name="MarkUpdated">
 			<documentation>Mark a change-row as handled, removing it if no error occured.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkUpdated"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="MarkAllUpdatedExcept">
+			<documentation>Removes all change-rows for a zone and nameserver except the one with a specific id.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkAllUpdatedExcept"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

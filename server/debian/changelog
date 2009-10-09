@@ -1,3 +1,9 @@
+atomiadns-masterserver (0.9.18) hardy; urgency=low
+
+  * Add support for only syncing one of 1000 pending changes, instead of all 1000.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 9 Oct 2009 14:40:13 +0200
+
 atomiadns-masterserver (0.9.15) hardy; urgency=low
 
   * Add support SSL certificate validation and HTTP authentication.

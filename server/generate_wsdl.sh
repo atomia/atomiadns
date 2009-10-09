@@ -25,6 +25,7 @@ methodawk='BEGIN {
 	methods["DeleteNameserver"] = "Remove a nameserver as a subscriber of changes to the data set in this server.";
 	methods["GetChangedZones"] = "Fetches a list of all changed zones for a nameserver.";
 	methods["MarkUpdated"] = "Mark a change-row as handled, removing it if no error occured.";
+	methods["MarkAllUpdatedExcept"] = "Removes all change-rows for a zone and nameserver except the one with a specific id.";
 	methods["GetAllZones"] = "Get a list of all zones in the database.";
 	methods["ReloadAllZones"] = "Mark all zones in the database as changed.";
 	methods["GetUpdatesDisabled"] = "Fetch information regarding if updates are disabled or not.";
