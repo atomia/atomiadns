@@ -32,9 +32,9 @@ fi
 
 find dyndns syncer server -name "*.spec" -type f | while read f; do
 	version_subs="%%s/^Version: .*/Version: $version/"
-	version_subs="%%s/^Version: .*/Version: $version/"
+	require_subs="%%s/^Requires: atomiadns-api >= .* atomiadns-database >= .*/Requires: atomiadns-api >= $version atomiadns-database >= $version/"
 	goto_changelog="/^%%changelog/+1i"
 	change_header="* $(date +"%a %b %d %Y") Jimmy Bergman <jimmy@atomia.com> - ${version}-1"
-	ed_script=`printf "$version_subs\n$goto_changelog\n$change_header\n- $message\n.\nw\nq\n"`
+	ed_script=`printf "$version_subs\n$require_subs\n$goto_changelog\n$change_header\n- $message\n.\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
