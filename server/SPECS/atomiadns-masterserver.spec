@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 0.9.17
+Version: 0.9.18
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Mon Oct 12 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.18-1
+- Add MarkAllUpdatedExcept
 * Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.17-1
 - Fix atomiadns-dyndns upgrade functionality
 * Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.16-1

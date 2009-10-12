@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 0.9.17
+Version: 0.9.18
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -49,6 +49,8 @@ cd ..
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
 
 %changelog
+* Mon Oct 12 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.18-1
+- Add MarkAllUpdatedExcept
 * Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.17-1
 - Fix atomiadns-dyndns upgrade functionality
 * Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.16-1
