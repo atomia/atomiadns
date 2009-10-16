@@ -30,11 +30,35 @@ if [ ! "$version_num" -gt "$current_version_num" ]; then
 	exit 1
 fi
 
+# Update *.spec
 find dyndns syncer server -name "*.spec" -type f | while read f; do
 	version_subs="%%s/^Version: .*/Version: $version/"
 	require_subs="%%s/^Requires: atomiadns-api >= .* atomiadns-database >= .*/Requires: atomiadns-api >= $version atomiadns-database >= $version/"
 	goto_changelog="/^%%changelog/+1i"
 	change_header="* $(date +"%a %b %d %Y") Jimmy Bergman <jimmy@atomia.com> - ${version}-1"
 	ed_script=`printf "$version_subs\n$require_subs\n$goto_changelog\n$change_header\n- $message\n.\nw\nq\n"`
+	echo "$ed_script" | ed "$f"
+done
+
+# Update */Makefile.PL
+find dyndns syncer server -name "Makefile.PL" | while read f; do
+	version_subs="%%s/'VERSION' => '.*',/'VERSION' => '$version',/"
+	ed_script=`printf "$version_subs\nw\nq\n"`
+	echo "$ed_script" | ed "$f"
+done
+
+# Update */control
+find dyndns syncer server -name "control" | while read f; do
+	version_subs='%%s/\\\\(atomiadns-[a-z]*\\\\) (>= [^)]*)/\\\\1 (>= '"$version"')/g'
+	ed_script=`printf "$version_subs\nw\nq\n"`
+	echo "$ed_script" | ed "$f"
+done
+
+# Update */changelog
+find dyndns syncer server -name "changelog" | while read f; do
+	date=`date +"%a, %-d %b %Y %T %z"`
+	package=`grep " hardy; " "$f" | head -n 1 | cut -d " " -f 1`
+	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- Jimmy Bergman <jimmy@sigint.se>  %s" "$package" "$version" "$message" "$date"`
+	ed_script=`printf "1i\n%s\n\n.\nw\nq\n" "$changelog"`
 	echo "$ed_script" | ed "$f"
 done

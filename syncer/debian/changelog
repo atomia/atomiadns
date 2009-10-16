@@ -1,3 +1,9 @@
+atomiadns-nameserver (0.9.19) hardy; urgency=low
+
+  * Optionally allow id in AddDnsRecords
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 16 Oct 2009 14:58:32 +0200
+
 atomiadns-nameserver (0.9.18) hardy; urgency=low
 
   * Start usint MarkAllUpdatedExcept.

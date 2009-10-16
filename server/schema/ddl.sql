@@ -26,7 +26,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (24);
+INSERT INTO atomiadns_schemaversion (version) VALUES (26);
 
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),

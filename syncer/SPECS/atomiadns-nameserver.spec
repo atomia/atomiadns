@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 0.9.18
+Version: 0.9.19
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -100,6 +100,8 @@ fi
 exit 0
 
 %changelog
+* Fri Oct 16 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.19-1
+- Optionally allow id in AddDnsRecords
 * Mon Oct 12 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.18-1
 - Add MarkAllUpdatedExcept
 * Tue Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.17-1

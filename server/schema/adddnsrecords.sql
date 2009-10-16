@@ -20,9 +20,16 @@ BEGIN
 			END IF;
 		END IF;
 
-		INSERT INTO record (label_id, ttl, class, type, rdata) VALUES (record_label_id, 
+		IF records[i][1] IS NOT NULL AND records[i][1] != '' AND records[i][1] != '-1' THEN
+			INSERT INTO record (id, label_id, ttl, class, type, rdata) VALUES (records[i][1]::int, record_label_id, 
 					records[i][4]::int, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
-		record_id := currval('record_id_seq');
+			record_id := records[i][1]::int;
+			
+		ELSE
+			INSERT INTO record (label_id, ttl, class, type, rdata) VALUES (record_label_id, 
+					records[i][4]::int, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
+			record_id := currval('record_id_seq');
+		END IF;
 		RETURN NEXT;
 	END LOOP;
 END; $$ LANGUAGE plpgsql;
