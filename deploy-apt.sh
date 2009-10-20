@@ -5,8 +5,8 @@ if [ -z "$1" ] || [ -z "$2" ]; then
 	exit 1
 fi
 
-svn add packages/*"$1"*
+svn add packages/"$2"/*"$1"*
 svn commit -m "Release apt-packages for version $1 on $2"
 
-scp packages/*"$1"*.deb root@apt.atomia.com:/home/pingdom
+scp packages/"$2"/*"$1"*.deb root@apt.atomia.com:/home/pingdom
 ssh root@rpm.atomia.com "cd /var/packages/ubuntu-$2 && reprepro includedeb $2 /home/pingdom/atomiadns-*$1*.deb"

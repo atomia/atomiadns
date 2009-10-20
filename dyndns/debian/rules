@@ -59,7 +59,7 @@ install-stamp:
 	# As this is a architecture independent package, we are not
 	# supposed to install stuff to /usr/lib. MakeMaker creates
 	# the dirs, we delete them from the deb:
-	rmdir --ignore-fail-on-non-empty --parents $(TMP)/usr/lib/perl5
+	[ ! -d "$(TMP)/usr/lib/perl5" ] || rmdir --ignore-fail-on-non-empty --parents "$(TMP)/usr/lib/perl5"
 
 	touch install-stamp
 
