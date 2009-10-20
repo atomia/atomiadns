@@ -1,0 +1,179 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Config::General;
+use Net::DNS::Zone::Parser;
+
+my $config_file = "/etc/atomiadns.conf";
+my $soap_uri = undef;
+my $soap_cacert = undef;
+my $soap_username = undef;
+my $soap_password = undef;
+my $zone_file = undef;
+my $zone_origin = undef;
+my $nsgroup = undef;
+my $verbose = 0;
+my $help = undef;
+
+if (-f "$config_file") {
+	my $conf = new Config::General($config_file);
+	die("config file found at $config_file but it is unreadable" ) unless defined($conf);
+	my %config = $conf->getall;
+	$soap_uri = $config{"soap_uri"};
+	$soap_cacert = $config{"soap_cacert"};
+	$soap_username = $config{"soap_username"};
+	$soap_password = $config{"soap_password"};
+}
+
+GetOptions (	"uri=s" => \$soap_uri,
+		"help|?" => \$help,
+		"zonefile=s" => \$zone_file,
+		"nsgroup=s" => \$nsgroup,
+		"origin=s" => \$zone_origin,
+		"verbose|v" => \$verbose) || pod2usage(0);
+pod2usage(-verbose => 1) if $help;
+pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/ && defined($zone_origin) && defined($nsgroup) && defined($zone_file) && -f $zone_file;
+
+if ($soap_uri =~ /^https/) {
+	die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option in /etc/atomiadns.conf" unless defined($soap_cacert) && -f $soap_cacert;
+	$ENV{HTTPS_CA_FILE} = $soap_cacert;
+}
+
+if ($verbose) {
+	eval 'use SOAP::Lite +trace => [ "debug" ];';
+} else {
+	eval 'use SOAP::Lite;';
+}
+
+if (defined($soap_username)) {
+	die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
+	eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+}
+
+my $soap = SOAP::Lite
+	->  uri('urn:Atomia::DNS::Server')
+	->  proxy($soap_uri)
+	->  on_fault(sub {
+			my($soap, $res) = @_;
+			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
+		});
+
+$zone_origin =~ s/\.$//;
+
+my $parser = Net::DNS::Zone::Parser->new;
+my $parseerror = $parser->read($zone_file, { ORIGIN => $zone_origin, CREATE_RR => 1 });
+die "Error parsing $zone_file: $parseerror" if $parseerror;
+
+my $parsed_zone = $parser->get_array;
+
+my $to_restore = {};
+foreach my $record (@$parsed_zone) {
+	my $label = atomia_host_to_label($record->name, $zone_origin);
+
+	my $records_for_label = $to_restore->{$label};
+	unless (defined($records_for_label)) {
+		$records_for_label = [];
+		$to_restore->{$label} = $records_for_label;
+	}
+
+	my $rdata;
+	if ($record->type eq "SOA") {
+		$rdata = sprintf "%s. %s. %%serial %d %d %d %d", $record->mname, $record->rname, $record->refresh, $record->retry, $record->expire, $record->minimum;
+	} else {
+		$rdata = $record->rdatastr;
+	}
+	push @$records_for_label, { ttl => $record->ttl, label => $label, class => "IN", type => $record->type, rdata => $rdata};
+}
+
+my @zone = map { { name => $_, records => $to_restore->{$_} } } keys %$to_restore;
+
+$soap->RestoreZone($zone_origin, $nsgroup, \@zone);
+
+exit 0;
+
+sub atomia_host_to_label {
+        my $name = shift;
+        my $zone = shift;
+
+        if ($name eq $zone) {
+                return '@';
+        } else {
+                die("atomia_host_to_label called when name not in zone") unless $name =~ /$zone$/;
+                return substr($name, 0, length($name) - length($zone) - 1);
+        }
+}
+
+=encoding utf8
+
+=head1 NAME
+
+atomiadns_zoneimport - An application for administering a Atomia DNS installation
+
+=head1 SYNOPSIS
+
+=over 8
+
+=item atomiadns_zoneimport [--uri SOAP_URI] --origin ORIGIN --zonefile PATH --nsgroup NAMESERVERGROUP [-v] [--help]
+
+=back
+
+=head1 DESCRIPTION
+
+=head1 OPTIONS
+
+=over 8
+
+=item --uri SOAP_URI
+
+Specifies the URL of the Atomia DNS Master server to import zones to.
+
+=item --origin ORIGIN
+
+The zone to import the zone file to.
+
+=item --zonefile PATH
+
+Specifies the path of the zonefile to import.
+
+=item --nsgroup NAMESERVERGROUP
+
+Specifies the nameservergroup to import the zone to.
+
+=item --verbose
+
+Output a trace of what is done.
+
+=item --help
+
+Displays the synopsis and documentation for individual options.
+
+=back
+
+=head1 CONFIGURATION
+
+The application is configured using a optional config file stored at /etc/atomiadns.conf.
+
+The following options exist:
+
+=over 8
+
+=item soap_uri
+
+Specifies the URI of the SOAP Server to administer zones using.
+
+=back
+
+=head1 EXAMPLES
+
+atomiadns_zoneimport --uri http://some.soap.server/atomiadns --origin somezone.com --zonefile master/somezone.conf
+
+=head1 AUTHOR
+
+Atomia DNS was developed by Atomia AB. For support, please see http://www.atomia.com/.
+
+=cut

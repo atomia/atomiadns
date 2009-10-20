@@ -1,0 +1,5 @@
+atomiadns-zoneimport (0.9.19) hardy; urgency=low
+
+  * Initial version.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 16 Oct 2009 14:58:32 +0200
