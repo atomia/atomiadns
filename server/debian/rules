@@ -70,8 +70,8 @@ install-stamp:
 	# As this is a architecture independent package, we are not
 	# supposed to install stuff to /usr/lib. MakeMaker creates
 	# the dirs, we delete them from the deb:
-	rmdir --ignore-fail-on-non-empty --parents $(API_DIR)/usr/lib/perl5
-	rmdir --ignore-fail-on-non-empty --parents $(CLIENT_DIR)/usr/lib/perl5
+	[ ! -d "$(API_DIR)/usr/lib/perl5" ] || rmdir --ignore-fail-on-non-empty --parents "$(API_DIR)/usr/lib/perl5"
+	[ ! -d "$(CLIENT_DIR)/usr/lib/perl5" ] || rmdir --ignore-fail-on-non-empty --parents "$(CLIENT_DIR)/usr/lib/perl5"
 
 	mkdir -p $(DB_DIR)/usr/share/atomiadns/schema
 	cp -pr schema/* $(DB_DIR)/usr/share/atomiadns/schema
