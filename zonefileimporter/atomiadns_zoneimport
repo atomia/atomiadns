@@ -71,15 +71,9 @@ die "Error parsing $zone_file: $parseerror" if $parseerror;
 
 my $parsed_zone = $parser->get_array;
 
-my $to_restore = {};
+my $zone = "";
 foreach my $record (@$parsed_zone) {
 	my $label = atomia_host_to_label($record->name, $zone_origin);
-
-	my $records_for_label = $to_restore->{$label};
-	unless (defined($records_for_label)) {
-		$records_for_label = [];
-		$to_restore->{$label} = $records_for_label;
-	}
 
 	my $rdata;
 	if ($record->type eq "SOA") {
@@ -87,13 +81,13 @@ foreach my $record (@$parsed_zone) {
 	} else {
 		$rdata = $record->rdatastr;
 	}
-	push @$records_for_label, { ttl => $record->ttl, label => $label, class => "IN", type => $record->type, rdata => $rdata};
+
+	$zone .= sprintf "%s IN %d %s %s\n", $label, $record->ttl, $record->type, $rdata;
 }
 
-my @zone = map { { name => $_, records => $to_restore->{$_} } } keys %$to_restore;
+chomp($zone);
 
-$soap->RestoreZone($zone_origin, $nsgroup, \@zone);
-
+$soap->RestoreZoneBinary($zone_origin, $nsgroup, $zone);
 exit 0;
 
 sub atomia_host_to_label {
