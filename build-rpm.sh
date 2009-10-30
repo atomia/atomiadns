@@ -12,5 +12,5 @@ cd ../syncer
 cd ../server
 ./buildrpms "$1"
 cd ../zonefileimporter
-./buildrpms "$1"
+#./buildrpms "$1"
 cd ..

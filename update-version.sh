@@ -41,21 +41,21 @@ find dyndns syncer server -name "*.spec" -type f | while read f; do
 done
 
 # Update */Makefile.PL
-find dyndns syncer server -name "Makefile.PL" | while read f; do
+find dyndns syncer server zonefileimporter -name "Makefile.PL" | while read f; do
 	version_subs="%%s/'VERSION' => '.*',/'VERSION' => '$version',/"
 	ed_script=`printf "$version_subs\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
 
 # Update */control
-find dyndns syncer server -name "control" | while read f; do
+find dyndns syncer server zonefileimporter -name "control" | while read f; do
 	version_subs='%%s/\\\\(atomiadns-[a-z]*\\\\) (>= [^)]*)/\\\\1 (>= '"$version"')/g'
 	ed_script=`printf "$version_subs\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
 
 # Update */changelog
-find dyndns syncer server -name "changelog" | while read f; do
+find dyndns syncer server zonefileimporter -name "changelog" | while read f; do
 	date=`date +"%a, %-d %b %Y %T %z"`
 	package=`grep " hardy; " "$f" | head -n 1 | cut -d " " -f 1`
 	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- Jimmy Bergman <jimmy@sigint.se>  %s" "$package" "$version" "$message" "$date"`
