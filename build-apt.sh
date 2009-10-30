@@ -11,4 +11,6 @@ cd ../syncer
 ./buildpackages "$1"
 cd ../server
 ./buildpackages "$1"
+cd ../zonefileimporter
+./buildpackages "$1"
 cd ..

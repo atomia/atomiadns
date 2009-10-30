@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 0.9.19
+Version: 0.9.20
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Fri Oct 30 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.20-1
+- Add support for RestoreZoneBinary and GetZoneBinary
 * Fri Oct 16 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.19-1
 - Optionally allow id in AddDnsRecords
 * Mon Oct 12 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.18-1

@@ -19,7 +19,9 @@ my $signatures = {
 	"GetDnsRecords" => "array[resourcerecord] string string",
 	"GetLabels" => "array[string] string",
 	"GetZone" => "zone string",
+	"GetZoneBinary" => "binaryzone string",
 	"RestoreZone" => "void string string zone",
+	"RestoreZoneBinary" => "void string string binaryzone",
 	"SetDnsRecordsBulk" => "void array array[resourcerecord]",
 	"CopyDnsZoneBulk" => "void string array",
 	"CopyDnsLabelBulk" => "void string string array[hostname]",
@@ -66,6 +68,8 @@ foreach my $method (keys %{$signatures}) {
 				$Atomia::DNS::Server::instance->handleStringArray($method, \@signature, @_);
 			} elsif ($return_type eq "string") {
 				$Atomia::DNS::Server::instance->handleString($method, \@signature, @_);
+			} elsif ($return_type eq "binaryzone") {
+				$Atomia::DNS::Server::instance->handleBinaryZone($method, \@signature, @_);
 			} elsif ($return_type eq "array[int]") {
 				$Atomia::DNS::Server::instance->handleIntArray($method, \@signature, @_);
 			} elsif ($return_type eq "zone") {

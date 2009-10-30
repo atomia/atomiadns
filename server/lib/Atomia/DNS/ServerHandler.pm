@@ -145,6 +145,37 @@ sub handleString {
 	return SOAP::Data->new(type => "string", value => $stringval);
 }
 
+sub handleBinaryZone {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+	} @$rows;
+
+	my $zone;
+	foreach my $row (@$rows) {
+		$zone .= sprintf "%s %s %d %s %s\n", $row->{"label"}, $row->{"class"}, $row->{"ttl"}, $row->{"type"}, $row->{"rdata"};
+	}
+
+	chomp($zone);
+
+	return SOAP::Data->new(name => "binaryzone", type => "base64", value => $zone);
+}
+
 sub handleIntArray {
 	my $self = shift;
 	my $method = shift;
@@ -290,6 +321,8 @@ sub handleAll {
 
 	my $sth = undef;
 	eval {
+		$method =~ s/Binary$//;
+
 		$sth = $self->dbi->prepare($void ? "SELECT $method($placeholders)" : "SELECT * FROM $method($placeholders)");
 		die("error in dbi->prepare") unless defined($sth);
 
@@ -331,24 +364,38 @@ sub handleAll {
 
 				$sth->bind_param($idx + 1, \@hostnamearray, { pg_type => PG_VARCHAR});
 
-			} elsif ($signature->[$idx] eq "zone") {
+			} elsif ($signature->[$idx] eq "zone" || $signature->[$idx] eq "binaryzone") {
 				my $zone = $_[$idx];
-
-				die("bad format of zone, should an array of structs, containing name and records") unless defined($zone) && ref($zone) eq "ARRAY";
 				my $records = [];
-				foreach my $labelrecords (map { $_->{"records"} } @$zone) {
 
-					# Convert <someseq><resourcerecord>foo</resourcerecord><resourcerecord>bar</$itemname></someseq> to array from hash
-					if (defined($labelrecords) && ref($labelrecords) eq "HASH" && scalar(keys(%$labelrecords)) == 1 && defined($labelrecords->{"resourcerecord"})) {
-						if (ref($labelrecords->{"resourcerecord"}) eq "ARRAY") {
-							$labelrecords = $labelrecords->{"resourcerecord"};
-						} else {
-							$labelrecords = [ $labelrecords->{"resourcerecord"} ];
+				if ($signature->[$idx] eq "binaryzone") {
+					die "bad format of binaryzone, should be a base64 encoded string" unless defined($zone) && ref($zone) eq '';
+					chomp $zone;
+
+					my @binaryarray = map {
+						my @arr = split(/ /, $_, 5);
+						die("bad format of binaryzone: row doesn't have 5 space separated fields") unless scalar(@arr) == 5;
+						{ label => $arr[0], class => $arr[1], ttl => $arr[2], type => $arr[3], rdata => $arr[4] }
+					} split(/\n/, $zone);
+
+					$records = \@binaryarray;
+				} else {
+					die("bad format of zone, should an array of structs, containing name and records") unless defined($zone) && ref($zone) eq "ARRAY";
+
+					foreach my $labelrecords (map { $_->{"records"} } @$zone) {
+
+						# Convert <someseq><resourcerecord>foo</resourcerecord><resourcerecord>bar</$itemname></someseq> to array from hash
+						if (defined($labelrecords) && ref($labelrecords) eq "HASH" && scalar(keys(%$labelrecords)) == 1 && defined($labelrecords->{"resourcerecord"})) {
+							if (ref($labelrecords->{"resourcerecord"}) eq "ARRAY") {
+								$labelrecords = $labelrecords->{"resourcerecord"};
+							} else {
+								$labelrecords = [ $labelrecords->{"resourcerecord"} ];
+							}
 						}
-					}
 
-					die("bad format of zone, records should be an array of resourcerecords not " . Dumper($labelrecords)) unless defined($labelrecords) && ref($labelrecords) eq "ARRAY";
-					push (@$records, @$labelrecords);
+						die("bad format of zone, records should be an array of resourcerecords not " . Dumper($labelrecords)) unless defined($labelrecords) && ref($labelrecords) eq "ARRAY";
+						push (@$records, @$labelrecords);
+					}
 				}
 
 				my @arrayrecord = map {

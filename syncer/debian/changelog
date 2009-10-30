@@ -1,3 +1,9 @@
+atomiadns-nameserver (0.9.20) hardy; urgency=low
+
+  * Add support for RestoreZoneBinary and GetZoneBinary
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 30 Oct 2009 14:41:54 +0100
+
 atomiadns-nameserver (0.9.19) hardy; urgency=low
 
   * Optionally allow id in AddDnsRecords

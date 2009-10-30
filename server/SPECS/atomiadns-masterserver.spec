@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 0.9.19
+Version: 0.9.20
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 0.9.19 atomiadns-database >= 0.9.19
+Requires: atomiadns-api >= 0.9.20 atomiadns-database >= 0.9.20
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Fri Oct 30 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.20-1
+- Add support for RestoreZoneBinary and GetZoneBinary
 * Fri Oct 16 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.19-1
 - Optionally allow id in AddDnsRecords
 * Mon Oct 12 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.18-1
