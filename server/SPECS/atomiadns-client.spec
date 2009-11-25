@@ -20,6 +20,8 @@ BuildArch: noarch
 BuildRequires: perl
 BuildRequires: perl(ExtUtils::MakeMaker)
 
+Requires: perl-libwww-perl
+
 %description
 The Atomia DNS API command line client is used for connecting to the Atomia DNS SOAP server
 to administer zones.
