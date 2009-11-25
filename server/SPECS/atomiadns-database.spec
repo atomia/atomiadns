@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 0.9.21
+Version: 0.9.22
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Wed Nov 25 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.22-1
+- Fix dependency issue for redhat build
 * Tue Nov 24 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.21-1
 - Change TXT validation to require <= 255 chars
 * Fri Oct 30 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.20-1

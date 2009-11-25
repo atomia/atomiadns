@@ -1,3 +1,9 @@
+atomiadns-dyndns (0.9.22) hardy; urgency=low
+
+  * Fix dependency issue for redhat build
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 25 Nov 2009 15:34:28 +0100
+
 atomiadns-dyndns (0.9.21) hardy; urgency=low
 
   * Change TXT validation to require <= 255 chars
