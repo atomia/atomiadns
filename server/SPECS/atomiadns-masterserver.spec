@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 0.9.22
+Version: 0.9.23
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 0.9.22 atomiadns-database >= 0.9.22
+Requires: atomiadns-api >= 0.9.23 atomiadns-database >= 0.9.23
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Mon Dec 07 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.23-1
+- Improve AAAA validation
 * Wed Nov 25 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.22-1
 - Fix dependency issue for redhat build
 * Tue Nov 24 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.21-1

@@ -13,7 +13,7 @@ CREATE TABLE allowed_type (
         id SERIAL PRIMARY KEY NOT NULL,
         type VARCHAR(16) UNIQUE NOT NULL,
         synopsis VARCHAR(255) NOT NULL,
-        regexp VARCHAR(255) NOT NULL
+        regexp TEXT NOT NULL
 );
 
 CREATE TABLE updates_disabled (
@@ -26,11 +26,11 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (27);
+INSERT INTO atomiadns_schemaversion (version) VALUES (29);
 
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),
-('AAAA', 'ipv6address', '^[a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?$'),
+('AAAA', 'ipv6address', '^((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?$'),
 ('AFSDB', 'subtype hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]+$'),
 ('CERT', 'type keytag algorithm certificate', '^[0-9]+ [0-9]+ [0-9]+ [A-Za-z0-9+/=]+$'),
 ('CNAME', 'hostname', '^[a-z0-9][a-z0-9.-]+$'),
@@ -119,7 +119,7 @@ CREATE INDEX record_label_idx ON record(label_id);
 CREATE OR REPLACE FUNCTION verify_record() RETURNS trigger AS $$
 DECLARE
         mysynopsis varchar(255);
-        myregexp varchar(255);
+        myregexp text;
 BEGIN
         SELECT synopsis, regexp INTO mysynopsis, myregexp FROM allowed_type WHERE type = NEW.type;
 

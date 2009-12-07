@@ -1,3 +1,9 @@
+atomiadns-zoneimport (0.9.23) hardy; urgency=low
+
+  * Improve AAAA validation
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 7 Dec 2009 11:22:39 +0100
+
 atomiadns-zoneimport (0.9.22) hardy; urgency=low
 
   * Fix dependency issue for redhat build
