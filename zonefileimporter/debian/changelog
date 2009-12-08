@@ -1,3 +1,9 @@
+atomiadns-zoneimport (0.9.24) hardy; urgency=low
+
+  * Update apt-packages to add the runlevel links to start daemons when installing
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 8 Dec 2009 09:42:09 +0100
+
 atomiadns-zoneimport (0.9.23) hardy; urgency=low
 
   * Improve AAAA validation
