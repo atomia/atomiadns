@@ -10,3 +10,4 @@ svn commit -m "Release apt-packages for version $1 on $2"
 
 scp packages/"$2"/*"$1"*.deb root@apt.atomia.com:/home/pingdom
 ssh root@rpm.atomia.com "cd /var/packages/ubuntu-$2 && reprepro includedeb $2 /home/pingdom/atomiadns-*$1*.deb"
+./wikify_releasenotes.sh
