@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
    'NAME' => 'Atomia::DNS::Syncer',
-   'VERSION' => '0.9.24',
+   'VERSION' => '1.0.3',
    'AUTHOR' => 'Jimmy Bergman <jimmy@atomia.com>',
    'EXE_FILES' => [ 'bin/atomiadnssync' ]
 );

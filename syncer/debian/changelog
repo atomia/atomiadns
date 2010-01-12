@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.0.3) hardy; urgency=low
+
+  * New bind-dlz packages fixing upstream bugs
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 12 Jan 2010 11:02:47 +0100
+
 atomiadns-nameserver (0.9.24) hardy; urgency=low
 
   * Update apt-packages to add the runlevel links to start daemons when installing
