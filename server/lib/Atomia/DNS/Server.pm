@@ -45,6 +45,9 @@ my $signatures = {
 	"MarkSlaveZoneUpdated" => "void int string string",
 	"GetSlaveZone" => "slavezone string",
 	"ReloadAllSlaveZones" => "void",
+	"AllowZoneTransfer" => "void string string",
+	"GetAllowedZoneTransfer" => "allowedtransfer",
+	"DeleteAllowedZoneTransfer" => "void string string",
 };
 
 our $instance = Atomia::DNS::ServerHandler->new;
@@ -82,6 +85,8 @@ foreach my $method (keys %{$signatures}) {
 				$Atomia::DNS::Server::instance->handleZoneStruct($method, \@signature, @_);
 			} elsif ($return_type eq "int") {
 				$Atomia::DNS::Server::instance->handleInt($method, \@signature, @_);
+			} elsif ($return_type eq "allowedtransfer") {
+				$Atomia::DNS::Server::instance->handleAllowedTransfer($method, \@signature, @_);
 			} else {
 				die("unknown return-type in signature: $return_type");
 			}

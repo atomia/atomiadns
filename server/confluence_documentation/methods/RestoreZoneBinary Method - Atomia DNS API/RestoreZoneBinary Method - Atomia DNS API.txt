@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+
+
+h3.Declaration syntax
+{panel}
+void RestoreZoneBinary(
+	string zonename,
+	string nameservergroup,
+	string zone
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|nameservergroup|string|the nameserver group that should host the zone|
+|zone|string|the base64 encoded value of the zone to restore|
+
+{include:RestoreZoneBinary Method Example - Atomia DNS API}

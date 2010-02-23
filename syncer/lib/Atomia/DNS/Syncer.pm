@@ -134,6 +134,7 @@ sub full_reload_offline {
 
 		my $zones = $self->sync_all_zones($db_zone, $timestamp);
 		$self->sync_records($db_data, $db_xfr, $zones);
+		$self->sync_zone_transfers($db_client);
 	};
 
 	if ($@) {
@@ -155,9 +156,10 @@ sub reload_updated_zones {
 		$db_zone = $self->open_bdb("dns_zone", "Btree", 0);
 		$db_xfr = $self->open_bdb("dns_xfr", "Hash", 0);
 		$db_data = $self->open_bdb("dns_data", "Hash", 0);
-		$db_client = $self->open_bdb("dns_client", "Hash", 1);
+		$db_client = $self->open_bdb("dns_client", "Hash", 0);
 
 		$self->sync_updated_zones($db_zone, $db_data, $db_xfr);
+		$self->sync_zone_transfers($db_client);
 	};
 
 	if ($@) {
@@ -170,6 +172,48 @@ sub reload_updated_zones {
 	$db_xfr->db_close() if defined($db_xfr);
 	$db_data->db_close() if defined($db_data);
 	$db_client->db_close() if defined($db_client);
+}
+
+sub sync_zone_transfers {
+	my $self = shift;
+	my $db_client = shift;
+
+	my $allowed_transfers = $self->soap->GetAllowedZoneTransfer();
+	die "bad data returned from soap-server for GetAllowedZoneTransfer" unless defined($allowed_transfers);
+	$allowed_transfers = $allowed_transfers->result;
+	die "bad data returned from soap-server for GetAllowedZoneTransfer" unless defined($allowed_transfers) &&
+		ref($allowed_transfers) eq "ARRAY";
+
+	my $transaction = undef;
+
+	eval {
+		$transaction = $self->bdb_environment->txn_begin() || die("error starting transaction");
+
+		$self->truncate_bdb($db_client, "dns_client");
+
+		foreach my $allowed_transfer (@$allowed_transfers) {
+			die("error storing item for allowing zone transfer") unless $db_client->db_put($allowed_transfer->{"zonename"}, $allowed_transfer->{"allowed_ip"}) == 0;
+		}
+
+		$transaction->txn_commit() == 0 || die("error commiting transaction");
+	};
+
+	if ($@) {
+		my $abort_ret = 0;
+		my $errormessage = $@;
+		$errormessage = Dumper($errormessage) if ref($errormessage);
+
+		eval {
+			$abort_ret = $transaction->txn_abort() if defined($transaction);
+		};
+
+		if ($@ && !$@ =~ /Transaction is already closed/) {
+			$abort_ret = -1;
+		}
+
+		die("error performing rollback in sync_zone_transfers due to exception: $errormessage") unless $abort_ret == 0;
+		die("caught exception in sync_zone_transfers, and aborted transaction successfully: $errormessage");
+	}
 }
 
 sub sync_all_zones {

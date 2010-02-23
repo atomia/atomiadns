@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.0.4) hardy; urgency=low
+
+  * Add support for AllowZoneTransfer
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 22 Feb 2010 16:14:01 +0100
+
 atomiadns-dyndns (1.0.3) hardy; urgency=low
 
   * New bind-dlz packages fixing upstream bugs

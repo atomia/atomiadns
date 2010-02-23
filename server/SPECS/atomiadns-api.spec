@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.0.3
+Version: 1.0.4
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -81,6 +81,8 @@ fi
 exit 0
 
 %changelog
+* Mon Feb 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.4-1
+- Add support for AllowZoneTransfer
 * Tue Jan 12 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.3-1
 - New bind-dlz packages fixing upstream bugs
 * Tue Dec 08 2009 Jimmy Bergman <jimmy@atomia.com> - 0.9.24-1

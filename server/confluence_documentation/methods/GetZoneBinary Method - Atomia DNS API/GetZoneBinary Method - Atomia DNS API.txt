@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+
+
+h3.Declaration syntax
+{panel}
+string GetZoneBinary(
+	string zone
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zone|string|the name of the zone|
+
+{include:GetZoneBinary Method Example - Atomia DNS API}

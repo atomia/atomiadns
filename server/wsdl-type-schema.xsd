@@ -179,6 +179,26 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaTransferAllowed">
+				<xsd:annotation><xsd:documentation>
+atomiaTransferAllowed is a struct with the following members:
+|| Member || Type || Description ||
+| zonename | string | the name of the zone for which transfers are allowed, or * to allow for all zones |
+| allowed_ip | string | the IP to allow transfers from |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="allowed_ip" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaAllowedTransfers">
+				<xsd:annotation><xsd:documentation>atomiaAllowedTransfers is an array of atomiaTransferAllowed-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="allowedtransfers" type="atomiaTransferAllowed" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:element name="GetUpdatesDisabled">
 				<xsd:complexType>
 					<xsd:all />
@@ -747,6 +767,88 @@ atomiaChangedZone is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="DeleteSlaveZoneResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AllowZoneTransfer">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone, or * to allow globally</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="allowed_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP to allow zone transfers from</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AllowZoneTransferResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllowedZoneTransfer">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllowedZoneTransferResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="allowedtransfers" type="atomiaAllowedTransfers"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAllowedZoneTransfer">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone, or * to remove global allows</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="allowed_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP to remove allowed zone transfers from</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAllowedZoneTransferResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBinary">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBinaryResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="binaryzone" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneBinary">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the base64 encoded value of the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneBinaryResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>

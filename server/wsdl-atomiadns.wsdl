@@ -187,6 +187,26 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaTransferAllowed">
+				<xsd:annotation><xsd:documentation>
+atomiaTransferAllowed is a struct with the following members:
+|| Member || Type || Description ||
+| zonename | string | the name of the zone for which transfers are allowed, or * to allow for all zones |
+| allowed_ip | string | the IP to allow transfers from |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="allowed_ip" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaAllowedTransfers">
+				<xsd:annotation><xsd:documentation>atomiaAllowedTransfers is an array of atomiaTransferAllowed-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="allowedtransfers" type="atomiaTransferAllowed" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:element name="GetUpdatesDisabled">
 				<xsd:complexType>
 					<xsd:all />
@@ -762,6 +782,88 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AllowZoneTransfer">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone, or * to allow globally</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="allowed_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP to allow zone transfers from</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AllowZoneTransferResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllowedZoneTransfer">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetAllowedZoneTransferResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="allowedtransfers" type="atomiaAllowedTransfers"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAllowedZoneTransfer">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone, or * to remove global allows</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="allowed_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP to remove allowed zone transfers from</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAllowedZoneTransferResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBinary">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBinaryResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="binaryzone" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneBinary">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the base64 encoded value of the zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneBinaryResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 		</xsd:schema>
 	</types>
 
@@ -871,6 +973,15 @@ atomiaChangedZone is a struct with the following members:
 		<part name="parameters" element="tns:GetZoneResponse"/>
 	</message>
 
+	<message name="GetZoneBinaryInput">
+		<documentation></documentation>
+		<part name="parameters" element="tns:GetZoneBinary"/>
+	</message>
+
+	<message name="GetZoneBinaryOutput">
+		<part name="parameters" element="tns:GetZoneBinaryResponse"/>
+	</message>
+
 	<message name="RestoreZoneInput">
 		<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
 		<part name="parameters" element="tns:RestoreZone"/>
@@ -878,6 +989,15 @@ atomiaChangedZone is a struct with the following members:
 
 	<message name="RestoreZoneOutput">
 		<part name="parameters" element="tns:RestoreZoneResponse"/>
+	</message>
+
+	<message name="RestoreZoneBinaryInput">
+		<documentation></documentation>
+		<part name="parameters" element="tns:RestoreZoneBinary"/>
+	</message>
+
+	<message name="RestoreZoneBinaryOutput">
+		<part name="parameters" element="tns:RestoreZoneBinaryResponse"/>
 	</message>
 
 	<message name="SetDnsRecordsBulkInput">
@@ -1087,6 +1207,33 @@ atomiaChangedZone is a struct with the following members:
 		<part name="parameters" element="tns:ReloadAllSlaveZonesResponse"/>
 	</message>
 
+	<message name="AllowZoneTransferInput">
+		<documentation></documentation>
+		<part name="parameters" element="tns:AllowZoneTransfer"/>
+	</message>
+
+	<message name="AllowZoneTransferOutput">
+		<part name="parameters" element="tns:AllowZoneTransferResponse"/>
+	</message>
+
+	<message name="GetAllowedZoneTransferInput">
+		<documentation></documentation>
+		<part name="parameters" element="tns:GetAllowedZoneTransfer"/>
+	</message>
+
+	<message name="GetAllowedZoneTransferOutput">
+		<part name="parameters" element="tns:GetAllowedZoneTransferResponse"/>
+	</message>
+
+	<message name="DeleteAllowedZoneTransferInput">
+		<documentation></documentation>
+		<part name="parameters" element="tns:DeleteAllowedZoneTransfer"/>
+	</message>
+
+	<message name="DeleteAllowedZoneTransferOutput">
+		<part name="parameters" element="tns:DeleteAllowedZoneTransferResponse"/>
+	</message>
+
 	<portType name="AtomiaDNSPortType">
 		<operation name="AddZone">
 			<input message="tns:AddZoneInput"/>
@@ -1178,9 +1325,27 @@ atomiaChangedZone is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetZoneBinary">
+			<input message="tns:GetZoneBinaryInput"/>
+			<output message="tns:GetZoneBinaryOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="RestoreZone">
 			<input message="tns:RestoreZoneInput"/>
 			<output message="tns:RestoreZoneOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="RestoreZoneBinary">
+			<input message="tns:RestoreZoneBinaryInput"/>
+			<output message="tns:RestoreZoneBinaryOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -1393,6 +1558,33 @@ atomiaChangedZone is a struct with the following members:
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
+
+		<operation name="AllowZoneTransfer">
+			<input message="tns:AllowZoneTransferInput"/>
+			<output message="tns:AllowZoneTransferOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetAllowedZoneTransfer">
+			<input message="tns:GetAllowedZoneTransferInput"/>
+			<output message="tns:GetAllowedZoneTransferOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteAllowedZoneTransfer">
+			<input message="tns:DeleteAllowedZoneTransferInput"/>
+			<output message="tns:DeleteAllowedZoneTransferOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
 	</portType>
 
 	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
@@ -1468,9 +1660,23 @@ atomiaChangedZone is a struct with the following members:
 			<output><soap:body use="literal"/></output>
 		</operation>
 
+		<operation name="GetZoneBinary">
+			<documentation></documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneBinary"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
 		<operation name="RestoreZone">
 			<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZone"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="RestoreZoneBinary">
+			<documentation></documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZoneBinary"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
@@ -1632,6 +1838,27 @@ atomiaChangedZone is a struct with the following members:
 		<operation name="ReloadAllSlaveZones">
 			<documentation>Mark all slave zones in the database as changed.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#ReloadAllSlaveZones"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AllowZoneTransfer">
+			<documentation></documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AllowZoneTransfer"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetAllowedZoneTransfer">
+			<documentation></documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetAllowedZoneTransfer"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteAllowedZoneTransfer">
+			<documentation></documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteAllowedZoneTransfer"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

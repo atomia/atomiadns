@@ -198,7 +198,6 @@ sub handleChanges {
 	my $method = shift;
 	my $signature = shift;
 
-
 	my $rows;
 
 	my $sth = $self->handleAll($method, $signature, 0, @_);
@@ -219,6 +218,24 @@ sub handleChanges {
 	} @$rows;
 
 	return SOAP::Data->new(name => "changes", value => \@rowarray);
+}
+
+sub handleAllowedTransfer {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $rows;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+	$rows = $sth->fetchall_arrayref({});
+	die("error polling database for allowed zone transfers: $DBI::errstr") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	my @rowarray = map {
+		SOAP::Data->new(name => "allowedtransfer", value => $_)
+	} @$rows;
+
+	return SOAP::Data->new(name => "allowedtransfers", value => \@rowarray);
 }
 
 sub handleZone {

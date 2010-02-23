@@ -22,6 +22,8 @@ my $type_mappings = {
 	"atomiaZones" => "zones",
 	"atomiaSlaveZones" => "slavezones",
 	"atomiaSlaveZoneItem" => "slavezone",
+	"atomiaTransferAllowed" => "allowedtransfer",
+	"atomiaAllowedTransfers" => "allowedtransfers",
 };
 
 use XML::XPath;
@@ -38,7 +40,7 @@ foreach my $type (@$types) {
 		$documentation = $documentation->string_value();
 		foreach my $mapping (keys %$type_mappings) {
 			my $mapping_link = ($mapping =~ /^atomia/ ? link_to_type($type_mappings->{$mapping}) : $type_mappings->{$mapping});
-			$documentation =~ s/$mapping(?![a-z])/$mapping_link/g;
+			$documentation =~ s/$mapping(?![a-zA-Z])/$mapping_link/g;
 		}
 
 		print_type($type_mappings->{$typename}, $documentation, "confluence_documentation");

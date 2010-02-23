@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+
+
+h3.Declaration syntax
+{panel}
+void DeleteAllowedZoneTransfer(
+	string zonename,
+	string allowed_ip
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone, or * to remove global allows|
+|allowed_ip|string|the IP to remove allowed zone transfers from|
+
+{include:DeleteAllowedZoneTransfer Method Example - Atomia DNS API}

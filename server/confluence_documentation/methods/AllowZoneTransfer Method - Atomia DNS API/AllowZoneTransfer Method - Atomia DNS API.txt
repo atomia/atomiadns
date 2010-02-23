@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+
+
+h3.Declaration syntax
+{panel}
+void AllowZoneTransfer(
+	string zonename,
+	string allowed_ip
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone, or * to allow globally|
+|allowed_ip|string|the IP to allow zone transfers from|
+
+{include:AllowZoneTransfer Method Example - Atomia DNS API}

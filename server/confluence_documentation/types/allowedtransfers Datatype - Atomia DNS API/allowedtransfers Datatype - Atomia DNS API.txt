@@ -1,0 +1,1 @@
+[allowedtransfers|allowedtransfers Datatype - Atomia DNS API] is an array of [allowedtransfer|allowedtransfer Datatype - Atomia DNS API]-structs.

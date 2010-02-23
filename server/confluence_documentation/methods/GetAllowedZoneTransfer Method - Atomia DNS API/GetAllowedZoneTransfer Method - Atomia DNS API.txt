@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+
+
+h3.Declaration syntax
+{panel}
+[allowedtransfers|allowedtransfers Datatype - Atomia DNS API] GetAllowedZoneTransfer()
+{panel}
+
+{include:GetAllowedZoneTransfer Method Example - Atomia DNS API}
