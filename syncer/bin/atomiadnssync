@@ -54,6 +54,13 @@ Fetches a list of changed zones and adds/removes them from the local BDB
 database.  This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-nameserver.
 You should never run this manually.
 
+=item get_server
+
+Checks if this server is added as a subscriber of changed zones and displays the group it is configured
+to handle zones for.
+
+A return value of 0 means that the server is added as a subscriber, 1 means it is not.
+
 =item add_server GROUP
 
 Adds this server (configured using servername in /etc/atomiadns.conf) as a
@@ -151,7 +158,7 @@ use Data::Dumper;
 
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
-	print "where mode is one of full_reload_offline, full_reload_online, full_reload_slavezones, add_server, remove_server, disable_updates, enable_updates\n";
+	print "where mode is one of full_reload_offline, full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates\n";
 	exit 1;
 }
 
@@ -195,7 +202,34 @@ SWITCH: {
 			$syncer->add_server($ARGV[1]);
 		};
 
-		handle_exception($@) if $@;
+		my $exception = $@;
+		if ($exception) {
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.Uniqueness/) {
+				print "This server is already added, you can use get_server to check the current settings.\n";
+				exit 1;
+			} else {
+				handle_exception($exception);
+			}
+		}
+		last SWITCH;
+	};
+
+	/^get_server$/i && do {
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+			my $group = $syncer->get_server();
+			print "This server is configured as a member of the group $group.\n";
+		};
+
+		my $exception = $@;
+		if ($exception) {
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.NameserverNotFound/) {
+				print "This nameserver is not configured as a member of any group.\n";
+				exit 1;
+			} else {
+				handle_exception($exception);
+			}
+		}
 		last SWITCH;
 	};
 
@@ -229,8 +263,10 @@ SWITCH: {
 
 sub handle_exception {
 	my $exception = shift;
+	my $no_output = shift;
 
 	$exception = $exception->faultcode . ": " . $exception->faultstring if ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM');
 	$exception = Dumper($exception) if ref($exception);
-	print "Caught exception executing add_server: $exception\n";
+	print "Caught exception handling command: $exception\n" unless defined($no_output) && $no_output == 1;
+	exit 1;
 }

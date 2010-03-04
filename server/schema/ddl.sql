@@ -26,7 +26,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (31);
+INSERT INTO atomiadns_schemaversion (version) VALUES (34);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -48,7 +48,7 @@ INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('IPSECKEY', 'precedence gateway-type algorithm gateway [base64-encoded-public-key]', '^[0-9]+ [0-9]+ [0-9]+ [a-z0-9][a-z0-9.-]+( [A-Za-z0-9+/=]+)?$'),
 ('LOC', 'd1 [m1 [s1]] N|S d2 [m2 [s2]] E|W alt [siz [hp [vp]]]', '^[0-9]{1,2}( [0-9]{1,2}?( [0-9]{1,2}([.][0-9]{1,3})?)?)? [NS] [0-9]{1,3}( [0-9]{1,2}?( [0-9]{1,2}([.][0-9]{1,3})?)?)? [EW] -?[0-9.]+m?( [0-9.]+m?){0,3}$'),
 ('MX', 'prio hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]+$'),
-('NAPTR', 'order pref flags service regexp_without_backslash replacement', '^[0-9]+ [0-9]+ "[^"]*" "[^"]*" "[^"]* ([a-z0-9][a-z0-9.-]+)?[.]$'),
+('NAPTR', 'order pref flags service regexp_without_backslash replacement', '^[0-9]+ [0-9]+ "[^"]*" "[^"]*" "[^"]*" ([a-z0-9_][a-z0-9._-]+)?[.]$'),
 ('NS', 'hostname', '^[a-z0-9][a-z0-9.-]+$'),
 ('NSEC', 'hostname type [type ..]', '^[a-z0-9][a-z0-9.-]+ [A-Z0-9]+( [A-Z0-9]+)*$'),
 ('NSEC3', 'algorithm flags iterations salt next type [.. type]', '^[0-9]+ [0-9]+ [0-9]+ (-|[A-F0-9]+) [A-Z2-7]+ [A-Z0-9]+( [A-Z0-9]+)*$'),

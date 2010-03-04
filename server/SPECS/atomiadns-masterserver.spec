@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.4
+Version: 1.0.5
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.4 atomiadns-database >= 1.0.4
+Requires: atomiadns-api >= 1.0.5 atomiadns-database >= 1.0.5
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu Mar 04 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.5-1
+- Add GetNameserver SOAP-method, get_server option and improved error handing to atomiadnssync, improve NAPTR validation and fix a bug with generation of slave zone configuration
 * Mon Feb 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.4-1
 - Add support for AllowZoneTransfer
 * Tue Jan 12 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.3-1

@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Gets the group name that a nameserver is configured as a subscriber for.
+
+h3.Declaration syntax
+{panel}
+string GetNameserver(
+	string nameserver
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|nameserver|string|the servername to get information for|
+
+{include:GetNameserver Method Example - Atomia DNS API}

@@ -405,6 +405,22 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetNameserver">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to get information for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringvalue" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="AddNameserverGroup">
 				<xsd:complexType>
 					<xsd:all>

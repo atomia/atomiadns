@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.0.5) hardy; urgency=low
+
+  * Add GetNameserver SOAP-method, get_server option and improved error handing to atomiadnssync, improve NAPTR validation and fix a bug with generation of slave zone configuration
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 4 Mar 2010 14:56:46 +0100
+
 atomiadns-dyndns (1.0.4) hardy; urgency=low
 
   * Add support for AllowZoneTransfer

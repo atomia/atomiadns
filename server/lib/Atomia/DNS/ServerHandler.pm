@@ -508,6 +508,8 @@ sub mapExceptionToFault {
 		$self->generateException('LogicalError', 'Uniqueness', $exception);
 	} elsif ($exception =~ /zone .* not found/) {
 		$self->generateException('LogicalError', 'ZoneNotFound', $exception);
+	} elsif ($exception =~ /nameserver .* not found/) {
+		$self->generateException('LogicalError', 'NameserverNotFound', $exception);
 	} elsif ($exception =~ /record .* doesn.t exist in zone/) {
 		$self->generateException('LogicalError', 'RecordNotFound', $exception);
 	} elsif ($exception =~ /both as source and destination/) {

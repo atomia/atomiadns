@@ -28,6 +28,7 @@ my $signatures = {
 	"DeleteDnsRecordsBulk" => "void array array[resourcerecord]",
 	"AddNameserver" => "void string string",
 	"DeleteNameserver" => "void string",
+	"GetNameserver" => "string string",
 	"GetChangedZones" => "changes string",
 	"MarkUpdated" => "void int string string",
 	"MarkAllUpdatedExcept" => "void string int",

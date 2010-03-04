@@ -22,6 +22,7 @@ methodawk='BEGIN {
 	methods["CopyDnsLabelBulk"] = "Copies all records from a label in the source zone to the same label in one or more other zones, overwriting any preexisting data.";
 	methods["DeleteDnsRecordsBulk"] = "Deletes all matching records from a list of zones. Everything except id must match for a record to be deleted.";
 	methods["AddNameserver"] = "Add a nameserver as a subscriber of changes to the data set in this server.";
+	methods["GetNameserver"] = "Gets the group name that a nameserver is configured as a subscriber for.";
 	methods["DeleteNameserver"] = "Remove a nameserver as a subscriber of changes to the data set in this server.";
 	methods["GetChangedZones"] = "Fetches a list of all changed zones for a nameserver.";
 	methods["MarkUpdated"] = "Mark a change-row as handled, removing it if no error occured.";

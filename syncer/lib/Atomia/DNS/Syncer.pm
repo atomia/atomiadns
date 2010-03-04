@@ -405,6 +405,14 @@ sub add_server {
 	$self->soap->AddNameserver($self->config->{"servername"} || die("you have to specify servername in config"), $group);
 }
 
+sub get_server {
+	my $self = shift;
+
+	my $ret = $self->soap->GetNameserver($self->config->{"servername"} || die("you have to specify servername in config"));
+	die "error fetching nameserver from soap-server" unless defined($ret) && defined($ret->result) && ref($ret->result) eq '';
+	return $ret->result;
+}
+
 sub remove_server {
 	my $self = shift;
 
@@ -515,7 +523,7 @@ sub parse_slavezone_config {
 			my $slavepath = sprintf "%s/%s", $self->slavezones_dir, $zone;
 			next ROW if /^(type\s+slave|file\s+"$slavepath");$/;
 
-			if (/^masters\s+{([^}]*)};$/) {
+			if (/^masters\s+{([^}]*?);+};$/) {
 				$zones->{$zone} = $1;
 				$state = 'endofzone';
 			} else {

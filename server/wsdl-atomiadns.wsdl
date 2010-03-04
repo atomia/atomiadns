@@ -413,6 +413,22 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetNameserver">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to get information for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringvalue" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="AddNameserverGroup">
 				<xsd:complexType>
 					<xsd:all>
@@ -1054,6 +1070,15 @@ atomiaTransferAllowed is a struct with the following members:
 		<part name="parameters" element="tns:DeleteNameserverResponse"/>
 	</message>
 
+	<message name="GetNameserverInput">
+		<documentation>Gets the group name that a nameserver is configured as a subscriber for.</documentation>
+		<part name="parameters" element="tns:GetNameserver"/>
+	</message>
+
+	<message name="GetNameserverOutput">
+		<part name="parameters" element="tns:GetNameserverResponse"/>
+	</message>
+
 	<message name="GetChangedZonesInput">
 		<documentation>Fetches a list of all changed zones for a nameserver.</documentation>
 		<part name="parameters" element="tns:GetChangedZones"/>
@@ -1406,6 +1431,15 @@ atomiaTransferAllowed is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetNameserver">
+			<input message="tns:GetNameserverInput"/>
+			<output message="tns:GetNameserverOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="GetChangedZones">
 			<input message="tns:GetChangedZonesInput"/>
 			<output message="tns:GetChangedZonesOutput"/>
@@ -1719,6 +1753,13 @@ atomiaTransferAllowed is a struct with the following members:
 		<operation name="DeleteNameserver">
 			<documentation>Remove a nameserver as a subscriber of changes to the data set in this server.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteNameserver"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetNameserver">
+			<documentation>Gets the group name that a nameserver is configured as a subscriber for.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserver"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
