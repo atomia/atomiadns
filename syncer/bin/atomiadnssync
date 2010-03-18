@@ -218,13 +218,13 @@ SWITCH: {
 		eval {
 			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
 			my $group = $syncer->get_server();
-			print "This server is configured as a member of the group $group.\n";
+			print "$group\n";
 		};
 
 		my $exception = $@;
 		if ($exception) {
 			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.NameserverNotFound/) {
-				print "This nameserver is not configured as a member of any group.\n";
+				print STDERR "Warning: This nameserver is not configured as a member of any group.\n";
 				exit 1;
 			} else {
 				handle_exception($exception);

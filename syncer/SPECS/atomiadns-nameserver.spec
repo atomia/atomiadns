@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.0.5
+Version: 1.0.6
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -63,9 +63,16 @@ Atomia DNS Sync application.
 %attr(0660 root named) /var/named/slaves/named-slavezones.conf.local
 
 %pre
-getent group named > /dev/null || groupadd -r named
-getent passwd named > /dev/null || \
-useradd -r -g named -d /var/named -s /sbin/nologin -c "Named user" named
+getent group named > /dev/null || /usr/sbin/groupadd -g 25 -f -r named >/dev/null 2>&1
+if [ $? != 0 ]; then
+	echo "error creating group named"
+	exit 1
+fi
+getent passwd named > /dev/null || /usr/sbin/useradd  -u 25 -r -M -g named -s /sbin/nologin -d /var/named -c Named named >/dev/null 2>&1
+if [ $? != 0 ]; then
+	echo "error creating user named"
+	exit 1
+fi
 exit 0
 
 %post
@@ -100,6 +107,8 @@ fi
 exit 0
 
 %changelog
+* Thu Mar 18 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.6-1
+- Change format of get_server and change uid/gid for created named user in RPM
 * Thu Mar 04 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.5-1
 - Add GetNameserver SOAP-method, get_server option and improved error handing to atomiadnssync, improve NAPTR validation and fix a bug with generation of slave zone configuration
 * Mon Feb 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.4-1

@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.0.5
+Version: 1.0.6
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -51,6 +51,8 @@ cd ..
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
 
 %changelog
+* Thu Mar 18 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.6-1
+- Change format of get_server and change uid/gid for created named user in RPM
 * Thu Mar 04 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.5-1
 - Add GetNameserver SOAP-method, get_server option and improved error handing to atomiadnssync, improve NAPTR validation and fix a bug with generation of slave zone configuration
 * Mon Feb 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.4-1
