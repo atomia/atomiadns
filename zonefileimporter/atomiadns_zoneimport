@@ -14,8 +14,7 @@ my $soap_uri = undef;
 my $soap_cacert = undef;
 my $soap_username = undef;
 my $soap_password = undef;
-my $zone_file = undef;
-my $zone_origin = undef;
+my $zones = undef;
 my $nsgroup = undef;
 my $verbose = 0;
 my $help = undef;
@@ -32,12 +31,12 @@ if (-f "$config_file") {
 
 GetOptions (	"uri=s" => \$soap_uri,
 		"help|?" => \$help,
-		"zonefile=s" => \$zone_file,
+		"zone=s@" => \$zones,
 		"nsgroup=s" => \$nsgroup,
-		"origin=s" => \$zone_origin,
 		"verbose|v" => \$verbose) || pod2usage(0);
 pod2usage(-verbose => 1) if $help;
-pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/ && defined($zone_origin) && defined($nsgroup) && defined($zone_file) && -f $zone_file;
+pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/ && defined($zones) && ref($zones) eq "ARRAY" && defined($nsgroup);
+map { pod2usage(-verbose => 0) unless /^[a-z0-9.-]+:(.*)$/ && -f $1 } @$zones;
 
 if ($soap_uri =~ /^https/) {
 	die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option in /etc/atomiadns.conf" unless defined($soap_cacert) && -f $soap_cacert;
@@ -63,31 +62,46 @@ my $soap = SOAP::Lite
 			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
 		});
 
-$zone_origin =~ s/\.$//;
+my $origins = [];
+my $binary_zones = [];
+foreach $_ (@$zones) {
+	if (/^([a-z0-9.-]+):(.*)$/) {
+		my $zone_origin = $1;
+		my $zone_file = $2;
 
-my $parser = Net::DNS::Zone::Parser->new;
-my $parseerror = $parser->read($zone_file, { ORIGIN => $zone_origin, CREATE_RR => 1 });
-die "Error parsing $zone_file: $parseerror" if $parseerror;
+		$zone_origin =~ s/\.$//;
 
-my $parsed_zone = $parser->get_array;
+		my $parser = Net::DNS::Zone::Parser->new;
+		my $parseerror = $parser->read($zone_file, { ORIGIN => $zone_origin, CREATE_RR => 1 });
+		die "Error parsing $zone_file: $parseerror" if $parseerror;
 
-my $zone = "";
-foreach my $record (@$parsed_zone) {
-	my $label = atomia_host_to_label($record->name, $zone_origin);
+		my $parsed_zone = $parser->get_array;
 
-	my $rdata;
-	if ($record->type eq "SOA") {
-		$rdata = sprintf "%s. %s. %%serial %d %d %d %d", $record->mname, $record->rname, $record->refresh, $record->retry, $record->expire, $record->minimum;
+		my $zone = "";
+		foreach my $record (@$parsed_zone) {
+			my $label = atomia_host_to_label($record->name, $zone_origin);
+
+			my $rdata;
+			if ($record->type eq "SOA") {
+				$rdata = sprintf "%s. %s. %%serial %d %d %d %d", $record->mname, $record->rname, $record->refresh, $record->retry, $record->expire, $record->minimum;
+			} else {
+				$rdata = $record->rdatastr;
+			}
+
+			$zone .= sprintf "%s IN %d %s %s\n", $label, $record->ttl, $record->type, $rdata;
+		}
+
+		chomp($zone);
+
+		push @$origins, $zone_origin;
+		push @$binary_zones, $zone;
 	} else {
-		$rdata = $record->rdatastr;
+		die "invalid format of --zone, should be ORIGIN:ZONEFILE";
 	}
-
-	$zone .= sprintf "%s IN %d %s %s\n", $label, $record->ttl, $record->type, $rdata;
 }
 
-chomp($zone);
-
-$soap->RestoreZoneBinary($zone_origin, $nsgroup, $zone);
+#print Dumper($origins, $binary_zones);
+$soap->RestoreZoneBulk($origins, $nsgroup, $binary_zones);
 exit 0;
 
 sub atomia_host_to_label {
@@ -112,7 +126,7 @@ atomiadns_zoneimport - An application for administering a Atomia DNS installatio
 
 =over 8
 
-=item atomiadns_zoneimport [--uri SOAP_URI] --origin ORIGIN --zonefile PATH --nsgroup NAMESERVERGROUP [-v] [--help]
+=item atomiadns_zoneimport [--uri SOAP_URI] --zone ORIGIN:PATH --nsgroup NAMESERVERGROUP [-v] [--help]
 
 =back
 
@@ -126,13 +140,9 @@ atomiadns_zoneimport - An application for administering a Atomia DNS installatio
 
 Specifies the URL of the Atomia DNS Master server to import zones to.
 
-=item --origin ORIGIN
+=item --zone ORIGIN:PATH
 
-The zone to import the zone file to.
-
-=item --zonefile PATH
-
-Specifies the path of the zonefile to import.
+Specifies the zone origin and path of the zonefile to import.
 
 =item --nsgroup NAMESERVERGROUP
 
