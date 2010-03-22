@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Restore several complete zones (or just set all records for some other reason).
+
+h3.Declaration syntax
+{panel}
+void RestoreZoneBulk(
+	string[] zonenames,
+	string nameservergroup,
+	string[] zones
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonenames|string[]|the name of the zones|
+|nameservergroup|string|the nameserver group that should host the zones|
+|zones|string[]|an array of base64 encoded values each containing a zone to restore|
+
+{include:RestoreZoneBulk Method Example - Atomia DNS API}

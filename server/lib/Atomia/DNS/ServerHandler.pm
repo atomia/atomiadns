@@ -336,9 +336,12 @@ sub handleAll {
 		$placeholders .= "?";
 	}
 
+	my $statement_evaluated = 0;
+	my $zones_for_bulk_operation = undef;
 	my $sth = undef;
 	eval {
 		$method =~ s/Binary$//;
+		$method =~ s/RestoreZoneBulk$/RestoreZone/;
 
 		$sth = $self->dbi->prepare($void ? "SELECT $method($placeholders)" : "SELECT * FROM $method($placeholders)");
 		die("error in dbi->prepare") unless defined($sth);
@@ -429,6 +432,63 @@ sub handleAll {
 
 				$sth->bind_param($idx + 1, \@arrayrecord, { pg_type => PG_VARCHAR});
 
+			} elsif ($signature->[$idx] eq "array[bulkzones]") {
+				die "array[bulkzones] can't be used anywhere except in the first parameter" unless $idx == 0;
+
+				my $zones = $_[$idx];
+				die "bad format of array[bulkzones]" unless defined($zones) && ref($zones) eq "ARRAY";
+				$zones_for_bulk_operation = $zones;
+
+			} elsif ($signature->[$idx] eq "array[binaryzone]") {
+				die "array[binaryzone] can't be used anywhere except in the last parameter" unless $idx == scalar(@_) - 1;
+
+				my $zones = $_[$idx];
+
+				die "bad format of array[binaryzone]" unless defined($zones) && ref($zones) eq 'ARRAY';
+				die "zone-array passed in first parameter was not the same length as the binaryzone-array" unless defined($zones_for_bulk_operation) &&
+					ref($zones_for_bulk_operation) eq "ARRAY" && scalar(@$zones_for_bulk_operation) == scalar(@$zones);
+
+				my $zone_idx = 0;
+				foreach my $zone (@$zones) {
+					die "bad format of binaryzone, should be a base64 encoded string" unless defined($zone) && ref($zone) eq '';
+					chomp $zone;
+
+					my @binaryarray = map {
+						my @arr = split(/ /, $_, 5);
+						die("bad format of binaryzone: row doesn't have 5 space separated fields") unless scalar(@arr) == 5;
+						{ label => $arr[0], class => $arr[1], ttl => $arr[2], type => $arr[3], rdata => $arr[4] }
+					} split(/\n/, $zone);
+
+					my $records = \@binaryarray;
+
+					my @arrayrecord = map {
+						$_->{"id"} = -1 unless defined($_->{"id"});
+						die("bad format of resourcerecord.id") unless $_->{"id"} =~ /^-?\d+$/;
+						die("bad format of resourcerecord.label: " . Dumper($_)) unless defined($_->{"label"}) && length($_->{"label"}) > 0;
+						die("bad format of resourcerecord.class") unless defined($_->{"class"}) && length($_->{"class"}) > 0;
+						die("bad format of resourcerecord.ttl") unless defined($_->{"ttl"}) && $_->{"ttl"} =~ /^\d+$/;
+						die("bad format of resourcerecord.class") unless defined($_->{"type"}) && length($_->{"type"}) > 0;
+						die("bad format of resourcerecord.rdata") unless defined($_->{"rdata"}) && length($_->{"rdata"}) > 0;
+	
+						[ $_->{"id"}, $_->{"label"}, $_->{"class"}, $_->{"ttl"}, $_->{"type"}, $_->{"rdata"} ]
+					} @$records;
+
+					$sth->bind_param(1, $zones_for_bulk_operation->[$zone_idx], { pg_type => PG_VARCHAR});
+					$sth->bind_param($idx + 1, \@arrayrecord, { pg_type => PG_VARCHAR});
+
+					eval {
+						my $ret = $sth->execute();
+						die("bad response for $method: $DBI::errstr") unless defined($ret);
+					};
+
+					if ($@) {
+						die($@);
+					}
+
+					$zone_idx++;
+				}
+
+				$statement_evaluated = 1;
 			} else {
 				# Default is varchar
 				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_VARCHAR });
@@ -439,6 +499,8 @@ sub handleAll {
 	if ($@) {
 		die("error preparing statement for $method invocation: $@");
 	}
+
+	return undef if $statement_evaluated;
 
 	eval {
 		my $ret = $sth->execute();

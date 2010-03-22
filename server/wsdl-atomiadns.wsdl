@@ -880,6 +880,24 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="RestoreZoneBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonenames" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>the name of the zones</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zones</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of base64 encoded values each containing a zone to restore</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="RestoreZoneBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 		</xsd:schema>
 	</types>
 
@@ -1008,12 +1026,21 @@ atomiaTransferAllowed is a struct with the following members:
 	</message>
 
 	<message name="RestoreZoneBinaryInput">
-		<documentation></documentation>
+		<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
 		<part name="parameters" element="tns:RestoreZoneBinary"/>
 	</message>
 
 	<message name="RestoreZoneBinaryOutput">
 		<part name="parameters" element="tns:RestoreZoneBinaryResponse"/>
+	</message>
+
+	<message name="RestoreZoneBulkInput">
+		<documentation>Restore several complete zones (or just set all records for some other reason).</documentation>
+		<part name="parameters" element="tns:RestoreZoneBulk"/>
+	</message>
+
+	<message name="RestoreZoneBulkOutput">
+		<part name="parameters" element="tns:RestoreZoneBulkResponse"/>
 	</message>
 
 	<message name="SetDnsRecordsBulkInput">
@@ -1377,6 +1404,15 @@ atomiaTransferAllowed is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="RestoreZoneBulk">
+			<input message="tns:RestoreZoneBulkInput"/>
+			<output message="tns:RestoreZoneBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="SetDnsRecordsBulk">
 			<input message="tns:SetDnsRecordsBulkInput"/>
 			<output message="tns:SetDnsRecordsBulkOutput"/>
@@ -1709,8 +1745,15 @@ atomiaTransferAllowed is a struct with the following members:
 		</operation>
 
 		<operation name="RestoreZoneBinary">
-			<documentation></documentation>
+			<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZoneBinary"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="RestoreZoneBulk">
+			<documentation>Restore several complete zones (or just set all records for some other reason).</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZoneBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

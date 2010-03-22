@@ -22,6 +22,7 @@ my $signatures = {
 	"GetZoneBinary" => "binaryzone string",
 	"RestoreZone" => "void string string zone",
 	"RestoreZoneBinary" => "void string string binaryzone",
+	"RestoreZoneBulk" => "void array[bulkzones] string array[binaryzone]",
 	"SetDnsRecordsBulk" => "void array array[resourcerecord]",
 	"CopyDnsZoneBulk" => "void string array",
 	"CopyDnsLabelBulk" => "void string string array[hostname]",
