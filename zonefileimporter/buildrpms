@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ `dirname "$0"` != "." ]; then
+	echo "you have run this script from the dir it is placed in"
+	exit 1
+elif [ -z "$1" ]; then
+	echo "usage: $0 rhel4|rhel5"
+	exit 1
+fi
+
+rm -f /usr/src/redhat/SOURCES/atomiadns-*
+rm -f /usr/src/redhat/SPECS/atomiadns-*
+cp SPECS/*.spec /usr/src/redhat/SPECS
+
+startdir="$PWD"
+
+cd ..
+tar cfpz /usr/src/redhat/SOURCES/atomiadns-zoneimport.tar.gz --exclude "*/.svn" zonefileimporter
+
+cd /usr/src/redhat/SPECS
+rpmbuild --sign -bb atomiadns-zoneimport.spec
+
+cd "$startdir"
+cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages/"$1"
+rm -f ../packages/*-debuginfo-*
