@@ -132,7 +132,7 @@ atomiaSlaveZoneItem is a struct with the following members:
 | master | string | the ip-address of the master |
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
-					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="master" type="xsd:string"/>
 				</xsd:all>
 			</xsd:complexType>
@@ -584,7 +584,7 @@ atomiaTransferAllowed is a struct with the following members:
 			<xsd:element name="GetSlaveZoneResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaSlaveZones"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="slavezones" type="atomiaSlaveZones"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

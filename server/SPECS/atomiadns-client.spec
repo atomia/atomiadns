@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.0.7
+Version: 1.0.8
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -51,6 +51,8 @@ cd ..
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
 
 %changelog
+* Wed Mar 24 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.8-1
+- Minor WSDL changes, fix so that BDB environment is only initialized by the atomiadnssync command that actually use it instead of all commands and fix removal of nameservers when there are outstanding slave zone changes
 * Mon Mar 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.7-1
 - Add RestoreZoneBulk
 * Thu Mar 18 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.6-1

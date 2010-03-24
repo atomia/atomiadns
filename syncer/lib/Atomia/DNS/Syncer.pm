@@ -42,14 +42,6 @@ sub BUILD {
 	my $bdb_path = $self->bdb_environment_path ? $self->bdb_environment_path : $self->config->{"bdb_environment_path"};
 	die("you have to either pass a path in the bdb_environment_path parameter or set bdb_environment_path in the config") unless defined($bdb_path);
 
-	my $env = new BerkeleyDB::Env
-		-Home   => $bdb_path,
-		-Flags  => DB_INIT_TXN | DB_INIT_MPOOL | DB_INIT_LOCK | DB_INIT_LOG | DB_CREATE;
-
-	die("error creating bdb environment") unless defined($env);
-
-	$self->bdb_environment($env);
-
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap_cacert = $self->config->{"soap_cacert"};
 	if ($soap_uri =~ /^https/) {
@@ -77,6 +69,21 @@ sub BUILD {
 
 	$self->soap($soap);
 };
+
+sub create_env {
+	my $self = shift;
+
+	my $bdb_path = $self->bdb_environment_path ? $self->bdb_environment_path : $self->config->{"bdb_environment_path"};
+	die("you have to either pass a path in the bdb_environment_path parameter or set bdb_environment_path in the config") unless defined($bdb_path);
+
+	my $env = new BerkeleyDB::Env
+		-Home   => $bdb_path,
+		-Flags  => DB_INIT_TXN | DB_INIT_MPOOL | DB_INIT_LOCK | DB_INIT_LOG | DB_CREATE;
+
+	die("error creating bdb environment") unless defined($env);
+
+	$self->bdb_environment($env);
+}
 
 sub open_bdb {
 	my $self = shift;
@@ -127,6 +134,8 @@ sub full_reload_offline {
 	my ($db_zone, $db_client, $db_xfr, $db_data);
 
 	eval {
+		$self->create_env();
+
 		$db_zone = $self->open_bdb("dns_zone", "Btree", 1);
 		$db_client = $self->open_bdb("dns_client", "Hash", 1);
 		$db_xfr = $self->open_bdb("dns_xfr", "Hash", 1);
@@ -153,6 +162,8 @@ sub reload_updated_zones {
 	my ($db_zone, $db_xfr, $db_data, $db_client);
 
 	eval {
+		$self->create_env();
+
 		$db_zone = $self->open_bdb("dns_zone", "Btree", 0);
 		$db_xfr = $self->open_bdb("dns_xfr", "Hash", 0);
 		$db_data = $self->open_bdb("dns_data", "Hash", 0);

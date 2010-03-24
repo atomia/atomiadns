@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS label;
 DROP TABLE IF EXISTS zone;
 DROP TABLE IF EXISTS allowed_type;
 DROP TABLE IF EXISTS change;
+DROP TABLE IF EXISTS slavezone_change;
 DROP TABLE IF EXISTS nameserver;
 DROP TABLE IF EXISTS updates_disabled;
 
@@ -26,7 +27,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (34);
+INSERT INTO atomiadns_schemaversion (version) VALUES (35);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,

@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.0.8) hardy; urgency=low
+
+  * Minor WSDL changes, fix so that BDB environment is only initialized by the atomiadnssync command that actually use it instead of all commands and fix removal of nameservers when there are outstanding slave zone changes
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 24 Mar 2010 15:02:12 +0100
+
 atomiadns-dyndns (1.0.7) hardy; urgency=low
 
   * Add RestoreZoneBulk
