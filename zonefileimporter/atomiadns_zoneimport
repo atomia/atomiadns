@@ -36,7 +36,7 @@ GetOptions (	"uri=s" => \$soap_uri,
 		"verbose|v" => \$verbose) || pod2usage(0);
 pod2usage(-verbose => 1) if $help;
 pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/ && defined($zones) && ref($zones) eq "ARRAY" && defined($nsgroup);
-map { pod2usage(-verbose => 0) unless /^[a-z0-9.-]+:(.*)$/ && -f $1 } @$zones;
+map { do { print "Bad zone format in $_\n"; pod2usage(-verbose => 0) } unless /^[a-z0-9.-]+:(.*)$/ && -f $1 } @$zones;
 
 if ($soap_uri =~ /^https/) {
 	die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option in /etc/atomiadns.conf" unless defined($soap_cacert) && -f $soap_cacert;
