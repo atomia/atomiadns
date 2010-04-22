@@ -27,7 +27,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (35);
+INSERT INTO atomiadns_schemaversion (version) VALUES (39);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -81,6 +81,8 @@ CREATE TABLE change (
 	errormessage TEXT NULL,
 	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
 );
+
+CREATE INDEX change_zone_index ON change(zone, nameserver_id);
 
 CREATE TABLE slavezone_change (
         id SERIAL PRIMARY KEY NOT NULL,

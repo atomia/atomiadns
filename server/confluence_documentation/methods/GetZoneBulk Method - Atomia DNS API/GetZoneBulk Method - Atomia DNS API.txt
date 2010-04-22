@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Fetches a list of complete zones from the database.
+
+h3.Declaration syntax
+{panel}
+[binaryzones|binaryzones Datatype - Atomia DNS API] GetZoneBulk(
+	string[] zones
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zones|string[]|the name of the zones|
+
+{include:GetZoneBulk Method Example - Atomia DNS API}

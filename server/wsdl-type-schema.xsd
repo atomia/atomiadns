@@ -199,6 +199,26 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaBinaryZone">
+				<xsd:annotation><xsd:documentation>
+atomiaBinaryZone is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the zone |
+| binaryzone | string | a string representation of the zone, will be sent base64 encoded |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="binaryzone" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaBinaryZoneArray">
+				<xsd:annotation><xsd:documentation>atomiaBinaryZoneArray is an array of atomiaBinaryZone-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="atomiaBinaryZone" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:element name="GetUpdatesDisabled">
 				<xsd:complexType>
 					<xsd:all />
@@ -289,6 +309,24 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="MarkUpdatedBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeids" type="xsdAtomiaIntArray"><xsd:annotation><xsd:documentation>the ids of the change-rows</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changestatuses" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>ERROR or OK for every change row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="errormessages" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>error messages to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkUpdatedBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="MarkAllUpdatedExcept">
 				<xsd:complexType>
 					<xsd:all>
@@ -299,6 +337,23 @@ atomiaTransferAllowed is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="MarkAllUpdatedExceptResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkAllUpdatedExceptBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>zones to mark all updates as updated for</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeids" type="xsdAtomiaIntArray"><xsd:annotation><xsd:documentation>the ids of the change-rows to keep</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkAllUpdatedExceptBulkResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
@@ -569,6 +624,22 @@ atomiaTransferAllowed is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>the name of the zones</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="binaryzones" type="atomiaBinaryZoneArray"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.0.9) hardy; urgency=low
+
+  * Add MarkUpdatedBulk, MarkAllUpdatedExceptBulk and GetZoneBulk and make the sync agent use them
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 22 Apr 2010 13:42:30 +0200
+
 atomiadns-masterserver (1.0.8) hardy; urgency=low
 
   * Minor WSDL changes, fix so that BDB environment is only initialized by the atomiadnssync command that actually use it instead of all commands and fix removal of nameservers when there are outstanding slave zone changes

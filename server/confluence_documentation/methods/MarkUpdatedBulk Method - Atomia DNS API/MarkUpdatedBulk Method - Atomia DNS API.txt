@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Mark a set of change-rows as handled, removing it if no error occured.
+
+h3.Declaration syntax
+{panel}
+void MarkUpdatedBulk(
+	int[] changeids,
+	string[] changestatuses,
+	string[] errormessages
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|changeids|int[]|the ids of the change-rows|
+|changestatuses|string[]|ERROR or OK for every change row|
+|errormessages|string[]|error messages to set if cstatus is ERROR|
+
+{include:MarkUpdatedBulk Method Example - Atomia DNS API}

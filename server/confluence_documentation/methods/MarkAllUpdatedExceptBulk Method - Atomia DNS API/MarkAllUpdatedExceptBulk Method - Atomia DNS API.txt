@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Removes all change-rows for an array of zones and nameserver except the ones with specific ids.
+
+h3.Declaration syntax
+{panel}
+void MarkAllUpdatedExceptBulk(
+	string[] zones,
+	int[] changeids
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zones|string[]|zones to mark all updates as updated for|
+|changeids|int[]|the ids of the change-rows to keep|
+
+{include:MarkAllUpdatedExceptBulk Method Example - Atomia DNS API}

@@ -156,6 +156,9 @@ use strict;
 use Atomia::DNS::Syncer;
 use Data::Dumper;
 
+# Flush stdout after every write
+$| = 1;
+
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
 	print "where mode is one of full_reload_offline, full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates\n";

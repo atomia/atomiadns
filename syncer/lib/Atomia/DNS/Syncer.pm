@@ -261,40 +261,78 @@ sub sync_updated_zones {
 		$zones->result && ref($zones->result) eq "ARRAY";
 	$zones = $zones->result;
 
+	my $changes_to_keep = [];
+	my $changes_to_keep_name = [];
 	foreach my $zone (@$zones) {
-		my $transaction = undef;
-		my $change_id = undef;
+		my $keep_zonename = $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified");
+		my $keep_change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+		push @$changes_to_keep_name, $keep_zonename;
+		push @$changes_to_keep, $keep_change_id;
 
-		eval {
-			$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+		if (scalar(@$changes_to_keep) > 1000) {
+			$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
+			$changes_to_keep = [];
+			$changes_to_keep_name = [];
+		}
+	}
 
-			$self->soap->MarkAllUpdatedExcept($zone->{"name"}, $change_id);
+	if (scalar(@$changes_to_keep) > 0) {
+		$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
+	}
 
-			$transaction = $self->bdb_environment->txn_begin() || die("error starting transaction");
-			$self->remove_records($db_data, $db_xfr, $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified"));
-			my $num_records = $self->sync_records($db_data, $db_xfr, [ $zone ]);
-			$self->sync_zone($db_zone, $zone->{"name"}, $num_records);
-			$transaction->txn_commit() == 0 || die("error commiting transaction");
+	my $num_zones = scalar(@$zones);
+	my $bulk_size = 500;
 
-			$self->soap->MarkUpdated($change_id, "OK", "");
-		};
+	for (my $offset = 0; $offset < $num_zones; $offset += $bulk_size) {
+		my $num = $num_zones - $offset;
+		$num = $bulk_size if $num > $bulk_size;
 
-		if ($@) {
-			my $abort_ret = 0;
-			my $errormessage = $@;
-			$errormessage = Dumper($errormessage) if ref($errormessage);
+		my @batch = @{$zones}[$offset .. ($offset + $num - 1)];
+
+		my @get_zone_bulk_arg = map { $_->{"name"} } @batch;
+		my $fetched_records_for_zones = $self->fetch_records_for_zones(\@get_zone_bulk_arg);
+
+		my $changes_successful = [];
+		my $changes_status = [];
+		my $changes_message = [];
+
+		foreach my $zone (@batch) {
+			my $transaction = undef;
+			my $change_id = undef;
 
 			eval {
-				$abort_ret = $transaction->txn_abort() if defined($transaction);
+				$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+
+				$transaction = $self->bdb_environment->txn_begin() || die("error starting transaction");
+				$self->remove_records($db_data, $db_xfr, $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified"));
+				my $num_records = $self->sync_records($db_data, $db_xfr, [ $zone ], $fetched_records_for_zones);
+				$self->sync_zone($db_zone, $zone->{"name"}, $num_records);
+				$transaction->txn_commit() == 0 || die("error commiting transaction");
+
+				push @$changes_successful, $change_id;
+				push @$changes_status, "OK";
+				push @$changes_message, "";
 			};
 
-			if ($@ && !$@ =~ /Transaction is already closed/) {
-				$abort_ret = -1;
-			}
+			if ($@) {
+				my $abort_ret = 0;
+				my $errormessage = $@;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
 
-			$self->soap->MarkUpdated($change_id, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
-			die("error performing rollback") unless $abort_ret == 0;
+				eval {
+					$abort_ret = $transaction->txn_abort() if defined($transaction);
+				};
+
+				if ($@ && !$@ =~ /Transaction is already closed/) {
+					$abort_ret = -1;
+				}
+
+				$self->soap->MarkUpdated($change_id, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				die("error performing rollback") unless $abort_ret == 0;
+			}
 		}
+
+		$self->soap->MarkUpdatedBulk($changes_successful, $changes_status, $changes_message) if scalar(@$changes_successful) > 0;
 	}
 }
 
@@ -303,11 +341,13 @@ sub sync_records {
 	my $db_data = shift;
 	my $db_xfr = shift;
 	my $zones = shift;
+	my $prefetched_records = shift;
 
 	my $synced_records = 0;
 
 	foreach my $zone (@$zones) {
-		my $records = $self->fetch_records_for_zone($zone->{"name"});
+		my $records = defined($prefetched_records) && defined($prefetched_records->{$zone->{"name"}})
+			? $prefetched_records->{$zone->{"name"}} : $self->fetch_records_for_zone($zone->{"name"});
 
 		my %labels_seen;
 		foreach my $record (@$records) {
@@ -354,6 +394,40 @@ sub fetch_records_for_zone {
 	
 	die "error fetching zones" unless defined($records) && ref($records) eq "ARRAY";
 	return $records;
+}
+
+sub fetch_records_for_zones {
+	my $self = shift;
+	my $zones = shift;
+
+	my $records = undef;
+	my $zone_hash = {};
+
+	my $zones_ret = $self->soap->GetZoneBulk($zones);
+	die("error fetching zones") unless defined($zones_ret) && $zones_ret->result && ref($zones_ret->result) eq "ARRAY";
+
+	foreach my $zone_struct (@{$zones_ret->result}) {
+		die "bad return data from GetZoneBulk" unless defined($zone_struct) && ref($zone_struct) eq "HASH" &&
+			defined($zone_struct->{"name"});
+
+		if (defined($zone_struct->{"binaryzone"})) {
+			my $binaryzone = $zone_struct->{"binaryzone"};
+			die "bad format of binaryzone, should be a base64 encoded string" unless defined($binaryzone) && ref($binaryzone) eq '';
+			chomp $binaryzone;
+
+			my @binaryarray = map {
+				my @arr = split(/ /, $_, 6);
+				die("bad format of binaryzone: row doesn't have 6 space separated fields") unless scalar(@arr) == 6;
+				{ id => $arr[0], label => $arr[1], class => $arr[2], ttl => $arr[3], type => $arr[4], rdata => $arr[5] }
+			} split(/\n/, $binaryzone);
+
+			$zone_hash->{$zone_struct->{"name"}} = \@binaryarray;
+		} else {
+			$zone_hash->{$zone_struct->{"name"}} = [];
+		}
+	}
+
+	return $zone_hash;
 }
 
 sub sync_zone {
@@ -433,13 +507,13 @@ sub remove_server {
 sub enable_updates {
 	my $self = shift;
 
-	$self->soap->SetUpdatesDisabled(1);
+	$self->soap->SetUpdatesDisabled(0);
 }
 
 sub disable_updates {
 	my $self = shift;
 
-	$self->soap->SetUpdatesDisabled(0);
+	$self->soap->SetUpdatesDisabled(1);
 }
 
 sub full_reload_online {

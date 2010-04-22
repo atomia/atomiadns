@@ -207,6 +207,26 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaBinaryZone">
+				<xsd:annotation><xsd:documentation>
+atomiaBinaryZone is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the zone |
+| binaryzone | string | a string representation of the zone, will be sent base64 encoded |
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="binaryzone" type="xsd:string"/>
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaBinaryZoneArray">
+				<xsd:annotation><xsd:documentation>atomiaBinaryZoneArray is an array of atomiaBinaryZone-structs.</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="atomiaBinaryZone" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:element name="GetUpdatesDisabled">
 				<xsd:complexType>
 					<xsd:all />
@@ -297,6 +317,24 @@ atomiaTransferAllowed is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="MarkUpdatedBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeids" type="xsdAtomiaIntArray"><xsd:annotation><xsd:documentation>the ids of the change-rows</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changestatuses" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>ERROR or OK for every change row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="errormessages" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>error messages to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkUpdatedBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="MarkAllUpdatedExcept">
 				<xsd:complexType>
 					<xsd:all>
@@ -307,6 +345,23 @@ atomiaTransferAllowed is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="MarkAllUpdatedExceptResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkAllUpdatedExceptBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>zones to mark all updates as updated for</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeids" type="xsdAtomiaIntArray"><xsd:annotation><xsd:documentation>the ids of the change-rows to keep</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkAllUpdatedExceptBulkResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
@@ -577,6 +632,22 @@ atomiaTransferAllowed is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>the name of the zones</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="binaryzones" type="atomiaBinaryZoneArray"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -1007,6 +1078,15 @@ atomiaTransferAllowed is a struct with the following members:
 		<part name="parameters" element="tns:GetZoneResponse"/>
 	</message>
 
+	<message name="GetZoneBulkInput">
+		<documentation>Fetches a list of complete zones from the database.</documentation>
+		<part name="parameters" element="tns:GetZoneBulk"/>
+	</message>
+
+	<message name="GetZoneBulkOutput">
+		<part name="parameters" element="tns:GetZoneBulkResponse"/>
+	</message>
+
 	<message name="GetZoneBinaryInput">
 		<documentation></documentation>
 		<part name="parameters" element="tns:GetZoneBinary"/>
@@ -1124,6 +1204,15 @@ atomiaTransferAllowed is a struct with the following members:
 		<part name="parameters" element="tns:MarkUpdatedResponse"/>
 	</message>
 
+	<message name="MarkUpdatedBulkInput">
+		<documentation>Mark a set of change-rows as handled, removing it if no error occured.</documentation>
+		<part name="parameters" element="tns:MarkUpdatedBulk"/>
+	</message>
+
+	<message name="MarkUpdatedBulkOutput">
+		<part name="parameters" element="tns:MarkUpdatedBulkResponse"/>
+	</message>
+
 	<message name="MarkAllUpdatedExceptInput">
 		<documentation>Removes all change-rows for a zone and nameserver except the one with a specific id.</documentation>
 		<part name="parameters" element="tns:MarkAllUpdatedExcept"/>
@@ -1131,6 +1220,15 @@ atomiaTransferAllowed is a struct with the following members:
 
 	<message name="MarkAllUpdatedExceptOutput">
 		<part name="parameters" element="tns:MarkAllUpdatedExceptResponse"/>
+	</message>
+
+	<message name="MarkAllUpdatedExceptBulkInput">
+		<documentation>Removes all change-rows for an array of zones and nameserver except the ones with specific ids.</documentation>
+		<part name="parameters" element="tns:MarkAllUpdatedExceptBulk"/>
+	</message>
+
+	<message name="MarkAllUpdatedExceptBulkOutput">
+		<part name="parameters" element="tns:MarkAllUpdatedExceptBulkResponse"/>
 	</message>
 
 	<message name="GetAllZonesInput">
@@ -1377,6 +1475,15 @@ atomiaTransferAllowed is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetZoneBulk">
+			<input message="tns:GetZoneBulkInput"/>
+			<output message="tns:GetZoneBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="GetZoneBinary">
 			<input message="tns:GetZoneBinaryInput"/>
 			<output message="tns:GetZoneBinaryOutput"/>
@@ -1494,9 +1601,27 @@ atomiaTransferAllowed is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="MarkUpdatedBulk">
+			<input message="tns:MarkUpdatedBulkInput"/>
+			<output message="tns:MarkUpdatedBulkOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="MarkAllUpdatedExcept">
 			<input message="tns:MarkAllUpdatedExceptInput"/>
 			<output message="tns:MarkAllUpdatedExceptOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="MarkAllUpdatedExceptBulk">
+			<input message="tns:MarkAllUpdatedExceptBulkInput"/>
+			<output message="tns:MarkAllUpdatedExceptBulkOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -1730,6 +1855,13 @@ atomiaTransferAllowed is a struct with the following members:
 			<output><soap:body use="literal"/></output>
 		</operation>
 
+		<operation name="GetZoneBulk">
+			<documentation>Fetches a list of complete zones from the database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneBulk"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
 		<operation name="GetZoneBinary">
 			<documentation></documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneBinary"/>
@@ -1821,9 +1953,23 @@ atomiaTransferAllowed is a struct with the following members:
 			<output><soap:body use="literal"/></output>
 		</operation>
 
+		<operation name="MarkUpdatedBulk">
+			<documentation>Mark a set of change-rows as handled, removing it if no error occured.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkUpdatedBulk"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
 		<operation name="MarkAllUpdatedExcept">
 			<documentation>Removes all change-rows for a zone and nameserver except the one with a specific id.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkAllUpdatedExcept"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="MarkAllUpdatedExceptBulk">
+			<documentation>Removes all change-rows for an array of zones and nameserver except the ones with specific ids.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkAllUpdatedExceptBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

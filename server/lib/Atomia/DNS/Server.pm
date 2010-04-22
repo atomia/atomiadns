@@ -19,6 +19,7 @@ my $signatures = {
 	"GetDnsRecords" => "array[resourcerecord] string string",
 	"GetLabels" => "array[string] string",
 	"GetZone" => "zone string",
+	"GetZoneBulk" => "array[binaryzone] array",
 	"GetZoneBinary" => "binaryzone string",
 	"RestoreZone" => "void string string zone",
 	"RestoreZoneBinary" => "void string string binaryzone",
@@ -32,7 +33,9 @@ my $signatures = {
 	"GetNameserver" => "string string",
 	"GetChangedZones" => "changes string",
 	"MarkUpdated" => "void int string string",
+	"MarkUpdatedBulk" => "void array[int] array array",
 	"MarkAllUpdatedExcept" => "void string int",
+	"MarkAllUpdatedExceptBulk" => "void array array[int]",
 	"GetAllZones" => "zonestruct",
 	"ReloadAllZones" => "void",
 	"GetUpdatesDisabled" => "int",
@@ -75,6 +78,8 @@ foreach my $method (keys %{$signatures}) {
 				$Atomia::DNS::Server::instance->handleString($method, \@signature, @_);
 			} elsif ($return_type eq "binaryzone") {
 				$Atomia::DNS::Server::instance->handleBinaryZone($method, \@signature, @_);
+			} elsif ($return_type eq "array[binaryzone]") {
+				$Atomia::DNS::Server::instance->handleBinaryZoneArray($method, \@signature, @_);
 			} elsif ($return_type eq "array[int]") {
 				$Atomia::DNS::Server::instance->handleIntArray($method, \@signature, @_);
 			} elsif ($return_type eq "zone") {

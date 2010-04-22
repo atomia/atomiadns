@@ -39,8 +39,8 @@ sub matchSignature {
 		die($message) unless defined($param);
 		die($message) if $sig eq "int" && !($param =~ /^\d+$/);
 
-		if ($sig eq "array" || $sig eq "array[resourcerecord]" || $sig eq "zone" || $sig eq "array[hostname]") {
-			my $itemname = $sig eq "array" ? "item" : ($sig eq "zone" ? "label" : ($sig eq "array[hostname]" ? "hostname" : "resourcerecord"));
+		if ($sig eq "array" || $sig eq "array[resourcerecord]" || $sig eq "zone" || $sig eq "array[hostname]" || $sig eq "array[int]") {
+			my $itemname = ($sig eq "array" || $sig eq "array[int]") ? "item" : ($sig eq "zone" ? "label" : ($sig eq "array[hostname]" ? "hostname" : "resourcerecord"));
 			# Convert <someseq><$itemname>foo</$itemname><$itemname>bar</$itemname></someseq> to array from hash
 			if (ref($param) eq "HASH" && scalar(keys(%$param)) == 1 && defined($param->{$itemname})) {
 				if (ref($param->{$itemname}) eq "ARRAY") {
@@ -174,6 +174,59 @@ sub handleBinaryZone {
 	chomp($zone);
 
 	return SOAP::Data->new(name => "binaryzone", type => "base64", value => $zone);
+}
+
+sub handleBinaryZoneArray {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	my $zones = {};
+
+	foreach $_ (@$rows) {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+
+		my $zone = $_->{"zone"};
+		delete($_->{"zone"});
+
+		die "no zone field returned from database" unless defined($zone) && length($zone) > 0;
+
+		my $zonearray = $zones->{$zone};
+		unless (defined($zonearray)) {
+			$zonearray = [];
+			$zones->{$zone} = $zonearray;
+		}
+
+		push @$zonearray, $_;
+	}
+
+	my $binaryzones = [];
+	foreach my $zonename (keys %$zones) {
+		my $binaryzone = "";
+
+		foreach my $row (@{$zones->{$zonename}}) {
+			$binaryzone .= sprintf "%d %s %s %d %s %s\n", $row->{"id"}, $row->{"label"}, $row->{"class"}, $row->{"ttl"}, $row->{"type"}, $row->{"rdata"};
+		}
+
+		chomp($binaryzone);
+
+		push @$binaryzones, { name => $zonename, zone => SOAP::Data->new(name => "binaryzone", type => "base64", value => $binaryzone) };
+	}
+
+
+	return SOAP::Data->new(name => "binaryzones", value => $binaryzones);
 }
 
 sub handleIntArray {
@@ -351,6 +404,8 @@ sub handleAll {
 				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_INT4 });
 			} elsif ($signature->[$idx] eq "array") {
 				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_VARCHARARRAY });
+			} elsif ($signature->[$idx] eq "array[int]") {
+				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_INT4ARRAY });
 			} elsif ($signature->[$idx] eq "array[resourcerecord]") {
 				my $record = $_[$idx];
 				die("bad resourcerecord-array passed") unless defined($record) && ref($record) eq "ARRAY";

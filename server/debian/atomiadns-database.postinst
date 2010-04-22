@@ -169,7 +169,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		latest_version="35"
+		latest_version="39"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -277,6 +277,22 @@ if [ $? != 0 ]; then
 
 			if [ "$schema_version" -lt 35 ]; then
 				recreate_procedure "deletenameserver"
+			fi
+
+			if [ "$schema_version" -lt 36 ]; then
+				recreate_procedure "markallupdatedexceptbulk"
+			fi
+
+			if [ "$schema_version" -lt 37 ]; then
+				recreate_procedure "markupdatedbulk"
+			fi
+
+			if [ "$schema_version" -lt 38 ]; then
+				recreate_procedure "getzonebulk"
+			fi
+
+			if [ "$schema_version" -lt 39 ]; then
+				execute_query "CREATE INDEX change_zone_index ON change(zone, nameserver_id)"
 			fi
 
 			set_schema_version "$latest_version"
