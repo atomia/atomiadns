@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.9
+Version: 1.0.10
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.9 atomiadns-database >= 1.0.9
+Requires: atomiadns-api >= 1.0.10 atomiadns-database >= 1.0.10
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.10-1
+- Fix bug with synchronizing removed zones introduced in 1.0.9
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.9-1
 - Add MarkUpdatedBulk, MarkAllUpdatedExceptBulk and GetZoneBulk and make the sync agent use them
 * Wed Mar 24 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.8-1

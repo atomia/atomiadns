@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.0.9
+Version: 1.0.10
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -51,6 +51,8 @@ cd ..
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
 
 %changelog
+* Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.10-1
+- Fix bug with synchronizing removed zones introduced in 1.0.9
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.9-1
 - Add MarkUpdatedBulk, MarkAllUpdatedExceptBulk and GetZoneBulk and make the sync agent use them
 * Wed Mar 24 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.8-1

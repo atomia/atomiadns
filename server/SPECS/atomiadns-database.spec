@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.0.9
+Version: 1.0.10
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.10-1
+- Fix bug with synchronizing removed zones introduced in 1.0.9
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.9-1
 - Add MarkUpdatedBulk, MarkAllUpdatedExceptBulk and GetZoneBulk and make the sync agent use them
 * Wed Mar 24 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.8-1

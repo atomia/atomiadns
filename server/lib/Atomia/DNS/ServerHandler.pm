@@ -214,17 +214,22 @@ sub handleBinaryZoneArray {
 
 	my $binaryzones = [];
 	foreach my $zonename (keys %$zones) {
-		my $binaryzone = "";
+		my $records = $zones->{$zonename};
 
-		foreach my $row (@{$zones->{$zonename}}) {
-			$binaryzone .= sprintf "%d %s %s %d %s %s\n", $row->{"id"}, $row->{"label"}, $row->{"class"}, $row->{"ttl"}, $row->{"type"}, $row->{"rdata"};
+		if (scalar(@$records) == 1 && !defined($records->[0]->{"id"})) {
+			push @$binaryzones, { name => $zonename };
+		} else {
+			my $binaryzone = "";
+
+			foreach my $row (@{$zones->{$zonename}}) {
+				$binaryzone .= sprintf "%d %s %s %d %s %s\n", $row->{"id"}, $row->{"label"}, $row->{"class"}, $row->{"ttl"}, $row->{"type"}, $row->{"rdata"};
+			}
+
+			chomp($binaryzone);
+
+			push @$binaryzones, { name => $zonename, zone => SOAP::Data->new(name => "binaryzone", type => "base64", value => $binaryzone) };
 		}
-
-		chomp($binaryzone);
-
-		push @$binaryzones, { name => $zonename, zone => SOAP::Data->new(name => "binaryzone", type => "base64", value => $binaryzone) };
 	}
-
 
 	return SOAP::Data->new(name => "binaryzones", value => $binaryzones);
 }
