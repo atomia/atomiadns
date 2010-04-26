@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.10
+Version: 1.0.11
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.10 atomiadns-database >= 1.0.10
+Requires: atomiadns-api >= 1.0.11 atomiadns-database >= 1.0.11
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Mon Apr 26 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.11-1
+- Remove unique constraint for slave zone master
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.10-1
 - Fix bug with synchronizing removed zones introduced in 1.0.9
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.9-1

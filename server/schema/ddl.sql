@@ -27,7 +27,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (40);
+INSERT INTO atomiadns_schemaversion (version) VALUES (41);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE slavezone (
         id SERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
-	master VARCHAR(255) NOT NULL UNIQUE CONSTRAINT master_format CHECK (master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))$')
+	master VARCHAR(255) NOT NULL CONSTRAINT master_format CHECK (master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))$')
 );
 
 CREATE INDEX zone_nameserver_group_idx ON zone(nameserver_group_id);

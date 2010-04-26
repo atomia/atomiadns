@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.0.10
+Version: 1.0.11
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Mon Apr 26 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.11-1
+- Remove unique constraint for slave zone master
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.10-1
 - Fix bug with synchronizing removed zones introduced in 1.0.9
 * Thu Apr 22 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.9-1

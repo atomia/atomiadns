@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.0.11) hardy; urgency=low
+
+  * Remove unique constraint for slave zone master
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 26 Apr 2010 11:55:21 +0200
+
 atomiadns-masterserver (1.0.10) hardy; urgency=low
 
   * Fix bug with synchronizing removed zones introduced in 1.0.9
