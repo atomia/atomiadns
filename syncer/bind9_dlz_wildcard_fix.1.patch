@@ -1,0 +1,33 @@
+--- lib/dns/sdlz.c.orig	2010-05-05 14:06:52.000000000 +0200
++++ lib/dns/sdlz.c	2010-05-11 14:40:09.000000000 +0200
+@@ -559,9 +559,27 @@
+ 	 * "wildcard" host.
+ 	 */
+ 	if (result != ISC_R_SUCCESS) {
+-		result = sdlz->dlzimp->methods->lookup(zonestr, "*",
+-						       sdlz->dlzimp->driverarg,
+-						       sdlz->dbdata, node);
++		char *wildcard_start = namestr;
++		while (*wildcard_start) {
++			if (*wildcard_start == '.' && wildcard_start > namestr) {
++				*(wildcard_start - 1) = '*';
++
++				result = sdlz->dlzimp->methods->lookup(zonestr, wildcard_start - 1,
++								       sdlz->dlzimp->driverarg,
++								       sdlz->dbdata, node);
++				if (result == ISC_R_SUCCESS) {
++					break;
++				}
++			}
++
++			wildcard_start++;
++		}
++
++		if (result != ISC_R_SUCCESS) {
++			result = sdlz->dlzimp->methods->lookup(zonestr, "*",
++							       sdlz->dlzimp->driverarg,
++							       sdlz->dbdata, node);
++		}
+ 	}
+ 
+ 	MAYBE_UNLOCK(sdlz->dlzimp);
