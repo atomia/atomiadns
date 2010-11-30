@@ -2,6 +2,7 @@
 
 if [ -z "$1" ] || [ -z "$2" ]; then
 	echo "usage: $0 version message"
+	echo "current version: "`grep ^Version syncer/SPECS/atomiadns-nameserver.spec | cut -d " " -f 2`
 	exit 1
 fi
 

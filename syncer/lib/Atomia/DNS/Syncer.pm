@@ -658,4 +658,123 @@ sub signal_bind_reconfig {
 	system($self->rndc_path . " reconfig") == 0 || die "error reloading bind using rndc reconfig";
 }
 
+sub event_chain {
+	my $self = shift;
+
+	my $event_chain = $self->config->{"change_event_chain"};
+	if (defined($event_chain) && ref($event_chain) eq "HASH") {
+		my $event_listener_subscribername = $event_chain->{"event_listener_subscribername"};
+		die "change_event_chain defined without event_listener_subscribername" unless defined($event_listener_subscribername);
+
+		my $event_listener_nameservergroup = $event_chain->{"event_listener_nameservergroup"};
+		die "change_event_chain defined without event_listener_nameservergroup" unless defined($event_listener_nameservergroup);
+
+		eval {
+			$self->soap->GetNameserver($event_listener_subscribername);
+		};
+
+		if ($@) {
+			my $exception = $@;
+
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.NameserverNotFound/) {
+				$self->soap->AddNameserver($event_listener_subscribername, $event_listener_nameservergroup);
+			} else {
+				die $exception;
+			}
+		}
+
+		my $update_chain = $event_chain->{"on_update"} || [];
+		$update_chain = [ $update_chain ] if ref($update_chain) eq '';
+
+		my $delete_chain = $event_chain->{"on_delete"} || [];
+		$delete_chain = [ $delete_chain ] if ref($delete_chain) eq '';
+
+		my $zones = $self->soap->GetChangedZones($event_listener_subscribername);
+		die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
+			$zones->result && ref($zones->result) eq "ARRAY";
+		$zones = $zones->result;
+
+		my $changes_to_keep = [];
+		my $changes_to_keep_name = [];
+		foreach my $zone (@$zones) {
+			my $keep_zonename = $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified");
+			my $keep_change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+			push @$changes_to_keep_name, $keep_zonename;
+			push @$changes_to_keep, $keep_change_id;
+
+			if (scalar(@$changes_to_keep) > 1000) {
+				$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
+				$changes_to_keep = [];
+				$changes_to_keep_name = [];
+			}
+		}
+
+		if (scalar(@$changes_to_keep) > 0) {
+			$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
+		}
+
+		my $num_zones = scalar(@$zones);
+		my $bulk_size = 500;
+
+		for (my $offset = 0; $offset < $num_zones; $offset += $bulk_size) {
+			my $num = $num_zones - $offset;
+			$num = $bulk_size if $num > $bulk_size;
+
+			my @batch = @{$zones}[$offset .. ($offset + $num - 1)];
+
+			my @get_zone_bulk_arg = map { $_->{"name"} } @batch;
+			my $fetched_records_for_zones = $self->fetch_records_for_zones(\@get_zone_bulk_arg);
+
+			my $changes_successful = [];
+			my $changes_status = [];
+			my $changes_message = [];
+
+			foreach my $zone (@batch) {
+				my $change_id = undef;
+
+				eval {
+					$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+					my $zone_name = $zone->{"name"};
+					my $records = $fetched_records_for_zones->{$zone_name};
+					die "bad data in fetched_records_for_zones" unless defined($records) && ref($records) eq "ARRAY";
+
+					if (scalar(@$records) > 0) {
+						foreach my $listener (@$update_chain) {
+							die "defined listener for update chain does not exist or is not executable: $listener" unless -e $listener && -x $listener;
+							my $output = `$listener "$zone_name" 2>&1`;
+
+							my $status = $? >> 8;
+							if ($status) {
+								die "listener for update chain ($listener) returned error status $status and the following output: $output";
+							}
+						}
+					} else {
+						foreach my $listener (@$delete_chain) {
+							die "defined listener for delete chain does not exist or is not executable: $listener" unless -e $listener && -x $listener;
+							my $output = `$listener "$zone_name" 2>&1`;
+
+							my $status = $? >> 8;
+							if ($status) {
+								die "listener for delete chain ($listener) returned error status $status and the following output: $output";
+							}
+						}
+					}
+
+					push @$changes_successful, $change_id;
+					push @$changes_status, "OK";
+					push @$changes_message, "";
+				};
+
+				if ($@) {
+					my $errormessage = $@;
+					$errormessage = Dumper($errormessage) if ref($errormessage);
+					$self->soap->MarkUpdated($change_id, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				}
+
+				$self->soap->MarkUpdatedBulk($changes_successful, $changes_status, $changes_message) if scalar(@$changes_successful) > 0;
+			}
+		}
+	}
+}
+
 1;

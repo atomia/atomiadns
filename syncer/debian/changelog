@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.0.12) hardy; urgency=low
+
+  * Add support for event chain
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 30 Nov 2010 11:12:38 +0100
+
 atomiadns-nameserver (1.0.11) hardy; urgency=low
 
   * Remove unique constraint for slave zone master

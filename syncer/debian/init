@@ -33,6 +33,13 @@ case "$1" in
 	else
 	    log_end_msg 1
 	fi
+
+	if start-stop-daemon	--start --name atomiadnssync_eventchain --background \
+					--startas /bin/sh --user bind --chuid bind -- -c "atomiadnssync eventchain 2>&1 | logger -t atomiadnssync_eventchain"; then
+	    log_end_msg 0
+	else
+	    log_end_msg 1
+	fi
     ;;
 
     stop)

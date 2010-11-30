@@ -54,6 +54,23 @@ Fetches a list of changed zones and adds/removes them from the local BDB
 database.  This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-nameserver.
 You should never run this manually.
 
+=item eventchain
+
+Fetches a list of changed zones and executes all defined event listeners for the
+action in question.
+
+The event listeners are defined in the/etc/atomiadns.conf like:
+
+	<change_event_chain>
+		event_listener_subscribername some-unique-key
+		on_update /usr/local/atomiadns_events/add_or_update_zone_1.sh
+		on_update /usr/local/atomiadns_events/add_or_update_zone_2.sh
+		on_delete /usr/local/atomiadns_events/delete_zone.sh
+	</change_event_chain>
+
+This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-nameserver.
+You should never run this manually.
+
 =item get_server
 
 Checks if this server is added as a subscriber of changed zones and displays the group it is configured
@@ -251,6 +268,30 @@ SWITCH: {
 
 			if ($@) {
 				print "caught exception in atomiadnssync updated: $@\n";
+				sleep 5;
+			} else {
+				# Updates disabled, exit.
+				last;
+			}
+		}
+
+		last SWITCH;
+	};
+
+	/^eventchain$/i && do {
+		FOREVER: while(1) {
+			eval {
+				my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+
+				while (1) {
+					last if $syncer->updates_disabled();
+					$syncer->event_chain();
+					sleep 10;
+				}
+			};
+
+			if ($@) {
+				print "caught exception in atomiadnssync eventchain: $@\n";
 				sleep 5;
 			} else {
 				# Updates disabled, exit.

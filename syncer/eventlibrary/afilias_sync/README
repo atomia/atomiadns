@@ -1,0 +1,36 @@
+On (only) one nameserver in the group that you want to sync to Afilias you should:
+
+1. Configure /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_sync.conf with your settings.
+
+2. Add this to /etc/atomiadns.conf (assuming a nameserver group named default)
+
+<change_event_chain>
+        event_listener_subscribername eventchain
+        event_listener_nameservergroup default
+        on_update /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_add_zone.sh
+        on_delete /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_delete_zone.sh
+</change_event_chain>
+
+3. Execute the following commands:
+
+/etc/init.d/atomiadns-nameserver restart
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_allow_zone_transfer.sh
+ln -s /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_allow_zone_transfer.sh /etc/cron.hourly/afilias_allow_zone_transfer
+
+Afilias will now start receiving the updates for this nameserver group. When you have verified that
+the Afilias nameservers have the zone data for new and updated zones, use the following procedure to sync the existing zones:
+
+1. Make sure that new zones get the new NS records and include these in the delegation. For Atomia Provisioning this means
+changing the provisioning description and the resource description.
+
+2. Add the new NS records to the zones. For zones in Atomia Provisioning this is most easily done using the Core API. For
+customers that only use Atomia DNS, the following command will work (where ttl should be set to the TTL of your current NS records):
+
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_get_nameservers.sh | while read ns; do
+	sudo -u postgres psql -c "insert into (label_id, ttl, class, type, rdata) select distinct label_id, ttl, class, type, '$ns.' from record where type = 'NS'"
+done
+
+3. Change delegations to include the new nameservers (found by /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_get_nameservers.sh). For domains
+handled by Atomia software, this is most easily done using the Core API.
+
+That should be it.
