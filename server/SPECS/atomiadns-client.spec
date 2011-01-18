@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.0.12
+Version: 1.0.13
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -51,6 +51,8 @@ cd ..
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
 
 %changelog
+* Tue Jan 18 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.13-1
+- Add ability to override notify IP in config per zone in afilias integration scripts
 * Tue Nov 30 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.12-1
 - Add support for event chain
 * Mon Apr 26 2010 Jimmy Bergman <jimmy@atomia.com> - 1.0.11-1

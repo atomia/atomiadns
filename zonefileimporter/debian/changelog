@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.13) hardy; urgency=low
+
+  * Add ability to override notify IP in config per zone in afilias integration scripts
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 18 Jan 2011 12:10:57 +0100
+
 atomiadns-zoneimport (1.0.12) hardy; urgency=low
 
   * Add support for event chain
