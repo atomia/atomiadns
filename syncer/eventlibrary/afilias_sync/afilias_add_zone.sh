@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_sync.conf
 
@@ -27,9 +27,14 @@ if [ -n "$(echo "$get_output" | grep "<code>object_not_found</code>")" ]; then
 elif [ -n "$(echo "$get_output" | grep "HTTP/1.1 200 OK")" ]; then
 	echo "slave $1 already in account"
 
-	notify_ip=`curl -k -u "$user:$pass" \
-		-H "Content-Type: text/xml" \
-		-X GET "$urlbase/nameservers/notify/ipv4" 2>&1 | grep "<ipv4>" | sed 's/^.*<ipv4>\(.*\)<\/ipv4>.*$/\1/'`
+	notify_overrider="overide_notify_ip_$1"
+	notify_ip=`echo ${!notify_overrider}`
+	if [ -z "$notify_ip" ]; then
+		notify_ip=`curl -k -u "$user:$pass" \
+			-H "Content-Type: text/xml" \
+			-X GET "$urlbase/nameservers/notify/ipv4" 2>&1 | grep "<ipv4>" | sed 's/^.*<ipv4>\(.*\)<\/ipv4>.*$/\1/'`
+	fi
+
 	if [ -n "$notify_ip" ]; then
 		echo "notifying $notify_ip with DNS NOTIFY"
 		/usr/share/atomiadns/eventlibrary/dns_notify.pl "$1" "$notify_ip"
