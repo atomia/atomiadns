@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.14) hardy; urgency=low
+
+  * Add configurable timeout for syncer
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 21 Jan 2011 15:46:34 +0100
+
 atomiadns-zoneimport (1.0.13) hardy; urgency=low
 
   * Add ability to override notify IP in config per zone in afilias integration scripts

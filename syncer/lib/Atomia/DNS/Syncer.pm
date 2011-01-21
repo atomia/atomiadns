@@ -59,7 +59,7 @@ sub BUILD {
 
 	my $soap = SOAP::Lite
 		->  uri('urn:Atomia::DNS::Server')
-		->  proxy($soap_uri)
+		->  proxy($soap_uri, timeout => $self->config->{"soap_timeout"} || 600)
 		->  on_fault(sub {
 				my ($soap, $res) = @_;
 				die((ref($res) && UNIVERSAL::isa($res, 'SOAP::SOM')) ? $res : ("got fault of type transport error: " . $soap->transport->status));

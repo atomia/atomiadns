@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
    'NAME' => 'Atomia::DNS::Server',
-   'VERSION' => '1.0.13',
+   'VERSION' => '1.0.14',
    'AUTHOR' => 'Jimmy Bergman <jimmy@pingdom.com>',
    'DIR' => []
 );
