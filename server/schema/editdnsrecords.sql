@@ -20,7 +20,7 @@ BEGIN
 		WHERE name = zonename AND record.id = records[i][1]::int;
 
 		IF NOT FOUND THEN
-			RAISE EXCEPTION 'record with id % doesn\'t exist in zone %', records[i][1], zonename;
+			RAISE EXCEPTION 'record with id % doesn''t exist in zone %', records[i][1], zonename;
 		END IF;
 
 		SELECT label.id INTO new_record_label_id FROM zone INNER JOIN label ON zone.id = zone_id WHERE name = zonename AND label = records[i][2];

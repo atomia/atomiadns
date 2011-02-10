@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.15
+Version: 1.0.16
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.15 atomiadns-database >= 1.0.15
+Requires: atomiadns-api >= 1.0.16 atomiadns-database >= 1.0.16
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu Jan 27 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.16-1
+- DNSSEC support and changing the bind-dlz syncer to only load 10000 zones per sync_updated_zones batch
 * Fri Jan 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.15-1
 - Re-release broken package
 * Fri Jan 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.14-1

@@ -90,6 +90,58 @@ sub handleRecordArray {
 	return SOAP::Data->new(name => "resourcerecords", value => \@soaprecords);
 }
 
+sub handleKeySet {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $records = $sth->fetchall_arrayref({});
+	die("no keyset returned from database") unless defined($records) && !$DBI::err;
+
+	my @soapkeyset = map {
+		foreach my $entry_key (keys %$_) {
+			if ($entry_key =~ /^key_/) {
+				my $value = $_->{$entry_key};
+				delete($_->{$entry_key});
+				$entry_key =~ s/^key_//;
+				$_->{$entry_key} = $value;
+			}
+		}
+	
+		SOAP::Data->new(name => "key", value => $_);
+	} @$records;
+
+	return SOAP::Data->new(name => "keyset", value => \@soapkeyset);
+}
+
+sub handleZSKInfo {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $records = $sth->fetchall_arrayref({});
+	die("no keyset returned from database") unless defined($records) && !$DBI::err;
+
+	my @soapkeyset = map {
+		foreach my $entry_key (keys %$_) {
+			if ($entry_key =~ /^zskinfo_/) {
+				my $value = $_->{$entry_key};
+				delete($_->{$entry_key});
+				$entry_key =~ s/^zskinfo_//;
+				$_->{$entry_key} = $value;
+			}
+		}
+	
+		SOAP::Data->new(name => "key", value => $_);
+	} @$records;
+
+	return SOAP::Data->new(name => "zskinfo", value => \@soapkeyset);
+}
+
 sub handleInt {
 	my $self = shift;
 	my $method = shift;
@@ -107,6 +159,40 @@ sub handleInt {
 	die("bad data returned from database, expected integer") unless defined($intval) && $intval =~ /^\d+$/;
 
 	return SOAP::Data->new(type => "integer", value => $intval);
+}
+
+sub handleAddKey {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	die "invalid algoritm or keysize" unless defined($_[0]) && $_[0] =~ /^[A-Z0-9]+$/ && defined($_[1]) && $_[1] =~ /^\d+$/;
+
+	my $generation_command = sprintf "%s %s %d", "/usr/bin/generate_private_key", $_[0], $_[1];
+	eval {
+		my $key = `$generation_command 2> /dev/null`;
+		die "couldn't generate key" unless defined($key) && length($key) > 0;
+
+		push @_, $key;
+	};
+
+	if ($@) {
+		my $exception = shift;
+		die "error generating key: $exception";
+	}
+
+	my $sth = $self->handleAll($method, $signature, 0, @_);
+
+	my $rows = $sth->fetchall_arrayref();
+	die("no resourcerecord returned from database") unless defined($rows) && !$DBI::err;
+
+	die("more than one row returned for scalar type") unless scalar(@$rows) == 1; 
+	die("more than one column returned for scalar type") unless scalar(@{$rows->[0]}) == 1; 
+
+	my $intval = $rows->[0]->[0];
+	die("bad data returned from database, expected integer") unless defined($intval) && $intval =~ /^\d+$/;
+
+	return SOAP::Data->new(name => "keyid", type => "integer", value => $intval);
 }
 
 sub handleStringArray {

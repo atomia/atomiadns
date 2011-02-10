@@ -1,0 +1,206 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+#
+# This tool handles ZSK rollovers using pre published key method according to the
+# following algorithm:
+# 
+# Step 1: Use the GetDNSSECZSKInfo method to extract ZSK:s and the current maximum
+#         TTL for the entire Atomia DNS installation.
+# Step 2: Verify that we have one active ZSK key, one inactive and never deactivated,
+#         and possibly one or more deactivated.
+# Step 3: If created_ago_seconds for the inactive (never deactivated) key is more than
+#          dnssec_ttl_safety_factor * max TTL, then activate it first, then create a
+#          new inactive ZSK and then deactivate the old ZSK.
+# Step 4: If deactivated_ago_seconds for a deactivated key is more than
+#         dnssec_ttl_safety_factor * max TTL, then remove that key.
+#
+
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Config::General;
+
+my $config_file = "/etc/atomiadns.conf";
+my $soap_uri = undef;
+my $soap_cacert = undef;
+my $soap_username = undef;
+my $soap_password = undef;
+my $verbose = 0;
+my $help = undef;
+my $dnssec_ttl_safety_factor = 10;
+
+if (-f "$config_file") {
+	my $conf = new Config::General($config_file);
+	die("config file found at $config_file but it is unreadable" ) unless defined($conf);
+	my %config = $conf->getall;
+	$soap_uri = $config{"soap_uri"};
+	$soap_cacert = $config{"soap_cacert"};
+	$soap_username = $config{"soap_username"};
+	$soap_password = $config{"soap_password"};
+	$dnssec_ttl_safety_factor = $config{"dnssec_ttl_safety_factor"} if defined($config{"dnssec_ttl_safety_factor"}) && $config{"dnssec_ttl_safety_factor"} =~ /^\d+$/;
+}
+
+GetOptions (	"uri=s" => \$soap_uri,
+		"help|?" => \$help,
+		"verbose|v" => \$verbose) || pod2usage(0);
+pod2usage(-verbose => 1) if $help;
+pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/;
+
+if ($soap_uri =~ /^https/) {
+	die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option" unless defined($soap_cacert) && -f $soap_cacert;
+	$ENV{HTTPS_CA_FILE} = $soap_cacert;
+}
+
+if ($verbose) {
+	eval 'use SOAP::Lite +trace => [ "debug" ];';
+} else {
+	eval 'use SOAP::Lite;';
+}
+
+if (defined($soap_username)) {
+	die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
+	eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+}
+
+my $soap = SOAP::Lite
+	->  uri('urn:Atomia::DNS::Server')
+	->  proxy($soap_uri)
+	->  on_fault(sub {
+			my($soap, $res) = @_;
+			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
+		});
+
+main($soap);
+exit 0;
+
+sub main {
+	my $atomiadns = shift;
+
+	my $zsk_set = $atomiadns->GetDNSSECZSKInfo();
+        die("error fetching DNSSEC ZSK keyset, got no or bad result from soap-server") unless defined($zsk_set) &&
+		$zsk_set->result && ref($zsk_set->result) eq "ARRAY";
+	$zsk_set = $zsk_set->result;
+
+	my $zsk_set_validation_message = "use of this tool requires that there is always one active ZSK key and one inactive ZSK and there can be zero or more deactivated ZSK";
+	die $zsk_set_validation_message unless scalar(@$zsk_set) >= 2;
+
+	my $active_zsk = undef;
+	my $inactive_zsk = undef;
+	my $deactivated_zsk_set = [];
+	my $max_ttl = undef;
+
+	foreach my $key (@$zsk_set) {
+		if ($key->{"activated"} == 1) {
+			die "only one active ZSK at a time is allowed, you need to correct your keyset manually before using this tool" if defined($active_zsk);
+			$active_zsk = $key;
+			$max_ttl = $active_zsk->{"max_ttl"};
+		} elsif (defined($key->{"deactivated_at"})) {
+			push @$deactivated_zsk_set, $key;
+		} else {
+			die "only one inactive (and not deactivated) ZSK in pre published state is allowed, you need to correct your keyset manually before using this tool" if defined($inactive_zsk);
+			$inactive_zsk = $key;
+		}
+	}
+
+	die $zsk_set_validation_message unless defined($active_zsk) && defined($inactive_zsk);
+
+	if ($inactive_zsk->{"created_ago_seconds"} > $dnssec_ttl_safety_factor * $max_ttl) {
+		printf "Activating pre published key with id %d\n", $inactive_zsk->{"id"};
+		my $ret = $atomiadns->ActivateDNSSECKey($inactive_zsk->{"id"});
+		die "error activating key" unless defined($ret) && defined($ret->result) && ref($ret->result) eq '' && $ret->result eq 'ok';
+
+		printf "Creating a new inactivated ZSK\n";
+		$ret = $atomiadns->AddDNSSECKey("RSASHA256", 1024, "ZSK", 0);
+		die "error creating new pre published inactive ZSK" unless defined($ret) && defined($ret->result) && ref($ret->result) eq '' && $ret->result =~ /^\d+$/;
+		printf "Key created successfully with id %d\n", $ret->result;
+
+		printf "Deactivating old ZSK key with id %d\n", $active_zsk->{"id"};
+		$ret = $atomiadns->DeactivateDNSSECKey($active_zsk->{"id"});
+		die "error deactivating key" unless defined($ret) && defined($ret->result) && ref($ret->result) eq '' && $ret->result eq 'ok';
+	}
+
+	foreach my $key (@$deactivated_zsk_set) {
+		if ($key->{"deactivated_ago_seconds"} > $dnssec_ttl_safety_factor * $max_ttl) {
+			printf "Removing old already deactivated ZSK key with id %d since it was deactivated %d seconds ago\n", $key->{"id"}, $key->{"deactivated_ago_seconds"};
+			my $ret = $atomiadns->DeleteDNSSECKey($key->{"id"});
+			die "error removing old deactivated key" unless defined($ret) && defined($ret->result) && ref($ret->result) eq '' && $ret->result eq 'ok';
+		}
+	}
+}
+
+=encoding utf8
+
+=head1 NAME
+
+dnssec_zsk_rollover - A helper application for handling ZSK rollover in Atomia DNS Hosted DNSSEC installations.
+
+=head1 SYNOPSIS
+
+=over 8
+
+=item dnssec_zsk_rollover --uri SOAP_URI [-v] [--help]
+
+=back
+
+=head1 DESCRIPTION
+
+This tool handles ZSK rollovers using pre published key method according to
+the following algorithm:
+ 
+Step 1: Use the GetDNSSECZSKInfo method to extract ZSK:s and the current maximum
+TTL for the entire Atomia DNS installation.
+
+Step 2: Verify that we have one active ZSK key, one inactive and never deactivated,
+and possibly one one or more deactivated.
+
+Step 3: If created_ago_seconds for the inactive (never deactivated) key is more than
+dnssec_ttl_safety_factor * max TTL, then activate it first, then create a
+new inactive ZSK and then deactivate the old ZSK.
+
+Step 4: If deactivated_ago_seconds for a deactivated key is more than
+dnssec_ttl_safety_factor * max TTL, then remove that key.
+
+=head1 OPTIONS
+
+=over 8
+
+=item --uri SOAP_URI
+
+Specifies the URL of the Atomia DNS Master server to administer zones in.
+
+=item --verbose
+
+Output a trace of what is done.
+
+=item --help
+
+Displays the synopsis and documentation for individual options.
+
+=back
+
+=head1 CONFIGURATION
+
+The application is configured using a optional config file stored at /etc/atomiadns.conf.
+
+The following options exist:
+
+=over 8
+
+=item soap_uri
+
+Specifies the URI of the SOAP Server to administer zones using.
+
+=back
+
+=head1 EXAMPLES
+
+dnssec_zsk_rollover
+
+=head1 AUTHOR
+
+Atomia DNS was developed by Atomia AB. For support, please see http://www.atomia.com/.
+
+=cut

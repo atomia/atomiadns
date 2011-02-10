@@ -32,6 +32,7 @@ my $signatures = {
 	"DeleteNameserver" => "void string",
 	"GetNameserver" => "string string",
 	"GetChangedZones" => "changes string",
+	"GetChangedZonesBatch" => "changes string int",
 	"MarkUpdated" => "void int string string",
 	"MarkUpdatedBulk" => "void array[int] array array",
 	"MarkAllUpdatedExcept" => "void string int",
@@ -53,6 +54,12 @@ my $signatures = {
 	"AllowZoneTransfer" => "void string string",
 	"GetAllowedZoneTransfer" => "allowedtransfer",
 	"DeleteAllowedZoneTransfer" => "void string string",
+	"GetDNSSECKeys" => "keyset",
+	"AddDNSSECKey" => "keyid string int string int",
+	"ActivateDNSSECKey" => "void int",
+	"DeactivateDNSSECKey" => "void int",
+	"DeleteDNSSECKey" => "void int",
+	"GetDNSSECZSKInfo" => "zskinfo",
 };
 
 our $instance = Atomia::DNS::ServerHandler->new;
@@ -94,6 +101,12 @@ foreach my $method (keys %{$signatures}) {
 				$Atomia::DNS::Server::instance->handleInt($method, \@signature, @_);
 			} elsif ($return_type eq "allowedtransfer") {
 				$Atomia::DNS::Server::instance->handleAllowedTransfer($method, \@signature, @_);
+			} elsif ($return_type eq "keyset") {
+				$Atomia::DNS::Server::instance->handleKeySet($method, \@signature, @_);
+			} elsif ($return_type eq "zskinfo") {
+				$Atomia::DNS::Server::instance->handleZSKInfo($method, \@signature, @_);
+			} elsif ($return_type eq "keyid") {
+				$Atomia::DNS::Server::instance->handleAddKey($method, \@signature, @_);
 			} else {
 				die("unknown return-type in signature: $return_type");
 			}

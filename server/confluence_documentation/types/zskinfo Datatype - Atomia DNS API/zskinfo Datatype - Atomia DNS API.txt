@@ -1,0 +1,12 @@
+
+[zskinfo|zskinfo Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| activated | int | 0 if the key is inactive and 1 if it is active |
+| created_at | string | the date of the key creation |
+| activated_at | string | the date of the key activation or empty if not activated |
+| deactivated_at | string | the date of the key deactivation or empty if not deactivated |
+| created_ago_seconds | int | the number of seconds since the key creation |
+| deactivated_ago_seconds | int | the number of seconds since the key deactivation |
+| max_ttl | int | the maximum TTL of all records in this instance of Atomia DNS |
+				

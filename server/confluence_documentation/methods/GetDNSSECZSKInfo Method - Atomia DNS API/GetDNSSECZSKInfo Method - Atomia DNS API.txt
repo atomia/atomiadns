@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.
+
+h3.Declaration syntax
+{panel}
+[zskinfo|zskinfo Datatype - Atomia DNS API] GetDNSSECZSKInfo()
+{panel}
+
+{include:GetDNSSECZSKInfo Method Example - Atomia DNS API}

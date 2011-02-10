@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Marks a DNSSEC key as activated.
+
+h3.Declaration syntax
+{panel}
+void ActivateDNSSECKey(
+	int keyid
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|keyid|int||
+
+{include:ActivateDNSSECKey Method Example - Atomia DNS API}

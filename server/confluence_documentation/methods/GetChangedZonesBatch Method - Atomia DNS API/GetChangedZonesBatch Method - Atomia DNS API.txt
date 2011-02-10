@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Fetches a list of all changed zones for a nameserver, but limit response to a number of changes.
+
+h3.Declaration syntax
+{panel}
+[changes|changes Datatype - Atomia DNS API] GetChangedZonesBatch(
+	string nameserver,
+	int num
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|nameserver|string|the servername to fetch changes for|
+|num|int|the maximum number of changes to return|
+
+{include:GetChangedZonesBatch Method Example - Atomia DNS API}

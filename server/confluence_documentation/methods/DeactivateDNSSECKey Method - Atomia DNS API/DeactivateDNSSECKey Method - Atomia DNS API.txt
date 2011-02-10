@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Marks a DNSSEC key as deactivated.
+
+h3.Declaration syntax
+{panel}
+void DeactivateDNSSECKey(
+	int keyid
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|keyid|int||
+
+{include:DeactivateDNSSECKey Method Example - Atomia DNS API}

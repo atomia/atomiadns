@@ -1,0 +1,23 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Adds a DNSSEC key to the database.
+
+h3.Declaration syntax
+{panel}
+int AddDNSSECKey(
+	string algorithm,
+	int keysize,
+	string keytype,
+	int activated
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|algorithm|string|the algorithm of the key|
+|keysize|int|the size of the key in bits|
+|keytype|string|ZSK or KSK|
+|activated|int|1 if the key should be active or 0 if it is to be inactive|
+
+{include:AddDNSSECKey Method Example - Atomia DNS API}

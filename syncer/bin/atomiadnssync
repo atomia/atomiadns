@@ -163,7 +163,7 @@ atomiadnssync add_server somegroup
 
 =head1 AUTHOR
 
-Atomia DNS was developed by Atomia AB. For support, please see http://www.troxo.com/.
+Atomia DNS was developed by Atomia AB. For support, please see http://www.atomia.com/.
 
 =cut
 

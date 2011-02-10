@@ -169,7 +169,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		latest_version="41"
+		latest_version="48"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -301,6 +301,29 @@ if [ $? != 0 ]; then
 
 			if [ "$schema_version" -lt 41 ]; then
 				execute_query "ALTER TABLE slavezone DROP CONSTRAINT slavezone_master_key"
+			fi
+
+			if [ "$schema_version" -lt 42 ]; then
+				create_table "dnssec_keyset"
+				recreate_procedure "activatednsseckey"
+				recreate_procedure "adddnsseckey"
+				recreate_procedure "deactivatednsseckey"
+				recreate_procedure "deletednsseckey"
+				recreate_procedure "getchangedzonesbatch"
+				recreate_procedure "getdnsseckeys"
+			fi
+
+			if [ "$schema_version" -lt 43 ]; then
+				alter_table_addcolumn "dnssec_keyset" "deactivated_at TIMESTAMP"
+			fi
+
+			if [ "$schema_version" -lt 45 ]; then
+				recreate_procedure "getdnsseckeys"
+			fi
+
+			if [ "$schema_version" -lt 48 ]; then
+				recreate_procedure "getdnsseczskinfo"
+				recreate_procedure "deactivatednsseckey"
 			fi
 
 			set_schema_version "$latest_version"

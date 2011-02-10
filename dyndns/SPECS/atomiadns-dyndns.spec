@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.0.15
+Version: 1.0.16
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Thu Jan 27 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.16-1
+- DNSSEC support and changing the bind-dlz syncer to only load 10000 zones per sync_updated_zones batch
 * Fri Jan 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.15-1
 - Re-release broken package
 * Fri Jan 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.14-1

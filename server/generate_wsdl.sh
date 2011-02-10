@@ -28,6 +28,7 @@ methodawk='BEGIN {
 	methods["GetNameserver"] = "Gets the group name that a nameserver is configured as a subscriber for.";
 	methods["DeleteNameserver"] = "Remove a nameserver as a subscriber of changes to the data set in this server.";
 	methods["GetChangedZones"] = "Fetches a list of all changed zones for a nameserver.";
+	methods["GetChangedZonesBatch"] = "Fetches a list of all changed zones for a nameserver, but limit response to a number of changes.";
 	methods["MarkUpdated"] = "Mark a change-row as handled, removing it if no error occured.";
 	methods["MarkUpdatedBulk"] = "Mark a set of change-rows as handled, removing it if no error occured.";
 	methods["MarkAllUpdatedExcept"] = "Removes all change-rows for a zone and nameserver except the one with a specific id.";
@@ -46,6 +47,12 @@ methodawk='BEGIN {
 	methods["MarkSlaveZoneUpdated"] = "Mark a slave zone change-row as handled, removing it if no error occured.";
 	methods["GetSlaveZone"] = "Fetches information about a slave zone."
 	methods["ReloadAllSlaveZones"] = "Mark all slave zones in the database as changed.";
+	methods["GetDNSSECKeys"] = "Get a list of all DNSSEC keys stored in this Atomia DNS instance.";
+	methods["AddDNSSECKey"] = "Adds a DNSSEC key to the database.";
+	methods["ActivateDNSSECKey"] = "Marks a DNSSEC key as activated.";
+	methods["DeactivateDNSSECKey"] = "Marks a DNSSEC key as deactivated.";
+	methods["DeleteDNSSECKey"] = "Removes a DNSSEC key from the database.";
+	methods["GetDNSSECZSKInfo"] = "Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.";
 }'
 
 cat <<EOH

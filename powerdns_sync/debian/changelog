@@ -1,0 +1,5 @@
+atomiadns-powerdnssync (1.0.16) hardy; urgency=low
+
+  * DNSSEC support and changing the bind-dlz syncer to only load 10000 zones per sync_updated_zones batch
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 27 Jan 2011 14:28:29 +0100

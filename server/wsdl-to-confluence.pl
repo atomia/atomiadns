@@ -26,6 +26,8 @@ my $type_mappings = {
 	"atomiaAllowedTransfers" => "allowedtransfers",
 	"atomiaBinaryZoneArray" => "binaryzones",
 	"atomiaBinaryZone" => "binaryzone",
+	"atomiaKeySet" => "keyset",
+	"atomiaZSKInfo" => "zskinfo",
 };
 
 use XML::XPath;

@@ -11,7 +11,7 @@ BEGIN
 		WHERE name = zonename AND record.id = records[i][1]::int;
 
 		IF num_records != 1 THEN
-			RAISE EXCEPTION 'record with id % doesn\'t exist in zone %', records[i][1], zonename;
+			RAISE EXCEPTION 'record with id % doesn''t exist in zone %', records[i][1], zonename;
 		END IF;
 
 		DELETE FROM record WHERE id = records[i][1]::int;

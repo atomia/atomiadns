@@ -1,0 +1,221 @@
+#!/usr/bin/perl -w
+
+=encoding utf8
+
+=head1 NAME
+
+atomiapowerdnssync - An application for synchronizing a PowerDNS mys1l database with Atomia DNS.
+
+=head1 SYNOPSIS
+
+=over 8
+
+=item atomiapowerdnssync OPTION
+
+=back
+
+=head1 DESCRIPTION
+
+atomiapowerdnssync is an application for synchronizing a PowerDNS mys1l
+database with Atomia DNS.
+
+It contains options for both doing a full reload of all zones in the master
+database, and for just fetching the zones changed since the last update and
+reloading those.
+
+In addition you can use this tool for adding or removing the subscription of
+updates for a nameserver, and for enabling and disabling propagation of updates
+globally across all nameservers.
+
+=head1 OPTIONS
+
+=over 8
+
+=item full_reload_online
+
+Marks all zones as changed so that the update-process propagates them on all nameservers.
+
+=item full_reload_slavezones
+
+Marks all slave zones as changed so that the update-process propagates them on all nameservers.
+
+=item updated
+
+Fetches a list of changed zones and adds/removes them from the PowerDNS database.
+database. It also synchronizes the current DNSSEC keyset.
+
+This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-powerdnssync.
+
+You should never run this manually.
+
+=item get_server
+
+Checks if this server is added as a subscriber of changed zones and displays the group it is configured
+to handle zones for.
+
+A return value of 0 means that the server is added as a subscriber, 1 means it is not.
+
+=item add_server GROUP
+
+Adds this server (configured using servername in /etc/atomiadns.conf) as a
+subscriber of the data set defined by the nameserver group GROUP on the configured SOAP server.
+
+=item remove_server
+
+Remove the subscription of the data set on the configured SOAP server for this
+server (configured using servername in /etc/atomiadns.conf).
+
+=item disable_updates
+
+Disable propagation of changes to the nameservers.
+
+=item enable_updates
+
+Enable propagation of changes to the nameservers
+
+=back
+
+=head1 CONFIGURATION
+
+The application is configured using a config file stored at /etc/atomiadns.conf. All options are required.
+
+The following options exist:
+
+=over 8
+
+=item soap_uri
+
+Specifies the URI of the SOAP Server to fetch changes from.
+
+=item servername
+
+Specifies the hostname used when subscribing and checking for changes.
+
+=back
+
+=head1 EXAMPLES
+
+To reload all zones on all nameservers, including this:
+
+atomiapowerdnssync full_reload_online
+
+To add the server as a subscriber:
+
+atomiapowerdnssync add_server somegroup
+
+=head1 AUTHOR
+
+Atomia DNS was developed by Atomia AB. For support, please see http://www.atomia.com/.
+
+=cut
+
+use warnings;
+use strict;
+
+use Atomia::DNS::PowerDNSSyncer;
+use Data::Dumper;
+
+# Flush stdout after every write
+$| = 1;
+
+if (scalar(@ARGV) < 1) {
+	print "usage: $0 mode\n";
+	print "where mode is one of full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates\n";
+	exit 1;
+}
+
+$_ = $ARGV[0];
+
+SWITCH: {
+	/^(remove_server|disable_updates|enable_updates|full_reload_online|full_reload_slavezones)$/i && do {
+		my $command = $_;
+		eval {
+			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->$command();
+		};
+
+		handle_exception($@) if $@;
+		last SWITCH;
+	};
+
+	/^add_server$/i && do {
+		if (scalar(@ARGV) < 2) {
+			print "usage: $0 add_server group\n";
+			exit 1;
+		}
+
+		eval {
+			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->add_server($ARGV[1]);
+		};
+
+		my $exception = $@;
+		if ($exception) {
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.Uniqueness/) {
+				print "This server is already added, you can use get_server to check the current settings.\n";
+				exit 1;
+			} else {
+				handle_exception($exception);
+			}
+		}
+		last SWITCH;
+	};
+
+	/^get_server$/i && do {
+		eval {
+			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+			my $group = $syncer->get_server();
+			print "$group\n";
+		};
+
+		my $exception = $@;
+		if ($exception) {
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.NameserverNotFound/) {
+				print STDERR "Warning: This nameserver is not configured as a member of any group.\n";
+				exit 1;
+			} else {
+				handle_exception($exception);
+			}
+		}
+		last SWITCH;
+	};
+
+	/^updated$/i && do {
+		FOREVER: while(1) {
+			eval {
+				my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+
+				while (1) {
+					last if $syncer->updates_disabled();
+					$syncer->sync_dnssec_keys();
+					$syncer->reload_updated_zones();
+					$syncer->reload_updated_slavezones();
+					$syncer->sync_zone_transfers();
+					sleep 10;
+				}
+			};
+
+			if ($@) {
+				print "caught exception in atomiapowerdnssync updated: $@\n";
+				sleep 5;
+			} else {
+				# Updates disabled, exit.
+				last;
+			}
+		}
+
+		last SWITCH;
+	};
+
+	die("parameter $_ is not supported");
+}
+
+sub handle_exception {
+	my $exception = shift;
+	my $no_output = shift;
+
+	$exception = $exception->faultcode . ": " . $exception->faultstring if ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM');
+	$exception = Dumper($exception) if ref($exception);
+	print "Caught exception handling command: $exception\n" unless defined($no_output) && $no_output == 1;
+	exit 1;
+}

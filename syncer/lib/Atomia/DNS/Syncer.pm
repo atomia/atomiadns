@@ -256,7 +256,7 @@ sub sync_updated_zones {
 	my $db_data = shift;
 	my $db_xfr = shift;
 
-	my $zones = $self->soap->GetChangedZones($self->config->{"servername"} || die("you have to specify servername in config"));
+	my $zones = $self->soap->GetChangedZonesBulk($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
 	die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
 		$zones->result && ref($zones->result) eq "ARRAY";
 	$zones = $zones->result;

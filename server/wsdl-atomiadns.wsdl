@@ -227,6 +227,56 @@ atomiaBinaryZone is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaKeySet">
+				<xsd:annotation><xsd:documentation>
+atomiaKeySet is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| algorithm | string | the algorithm of the key |
+| activated | int | 0 if the key is inactive and 1 if it is active |
+| keysize | int | the size of the key in bits |
+| keytype | string | ZSK or KSK |
+| activated_at | string | the date of the key activation or empty if not activated |
+| deactivated_at | string | the date of the key deactivation or empty if not deactivated |
+| keydata | string | the private key in Private-key-format v1.2 |
+				</xsd:documentation></xsd:annotation>
+				<xsd:any>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="algorithm" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="activated" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keysize" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keytype" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="activated_at" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="deactivated_at" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"/>
+				</xsd:any>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaZSKInfo">
+				<xsd:annotation><xsd:documentation>
+atomiaZSKInfo is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| activated | int | 0 if the key is inactive and 1 if it is active |
+| created_at | string | the date of the key creation |
+| activated_at | string | the date of the key activation or empty if not activated |
+| deactivated_at | string | the date of the key deactivation or empty if not deactivated |
+| created_ago_seconds | int | the number of seconds since the key creation |
+| deactivated_ago_seconds | int | the number of seconds since the key deactivation |
+| max_ttl | int | the maximum TTL of all records in this instance of Atomia DNS |
+				</xsd:documentation></xsd:annotation>
+				<xsd:any>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="activated" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="created_at" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="activated_at" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="deactivated_at" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="created_ago_seconds" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="deactivated_ago_seconds" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="max_ttl" type="xsd:int"/>
+				</xsd:any>
+			</xsd:complexType>
+
 			<xsd:element name="GetUpdatesDisabled">
 				<xsd:complexType>
 					<xsd:all />
@@ -396,6 +446,23 @@ atomiaBinaryZone is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="GetChangedZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedZonesBatch">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="num" type="xsd:int"><xsd:annotation><xsd:documentation>the maximum number of changes to return</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedZonesBatchResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
@@ -969,6 +1036,102 @@ atomiaBinaryZone is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetDNSSECKeys">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDNSSECKeysResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyset" type="atomiaKeySet"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="algorithm" type="xsd:string"><xsd:annotation><xsd:documentation>the algorithm of the key</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keysize" type="xsd:int"><xsd:annotation><xsd:documentation>the size of the key in bits</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keytype" type="xsd:string"><xsd:annotation><xsd:documentation>ZSK or KSK</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="activated" type="xsd:int"><xsd:annotation><xsd:documentation>1 if the key should be active or 0 if it is to be inactive</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ActivateDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="ActivateDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+
+			<xsd:element name="DeactivateDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeactivateDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDNSSECZSKInfo">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDNSSECZSKInfoResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zskinfo" type="atomiaZSKInfo"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 		</xsd:schema>
 	</types>
 
@@ -1195,6 +1358,15 @@ atomiaBinaryZone is a struct with the following members:
 		<part name="parameters" element="tns:GetChangedZonesResponse"/>
 	</message>
 
+	<message name="GetChangedZonesBatchInput">
+		<documentation>Fetches a list of all changed zones for a nameserver, but limit response to a number of changes.</documentation>
+		<part name="parameters" element="tns:GetChangedZonesBatch"/>
+	</message>
+
+	<message name="GetChangedZonesBatchOutput">
+		<part name="parameters" element="tns:GetChangedZonesBatchResponse"/>
+	</message>
+
 	<message name="MarkUpdatedInput">
 		<documentation>Mark a change-row as handled, removing it if no error occured.</documentation>
 		<part name="parameters" element="tns:MarkUpdated"/>
@@ -1382,6 +1554,60 @@ atomiaBinaryZone is a struct with the following members:
 
 	<message name="DeleteAllowedZoneTransferOutput">
 		<part name="parameters" element="tns:DeleteAllowedZoneTransferResponse"/>
+	</message>
+
+	<message name="GetDNSSECKeysInput">
+		<documentation>Get a list of all DNSSEC keys stored in this Atomia DNS instance.</documentation>
+		<part name="parameters" element="tns:GetDNSSECKeys"/>
+	</message>
+
+	<message name="GetDNSSECKeysOutput">
+		<part name="parameters" element="tns:GetDNSSECKeysResponse"/>
+	</message>
+
+	<message name="AddDNSSECKeyInput">
+		<documentation>Adds a DNSSEC key to the database.</documentation>
+		<part name="parameters" element="tns:AddDNSSECKey"/>
+	</message>
+
+	<message name="AddDNSSECKeyOutput">
+		<part name="parameters" element="tns:AddDNSSECKeyResponse"/>
+	</message>
+
+	<message name="ActivateDNSSECKeyInput">
+		<documentation>Marks a DNSSEC key as activated.</documentation>
+		<part name="parameters" element="tns:ActivateDNSSECKey"/>
+	</message>
+
+	<message name="ActivateDNSSECKeyOutput">
+		<part name="parameters" element="tns:ActivateDNSSECKeyResponse"/>
+	</message>
+
+	<message name="DeactivateDNSSECKeyInput">
+		<documentation>Marks a DNSSEC key as deactivated.</documentation>
+		<part name="parameters" element="tns:DeactivateDNSSECKey"/>
+	</message>
+
+	<message name="DeactivateDNSSECKeyOutput">
+		<part name="parameters" element="tns:DeactivateDNSSECKeyResponse"/>
+	</message>
+
+	<message name="DeleteDNSSECKeyInput">
+		<documentation>Removes a DNSSEC key from the database.</documentation>
+		<part name="parameters" element="tns:DeleteDNSSECKey"/>
+	</message>
+
+	<message name="DeleteDNSSECKeyOutput">
+		<part name="parameters" element="tns:DeleteDNSSECKeyResponse"/>
+	</message>
+
+	<message name="GetDNSSECZSKInfoInput">
+		<documentation>Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.</documentation>
+		<part name="parameters" element="tns:GetDNSSECZSKInfo"/>
+	</message>
+
+	<message name="GetDNSSECZSKInfoOutput">
+		<part name="parameters" element="tns:GetDNSSECZSKInfoResponse"/>
 	</message>
 
 	<portType name="AtomiaDNSPortType">
@@ -1592,6 +1818,15 @@ atomiaBinaryZone is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetChangedZonesBatch">
+			<input message="tns:GetChangedZonesBatchInput"/>
+			<output message="tns:GetChangedZonesBatchOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="MarkUpdated">
 			<input message="tns:MarkUpdatedInput"/>
 			<output message="tns:MarkUpdatedOutput"/>
@@ -1780,6 +2015,60 @@ atomiaBinaryZone is a struct with the following members:
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
+
+		<operation name="GetDNSSECKeys">
+			<input message="tns:GetDNSSECKeysInput"/>
+			<output message="tns:GetDNSSECKeysOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="AddDNSSECKey">
+			<input message="tns:AddDNSSECKeyInput"/>
+			<output message="tns:AddDNSSECKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="ActivateDNSSECKey">
+			<input message="tns:ActivateDNSSECKeyInput"/>
+			<output message="tns:ActivateDNSSECKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeactivateDNSSECKey">
+			<input message="tns:DeactivateDNSSECKeyInput"/>
+			<output message="tns:DeactivateDNSSECKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteDNSSECKey">
+			<input message="tns:DeleteDNSSECKeyInput"/>
+			<output message="tns:DeleteDNSSECKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetDNSSECZSKInfo">
+			<input message="tns:GetDNSSECZSKInfoInput"/>
+			<output message="tns:GetDNSSECZSKInfoOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
 	</portType>
 
 	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
@@ -1946,6 +2235,13 @@ atomiaBinaryZone is a struct with the following members:
 			<output><soap:body use="literal"/></output>
 		</operation>
 
+		<operation name="GetChangedZonesBatch">
+			<documentation>Fetches a list of all changed zones for a nameserver, but limit response to a number of changes.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedZonesBatch"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
 		<operation name="MarkUpdated">
 			<documentation>Mark a change-row as handled, removing it if no error occured.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkUpdated"/>
@@ -2089,6 +2385,48 @@ atomiaBinaryZone is a struct with the following members:
 		<operation name="DeleteAllowedZoneTransfer">
 			<documentation></documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteAllowedZoneTransfer"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetDNSSECKeys">
+			<documentation>Get a list of all DNSSEC keys stored in this Atomia DNS instance.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECKeys"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AddDNSSECKey">
+			<documentation>Adds a DNSSEC key to the database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddDNSSECKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="ActivateDNSSECKey">
+			<documentation>Marks a DNSSEC key as activated.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#ActivateDNSSECKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeactivateDNSSECKey">
+			<documentation>Marks a DNSSEC key as deactivated.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeactivateDNSSECKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteDNSSECKey">
+			<documentation>Removes a DNSSEC key from the database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDNSSECKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetDNSSECZSKInfo">
+			<documentation>Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECZSKInfo"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

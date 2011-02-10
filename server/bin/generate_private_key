@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+	echo "usage: $0 algorithm keysize_bits"
+	exit 1
+fi
+
+keydir=`mktemp -d`
+if [ $? != 0 ]; then
+	echo "error creating temp dir for key"
+	exit 1
+fi
+
+/usr/sbin/dnssec-keygen -K "$keydir" -a "$1" -b "$2" -C atomiadns_key > /dev/null 2>&1
+if [ $? != 0 ]; then
+	echo "error generating key"
+	exit 1
+fi
+
+cat "$keydir"/*atomiadns_key*.private
+rm -rf "$keydir"

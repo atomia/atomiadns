@@ -6,9 +6,13 @@ DROP TABLE IF EXISTS change;
 DROP TABLE IF EXISTS slavezone_change;
 DROP TABLE IF EXISTS nameserver;
 DROP TABLE IF EXISTS updates_disabled;
+DROP TABLE IF EXISTS allow_zonetransfer;
+DROP TABLE IF EXISTS dnssec_keyset;
 
 CREATE TYPE dnsclass AS ENUM('IN', 'CH');
 CREATE TYPE changetype AS ENUM('PENDING', 'ERROR', 'OK');
+CREATE TYPE dnsseckeytype AS ENUM('KSK', 'ZSK');
+CREATE TYPE algorithmtype AS ENUM('RSASHA1', 'RSASHA256', 'RSASHA512');
 
 CREATE TABLE allowed_type (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -27,7 +31,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (41);
+INSERT INTO atomiadns_schemaversion (version) VALUES (48);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -36,9 +40,21 @@ CREATE TABLE allow_zonetransfer (
 	UNIQUE (zone, ip)
 );
 
+CREATE TABLE dnssec_keyset (
+        id SERIAL PRIMARY KEY NOT NULL,
+	algorithm algorithmtype NOT NULL,
+	keysize INT NOT NULL CHECK (keysize >= 512),
+	keytype dnsseckeytype NOT NULL,
+	activated INT NOT NULL CHECK (activated IN (0, 1)),
+	keydata TEXT NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	activated_at TIMESTAMP,
+	deactivated_at TIMESTAMP
+);
+
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),
-('AAAA', 'ipv6address', '^((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?$'),
+('AAAA', 'ipv6address', E'^((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?$'),
 ('AFSDB', 'subtype hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]+$'),
 ('CERT', 'type keytag algorithm certificate', '^[0-9]+ [0-9]+ [0-9]+ [A-Za-z0-9+/=]+$'),
 ('CNAME', 'hostname', '^[a-z0-9][a-z0-9.-]+$'),
@@ -142,7 +158,7 @@ BEGIN
         ELSIF NEW.type != 'CNAME' AND 0 < (SELECT COUNT(*) FROM record WHERE label_id = NEW.label_id AND class = NEW.class AND type = 'CNAME') THEN
                 RAISE EXCEPTION 'CNAME exists for this label and CNAME is not allowed with other data'; 
         ELSIF NEW.rdata !~* myregexp THEN
-                RAISE EXCEPTION '% isn\'t allowed rdata for %, synopsis is "%"', NEW.rdata, NEW.type, mysynopsis;
+                RAISE EXCEPTION '% isn''t allowed rdata for %, synopsis is "%"', NEW.rdata, NEW.type, mysynopsis;
         ELSE
                 RETURN NEW;
         END IF;
@@ -226,9 +242,9 @@ BEGIN
 	WHERE l.zone_id = zoneid AND r.id IS NULL;
 
 	IF numsoa != 1 OR numcorrectsoa != 1 THEN
-		RAISE EXCEPTION 'zone needs to have exactly one SOA and it should be for \'@\'';
+		RAISE EXCEPTION 'zone needs to have exactly one SOA and it should be for ''@''';
 	ELSIF numns < 1 THEN
-		RAISE EXCEPTION 'zone needs to have one or more NS-records set for \'@\'';
+		RAISE EXCEPTION 'zone needs to have one or more NS-records set for ''@''';
 	ELSIF emptylabels > 0 THEN
 		RAISE EXCEPTION 'all labels have to have records';
 	ELSE

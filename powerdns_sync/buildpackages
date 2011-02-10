@@ -1,0 +1,4 @@
+#!/bin/sh
+dpkg-buildpackage -rfakeroot -tc -us -uc
+mv ../*deb ../packages/"$1"
+rm ../atomiadns-*
