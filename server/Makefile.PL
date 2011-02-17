@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
    'NAME' => 'Atomia::DNS::Server',
-   'VERSION' => '1.0.16',
+   'VERSION' => '1.0.17',
    'AUTHOR' => 'Jimmy Bergman <jimmy@pingdom.com>',
    'DIR' => [],
    'EXE_FILES' => [ 'bin/generate_private_key' ]

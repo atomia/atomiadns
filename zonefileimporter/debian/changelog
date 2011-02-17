@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.17) hardy; urgency=low
+
+  * Handle load a bit better in the API server and change dependency to apache2-mpm-prefork to avoid threading bugs.
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 17 Feb 2011 08:33:25 +0100
+
 atomiadns-zoneimport (1.0.16) hardy; urgency=low
 
   * DNSSEC support and changing the bind-dlz syncer to only load 10000 zones per sync_updated_zones batch
