@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.0.17
+Version: 1.0.18
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Tue Feb 22 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.18-1
+- Fix DLZ sync agent
 * Thu Feb 17 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.17-1
 - Handle load a bit better in the API server and change dependency to apache2-mpm-prefork to avoid threading bugs.
 * Thu Jan 27 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.16-1

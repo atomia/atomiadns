@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.18) hardy; urgency=low
+
+  * Fix DLZ sync agent
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 22 Feb 2011 08:59:47 +0100
+
 atomiadns-zoneimport (1.0.17) hardy; urgency=low
 
   * Handle load a bit better in the API server and change dependency to apache2-mpm-prefork to avoid threading bugs.
