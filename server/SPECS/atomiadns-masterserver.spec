@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.18
+Version: 1.0.19
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.18 atomiadns-database >= 1.0.18
+Requires: atomiadns-api >= 1.0.19 atomiadns-database >= 1.0.19
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.19-1
+- Fix database schema migration for 41 -> 42
 * Tue Feb 22 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.18-1
 - Fix DLZ sync agent
 * Thu Feb 17 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.17-1

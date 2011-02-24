@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.0.18
+Version: 1.0.19
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.19-1
+- Fix database schema migration for 41 -> 42
 * Tue Feb 22 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.18-1
 - Fix DLZ sync agent
 * Thu Feb 17 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.17-1

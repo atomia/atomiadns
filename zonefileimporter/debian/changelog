@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.19) hardy; urgency=low
+
+  * Fix database schema migration for 41 -> 42
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 24 Feb 2011 10:08:50 +0100
+
 atomiadns-zoneimport (1.0.18) hardy; urgency=low
 
   * Fix DLZ sync agent

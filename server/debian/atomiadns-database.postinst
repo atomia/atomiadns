@@ -304,6 +304,8 @@ if [ $? != 0 ]; then
 			fi
 
 			if [ "$schema_version" -lt 42 ]; then
+				execute_query "CREATE TYPE dnsseckeytype AS ENUM('KSK', 'ZSK')"
+				execute_query "CREATE TYPE algorithmtype AS ENUM('RSASHA1', 'RSASHA256', 'RSASHA512')"
 				create_table "dnssec_keyset"
 				recreate_procedure "activatednsseckey"
 				recreate_procedure "adddnsseckey"
