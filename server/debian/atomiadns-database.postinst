@@ -315,10 +315,6 @@ if [ $? != 0 ]; then
 				recreate_procedure "getdnsseckeys"
 			fi
 
-			if [ "$schema_version" -lt 43 ]; then
-				alter_table_addcolumn "dnssec_keyset" "deactivated_at TIMESTAMP"
-			fi
-
 			if [ "$schema_version" -lt 45 ]; then
 				recreate_procedure "getdnsseckeys"
 			fi

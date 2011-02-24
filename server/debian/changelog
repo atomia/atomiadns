@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.0.20) hardy; urgency=low
+
+  * Fix database migration for 42->43
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 24 Feb 2011 10:13:14 +0100
+
 atomiadns-masterserver (1.0.19) hardy; urgency=low
 
   * Fix database schema migration for 41 -> 42
