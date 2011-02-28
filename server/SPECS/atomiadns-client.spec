@@ -48,7 +48,9 @@ cd ..
 %files
 %defattr(-,root,root,-)
 /usr/bin/atomiadnsclient
+/usr/bin/dnssec_zsk_rollover
 %doc %{_mandir}/man1/atomiadnsclient.1.gz
+%doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.20-1

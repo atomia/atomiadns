@@ -61,8 +61,8 @@ All changes done through the API will be provisioned to the nameservers that are
 %{perl_vendorlib}/Atomia/DNS/ServerHandler.pm
 /usr/share/atomiadns/conf/apache-example
 /usr/share/atomiadns/conf/atomiadns.conf
-/usr/share/atomiadns/examples/atomiadnsclient.pl
-/usr/share/atomiadns/examples/atomiadnsclient_wsdl.pl
+/usr/share/atomiadns/examples
+/usr/bin/generate_private_key
 /var/www/html/wsdl-atomiadns.wsdl
 
 %post
