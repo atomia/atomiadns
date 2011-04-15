@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.0.21) hardy; urgency=low
+
+  * Improve powerdns installation packages
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 15 Apr 2011 15:16:18 +0200
+
 atomiadns-dyndns (1.0.20) hardy; urgency=low
 
   * Fix database migration for 42->43

@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.20
+Version: 1.0.21
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.20 atomiadns-database >= 1.0.20
+Requires: atomiadns-api >= 1.0.21 atomiadns-database >= 1.0.21
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Fri Apr 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.21-1
+- Improve powerdns installation packages
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.20-1
 - Fix database migration for 42->43
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.19-1

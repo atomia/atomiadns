@@ -10,3 +10,8 @@ Package: atomiadns-powerdnssync
 Architecture: all
 Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl
 Description: Atomia DNS PowerDNS Sync application
+
+Package: atomiadns-powerdns-database
+Architecture: all
+Depends: mysql-server
+Description: Standalone database-package for Atomia DNS PowerDNS nameserver agent

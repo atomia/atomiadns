@@ -1,5 +1,7 @@
-# servername = powerdns_db1
-# powerdns_db_database = database_name
-# powerdns_db_hostname = db.host.name
-# powerdns_db_username = dbuser
-# powerdns_db_password = dbpass
+powerdns_db_database = powerdns
+powerdns_db_hostname = localhost
+powerdns_db_username = powerdns
+powerdns_db_password = %password
+
+#servername = powerdns_db1
+#soap_uri = http://atomiadnshost/atomiadns

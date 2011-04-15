@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.0.20
+Version: 1.0.21
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -81,6 +81,8 @@ fi
 exit 0
 
 %changelog
+* Fri Apr 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.21-1
+- Improve powerdns installation packages
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.20-1
 - Fix database migration for 42->43
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.19-1

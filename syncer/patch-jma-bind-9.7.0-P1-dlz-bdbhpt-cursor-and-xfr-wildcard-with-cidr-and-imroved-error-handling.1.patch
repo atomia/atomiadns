@@ -1,0 +1,183 @@
+--- ./contrib/dlz/drivers/dlz_bdbhpt_driver.c.orig	2011-02-22 10:52:09.241015008 +0100
++++ ./contrib/dlz/drivers/dlz_bdbhpt_driver.c	2011-02-22 10:51:54.601014999 +0100
+@@ -250,6 +250,7 @@
+ 	isc_result_t result;
+ 	bdbhpt_instance_t *db = (bdbhpt_instance_t *) dbdata;
+ 	DBT key, data;
++	char *cidr_buf;
+ 
+ 	/* check to see if we are authoritative for the zone first. */
+ 	result = bdbhpt_findzone(driverarg, dbdata, name);
+@@ -276,7 +277,64 @@
+ 
+ 	switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)) {
+ 	case DB_NOTFOUND:
+-		result = ISC_R_NOTFOUND;
++		/* not found, try with wildcard as well */
++		if (key.data != NULL)
++			free(key.data);
++		key.data = strdup("*");
++		key.size = 1;
++
++		switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)){
++			case DB_NOTFOUND:
++				/* not found, try with x.y.z.0/24 */
++				if (data.data != NULL)
++					free(data.data);
++
++				data.data = malloc(strlen(client) + 3 + 1);
++				strncpy(data.data, client, strlen(client) + 1);
++				for (cidr_buf = data.data + strlen(data.data); cidr_buf > data.data && *cidr_buf != '.'; cidr_buf--) {
++					; /* do nothing, only search for last . */
++				}
++
++				if (*cidr_buf == '.') {
++					strncpy (cidr_buf, ".0/24", strlen(".0/24") + 1);
++					data.size = strlen(data.data);
++
++					switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)){
++						case DB_NOTFOUND:
++							/* not found with ip/zone, ip/*, cidr/*, trying cidr/zone */
++							if (key.data != NULL)
++								free(key.data);
++
++							key.data = strdup(name);
++							key.size = strlen(name);
++
++							switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)){
++								case DB_NOTFOUND:
++									result = ISC_R_NOTFOUND;
++									break;
++								case 0:
++									result = ISC_R_SUCCESS;
++									break;
++								default:
++									result = ISC_R_FAILURE;
++							}
++							break;
++						case 0:
++							result = ISC_R_SUCCESS;
++							break;
++						default:
++							result = ISC_R_FAILURE;
++					}
++				} else {
++					result = ISC_R_NOTFOUND;
++				}
++				break;
++			case 0:
++				result = ISC_R_SUCCESS;
++				break;
++			default:
++				result = ISC_R_FAILURE;
++		}
+ 		break;
+ 	case 0:
+ 		result = ISC_R_SUCCESS;
+@@ -332,6 +390,7 @@
+ 
+ 	isc_result_t result = ISC_R_NOTFOUND;
+ 	bdbhpt_instance_t *db = (bdbhpt_instance_t *) dbdata;
++	DB_TXN *txn = NULL;
+ 	DBC *xfr_cursor = NULL;
+ 	DBC *dns_cursor = NULL;
+ 	DBT xfr_key, xfr_data, dns_key, dns_data;
+@@ -354,14 +413,21 @@
+ 
+ 	xfr_key.size = strlen(xfr_key.data);
+ 
++	/* get a transcation to use for the cursors */
++	bdbhptres = db->dbenv->txn_begin(db->dbenv, NULL, &txn, 0);
++	if (bdbhptres != 0) {
++		result = ISC_R_FAILURE;
++		goto allnodes_cleanup;
++	}
++
+ 	/* get a cursor to loop through dns_xfr table */
+-	if (db->xfr->cursor(db->xfr, NULL, &xfr_cursor, 0) != 0) {
++	if (db->xfr->cursor(db->xfr, txn, &xfr_cursor, 0) != 0) {
+ 		result = ISC_R_FAILURE;
+ 		goto allnodes_cleanup;
+ 	}
+ 
+ 	/* get a cursor to loop through dns_data table */
+-	if (db->data->cursor(db->data, NULL, &dns_cursor, 0) != 0) {
++	if (db->data->cursor(db->data, txn, &dns_cursor, 0) != 0) {
+ 		result = ISC_R_FAILURE;
+ 		goto allnodes_cleanup;
+ 	}
+@@ -379,8 +445,10 @@
+ 
+ 		/* +1 to allow for null term at end of string. */
+ 		dns_key.data = tmp_zone_host = malloc(dns_key.size + 1);
+-		if (dns_key.data == NULL)
++		if (dns_key.data == NULL) {
++			result = ISC_R_NOMEMORY;
+ 			goto allnodes_cleanup;
++		}
+ 
+ 		/*
+ 		 * construct search key for dns_data.
+@@ -400,16 +468,20 @@
+ 
+ 			/* +1 to allow for null term at end of string. */
+ 			tmp = realloc(tmp, dns_data.size + 1);
+-			if (tmp == NULL)
++			if (tmp == NULL) {
++				result = ISC_R_NOMEMORY;
+ 				goto allnodes_cleanup;
++			}
+ 
+ 			/* copy data to tmp string, and append null term. */
+ 			strncpy(tmp, dns_data.data, dns_data.size);
+ 			tmp[dns_data.size] = '\0';
+ 
+ 			/* split string into dns data parts. */
+-			if (bdbhpt_parse_data(tmp, &pd) != ISC_R_SUCCESS)
++			result = bdbhpt_parse_data(tmp, &pd);
++			if (result != ISC_R_SUCCESS) {
+ 				goto allnodes_cleanup;
++			}
+ 
+ 			result = dns_sdlz_putnamedrr(allnodes, pd.host,
+ 						     pd.type, pd.ttl, pd.data);
+@@ -418,6 +490,11 @@
+ 
+ 		}  /* end inner while loop */
+ 
++		if (bdbhptres != DB_NOTFOUND) {
++			result = ISC_R_FAILURE;
++			goto allnodes_cleanup;
++		}
++
+ 		/* clean up memory */
+ 		if (tmp_zone_host != NULL) {
+ 			free(tmp_zone_host);
+@@ -425,6 +502,9 @@
+ 		}
+ 	} /* end outer while loop */
+ 
++	if (bdbhptres != DB_NOTFOUND)
++		result = ISC_R_FAILURE;
++
+  allnodes_cleanup:
+ 
+ 	/* free any memory */
+@@ -442,7 +522,16 @@
+ 		xfr_cursor->c_close(xfr_cursor);
+ 
+ 	if (dns_cursor != NULL)
+-		dns_cursor->c_close(xfr_cursor);
++		dns_cursor->c_close(dns_cursor);
++
++	if (txn != NULL) {
++		bdbhptres = txn->commit(txn, 0);
++		if (bdbhptres != 0) {
++			result = ISC_R_FAILURE;
++		}
++	} else if (result == ISC_R_SUCCESS) {
++		result = ISC_R_FAILURE;
++	}
+ 
+ 	return result;
+ }

@@ -1,0 +1,94 @@
+#!/bin/sh
+
+createschema() {
+	password=`dd if=/dev/urandom bs=1024 count=1 status=noxfer 2>/dev/null | sha1sum | cut -d " " -f 1`
+	if [ -z "$password" ]; then
+		echo "error generating random password"
+		exit 1
+	fi
+
+	if [ ! -f "/etc/atomiadns.conf" ]; then
+		if [ -f "/usr/share/atomia/conf/atomiadns.conf.atomiapowerdns-database" ]; then
+			cp /usr/share/atomia/conf/atomiadns.conf.atomiapowerdns-database /etc/atomiadns.conf
+		else
+			echo "no config found"
+			exit 1
+		fi
+	else
+		if [ -z "$(grep "powerdns_db_hostname" /etc/atomiadns.conf)" ]; then
+			cat /usr/share/atomia/conf/atomiadns.conf.atomiapowerdns-database >> /etc/atomiadns.conf
+		fi
+	fi
+
+	TMPFILE=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
+	TMPFILE2=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
+	sed "s/%password/$password/g" < /etc/atomiadns.conf > "$TMPFILE" || exit 1
+	mv "$TMPFILE" /etc/atomiadns.conf || exit 1
+	chmod a+r /etc/atomiadns.conf || exit 1
+	sed "s/%password/$password/g" < /usr/share/atomia/conf/pdns.conf > "$TMPFILE2" || exit 1
+	mkdir -p /etc/powerdns || exit 1
+	mv "$TMPFILE2" /etc/powerdns/pdns.conf || exit 1
+	chmod a+r /etc/powerdns/pdns.conf || exit 1
+
+	mysql --defaults-file=/etc/mysql/debian.cnf -e "CREATE DATABASE powerdns" > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error creating database powerdns, you will have to make sure that the schema matches /usr/share/atomiadns/powerdns.sql manually"
+		exit 1
+	fi
+
+	mysql --defaults-file=/etc/mysql/debian.cnf -e 'GRANT ALL ON powerdns.* TO `powerdns`@`localhost` IDENTIFIED BY '"'$password'" > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error granting access to powerdns user, you will have to make sure that the schema matches /usr/share/atomiadns/powerdns.sql manually"
+		exit 1
+	fi
+
+	mysql --defaults-file=/etc/mysql/debian.cnf powerdns < /usr/share/atomiadns/powerdns.sql > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error importing schema, you will have to make sure that the schema matches /usr/share/atomiadns/powerdns.sql manually"
+		exit 1
+	fi
+}
+
+execute_query() {
+	query="$1"
+
+	mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e "$query" > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error executing migration query: $query, you'll have to migrate the schema manually."
+		exit 1
+	fi
+}
+
+set_schema_version() {
+	execute_query "UPDATE atomiadns_schemaversion SET version = $1"
+}
+
+db_exists=`mysql --defaults-file=/etc/mysql/debian.cnf -s -e "show databases like 'powerdns'"`
+if [ $? = 0 ]] && [ -n "$db_exists" ]; then
+
+	schema_version=`mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e "SELECT version FROM atomiadns_schemaversion" 2> /dev/null`
+	if [ $? != 0 ] || [ -z "$schema_version" ]; then
+		echo "database powerdns already exist, but doesn't contain the atomiadns powerdns schema. You will have to make sure that the schema matches /usr/share/atomiadns/powerdns.sql manually"
+		exit 1
+	else
+		latest_version="1"
+
+		if [ "$schema_version" = "$latest_version" ]; then
+			echo "The installed schema is the latest version, keeping the database as it is."
+		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt "$latest_version" ]; then
+			echo "Schema version is $schema_version, and the latest database schema is version $latest_version. Upgrading."
+
+			#if [ "$schema_version" -lt 2 ]; then
+			#	execute_query ""
+			#fi
+
+			set_schema_version "$latest_version"
+		else
+			echo "database powerdns already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
+			exit 1
+		fi
+	fi
+else
+	echo "No schema installed, installing into powerdns."
+	createschema
+fi

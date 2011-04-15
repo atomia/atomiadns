@@ -11,13 +11,12 @@
 # always return the default without waiting for user input.
 export PERL_MM_USE_DEFAULT=1
 
-PACKAGE=$(shell dh_listpackages)
-
 ifndef PERL
 PERL = /usr/bin/perl
 endif
 
-TMP     =$(CURDIR)/debian/$(PACKAGE)
+SYNCER_DIR=$(CURDIR)/debian/atomiadns-powerdnssync
+DB_DIR=$(CURDIR)/debian/atomiadns-powerdns-database
 
 build: build-stamp
 build-stamp:
@@ -46,17 +45,23 @@ install-stamp:
 
 #Run commands before making package
 
-	mkdir -p $(TMP)/usr/share/atomia/conf
-	cp conf/atomiadns.conf.atomiapowerdnssync $(TMP)/usr/share/atomia/conf
+	mkdir -p $(SYNCER_DIR)/usr/share/atomia/conf
+	cp conf/atomiadns.conf.atomiapowerdnssync $(SYNCER_DIR)/usr/share/atomia/conf
+	mkdir -p $(DB_DIR)/usr/share/atomiadns
+	cp schema/powerdns.sql $(DB_DIR)/usr/share/atomiadns
+	mkdir -p $(DB_DIR)/usr/share/atomia/conf
+	cp conf/atomiadns.conf.atomiapowerdnssync $(DB_DIR)/usr/share/atomia/conf/atomiadns.conf.atomiapowerdns-database
+	cp conf/pdns.conf $(DB_DIR)/usr/share/atomia/conf
 
 	# Add commands to install the package into debian/$PACKAGE_NAME here
 	$(MAKE) test
-	$(MAKE) install DESTDIR=$(TMP) PREFIX=/usr
+	$(MAKE) install DESTDIR=$(SYNCER_DIR) PREFIX=/usr
 
 	# As this is a architecture independent package, we are not
 	# supposed to install stuff to /usr/lib. MakeMaker creates
 	# the dirs, we delete them from the deb:
-	[ ! -d "$(TMP)/usr/lib/perl5" ] || rmdir --ignore-fail-on-non-empty --parents "$(TMP)/usr/lib/perl5"
+	[ ! -d "$(SYNCER_DIR)/usr/lib/perl5" ] || rmdir --ignore-fail-on-non-empty --parents "$(SYNCER_DIR)/usr/lib/perl5"
+
 
 	touch install-stamp
 
