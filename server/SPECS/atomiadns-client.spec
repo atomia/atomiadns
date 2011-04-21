@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.0.21
+Version: 1.0.22
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Thu Apr 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.22-1
+- Add timeout to atomiadnsclient
 * Fri Apr 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.21-1
 - Improve powerdns installation packages
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.20-1

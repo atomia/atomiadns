@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.0.22) hardy; urgency=low
+
+  * Add timeout to atomiadnsclient
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 21 Apr 2011 14:28:13 +0200
+
 atomiadns-dyndns (1.0.21) hardy; urgency=low
 
   * Improve powerdns installation packages

@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.21
+Version: 1.0.22
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.21 atomiadns-database >= 1.0.21
+Requires: atomiadns-api >= 1.0.22 atomiadns-database >= 1.0.22
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu Apr 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.22-1
+- Add timeout to atomiadnsclient
 * Fri Apr 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.21-1
 - Improve powerdns installation packages
 * Thu Feb 24 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.20-1

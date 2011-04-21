@@ -17,6 +17,7 @@ my $soap_method = undef;
 my $soap_method_arguments = undef;
 my $verbose = 0;
 my $help = undef;
+my $timeout = 600;
 
 if (-f "$config_file") {
 	my $conf = new Config::General($config_file);
@@ -26,6 +27,7 @@ if (-f "$config_file") {
 	$soap_cacert = $config{"soap_cacert"};
 	$soap_username = $config{"soap_username"};
 	$soap_password = $config{"soap_password"};
+	$timeout = $config{"soap_timeout"} if defined($config{"soap_timeout"});
 }
 
 GetOptions (	"uri=s" => \$soap_uri,
@@ -54,7 +56,7 @@ if (defined($soap_username)) {
 
 my $soap = SOAP::Lite
 	->  uri('urn:Atomia::DNS::Server')
-	->  proxy($soap_uri)
+	->  proxy($soap_uri, timeout => $timeout)
 	->  on_fault(sub {
 			my($soap, $res) = @_;
 			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
