@@ -1,3 +1,9 @@
+atomiadns-powerdnssync (1.0.23) hardy; urgency=low
+
+  * Forgot to include powerdns_sync in 1.0.22 build
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 5 May 2011 10:59:51 +0200
+
 atomiadns-powerdnssync (1.0.16) hardy; urgency=low
 
   * DNSSEC support and changing the bind-dlz syncer to only load 10000 zones per sync_updated_zones batch

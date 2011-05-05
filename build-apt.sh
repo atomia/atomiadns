@@ -13,4 +13,6 @@ cd ../server
 ./buildpackages "$1"
 cd ../zonefileimporter
 ./buildpackages "$1"
+cd ../powerdns_sync
+./buildpackages "$1"
 cd ..

@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.0.23) hardy; urgency=low
+
+  * Forgot to include powerdns_sync in 1.0.22 build
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 5 May 2011 10:59:51 +0200
+
 atomiadns-nameserver (1.0.22) hardy; urgency=low
 
   * Add timeout to atomiadnsclient

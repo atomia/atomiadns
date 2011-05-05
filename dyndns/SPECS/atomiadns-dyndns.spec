@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.0.22
+Version: 1.0.23
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Thu May 05 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.23-1
+- Forgot to include powerdns_sync in 1.0.22 build
 * Thu Apr 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.22-1
 - Add timeout to atomiadnsclient
 * Fri Apr 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.21-1

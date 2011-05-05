@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS PowerDNS Sync application
 Name: atomiadns-powerdnssync
-Version: 1.0.16
+Version: 1.0.23
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -78,5 +78,7 @@ fi
 exit 0
 
 %changelog
+* Thu May 05 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.23-1
+- Forgot to include powerdns_sync in 1.0.22 build
 * Thu Jan 27 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.16-1
 - DNSSEC support and changing the bind-dlz syncer to only load 10000 zones per sync_updated_zones batch
