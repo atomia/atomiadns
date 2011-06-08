@@ -91,6 +91,8 @@ sub add_zone {
 
 				if ($type eq "SOA") {
 					$content =~ s/%serial/$zone->{"changetime"}/g;
+					$content =~ s/\. / /g;
+					$content =~ s/^([^ ]* [^\.]*)\./$1\@/;
 				} elsif ($type =~ /^(CNAME|MX|PTR|NS)$/) {
 					$content = $content . "." . $zone->{"name"} unless $content =~ /\.$/;
 					$content =~ s/\.$//;

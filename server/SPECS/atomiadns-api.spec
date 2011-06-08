@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.0.23
+Version: 1.0.24
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -81,6 +81,8 @@ fi
 exit 0
 
 %changelog
+* Wed Jun 08 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.24-1
+- Fix PowerDNS sync agent to not have trailing dot in MNAME
 * Thu May 05 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.23-1
 - Forgot to include powerdns_sync in 1.0.22 build
 * Thu Apr 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.22-1

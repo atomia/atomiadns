@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.23
+Version: 1.0.24
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.23 atomiadns-database >= 1.0.23
+Requires: atomiadns-api >= 1.0.24 atomiadns-database >= 1.0.24
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Wed Jun 08 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.24-1
+- Fix PowerDNS sync agent to not have trailing dot in MNAME
 * Thu May 05 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.23-1
 - Forgot to include powerdns_sync in 1.0.22 build
 * Thu Apr 21 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.22-1
