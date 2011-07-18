@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.0.27) hardy; urgency=low
+
+  * Fix powerdns database setup
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 18 Jul 2011 16:30:16 +0200
+
 atomiadns-masterserver (1.0.26) hardy; urgency=low
 
   * Fix powerdns database setup

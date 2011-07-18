@@ -1,4 +1,4 @@
---- # Our versioning table
+-- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
 INSERT INTO powerdns_schemaversion VALUES (1);
