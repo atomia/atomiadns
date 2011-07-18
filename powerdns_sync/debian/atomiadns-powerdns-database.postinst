@@ -60,21 +60,23 @@ execute_query() {
 }
 
 set_schema_version() {
-	execute_query "UPDATE atomiadns_schemaversion SET version = $1"
+	execute_query "UPDATE powerdns_schemaversion SET version = $1"
 }
 
 db_exists=`mysql --defaults-file=/etc/mysql/debian.cnf -s -e "show databases like 'powerdns'"`
 if [ $? = 0 ]] && [ -n "$db_exists" ]; then
 
-	schema_version=`mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e "SELECT version FROM atomiadns_schemaversion" 2> /dev/null`
+	schema_version=`mysql --defaults-file=/etc/mysql/debian.cnf powerdns -Nse "SELECT version FROM powerdns_schemaversion" 2> /dev/null`
 	if [ $? != 0 ] || [ -z "$schema_version" ]; then
 		echo "database powerdns already exist, but doesn't contain the atomiadns powerdns schema. You will have to make sure that the schema matches /usr/share/atomiadns/powerdns.sql manually"
+		echo "if this is an upgrade that fails, and you know that powerdns worked before, then just do:"
+		echo "mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e 'CREATE TABLE powerdns_schemaversion (version INT); INSERT INTO powerdns_schemaversion VALUES (1)'"
 		exit 1
 	else
 		latest_version="1"
 
 		if [ "$schema_version" = "$latest_version" ]; then
-			echo "The installed schema is the latest version, keeping the database as it is."
+			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
 		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt "$latest_version" ]; then
 			echo "Schema version is $schema_version, and the latest database schema is version $latest_version. Upgrading."
 

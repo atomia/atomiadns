@@ -53,7 +53,9 @@ sub BUILD {
 	my $soap_password = $self->config->{"soap_password"};
 	if (defined($soap_username)) {
 		die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
-		eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+		unless (defined(&SOAP::Transport::HTTP::Client::get_basic_credentials)) { # perhaps we should inspect method body and die if different credentials, but we'll give rope instead
+			eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+		}
 	}
 
 

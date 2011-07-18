@@ -1,3 +1,8 @@
+--- # Our versioning table
+DROP TABLE IF EXISTS powerdns_schemaversion;
+CREATE TABLE powerdns_schemaversion (version INT);
+INSERT INTO powerdns_schemaversion (1);
+
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: powerdns
