@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.26) hardy; urgency=low
+
+  * Fix powerdns database setup
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 18 Jul 2011 16:27:30 +0200
+
 atomiadns-zoneimport (1.0.25) hardy; urgency=low
 
   * Fix powerdns database schema to include version-table forgotten in first release, and change so that powerdns syncer can run on the same server as Atomia DNS
