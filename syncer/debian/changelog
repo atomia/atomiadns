@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.0.28) hardy; urgency=low
+
+  * Improve performance of validation trigger + indexing for large zones
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 16 Sep 2011 13:09:15 +0200
+
 atomiadns-nameserver (1.0.27) hardy; urgency=low
 
   * Fix powerdns database setup

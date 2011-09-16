@@ -31,7 +31,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (48);
+INSERT INTO atomiadns_schemaversion (version) VALUES (53);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -131,6 +131,8 @@ CREATE TABLE label (
 	UNIQUE (zone_id, label)
 );
 
+CREATE INDEX label_zone_id ON label(zone_id);
+
 CREATE TABLE record (
         id SERIAL PRIMARY KEY NOT NULL,
         label_id INT NOT NULL REFERENCES label,
@@ -154,9 +156,9 @@ BEGIN
         ELSIF 0 < (SELECT COUNT(*) FROM record WHERE label_id = NEW.label_id AND class = NEW.class AND type = NEW.type AND ttl != NEW.ttl) THEN
                 RAISE EXCEPTION '% is different from existing ttl for this label/class/type triplet', NEW.ttl;
         ELSIF NEW.type = 'CNAME' AND 0 < (SELECT COUNT(*) FROM record WHERE label_id = NEW.label_id AND class = NEW.class AND id != NEW.id) THEN
-                RAISE EXCEPTION 'other records exist for this label, and CNAME is not allowed with other data'; 
+                RAISE EXCEPTION 'other records exist for this label, and CNAME is not allowed with other data';
         ELSIF NEW.type != 'CNAME' AND 0 < (SELECT COUNT(*) FROM record WHERE label_id = NEW.label_id AND class = NEW.class AND type = 'CNAME') THEN
-                RAISE EXCEPTION 'CNAME exists for this label and CNAME is not allowed with other data'; 
+                RAISE EXCEPTION 'CNAME exists for this label and CNAME is not allowed with other data';
         ELSIF NEW.rdata !~* myregexp THEN
                 RAISE EXCEPTION '% isn''t allowed rdata for %, synopsis is "%"', NEW.rdata, NEW.type, mysynopsis;
         ELSE
@@ -213,6 +215,13 @@ BEGIN
 			labelid := NEW.label_id;
 		ELSE
 			labelid := NEW.label_id;
+
+			IF NEW.type = 'SOA' THEN
+				SELECT COUNT(*) INTO numcorrectsoa FROM label l WHERE l.id = labelid AND l.label = '@';
+				IF numcorrectsoa != 1 THEN
+					RAISE EXCEPTION 'SOA is not allowed for anything but @';
+				END IF;
+			END IF;
 		END IF;
 
 		SELECT zone_id INTO zoneid FROM label WHERE id = labelid;
@@ -229,19 +238,24 @@ BEGIN
 		RAISE EXCEPTION '% is not a supported table for this trigger. please report this as a bug.', TG_TABLE_NAME;
 	END IF;
 
-	SELECT COUNT(NULLIF(type = 'SOA', false)), COUNT(NULLIF(l.label = '@' AND type = 'SOA', false)), COUNT(NULLIF(l.label = '@' AND type = 'NS', false)) INTO numsoa, numcorrectsoa, numns
+	SELECT COUNT(NULLIF(type = 'SOA', false)), COUNT(NULLIF(type = 'NS', false)) INTO numsoa, numns
 	FROM label l INNER JOIN record r ON l.id = r.label_id
-	WHERE l.zone_id = zoneid;
+	WHERE l.zone_id = zoneid AND l.label = '@' AND r.type IN ('SOA', 'NS');
 
 	IF NOT FOUND THEN
 		RAISE EXCEPTION 'error frinding number of soas and number of ns-records, should not happen';
 	END IF;
 
-	SELECT COUNT(*) INTO emptylabels
-	FROM label l LEFT JOIN record r ON l.id = r.label_id
-	WHERE l.zone_id = zoneid AND r.id IS NULL;
+	-- Let's relax this a bit and only check for labels not beeing empty when they are added or records are removed.
+	IF (TG_TABLE_NAME = 'record' AND TG_OP = 'DELETE') OR (TG_TABLE_NAME = 'label' AND TG_OP = 'INSERT') THEN
+		SELECT COUNT(*) INTO emptylabels
+		FROM label l
+		WHERE l.zone_id = zoneid AND NOT EXISTS (SELECT 1 FROM record WHERE label_id = l.id);
+	ELSE
+		emptylabels := 0;
+	END IF;
 
-	IF numsoa != 1 OR numcorrectsoa != 1 THEN
+	IF numsoa != 1 THEN
 		RAISE EXCEPTION 'zone needs to have exactly one SOA and it should be for ''@''';
 	ELSIF numns < 1 THEN
 		RAISE EXCEPTION 'zone needs to have one or more NS-records set for ''@''';

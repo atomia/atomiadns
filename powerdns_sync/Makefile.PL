@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
    'NAME' => 'Atomia::DNS::PowerDNSSyncer',
-   'VERSION' => '1.0.27',
+   'VERSION' => '1.0.28',
    'AUTHOR' => 'Jimmy Bergman <jimmy@atomia.com>',
    'EXE_FILES' => [ 'bin/atomiapowerdnssync' ]
 );
