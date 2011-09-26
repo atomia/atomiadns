@@ -13,7 +13,7 @@ Description: Complete master SOAP server for Atomia DNS
 
 Package: atomiadns-api
 Architecture: all
-Depends: perl-modules, perl-base, libconfig-general-perl, libdbi-perl, libsoap-lite-perl (>= 0.710.08-2), libdbd-pg-perl (>= 2.11.7-1), libmoose-perl, apache2, apache2-mpm-prefork, libapache2-mod-perl2
+Depends: perl-modules, perl-base, libconfig-general-perl, libdbi-perl, libsoap-lite-perl (>= 0.710.08-2), libdbd-pg-perl (>= 2.11.7-1), libmoose-perl, apache2, apache2-mpm-prefork, libapache2-mod-perl2, bind9utils
 Description: SOAP-server for Atomia DNS
 
 Package: atomiadns-database

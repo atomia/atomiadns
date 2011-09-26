@@ -60,7 +60,7 @@ DROP TABLE IF EXISTS `domains`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `domains` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `master` varchar(128) DEFAULT NULL,
   `last_check` int(11) DEFAULT NULL,
@@ -109,7 +109,7 @@ DROP TABLE IF EXISTS `records`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `records` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `domain_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `type` varchar(6) DEFAULT NULL,

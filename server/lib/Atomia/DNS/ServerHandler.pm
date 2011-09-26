@@ -171,13 +171,18 @@ sub handleAddKey {
 	my $generation_command = sprintf "%s %s %d", "/usr/bin/generate_private_key", $_[0], $_[1];
 	eval {
 		my $key = `$generation_command 2> /dev/null`;
+		my $retval = $? >> 8;
+		if ($retval) {
+			die "error generating key, /usr/bin/generate_private_key exit value was $retval";
+		}
+
 		die "couldn't generate key" unless defined($key) && length($key) > 0;
 
 		push @_, $key;
 	};
 
 	if ($@) {
-		my $exception = shift;
+		my $exception = $@;
 		die "error generating key: $exception";
 	}
 
