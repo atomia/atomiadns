@@ -73,16 +73,17 @@ if [ $? = 0 ]] && [ -n "$db_exists" ]; then
 		echo "mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e 'CREATE TABLE powerdns_schemaversion (version INT); INSERT INTO powerdns_schemaversion VALUES (1)'"
 		exit 1
 	else
-		latest_version="1"
+		latest_version="2"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
 		elif [ -n "$(echo "$schema_version" | grep -E '^[0-9]+$')" ] && [ "$schema_version" -lt "$latest_version" ]; then
 			echo "Schema version is $schema_version, and the latest database schema is version $latest_version. Upgrading."
 
-			#if [ "$schema_version" -lt 2 ]; then
-			#	execute_query ""
-			#fi
+			if [ "$schema_version" -lt 2 ]; then
+				execute_query "ALTER TABLE domains CHANGE COLUMN id id bigint NOT NULL AUTO_INCREMENT"
+				execute_query "ALTER TABLE records CHANGE COLUMN id id bigint NOT NULL AUTO_INCREMENT"
+			fi
 
 			set_schema_version "$latest_version"
 		else
