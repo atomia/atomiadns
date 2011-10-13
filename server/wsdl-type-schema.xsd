@@ -244,6 +244,19 @@ atomiaKeySet is a struct with the following members:
 				</xsd:any>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaExternalKeySet">
+				<xsd:annotation><xsd:documentation>
+atomiaExternalKeySet is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| keydata | string | the key in DNSKEY RR format |
+				</xsd:documentation></xsd:annotation>
+				<xsd:any>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"/>
+				</xsd:any>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaZSKInfo">
 				<xsd:annotation><xsd:documentation>
 atomiaZSKInfo is a struct with the following members:
@@ -859,6 +872,8 @@ atomiaZSKInfo is a struct with the following members:
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="master_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP-address of the master</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_keyname" type="xsd:string"><xsd:annotation><xsd:documentation>the TSIG keyname</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_secret" type="xsd:string"><xsd:annotation><xsd:documentation>the TSIG secret</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -1042,6 +1057,20 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetExternalDNSSECKeys">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetExternalDNSSECKeysResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyset" type="atomiaExternalKeySet"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="AddDNSSECKey">
 				<xsd:complexType>
 					<xsd:all>
@@ -1054,6 +1083,22 @@ atomiaZSKInfo is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="AddDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddExternalDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"><xsd:annotation><xsd:documentation>the KSK in DNSKEY RR format</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddExternalDNSSECKeyResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
@@ -1103,6 +1148,22 @@ atomiaZSKInfo is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="DeleteDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteExternalDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteExternalDNSSECKeyResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>

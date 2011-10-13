@@ -252,6 +252,19 @@ atomiaKeySet is a struct with the following members:
 				</xsd:any>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaExternalKeySet">
+				<xsd:annotation><xsd:documentation>
+atomiaExternalKeySet is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| keydata | string | the key in DNSKEY RR format |
+				</xsd:documentation></xsd:annotation>
+				<xsd:any>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"/>
+				</xsd:any>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaZSKInfo">
 				<xsd:annotation><xsd:documentation>
 atomiaZSKInfo is a struct with the following members:
@@ -867,6 +880,8 @@ atomiaZSKInfo is a struct with the following members:
 						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="master_ip" type="xsd:string"><xsd:annotation><xsd:documentation>the IP-address of the master</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameservergroup" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_keyname" type="xsd:string"><xsd:annotation><xsd:documentation>the TSIG keyname</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_secret" type="xsd:string"><xsd:annotation><xsd:documentation>the TSIG secret</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -1050,6 +1065,20 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetExternalDNSSECKeys">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetExternalDNSSECKeysResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyset" type="atomiaExternalKeySet"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="AddDNSSECKey">
 				<xsd:complexType>
 					<xsd:all>
@@ -1062,6 +1091,22 @@ atomiaZSKInfo is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="AddDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddExternalDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"><xsd:annotation><xsd:documentation>the KSK in DNSKEY RR format</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddExternalDNSSECKeyResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
@@ -1111,6 +1156,22 @@ atomiaZSKInfo is a struct with the following members:
 			</xsd:element>
 
 			<xsd:element name="DeleteDNSSECKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteExternalDNSSECKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyid" type="xsd:int"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteExternalDNSSECKeyResponse">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
@@ -1565,6 +1626,15 @@ atomiaZSKInfo is a struct with the following members:
 		<part name="parameters" element="tns:GetDNSSECKeysResponse"/>
 	</message>
 
+	<message name="GetExternalDNSSECKeysInput">
+		<documentation>Get a list of all external DNSSEC keys stored in this Atomia DNS instance.</documentation>
+		<part name="parameters" element="tns:GetExternalDNSSECKeys"/>
+	</message>
+
+	<message name="GetExternalDNSSECKeysOutput">
+		<part name="parameters" element="tns:GetExternalDNSSECKeysResponse"/>
+	</message>
+
 	<message name="AddDNSSECKeyInput">
 		<documentation>Adds a DNSSEC key to the database.</documentation>
 		<part name="parameters" element="tns:AddDNSSECKey"/>
@@ -1572,6 +1642,15 @@ atomiaZSKInfo is a struct with the following members:
 
 	<message name="AddDNSSECKeyOutput">
 		<part name="parameters" element="tns:AddDNSSECKeyResponse"/>
+	</message>
+
+	<message name="AddExternalDNSSECKeyInput">
+		<documentation>Adds an external DNSSEC key to the database.</documentation>
+		<part name="parameters" element="tns:AddExternalDNSSECKey"/>
+	</message>
+
+	<message name="AddExternalDNSSECKeyOutput">
+		<part name="parameters" element="tns:AddExternalDNSSECKeyResponse"/>
 	</message>
 
 	<message name="ActivateDNSSECKeyInput">
@@ -1599,6 +1678,15 @@ atomiaZSKInfo is a struct with the following members:
 
 	<message name="DeleteDNSSECKeyOutput">
 		<part name="parameters" element="tns:DeleteDNSSECKeyResponse"/>
+	</message>
+
+	<message name="DeleteExternalDNSSECKeyInput">
+		<documentation>Removes an external DNSSEC key from the database.</documentation>
+		<part name="parameters" element="tns:DeleteExternalDNSSECKey"/>
+	</message>
+
+	<message name="DeleteExternalDNSSECKeyOutput">
+		<part name="parameters" element="tns:DeleteExternalDNSSECKeyResponse"/>
 	</message>
 
 	<message name="GetDNSSECZSKInfoInput">
@@ -2025,9 +2113,27 @@ atomiaZSKInfo is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetExternalDNSSECKeys">
+			<input message="tns:GetExternalDNSSECKeysInput"/>
+			<output message="tns:GetExternalDNSSECKeysOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="AddDNSSECKey">
 			<input message="tns:AddDNSSECKeyInput"/>
 			<output message="tns:AddDNSSECKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="AddExternalDNSSECKey">
+			<input message="tns:AddExternalDNSSECKeyInput"/>
+			<output message="tns:AddExternalDNSSECKeyOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -2055,6 +2161,15 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="DeleteDNSSECKey">
 			<input message="tns:DeleteDNSSECKeyInput"/>
 			<output message="tns:DeleteDNSSECKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteExternalDNSSECKey">
+			<input message="tns:DeleteExternalDNSSECKeyInput"/>
+			<output message="tns:DeleteExternalDNSSECKeyOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -2396,9 +2511,23 @@ atomiaZSKInfo is a struct with the following members:
 			<output><soap:body use="literal"/></output>
 		</operation>
 
+		<operation name="GetExternalDNSSECKeys">
+			<documentation>Get a list of all external DNSSEC keys stored in this Atomia DNS instance.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetExternalDNSSECKeys"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
 		<operation name="AddDNSSECKey">
 			<documentation>Adds a DNSSEC key to the database.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddDNSSECKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AddExternalDNSSECKey">
+			<documentation>Adds an external DNSSEC key to the database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddExternalDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>
@@ -2420,6 +2549,13 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="DeleteDNSSECKey">
 			<documentation>Removes a DNSSEC key from the database.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDNSSECKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteExternalDNSSECKey">
+			<documentation>Removes an external DNSSEC key from the database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteExternalDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

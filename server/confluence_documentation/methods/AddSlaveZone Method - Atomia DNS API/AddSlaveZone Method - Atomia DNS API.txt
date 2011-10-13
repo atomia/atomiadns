@@ -7,7 +7,9 @@ h3.Declaration syntax
 void AddSlaveZone(
 	string zonename,
 	string master_ip,
-	string nameservergroup
+	string nameservergroup,
+	string tsig_keyname,
+	string tsig_secret
 )
 {panel}
 
@@ -17,5 +19,7 @@ h3.Parameters
 |zonename|string|the name of the zone|
 |master_ip|string|the IP-address of the master|
 |nameservergroup|string|the nameserver group that should host the zone|
+|tsig_keyname|string|the TSIG keyname|
+|tsig_secret|string|the TSIG secret|
 
 {include:AddSlaveZone Method Example - Atomia DNS API}

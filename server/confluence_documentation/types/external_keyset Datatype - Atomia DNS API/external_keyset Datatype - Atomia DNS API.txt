@@ -1,0 +1,6 @@
+
+[external_keyset|external_keyset Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| keydata | string | the key in DNSKEY RR format |
+				

@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Adds an external DNSSEC key to the database.
+
+h3.Declaration syntax
+{panel}
+int AddExternalDNSSECKey(
+	string keydata
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|keydata|string|the KSK in DNSKEY RR format|
+
+{include:AddExternalDNSSECKey Method Example - Atomia DNS API}

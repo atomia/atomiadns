@@ -48,10 +48,13 @@ methodawk='BEGIN {
 	methods["GetSlaveZone"] = "Fetches information about a slave zone."
 	methods["ReloadAllSlaveZones"] = "Mark all slave zones in the database as changed.";
 	methods["GetDNSSECKeys"] = "Get a list of all DNSSEC keys stored in this Atomia DNS instance.";
+	methods["GetExternalDNSSECKeys"] = "Get a list of all external DNSSEC keys stored in this Atomia DNS instance.";
 	methods["AddDNSSECKey"] = "Adds a DNSSEC key to the database.";
+	methods["AddExternalDNSSECKey"] = "Adds an external DNSSEC key to the database.";
 	methods["ActivateDNSSECKey"] = "Marks a DNSSEC key as activated.";
 	methods["DeactivateDNSSECKey"] = "Marks a DNSSEC key as deactivated.";
 	methods["DeleteDNSSECKey"] = "Removes a DNSSEC key from the database.";
+	methods["DeleteExternalDNSSECKey"] = "Removes an external DNSSEC key from the database.";
 	methods["GetDNSSECZSKInfo"] = "Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.";
 }'
 

@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Removes an external DNSSEC key from the database.
+
+h3.Declaration syntax
+{panel}
+void DeleteExternalDNSSECKey(
+	int keyid
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|keyid|int||
+
+{include:DeleteExternalDNSSECKey Method Example - Atomia DNS API}

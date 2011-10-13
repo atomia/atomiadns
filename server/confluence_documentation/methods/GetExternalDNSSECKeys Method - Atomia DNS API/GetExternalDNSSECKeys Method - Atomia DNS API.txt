@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Get a list of all external DNSSEC keys stored in this Atomia DNS instance.
+
+h3.Declaration syntax
+{panel}
+[external_keyset|external_keyset Datatype - Atomia DNS API] GetExternalDNSSECKeys()
+{panel}
+
+{include:GetExternalDNSSECKeys Method Example - Atomia DNS API}
