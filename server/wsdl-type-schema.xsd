@@ -232,7 +232,7 @@ atomiaKeySet is a struct with the following members:
 | deactivated_at | string | the date of the key deactivation or empty if not deactivated |
 | keydata | string | the private key in Private-key-format v1.2 |
 				</xsd:documentation></xsd:annotation>
-				<xsd:any>
+				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="algorithm" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="activated" type="xsd:int"/>
@@ -241,7 +241,7 @@ atomiaKeySet is a struct with the following members:
 					<xsd:element minOccurs="1" maxOccurs="1" name="activated_at" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="deactivated_at" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"/>
-				</xsd:any>
+				</xsd:all>
 			</xsd:complexType>
 
 			<xsd:complexType name="atomiaExternalKeySet">
@@ -251,10 +251,10 @@ atomiaExternalKeySet is a struct with the following members:
 | id | int | the id of the key |
 | keydata | string | the key in DNSKEY RR format |
 				</xsd:documentation></xsd:annotation>
-				<xsd:any>
+				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="keydata" type="xsd:string"/>
-				</xsd:any>
+				</xsd:all>
 			</xsd:complexType>
 
 			<xsd:complexType name="atomiaZSKInfo">
@@ -270,7 +270,7 @@ atomiaZSKInfo is a struct with the following members:
 | deactivated_ago_seconds | int | the number of seconds since the key deactivation |
 | max_ttl | int | the maximum TTL of all records in this instance of Atomia DNS |
 				</xsd:documentation></xsd:annotation>
-				<xsd:any>
+				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="activated" type="xsd:int"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="created_at" type="xsd:string"/>
@@ -279,7 +279,7 @@ atomiaZSKInfo is a struct with the following members:
 					<xsd:element minOccurs="1" maxOccurs="1" name="created_ago_seconds" type="xsd:int"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="deactivated_ago_seconds" type="xsd:int"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="max_ttl" type="xsd:int"/>
-				</xsd:any>
+				</xsd:all>
 			</xsd:complexType>
 
 			<xsd:element name="GetUpdatesDisabled">
