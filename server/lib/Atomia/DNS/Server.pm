@@ -47,7 +47,7 @@ BEGIN {
 		"SetNameserverGroup" => "void string string",
 		"AddNameserverGroup" => "void string",
 		"DeleteNameserverGroup" => "void string",
-		"AddSlaveZone" => "void string string string",
+		"AddSlaveZone" => "void string string string string string",
 		"DeleteSlaveZone" => "void string",
 		"GetChangedSlaveZones" => "changes string",
 		"MarkSlaveZoneUpdated" => "void int string string",
@@ -57,10 +57,13 @@ BEGIN {
 		"GetAllowedZoneTransfer" => "allowedtransfer",
 		"DeleteAllowedZoneTransfer" => "void string string",
 		"GetDNSSECKeys" => "keyset",
+		"GetExternalDNSSECKeys" => "keyset",
 		"AddDNSSECKey" => "keyid string int string int",
+		"AddExternalDNSSECKey" => "int string",
 		"ActivateDNSSECKey" => "void int",
 		"DeactivateDNSSECKey" => "void int",
 		"DeleteDNSSECKey" => "void int",
+		"DeleteExternalDNSSECKey" => "void int",
 		"GetDNSSECZSKInfo" => "zskinfo",
 	};
 	

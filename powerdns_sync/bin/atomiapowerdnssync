@@ -120,7 +120,7 @@ $| = 1;
 
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
-	print "where mode is one of full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates\n";
+	print "where mode is one of full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates, import_zonefile, set_external_dnssec_keys\n";
 	exit 1;
 }
 
@@ -132,6 +132,36 @@ SWITCH: {
 		eval {
 			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
 			$syncer->$command();
+		};
+
+		handle_exception($@) if $@;
+		last SWITCH;
+	};
+
+	/^import_zonefile$/i && do {
+		if (scalar(@ARGV) < 3 || !(-f $ARGV[2]) || !length($ARGV[1])) {
+			print "usage: $0 import_zonefile origin zonefile\n";
+			exit 1;
+		}
+
+		eval {
+			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->import_zonefile($ARGV[1], $ARGV[2]);
+		};
+
+		handle_exception($@) if $@;
+		last SWITCH;
+	};
+
+	/^set_external_dnssec_keys$/i && do {
+		if (scalar(@ARGV) < 2 || !length($ARGV[1])) {
+			print "usage: $0 set_external_dnssec_keys keys\n";
+			exit 1;
+		}
+
+		eval {
+			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->set_external_dnssec_keys($ARGV[1]);
 		};
 
 		handle_exception($@) if $@;

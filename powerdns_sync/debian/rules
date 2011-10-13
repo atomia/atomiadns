@@ -47,6 +47,9 @@ install-stamp:
 
 	mkdir -p $(SYNCER_DIR)/usr/share/atomia/conf
 	cp conf/atomiadns.conf.atomiapowerdnssync $(SYNCER_DIR)/usr/share/atomia/conf
+	mkdir $(SYNCER_DIR)/usr/share/atomia/opendnssec_scripts
+	cp opendnssec_scripts/*.sh $(SYNCER_DIR)/usr/share/atomia/opendnssec_scripts
+
 	mkdir -p $(DB_DIR)/usr/share/atomiadns
 	cp schema/powerdns.sql $(DB_DIR)/usr/share/atomiadns
 	mkdir -p $(DB_DIR)/usr/share/atomia/conf

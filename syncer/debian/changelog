@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.0.29) hardy; urgency=low
+
+  * Make DNSSEC key generation more robust and improve slave support (multi-master + TSIG) and database schema in PowerDNS agent
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 28 Sep 2011 09:40:28 +0200
+
 atomiadns-nameserver (1.0.28) hardy; urgency=low
 
   * Improve performance of validation trigger + indexing for large zones

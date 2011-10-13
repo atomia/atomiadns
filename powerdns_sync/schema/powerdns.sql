@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (2);
+INSERT INTO powerdns_schemaversion VALUES (8);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -51,6 +51,23 @@ SET character_set_client = utf8;
   `content` text
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `outbound_tsig_keys`
+--
+
+DROP TABLE IF EXISTS `outbound_tsig_keys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `outbound_tsig_keys` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `domain_id` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `secret` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `domain_index` (`domain_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `domains`
@@ -113,7 +130,7 @@ CREATE TABLE `records` (
   `domain_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `type` varchar(6) DEFAULT NULL,
-  `content` varchar(255) DEFAULT NULL,
+  `content` text DEFAULT NULL,
   `ttl` int(11) DEFAULT NULL,
   `prio` int(11) DEFAULT NULL,
   `change_date` int(11) DEFAULT NULL,
@@ -154,7 +171,7 @@ CREATE TABLE `supermasters` (
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `cryptokeys` AS select `c`.`id` AS `id`,`d`.`id` AS `domain_id`,`c`.`flags` AS `flags`,`c`.`active` AS `active`,`c`.`content` AS `content` from (`domains` `d` join `global_cryptokeys` `c`) */;
+/*!50001 VIEW `cryptokeys` AS select `c`.`id` AS `id`,`d`.`id` AS `domain_id`,`c`.`flags` AS `flags`,`c`.`active` AS `active`,`c`.`content` AS `content` from (`domains` `d` join `global_cryptokeys` `c`) where d.type = 'NATIVE' */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -173,11 +190,15 @@ CREATE TABLE `supermasters` (
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `domainmetadata` AS select `domains`.`id` AS `domain_id`,`global_domainmetadata`.`kind` AS `kind`,`global_domainmetadata`.`content` AS `content` from (`domains` join `global_domainmetadata`) */;
+/*!50001 VIEW `domainmetadata` AS select `domains`.`id` AS `domain_id`,`global_domainmetadata`.`kind` AS `kind`,`global_domainmetadata`.`content` AS `content` from (`domains` join `global_domainmetadata`) where ((select count(*) from global_cryptokeys) > 0 AND domains.type = 'NATIVE') OR domains.type = 'MASTER' union select d.id, 'AXFR-MASTER-TSIG', CONCAT('key', k.id, ':', LOWER(k.name)) from outbound_tsig_keys k inner join domains d on k.domain_id = d.id where d.type = 'SLAVE' */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `tsigkeys` AS select CONCAT('key', k.id, ':', LOWER(k.name)) AS name, 'hmac-md5' AS algorithm, k.secret from outbound_tsig_keys k */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

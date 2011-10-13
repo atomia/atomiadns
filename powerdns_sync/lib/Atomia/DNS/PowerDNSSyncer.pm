@@ -10,6 +10,7 @@ use Config::General;
 use SOAP::Lite;
 use Data::Dumper;
 use Atomia::DNS::PowerDNSDatabase;
+use Net::DNS::Zone::Parser;
 
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
 has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
@@ -17,15 +18,15 @@ has 'soap' => (is => 'rw', isa => 'Any', default => undef);
 has 'database' => (is => 'rw', isa => 'Any', default => undef);
 
 sub BUILD {
-        my $self = shift;
+	my $self = shift;
 
 	my $conf = new Config::General($self->configfile);
-        die("config not found at $self->configfile") unless defined($conf);
-        my %config = $conf->getall;
-        $self->config(\%config);
+	die("config not found at $self->configfile") unless defined($conf);
+	my %config = $conf->getall;
+	$self->config(\%config);
 
-        my $db = Atomia::DNS::PowerDNSDatabase->new(config => $self->config);
-        $self->database($db);
+	my $db = Atomia::DNS::PowerDNSDatabase->new(config => $self->config);
+	$self->database($db);
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap_cacert = $self->config->{"soap_cacert"};
@@ -72,12 +73,19 @@ sub sync_zone_transfers {
 sub sync_dnssec_keys {
 	my $self = shift;
 
-	my $keyset = $self->soap->GetDNSSECKeys();
-	die("error fetching DNSSEC keyset, got no or bad result from soap-server") unless defined($keyset) &&
-		$keyset->result && ref($keyset->result) eq "ARRAY";
-	$keyset = $keyset->result;
+	if (!defined($self->config->{"powerdns_sync_keys"}) || $self->config->{"powerdns_sync_keys"} ne "0") {
+		my $keyset = $self->soap->GetDNSSECKeys();
+		die("error fetching DNSSEC keyset, got no or bad result from soap-server") unless defined($keyset) &&
+			$keyset->result && ref($keyset->result) eq "ARRAY";
+		$keyset = $keyset->result;
 
-	$self->database->sync_keyset($keyset);
+		$self->database->sync_keyset($keyset);
+		$self->database->set_dnssec_metadata(0);
+	} elsif (defined($self->config->{"powerdns_presigned_dnssec"}) && $self->config->{"powerdns_presigned_dnssec"} eq "1") {
+		$self->database->set_dnssec_metadata(1, $self->config->{"powerdns_master_also_notify"});
+	} elsif (defined($self->config->{"powerdns_master_also_notify"})) {
+		$self->database->set_dnssec_metadata(undef, $self->config->{"powerdns_master_also_notify"});
+	}
 }
 
 sub reload_updated_zones {
@@ -130,7 +138,42 @@ sub reload_updated_zones {
 			eval {
 				$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
 
-				$self->sync_zone($zone, $fetched_records_for_zones->{$zone->{"name"}});
+				my $zone_name = $zone->{"name"};
+
+				if (defined($self->config->{"powerdns_presigned_dnssec"}) && $self->config->{"powerdns_presigned_dnssec"} eq "1") {
+					my $mod_handler = $self->config->{"powerdns_presigned_dnssec_mod_script"};
+					my $del_handler = $self->config->{"powerdns_presigned_dnssec_del_script"};
+	
+					my $mod = (scalar(@{$fetched_records_for_zones->{$zone->{"name"}}}) > 0);
+					if ($mod) {
+						if (defined($mod_handler)) {
+							die "defined script for powerdns_presigned_dnssec_mod_script does not exist or is not executable: $mod_handler" unless -e $mod_handler && -x $mod_handler;
+							my $output = `$mod_handler "$zone_name" 2>&1`;
+
+							my $status = $? >> 8;
+							if ($status) {
+								die "defined script for powerdns_presigned_dnssec_mod_script ($mod_handler) returned error status $status and the following output: $output";
+							}
+						}
+
+						$self->database->add_zone($zone, [], "MASTER", 1);
+
+					} else {
+						if (defined($del_handler)) {
+							die "defined script for powerdns_presigned_dnssec_del_script does not exist or is not executable: $del_handler" unless -e $del_handler && -x $del_handler;
+							my $output = `$del_handler "$zone_name" 2>&1`;
+
+							my $status = $? >> 8;
+							if ($status) {
+								die "defined script for powerdns_presigned_dnssec_del_script ($del_handler) returned error status $status and the following output: $output";
+							}
+						}
+
+						$self->database->remove_zone($zone);
+					}
+				} else {
+					$self->sync_zone($zone, $fetched_records_for_zones->{$zone_name});
+				}
 
 				push @$changes_successful, $change_id;
 				push @$changes_status, "OK";
@@ -188,7 +231,8 @@ sub sync_zone {
 	my $records = shift;
 
 	if (scalar(@$records) > 0) {
-		$self->database->add_zone($zone, $records);
+		my $zone_type = defined($self->config->{"powerdns_zone_type"}) && $self->config->{"powerdns_zone_type"} eq "MASTER" ? "MASTER" : "NATIVE";
+		$self->database->add_zone($zone, $records, $zone_type);
 	} else {
 		$self->database->remove_zone($zone);
 	}
@@ -251,16 +295,16 @@ sub full_reload_slavezones {
 sub reload_updated_slavezones {
 	my $self = shift;
 
-        my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
-        die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
-                $zones->result && ref($zones->result) eq "ARRAY";
-        $zones = $zones->result;
+	my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+		$zones->result && ref($zones->result) eq "ARRAY";
+	$zones = $zones->result;
 
 	return if scalar(@$zones) == 0;
 
 	my $changes = [];
 
-        foreach my $zonerec (@$zones) {
+	foreach my $zonerec (@$zones) {
 		my $zonename = $zonerec->{"name"};
 
 		my $zone;
@@ -271,31 +315,115 @@ sub reload_updated_slavezones {
 			die("bad response from GetSlaveZone") unless scalar(@$zone) == 1;
 			$zone = $zone->[0];
 
-			push @$changes, $zonerec->{"id"};
+			die("error fetching zone for $zonename") unless !defined($zone) || (ref($zone) eq "HASH" && defined($zone->{"master"}));
+
+			$self->sync_slave_zone($zonename, $zone);
+			$self->soap->MarkSlaveZoneUpdated($zonerec->{"id"}, "OK", "");
 		};
 
 		if ($@) {
 			my $exception = $@;
 			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.ZoneNotFound') {
 				$zone = undef;
-				push @$changes, $zonerec->{"id"};
-	                } else {
-				die $exception;
+				eval {
+					$self->sync_slave_zone($zonename, undef);
+					$self->soap->MarkSlaveZoneUpdated($zonerec->{"id"}, "OK", "");
+				};
+
+				if ($@) {
+					my $errormessage = $@;
+					$errormessage = Dumper($errormessage) if ref($errormessage);
+					$self->soap->MarkSlaveZoneUpdated($zonerec->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				}
+			} else {
+				my $errormessage = $exception;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
+				$self->soap->MarkSlaveZoneUpdated($zonerec->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
 			}
 		}
-
-		die("error fetching zone for $zonename") unless !defined($zone) || (ref($zone) eq "HASH" && defined($zone->{"master"}));
-		$self->sync_slave_zone($zone);
-	}
-
-	foreach my $change (@$changes) {
-		$self->soap->MarkSlaveZoneUpdated($change, "OK", "");
 	}
 }
 
 sub sync_slave_zone {
 	my $self = shift;
-	my $slavezone = shift; # undef => remove, otherwise { master => masterip }
+	my $zonename = shift;
+	my $slavezone = shift; # undef => remove, otherwise { master => masterip, tsig_secret => secret or undef }
+
+	if (defined($slavezone)) {
+		$self->database->add_slave_zone($zonename, $slavezone);
+	} else {
+		$self->database->remove_slave_zone($zonename);
+	}
+}
+
+sub import_zonefile {
+	my $self = shift;
+	my $zone_origin = shift;
+	my $zone_file = shift;
+
+	$zone_origin =~ s/\.$//;
+
+	my $parser = Net::DNS::Zone::Parser->new;
+	my $parseerror = $parser->read($zone_file, { ORIGIN => $zone_origin, CREATE_RR => 1 });
+	die "Error parsing $zone_file: $parseerror" if $parseerror;
+
+	my $parsed_zone = $parser->get_array;
+
+	my $zone = { name => $zone_origin };
+	my $records = [];
+
+	foreach my $record (@$parsed_zone) {
+		my $label = $self->atomia_host_to_label($record->name, $zone_origin);
+		my $rdata = $record->rdatastr;
+		$rdata =~ s/;.*?$//msg;
+		$rdata =~ s/\r?\n/ /msg;
+		if ($record->type =~ /^(SOA|RRSIG|SRV|DNSKEY|NSEC|NSEC3)$/i) {
+			$rdata =~ s/[()]//g;
+		}
+		$rdata =~ s/\s+/ /g;
+
+		push @$records, { label => $label, ttl => $record->ttl, class => $record->class, type => $record->type, rdata => $rdata };
+	}
+
+	$self->database->add_zone($zone, $records, "MASTER");
+}
+
+sub atomia_host_to_label {
+	my $self = shift;
+	my $name = shift;
+	my $zone = shift;
+
+	if ($name eq $zone) {
+		return '@';
+	} else {
+		die("atomia_host_to_label called when name not in zone") unless $name =~ /$zone$/;
+		return substr($name, 0, length($name) - length($zone) - 1);
+	}
+}
+
+sub set_external_dnssec_keys {
+	my $self = shift;
+	my $keys_to_push = shift;
+
+	my $external_keys_at_server = $self->soap->GetExternalDNSSECKeys();
+	die("error fetching DNSSEC keyset, got no or bad result from soap-server") unless defined($external_keys_at_server) &&
+		$external_keys_at_server->result && ref($external_keys_at_server->result) eq "ARRAY";
+	$external_keys_at_server = $external_keys_at_server->result;
+
+	my @keys_to_set = split /\n/, $keys_to_push;
+	foreach my $key (@keys_to_set) {
+		if (scalar(grep { $_->{"keydata"} eq $key } @$external_keys_at_server) == 0) {
+			print "adding external DNSSEC key: $key\n";
+			$self->soap->AddExternalDNSSECKey($key);
+		}
+	}
+
+	foreach my $key (@$external_keys_at_server) {
+		if (scalar(grep { $_ eq $key->{"keydata"} } @keys_to_set) == 0) {
+			print "removing external DNSSEC key " . $key->{"id"} . ": " . $key->{"keydata"} . "\n";
+			$self->soap->DeleteExternalDNSSECKey($key->{"id"});
+		}
+	}
 }
 
 1;

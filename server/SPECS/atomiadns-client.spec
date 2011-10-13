@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.0.28
+Version: 1.0.29
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Wed Sep 28 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.29-1
+- Make DNSSEC key generation more robust and improve slave support (multi-master + TSIG) and database schema in PowerDNS agent
 * Fri Sep 16 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.28-1
 - Improve performance of validation trigger + indexing for large zones
 * Mon Jul 18 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.27-1

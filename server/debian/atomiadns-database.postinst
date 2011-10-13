@@ -169,7 +169,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		latest_version="53"
+		latest_version="60"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -330,6 +330,28 @@ if [ $? != 0 ]; then
 
 			if [ "$schema_version" -lt 53 ]; then
 				recreate_ddl_procedure "verify_zone"
+			fi
+
+			if [ "$schema_version" -lt 54 ]; then
+				execute_query "ALTER TABLE slavezone DROP CONSTRAINT master_format"
+				execute_query "ALTER TABLE slavezone ADD CONSTRAINT master_format CHECK (master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))(,(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+)))*\$');"
+			fi
+
+			if [ "$schema_version" -lt 58 ]; then
+				execute_query "ALTER TABLE slavezone ADD COLUMN tsig_secret VARCHAR(255) CONSTRAINT tsig_format CHECK (tsig_secret IS NULL OR tsig_secret ~* '^[a-zA-Z0-9+/=]*')"
+			fi
+
+			if [ "$schema_version" -lt 59 ]; then
+				execute_query "ALTER TABLE slavezone ADD COLUMN tsig_name VARCHAR(255) CONSTRAINT tsig_name_format CHECK (tsig_name IS NULL OR tsig_name ~* '^[a-zA-Z0-9_-]*')"
+				recreate_procedure "getslavezone"
+				recreate_procedure "addslavezone"
+			fi
+
+			if [ "$schema_version" -lt 60 ]; then
+				create_table "dnssec_external_key"
+				recreate_procedure "getexternaldnsseckeys"
+				recreate_procedure "deleteexternaldnsseckey"
+				recreate_procedure "addexternaldnsseckey"
 			fi
 
 			set_schema_version "$latest_version"

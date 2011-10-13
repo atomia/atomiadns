@@ -73,7 +73,7 @@ if [ $? = 0 ]] && [ -n "$db_exists" ]; then
 		echo "mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e 'CREATE TABLE powerdns_schemaversion (version INT); INSERT INTO powerdns_schemaversion VALUES (1)'"
 		exit 1
 	else
-		latest_version="2"
+		latest_version="8"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -83,6 +83,22 @@ if [ $? = 0 ]] && [ -n "$db_exists" ]; then
 			if [ "$schema_version" -lt 2 ]; then
 				execute_query "ALTER TABLE domains CHANGE COLUMN id id bigint NOT NULL AUTO_INCREMENT"
 				execute_query "ALTER TABLE records CHANGE COLUMN id id bigint NOT NULL AUTO_INCREMENT"
+			fi
+
+			if [ "$schema_version" -lt 5 ]; then
+				execute_query 'CREATE TABLE `outbound_tsig_keys` (`id` bigint NOT NULL AUTO_INCREMENT, `domain_id` int(11) DEFAULT NULL, `secret` varchar(255) DEFAULT NULL, `name` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`), KEY `domain_index` (`domain_id`)) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1'
+
+				execute_query 'ALTER VIEW cryptokeys AS select `c`.`id` AS `id`,`d`.`id` AS `domain_id`,`c`.`flags` AS `flags`,`c`.`active` AS `active`,`c`.`content` AS `content` from (`domains` `d` join `global_cryptokeys` `c`) where d.type = '"'NATIVE'"
+
+				execute_query "CREATE VIEW tsigkeys AS select CONCAT('key', k.id, ':', LOWER(k.name)) AS name, 'hmac-md5' AS algorithm, k.secret from outbound_tsig_keys k"
+			fi
+
+			if [ "$schema_version" -lt 7 ]; then
+				execute_query 'ALTER VIEW domainmetadata AS select `domains`.`id` AS `domain_id`,`global_domainmetadata`.`kind` AS `kind`,`global_domainmetadata`.`content` AS `content` from (`domains` join `global_domainmetadata`) where ((select count(*) from global_cryptokeys) > 0 AND domains.type = '"'NATIVE') OR domains.type = 'MASTER' union select d.id, 'AXFR-MASTER-TSIG', CONCAT('key', k.id, ':', LOWER(k.name)) from outbound_tsig_keys k inner join domains d on k.domain_id = d.id where d.type = 'SLAVE'"
+			fi
+
+			if [ "$schema_version" -lt 8 ]; then
+				execute_query "ALTER TABLE records CHANGE COLUMN content content text DEFAULT NULL"
 			fi
 
 			set_schema_version "$latest_version"
