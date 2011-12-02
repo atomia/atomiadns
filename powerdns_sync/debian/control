@@ -8,7 +8,7 @@ Standards-Version: 3.6.1
 
 Package: atomiadns-powerdnssync
 Architecture: all
-Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl, libnet-dns-zone-parser-perl, libnet-dns-perl
+Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl, libnet-dns-zone-parser-perl, libnet-dns-perl, libmime-base32-perl
 Description: Atomia DNS PowerDNS Sync application
 
 Package: atomiadns-powerdns-database

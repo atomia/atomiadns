@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.0.31) hardy; urgency=low
+
+  * Add missing libmime-base32-perl dependency
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 2 Dec 2011 09:44:35 +0100
+
 atomiadns-masterserver (1.0.30) hardy; urgency=low
 
   * Improve domainmetadata view and support NSEC + NSEC3 instead of only NSEC3NARROW
