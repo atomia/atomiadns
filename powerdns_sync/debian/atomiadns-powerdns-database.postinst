@@ -73,7 +73,7 @@ if [ $? = 0 ]] && [ -n "$db_exists" ]; then
 		echo "mysql --defaults-file=/etc/mysql/debian.cnf powerdns -e 'CREATE TABLE powerdns_schemaversion (version INT); INSERT INTO powerdns_schemaversion VALUES (1)'"
 		exit 1
 	else
-		latest_version="8"
+		latest_version="9"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -99,6 +99,22 @@ if [ $? = 0 ]] && [ -n "$db_exists" ]; then
 
 			if [ "$schema_version" -lt 8 ]; then
 				execute_query "ALTER TABLE records CHANGE COLUMN content content text DEFAULT NULL"
+			fi
+
+			if [ "$schema_version" -lt 9 ]; then
+				execute_query "
+CREATE OR REPLACE VIEW domainmetadata AS
+SELECT
+  d.id AS domain_id,
+  IF(d.type IN ('NATIVE', 'MASTER'), g.kind, 'AXFR-MASTER-TSIG') AS kind,
+  IF(d.type IN ('NATIVE', 'MASTER'), 
+    g.content,
+    concat('key', k.id, ':', lcase(k.name))) AS content
+FROM domains d
+LEFT JOIN global_domainmetadata g ON d.type IN ('NATIVE', 'MASTER') AND 
+  (SELECT count(0) FROM global_cryptokeys) > 0
+LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
+WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE')"
 			fi
 
 			set_schema_version "$latest_version"

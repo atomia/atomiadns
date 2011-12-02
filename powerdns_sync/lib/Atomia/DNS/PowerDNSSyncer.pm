@@ -80,11 +80,11 @@ sub sync_dnssec_keys {
 		$keyset = $keyset->result;
 
 		$self->database->sync_keyset($keyset);
-		$self->database->set_dnssec_metadata(0);
+		$self->database->set_dnssec_metadata(0, undef, $self->config->{"powerdns_zone_nsec_format"});
 	} elsif (defined($self->config->{"powerdns_presigned_dnssec"}) && $self->config->{"powerdns_presigned_dnssec"} eq "1") {
-		$self->database->set_dnssec_metadata(1, $self->config->{"powerdns_master_also_notify"});
+		$self->database->set_dnssec_metadata(1, $self->config->{"powerdns_master_also_notify"}, $self->config->{"powerdns_zone_nsec_format"});
 	} elsif (defined($self->config->{"powerdns_master_also_notify"})) {
-		$self->database->set_dnssec_metadata(undef, $self->config->{"powerdns_master_also_notify"});
+		$self->database->set_dnssec_metadata(undef, $self->config->{"powerdns_master_also_notify"}, $self->config->{"powerdns_zone_nsec_format"});
 	}
 }
 
@@ -232,7 +232,7 @@ sub sync_zone {
 
 	if (scalar(@$records) > 0) {
 		my $zone_type = defined($self->config->{"powerdns_zone_type"}) && $self->config->{"powerdns_zone_type"} eq "MASTER" ? "MASTER" : "NATIVE";
-		$self->database->add_zone($zone, $records, $zone_type);
+		$self->database->add_zone($zone, $records, $zone_type, 0, $self->config->{"powerdns_zone_nsec_format"});
 	} else {
 		$self->database->remove_zone($zone);
 	}

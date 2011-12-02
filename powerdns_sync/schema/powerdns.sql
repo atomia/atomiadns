@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (8);
+INSERT INTO powerdns_schemaversion VALUES (9);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -190,7 +190,19 @@ CREATE TABLE `supermasters` (
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `domainmetadata` AS select `domains`.`id` AS `domain_id`,`global_domainmetadata`.`kind` AS `kind`,`global_domainmetadata`.`content` AS `content` from (`domains` join `global_domainmetadata`) where ((select count(*) from global_cryptokeys) > 0 AND domains.type = 'NATIVE') OR domains.type = 'MASTER' union select d.id, 'AXFR-MASTER-TSIG', CONCAT('key', k.id, ':', LOWER(k.name)) from outbound_tsig_keys k inner join domains d on k.domain_id = d.id where d.type = 'SLAVE' */;
+/*!50001 VIEW `domainmetadata` AS 
+SELECT
+  d.id AS domain_id,
+  IF(d.type IN ('NATIVE', 'MASTER'), g.kind, 'AXFR-MASTER-TSIG') AS kind,
+  IF(d.type IN ('NATIVE', 'MASTER'), 
+    g.content,
+    concat('key', k.id, ':', lcase(k.name))) AS content
+FROM domains d
+LEFT JOIN global_domainmetadata g ON d.type IN ('NATIVE', 'MASTER') AND 
+  (SELECT count(0) FROM global_cryptokeys) > 0
+LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
+WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE')
+*/;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
