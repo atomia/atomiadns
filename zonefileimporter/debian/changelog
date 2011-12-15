@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.32) hardy; urgency=low
+
+  * Set SOA-EDIT to INCEPTION-EPOCH for native DNSSEC mode
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 15 Dec 2011 15:53:41 +0100
+
 atomiadns-zoneimport (1.0.31) hardy; urgency=low
 
   * Add missing libmime-base32-perl dependency

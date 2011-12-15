@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.0.31
+Version: 1.0.32
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Thu Dec 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.32-1
+- Set SOA-EDIT to INCEPTION-EPOCH for native DNSSEC mode
 * Fri Dec 02 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.31-1
 - Add missing libmime-base32-perl dependency
 * Thu Dec 01 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.30-1

@@ -192,14 +192,14 @@ sub set_dnssec_metadata {
 	$also_notify = '' unless defined($also_notify) && $also_notify =~ /^[\d.]+$/;
 	$nsec_type = 'NSEC3NARROW' unless defined($nsec_type) && $nsec_type =~ /^NSEC3?$/i;
 
-	my $query = "SELECT COUNT(*), COUNT(IF(kind = 'PRESIGNED', 1, NULL)), COUNT(IF(kind LIKE 'NSEC%', 1, NULL)), COUNT(IF(kind = 'ALSO-NOTIFY' AND content = '$also_notify', 1, NULL)) FROM global_domainmetadata";
+	my $query = "SELECT COUNT(*), COUNT(IF(kind = 'PRESIGNED', 1, NULL)), COUNT(IF(kind LIKE 'NSEC%', 1, NULL)), COUNT(IF(kind = 'ALSO-NOTIFY' AND content = '$also_notify', 1, NULL)), COUNT(IF(kind = 'SOA-EDIT', 1, NULL)) FROM global_domainmetadata";
 	my $num_metadata = $self->dbi->selectrow_arrayref($query);
-        die "error checking status of global metadata, query was $query" unless defined($num_metadata) && ref($num_metadata) eq "ARRAY" && scalar(@$num_metadata) == 4;
+        die "error checking status of global metadata, query was $query" unless defined($num_metadata) && ref($num_metadata) eq "ARRAY" && scalar(@$num_metadata) == 5;
 
 	my $db_is_presigned = (($num_metadata->[0] + ($also_notify ne '' ? 1 : 0) == $num_metadata->[1] + $num_metadata->[3]) && $num_metadata->[1] == 1);
-	my $db_correct_nsec = 	($nsec_type eq 'NSEC3NARROW' && $num_metadata->[0] == 2 && $num_metadata->[2] == 2) ||
-				($nsec_type eq 'NSEC3' && $num_metadata->[0] == 1 && $num_metadata->[2] == 1) ||
-				($nsec_type eq 'NSEC' && $num_metadata->[0] == 0);
+	my $db_correct_nsec = 	($nsec_type eq 'NSEC3NARROW' && $num_metadata->[0] == 3 && $num_metadata->[2] == 2 && $num_metadata->[4] == 1) ||
+				($nsec_type eq 'NSEC3' && $num_metadata->[0] == 2 && $num_metadata->[2] == 1 && $num_metadata->[4] == 1) ||
+				($nsec_type eq 'NSEC' && $num_metadata->[0] == 1 && $num_metadata->[4] == 1);
 	my $db_correct_notify = ($num_metadata->[3] == ($also_notify ne '' ? 1 : 0) && $num_metadata->[0] == 1);
 
 	eval {
@@ -210,6 +210,7 @@ sub set_dnssec_metadata {
 			$self->dbi->commit();
 		} elsif (defined($presigned) && !$presigned && !$db_correct_nsec) {
 			$self->dbi->do("DELETE FROM global_domainmetadata");
+			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('SOA-EDIT', 'INCEPTION-EPOCH')");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3PARAM', '1 0 " . $self->nsec3_iterations . " " . $self->nsec3_salt_pres . "')") if $nsec_type ne 'NSEC';
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3NARROW', '1')") if $nsec_type eq 'NSEC3NARROW';
 			$self->dbi->commit();
