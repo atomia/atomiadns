@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.0.33) hardy; urgency=low
+
+  * Filter duplicate records in powerdns agent according to RFC2181 section 5
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 3 Jan 2012 22:50:45 +0100
+
 atomiadns-nameserver (1.0.32) hardy; urgency=low
 
   * Set SOA-EDIT to INCEPTION-EPOCH for native DNSSEC mode

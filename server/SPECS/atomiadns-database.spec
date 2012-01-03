@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.0.32
+Version: 1.0.33
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Tue Jan 03 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.33-1
+- Filter duplicate records in powerdns agent according to RFC2181 section 5
 * Thu Dec 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.32-1
 - Set SOA-EDIT to INCEPTION-EPOCH for native DNSSEC mode
 * Fri Dec 02 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.31-1

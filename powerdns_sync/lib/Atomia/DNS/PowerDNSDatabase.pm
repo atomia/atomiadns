@@ -95,17 +95,22 @@ sub add_zone {
 		my $domain_id = $self->dbi->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
 
 		my $num_records = scalar(@$records);
+		my $weed_dupes = {};
 
 		for (my $batch = 0; $batch * 1000 < $num_records; $batch++) {
 			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, auth, ordername) VALUES ";
 
-			for (my $idx = 0; $idx < 1000 && $batch * 1000 + $idx < $num_records; $idx++) {
+			RECORD: for (my $idx = 0; $idx < 1000 && $batch * 1000 + $idx < $num_records; $idx++) {
 				my $record = $records->[$batch * 1000 + $idx];
 				my $content = $record->{"rdata"};
 				my $type = $record->{"type"};
 				my $ttl = $record->{"ttl"};
 				my $label = $record->{"label"};
 				my $ordername = '';
+
+				my $dupe_key = "$label/$type/$content";
+				next RECORD if exists($weed_dupes->{$dupe_key});
+				$weed_dupes->{$dupe_key} = 1;
 
 				if ($nsec_type eq 'NSEC') {
 					$ordername = lc(join(" ", reverse(split(/\./, ($label eq '@' ? '' : $label)))));

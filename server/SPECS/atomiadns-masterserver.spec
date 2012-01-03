@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.32
+Version: 1.0.33
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.32 atomiadns-database >= 1.0.32
+Requires: atomiadns-api >= 1.0.33 atomiadns-database >= 1.0.33
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue Jan 03 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.33-1
+- Filter duplicate records in powerdns agent according to RFC2181 section 5
 * Thu Dec 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.32-1
 - Set SOA-EDIT to INCEPTION-EPOCH for native DNSSEC mode
 * Fri Dec 02 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.31-1
