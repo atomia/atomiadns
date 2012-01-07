@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.0.33
+Version: 1.0.34
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Sat Jan 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.34-1
+- Fix the case which produced an SQL error when the first record in a batch was a dupe
 * Tue Jan 03 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.33-1
 - Filter duplicate records in powerdns agent according to RFC2181 section 5
 * Thu Dec 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.32-1

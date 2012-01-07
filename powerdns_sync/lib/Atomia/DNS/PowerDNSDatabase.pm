@@ -100,6 +100,8 @@ sub add_zone {
 		for (my $batch = 0; $batch * 1000 < $num_records; $batch++) {
 			$query = "INSERT INTO records (domain_id, name, type, content, ttl, prio, auth, ordername) VALUES ";
 
+			my $first_in_batch = 1;
+
 			RECORD: for (my $idx = 0; $idx < 1000 && $batch * 1000 + $idx < $num_records; $idx++) {
 				my $record = $records->[$batch * 1000 + $idx];
 				my $content = $record->{"rdata"};
@@ -152,7 +154,8 @@ sub add_zone {
 				}
 
 
-				$query .= sprintf("%s(%d, %s, %s, %s, %d, %s, %d, %s)", ($idx == 0 ? '' : ','), $domain_id, $fqdn, $self->dbi->quote($type), $self->dbi->quote($content), $ttl, $prio, $auth, $ordername);
+				$query .= sprintf("%s(%d, %s, %s, %s, %d, %s, %d, %s)", ($first_in_batch ? '' : ','), $domain_id, $fqdn, $self->dbi->quote($type), $self->dbi->quote($content), $ttl, $prio, $auth, $ordername);
+				$first_in_batch = 0;
 			}
 
 			$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";

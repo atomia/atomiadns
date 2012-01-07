@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.0.34) hardy; urgency=low
+
+  * Fix the case which produced an SQL error when the first record in a batch was a dupe
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Sat, 7 Jan 2012 16:27:11 +0100
+
 atomiadns-zoneimport (1.0.33) hardy; urgency=low
 
   * Filter duplicate records in powerdns agent according to RFC2181 section 5

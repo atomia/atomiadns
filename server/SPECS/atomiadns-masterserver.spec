@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.0.33
+Version: 1.0.34
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.0.33 atomiadns-database >= 1.0.33
+Requires: atomiadns-api >= 1.0.34 atomiadns-database >= 1.0.34
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Sat Jan 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.34-1
+- Fix the case which produced an SQL error when the first record in a batch was a dupe
 * Tue Jan 03 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.33-1
 - Filter duplicate records in powerdns agent according to RFC2181 section 5
 * Thu Dec 15 2011 Jimmy Bergman <jimmy@atomia.com> - 1.0.32-1
