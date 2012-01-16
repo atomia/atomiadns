@@ -30,7 +30,7 @@ sub matchSignature {
 	my $method = shift;
 	my $signature = shift;
 
-	die("number of parameters doesn't match the signature for $method") unless scalar(@$signature) == scalar(@_);
+	die("number of parameters doesn't match the signature for $method (" . join(",", @$signature) . ")") unless scalar(@$signature) == scalar(@_);
 	for (my $idx = 0; $idx < scalar(@_); $idx++) {
 		my $param = $_[$idx];
 		my $sig = $signature->[$idx];
@@ -764,6 +764,60 @@ sub mapExceptionToFault {
 	} else {
 		$self->generateException('InternalError', 'UnknownException', $exception);
 	}
+}
+
+sub handleOperation {
+	my $self = shift;
+	my $method = shift;
+	my $signature_orig = shift;
+
+	my @signature_copy = @$signature_orig;
+	my $signature = \@signature_copy;
+
+	die "invalid use of handleOperation" unless defined($method) && length($method) > 0 && defined($signature) && ref($signature) eq "ARRAY" && scalar(@$signature) > 0;
+
+	my $return_type = shift(@$signature);
+	$self->matchSignature($method, $signature, @_);
+
+	my $retval = undef;
+
+	if ($return_type eq "void") {
+		$retval = $self->handleVoid($method, $signature, @_);
+	} elsif ($return_type eq "array[resourcerecord]") {
+		$retval = $self->handleRecordArray($method, $signature, @_);
+	} elsif ($return_type eq "array[string]") {
+		$retval = $self->handleStringArray($method, $signature, @_);
+	} elsif ($return_type eq "string") {
+		$retval = $self->handleString($method, $signature, @_);
+	} elsif ($return_type eq "binaryzone") {
+		$retval = $self->handleBinaryZone($method, $signature, @_);
+	} elsif ($return_type eq "array[binaryzone]") {
+		$retval = $self->handleBinaryZoneArray($method, $signature, @_);
+	} elsif ($return_type eq "array[int]") {
+		$retval = $self->handleIntArray($method, $signature, @_);
+	} elsif ($return_type eq "zone") {
+		$retval = $self->handleZone($method, $signature, @_);
+	} elsif ($return_type eq "slavezone") {
+		$retval = $self->handleSlaveZone($method, $signature, @_);
+	} elsif ($return_type eq "changes") {
+		$retval = $self->handleChanges($method, $signature, @_);
+	} elsif ($return_type eq "zonestruct") {
+		$retval = $self->handleZoneStruct($method, $signature, @_);
+	} elsif ($return_type eq "int") {
+		$retval = $self->handleInt($method, $signature, @_);
+	} elsif ($return_type eq "allowedtransfer") {
+		$retval = $self->handleAllowedTransfer($method, $signature, @_);
+	} elsif ($return_type eq "keyset") {
+		$retval = $self->handleKeySet($method, $signature, @_);
+	} elsif ($return_type eq "zskinfo") {
+		$retval = $self->handleZSKInfo($method, $signature, @_);
+	} elsif ($return_type eq "keyid") {
+		$retval = $self->handleAddKey($method, $signature, @_);
+	} else {
+		die("unknown return-type in signature: $return_type");
+	}
+
+	return $retval;
 }
 
 1;
