@@ -10,6 +10,9 @@ use Config::General;
 use DBI;
 use DBD::Pg qw(:pg_types);
 use Data::Dumper;
+use Authen::Passphrase::BlowfishCrypt;
+use Digest::SHA1 qw(sha1_hex);
+use Atomia::DNS::Signatures;
 
 has 'conn' => (is => 'rw', isa => 'Any', default => undef);
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
@@ -23,6 +26,7 @@ sub BUILD {
         die("config not found at $self->configfile") unless defined($conf);
         my %config = $conf->getall;
         $self->config(\%config);
+	$self->validate_db_config();
 };
 
 sub matchSignature {
@@ -57,10 +61,11 @@ sub matchSignature {
 
 sub handleVoid {
 	my $self = shift;
+	my $account_id = shift;
 	my $method = shift;
 	my $signature = shift;
 
-	$self->handleAll($method, $signature, 1, @_);
+	$self->handleAll($method, $signature, 1, $account_id, @_);
 	return SOAP::Data->new(name => "status", value => "ok")->type("string");
 }
 
@@ -69,7 +74,7 @@ sub handleRecordArray {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $records = $sth->fetchall_arrayref({});
 	die("no resourcerecord returned from database") unless defined($records) && !$DBI::err;
@@ -95,7 +100,7 @@ sub handleKeySet {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $records = $sth->fetchall_arrayref({});
 	die("no keyset returned from database") unless defined($records) && !$DBI::err;
@@ -121,7 +126,7 @@ sub handleZSKInfo {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $records = $sth->fetchall_arrayref({});
 	die("no keyset returned from database") unless defined($records) && !$DBI::err;
@@ -147,7 +152,7 @@ sub handleInt {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref();
 	die("no resourcerecord returned from database") unless defined($rows) && !$DBI::err;
@@ -186,7 +191,7 @@ sub handleAddKey {
 		die "error generating key: $exception";
 	}
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref();
 	die("no resourcerecord returned from database") unless defined($rows) && !$DBI::err;
@@ -205,7 +210,7 @@ sub handleStringArray {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref();
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -222,7 +227,7 @@ sub handleString {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref();
 
@@ -241,7 +246,7 @@ sub handleBinaryZone {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref({});
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -272,7 +277,7 @@ sub handleBinaryZoneArray {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref({});
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -330,7 +335,7 @@ sub handleIntArray {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref();
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -349,7 +354,7 @@ sub handleChanges {
 
 	my $rows;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 	$rows = $sth->fetchall_arrayref({});
 	die("error polling database for changes: $DBI::errstr") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
 
@@ -376,7 +381,7 @@ sub handleAllowedTransfer {
 
 	my $rows;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 	$rows = $sth->fetchall_arrayref({});
 	die("error polling database for allowed zone transfers: $DBI::errstr") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
 
@@ -392,7 +397,7 @@ sub handleZone {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref({});
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -432,7 +437,7 @@ sub handleSlaveZone {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref({});
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -461,7 +466,7 @@ sub handleZoneStruct {
 	my $method = shift;
 	my $signature = shift;
 
-	my $sth = $self->handleAll($method, $signature, 0, @_);
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
 
 	my $rows = $sth->fetchall_arrayref({});
 	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
@@ -478,6 +483,13 @@ sub handleAll {
 	my $method = shift;
 	my $signature = shift;
 	my $void = shift;
+	my $account_id = shift;
+
+	if (defined($account_id) && $account_id =~ /^\d+$/ && $method =~ /^Add(Slave)?Zone$/) {
+		unshift @_, $account_id;
+		unshift @$signature, "int";
+		$method .= "Auth";
+	}
 
 	my $placeholders = "";
 	for (my $idx = 0; $idx < scalar(@_); $idx++) {
@@ -640,6 +652,14 @@ sub handleAll {
 				}
 
 				$statement_evaluated = 1;
+			} elsif ($signature->[$idx] eq "password") {
+				my $password = $_[$idx];
+				die "password can't be empty" unless defined($password) && length($password) > 0;
+
+				my $ppr = Authen::Passphrase::BlowfishCrypt->new(cost => 10, salt_random => 1, passphrase => $password);
+				die "error creating bcrypt hash from password" unless defined($ppr);
+
+				$sth->bind_param($idx + 1, $ppr->as_crypt(), { pg_type => PG_VARCHAR });
 			} else {
 				# Default is varchar
 				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_VARCHAR });
@@ -725,6 +745,8 @@ sub mapExceptionToFault {
 		$self->generateException('LogicalError', 'NameserverNotFound', $exception);
 	} elsif ($exception =~ /record .* doesn.t exist in zone/) {
 		$self->generateException('LogicalError', 'RecordNotFound', $exception);
+	} elsif ($exception =~ /account .* not found/) {
+		$self->generateException('LogicalError', 'AccountNotFound', $exception);
 	} elsif ($exception =~ /both as source and destination/) {
 		$self->generateException('LogicalError', 'SameSourceAndDestination', $exception);
 	} elsif ($exception =~ /moving .* cross.* are not supported/) {
@@ -754,6 +776,15 @@ sub mapExceptionToFault {
 		$self->generateException('InvalidParametersError', 'Bad' . $1 . $2, $exception);
 	} elsif ($exception =~ /bad .*-array passed |.*\[\] can.t be empty/) {
 		$self->generateException('InvalidParametersError', 'BadArray', $exception);
+# AuthError.*
+	} elsif ($exception =~ /unauthorized access/) {
+		$self->generateException('AuthError', 'NotAuthenticated', $exception);
+	} elsif ($exception =~ /invalid username or password/) {
+		$self->generateException('AuthError', 'NotAuthenticated', $exception);
+	} elsif ($exception =~ /invalid token/) {
+		$self->generateException('AuthError', 'NotAuthenticated', $exception);
+	} elsif ($exception =~ /authorization failed/) {
+		$self->generateException('AuthError', 'NotAuthorized', $exception);
 # SystemError.*
 	} elsif ($exception =~ /no .* returned from database|bad data returned from database|more than one .* returned for scalar|row without label returned|error polling database for changes/) {
 		$self->generateException('SystemError', 'DatabaseBadResult', $exception);
@@ -766,8 +797,200 @@ sub mapExceptionToFault {
 	}
 }
 
+sub retrieveAccount {
+	my $self = shift;
+	my $email = shift;
+
+	my $ret = undef;
+	$ret = eval {
+		my $sth = $self->dbi->prepare("SELECT id, hash FROM account WHERE email = ?");
+		die("error in dbi->prepare") unless defined($sth);
+
+		$sth->bind_param(1, $email, { pg_type => PG_VARCHAR });
+
+		my $ret = $sth->execute();
+		die("bad response for retrieveAccount: $DBI::errstr") unless defined($ret);
+
+		my $rows = $sth->fetchall_arrayref();
+		die("no or invalid rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err
+			&& scalar(@$rows) == 1 && ref($rows->[0]) eq "ARRAY" && scalar(@{$rows->[0]}) == 2 && length($rows->[0]->[1]) > 0;
+
+		my $hash = $rows->[0]->[1];
+		my $ppr = Authen::Passphrase::BlowfishCrypt->from_crypt($hash);
+		die "invalid bcrypt hash in database" unless defined($ppr);
+
+		return { id => $rows->[0]->[0], hash => $ppr };
+	};
+
+	if ($@) {
+		return undef;
+	} else {
+		return $ret;
+	}
+}
+		
+sub authorizeZones {
+	my $self = shift;
+	my $zones = shift;
+	my $account_id = shift;
+	my $slave = shift;
+
+	die "invalid indata in authorizeZones" unless defined($zones) && ref($zones) eq "ARRAY" && scalar(@$zones) > 0 && defined($account_id) && $account_id =~ /^\d+$/;
+
+	$slave = 0 unless defined($slave) && $slave == 1;
+	my $proc = $slave ? "AuthorizeSlaveZones" : "AuthorizeZones";
+
+	my $ret = undef;
+	$ret = eval {
+		my $sth = $self->dbi->prepare("SELECT * FROM $proc(?, ?)");
+		die("error in dbi->prepare") unless defined($sth);
+
+		$sth->bind_param(1, $zones, { pg_type => PG_VARCHARARRAY });
+		$sth->bind_param(2, $account_id, { pg_type => PG_INT4 });
+
+		my $ret = $sth->execute();
+		die("bad response for $proc: $DBI::errstr") unless defined($ret);
+
+		my $rows = $sth->fetchall_arrayref();
+		die("no or invalid rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err
+			&& scalar(@$rows) == 1 && ref($rows->[0]) eq "ARRAY" && scalar(@{$rows->[0]}) == 1 && $rows->[0]->[0] =~ /^[01]$/;
+
+		return $rows->[0]->[0];
+	};
+
+	if ($@) {
+		return 0;
+	} else {
+		return $ret;
+	}
+}
+
+sub authenticateAccount {
+	my $self = shift;
+	my $username = shift;
+	my $password = shift;
+
+	my $auth = $self->retrieveAccount($username);
+	if (defined($auth)) {
+		if ($auth->{"hash"}->match($password)) {
+			return { id => $auth->{"id"}, token => $self->generateAccountToken($auth) }; 
+		} else {
+			return undef;
+		}
+	} else {
+		return undef;
+	}
+}
+
+sub authenticateAccountToken {
+	my $self = shift;
+	my $username = shift;
+	my $token = shift;
+
+	my $unix_timestamp = undef; 
+	if ($token =~ /^(\d+)\//) {
+		$unix_timestamp = $1;
+		my $now = time();
+		my $token_lifetime = $self->config->{"api_token_lifetime"} || 600;
+		return undef if $now > $unix_timestamp + $token_lifetime;
+	} else {
+		return undef;
+	}
+
+	my $auth = $self->retrieveAccount($username);
+	if (defined($auth)) {
+		my $real_token = $self->generateAccountToken($auth, $unix_timestamp);
+		if (defined($token) && defined($real_token) && length($token) > 0 && length($real_token) > 0 && $token eq $real_token) {
+			return { id => $auth->{"id"} };
+		} else {
+			return undef;
+		}
+	} else {
+		return undef;
+	}
+}
+
+sub generateAccountToken {
+	my $self = shift;
+	my $auth = shift;
+	my $unix_timestamp = shift;
+
+	return undef unless !(defined($unix_timestamp)) || $unix_timestamp =~ /^\d+$/;
+	return undef unless defined($auth) && ref($auth) eq "HASH" && defined($auth->{"hash"}) && ref($auth->{"hash"});
+
+	my $ppr = $auth->{"hash"};
+	my $hash = $ppr->as_crypt();
+	return undef unless defined($hash) && ref($hash) eq '' && length($hash) > 0;
+
+	unless (defined($unix_timestamp)) {
+		$unix_timestamp = time();
+	}
+
+	my $token_data = sprintf "%d%s%s", $unix_timestamp, $hash, $self->config->{"db_password"};
+	my $token_sha1 = sha1_hex($token_data);
+	return undef unless defined($token_sha1) && length($token_sha1) > 0;
+
+	return "$unix_timestamp/$token_sha1";
+}
+
+sub authorizeMethod {
+	my $self = shift;
+	my $method = shift;
+	my $authenticated_account = shift;
+	my @args = @_;
+
+	my $require_auth = (defined($self->config->{"require_auth"}) && $self->config->{"require_auth"} eq "1") ? 1 : 0;
+	return undef unless $require_auth;
+
+	die "unauthorized access" unless defined($authenticated_account) && ref($authenticated_account) eq "HASH";
+
+	return undef if defined($authenticated_account->{"admin"}) && $authenticated_account->{"admin"} == 1;
+
+	die "unauthorized access" unless defined($authenticated_account->{"id"}) && $authenticated_account->{"id"} =~ /^\d+$/;
+#root@s97:/home/jma/Dns/trunk/server# cat lib/Atomia/DNS/Signatures.pm  | grep auth | tr -d "\t" | cut -d " " -f 3- | sort | uniq -c
+#      1 = {
+#      2 "authaccount",
+#      2 "authslavezone",
+#     12 "authzone",
+#      1 "authzone allow authnamearray",
+#      4 "authzonearray",
+#      1 "authzone authzonearray",
+
+	my $account_id = $authenticated_account->{"id"};
+
+	die "authorization failed, operation is admin only" unless defined($Atomia::DNS::Signatures::authorization_rules) && defined($Atomia::DNS::Signatures::authorization_rules->{$method});
+
+	my @method_rules = split(" ", $Atomia::DNS::Signatures::authorization_rules->{$method});
+	for (my $idx = 0; $idx < scalar(@method_rules); $idx++) {
+		die "authorization failed, too few arguments for rule" unless $idx < scalar(@args);
+
+		my $arg_to_authorize = $args[$idx];
+		my $arg_rule = $method_rules[$idx];
+
+		if ($arg_rule eq "authaccount") {
+			my $account = $self->retrieveAccount($arg_to_authorize);
+			die "authorization failed, permission denied for the account" unless defined($account) && ref($account) eq "HASH"
+				&& defined($account->{"id"}) && $account->{"id"} =~ /^\d+$/ && $account->{"id"} == $account_id;
+		} elsif ($arg_rule eq "authzone") {
+			my $authorized = $self->authorizeZones([ $arg_to_authorize ], $account_id);
+			die "authorization failed, permission denied for the zone" unless defined($authorized) && ref($authorized) eq '' && $authorized == 1;
+		} elsif ($arg_rule eq "authslavezone") {
+			my $authorized = $self->authorizeZones([ $arg_to_authorize ], $account_id, 1);
+			die "authorization failed, permission denied for the slave zone" unless defined($authorized) && ref($authorized) eq '' && $authorized == 1;
+		} elsif ($arg_rule eq "authzonearray") {
+			my $authorized = $self->authorizeZones($arg_to_authorize, $account_id);
+			die "authorization failed, permission denied for one of the zones" unless defined($authorized) && ref($authorized) eq '' && $authorized == 1;
+		} elsif ($arg_rule ne "allow") {
+			die "authorization failed, invalid rule";
+		}
+	}
+
+	return $account_id;
+}
+
 sub handleOperation {
 	my $self = shift;
+	my $authenticated_account = shift;
 	my $method = shift;
 	my $signature_orig = shift;
 
@@ -779,10 +1002,12 @@ sub handleOperation {
 	my $return_type = shift(@$signature);
 	$self->matchSignature($method, $signature, @_);
 
+	my $account_id = $self->authorizeMethod($method, $authenticated_account, @_);
+
 	my $retval = undef;
 
 	if ($return_type eq "void") {
-		$retval = $self->handleVoid($method, $signature, @_);
+		$retval = $self->handleVoid($account_id, $method, $signature, @_);
 	} elsif ($return_type eq "array[resourcerecord]") {
 		$retval = $self->handleRecordArray($method, $signature, @_);
 	} elsif ($return_type eq "array[string]") {

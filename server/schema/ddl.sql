@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS record;
 DROP TABLE IF EXISTS label;
 DROP TABLE IF EXISTS zone;
 DROP TABLE IF EXISTS allowed_type;
+DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS change;
 DROP TABLE IF EXISTS slavezone_change;
 DROP TABLE IF EXISTS nameserver;
@@ -22,6 +23,12 @@ CREATE TABLE allowed_type (
         regexp TEXT NOT NULL
 );
 
+CREATE TABLE account (
+        id SERIAL PRIMARY KEY NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL CHECK (email ~* '.@.'),
+        hash VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE updates_disabled (
 	disabled INT
 );
@@ -32,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (60);
+INSERT INTO atomiadns_schemaversion (version) VALUES (65);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -118,7 +125,8 @@ CREATE TABLE slavezone_change (
 CREATE TABLE zone (
         id SERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
-	nameserver_group_id INT NOT NULL REFERENCES nameserver_group
+	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
+	account_id INT NULL REFERENCES account
 );
 
 CREATE TABLE slavezone (
@@ -127,7 +135,8 @@ CREATE TABLE slavezone (
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
 	master VARCHAR(255) NOT NULL CONSTRAINT master_format CHECK (master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))(,(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+)))*$'),
 	tsig_name VARCHAR(255) CONSTRAINT tsig_name_format CHECK (tsig_name IS NULL OR tsig_name ~* '^[a-zA-Z0-9_-]*'),
-	tsig_secret VARCHAR(255) CONSTRAINT tsig_format CHECK (tsig_secret IS NULL OR tsig_secret ~* '^[a-zA-Z0-9+/=]*')
+	tsig_secret VARCHAR(255) CONSTRAINT tsig_format CHECK (tsig_secret IS NULL OR tsig_secret ~* '^[a-zA-Z0-9+/=]*'),
+	account_id INT NULL REFERENCES account
 );
 
 CREATE INDEX zone_nameserver_group_idx ON zone(nameserver_group_id);

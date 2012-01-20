@@ -8,7 +8,7 @@ use Atomia::DNS::Signatures;
 
 use Apache2::RequestRec ();
 use Apache2::RequestIO ();
-use Apache2::Const -compile => qw(OK HTTP_BAD_REQUEST);
+use Apache2::Const -compile => qw(OK HTTP_BAD_REQUEST HTTP_UNAUTHORIZED HTTP_FORBIDDEN);
 use APR::Table;
 use CGI qw(self_url);
 use Data::Dumper;
@@ -32,6 +32,8 @@ sub handler {
 			die "protocol violation: request path doesn't contain /";
 		}
 
+		my $encoder = ($path =~ /\/pretty\//) ? $Atomia::DNS::JSONServer::json->pretty(1) : $Atomia::DNS::JSONServer::json->pretty(0);
+
 		my $operation = substr($path, $operation_offset + 1);
 		if ($operation eq '') {
 			my $base_url = self_url();
@@ -41,7 +43,7 @@ sub handler {
 				$index_response->{$name} = { href => "$base_url$name", signature => $Atomia::DNS::Signatures::signatures->{$name} };
 			}
 
-			return $index_response;
+			return $encoder->encode($index_response);
 		}
 
 		my $content = undef;
@@ -51,6 +53,17 @@ sub handler {
 			die "request body is larger than the configured max_content_length value $max" if $len > $max;
 
 			$request->read($content, $len);
+		}
+
+		my $authenticated_account = undef;
+		my $auth_error = undef;
+		if (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Password'})) {
+			$authenticated_account = $Atomia::DNS::JSONServer::instance->authenticateAccount($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Password'});
+			die "invalid username or password" unless defined($authenticated_account) && defined($authenticated_account->{"token"});
+			$request->headers_out->{'X-Auth-Token'} = $authenticated_account->{"token"};
+		} elsif (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Token'})) {
+			$authenticated_account = $Atomia::DNS::JSONServer::instance->authenticateAccountToken($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Token'});
+			die "invalid token" unless defined($authenticated_account);
 		}
 
 		unless (defined($content) && $content =~ /^\s*\[.*\]\s*$/s) {
@@ -69,10 +82,9 @@ sub handler {
 		die "unsupported operation: $operation" unless defined($textsignature) && length($textsignature) > 0;
                 my @signature = split(" ", $textsignature);
 
-		my $ret = $Atomia::DNS::JSONServer::instance->handleOperation($operation, \@signature, @$json_args);
+		my $ret = $Atomia::DNS::JSONServer::instance->handleOperation($authenticated_account, $operation, \@signature, @$json_args);
 		die "unknown response from handleOperation($operation)" unless defined($ret) && ref($ret) && UNIVERSAL::isa($ret, 'SOAP::Data');
 
-		my $encoder = ($path =~ /\/pretty\//) ? $Atomia::DNS::JSONServer::json->pretty(1) : $Atomia::DNS::JSONServer::json->pretty(0);
 		return $encoder->encode(deserialize_soap_data($ret));
 	};
 
@@ -82,10 +94,13 @@ sub handler {
 			$Atomia::DNS::JSONServer::instance->mapExceptionToFault($exception);
 		};
 
+		my $http_code = 400;
 		my $mapped_exception = undef;
 		if ($@) {
 			$mapped_exception = $@;
 			if (defined($mapped_exception) && ref($mapped_exception) && UNIVERSAL::isa($mapped_exception, 'SOAP::Fault')) {
+				$http_code = 401 if $mapped_exception->faultcode() eq "AuthError.NotAuthenticated";
+				$http_code = 403 if $mapped_exception->faultcode() eq "AuthError.NotAuthorized";
 				$mapped_exception = { error_type => $mapped_exception->faultcode(), error_message => $mapped_exception->faultstring() };
 			} else {
 				$mapped_exception = undef;
@@ -105,10 +120,11 @@ sub handler {
 			$request->print(encode_json($mapped_exception));
 		} else {
 			$request->print("unserializable exception thrown");
-			$request->print("\nDEBUG: $exception\n");
 		}
 
-		$request->status(Apache2::Const::HTTP_BAD_REQUEST);
+		$request->status(Apache2::Const::HTTP_BAD_REQUEST) if $http_code == 400;
+		$request->status(Apache2::Const::HTTP_UNAUTHORIZED) if $http_code == 401;
+		$request->status(Apache2::Const::HTTP_FORBIDDEN) if $http_code == 403;
 	} else {
 		$request->print($retval);
 	}

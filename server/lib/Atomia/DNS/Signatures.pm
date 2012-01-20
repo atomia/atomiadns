@@ -58,6 +58,38 @@ our $signatures = {
 	"DeleteDNSSECKey" => "void int",
 	"DeleteExternalDNSSECKey" => "void int",
 	"GetDNSSECZSKInfo" => "zskinfo",
+	"AddAccount" => "void string password",
+	"EditAccount" => "void string password",
+	"DeleteAccount" => "void string",
+	"GetNameserverGroups" => "array[string]",
+};
+
+our $authorization_rules = {
+	"AddZone" => "",
+	"DeleteZone" => "authzone",
+	"EditZone" => "authzone",
+	"AddDnsRecords" => "authzone",
+	"EditDnsRecords" => "authzone",
+	"SetDnsRecords" => "authzone",
+	"DeleteDnsRecords" => "authzone",
+	"GetDnsRecords" => "authzone",
+	"GetLabels" => "authzone",
+	"GetZone" => "authzone",
+	"GetZoneBulk" => "authzonearray",
+	"GetZoneBinary" => "authzone",
+	"RestoreZone" => "authzone",
+	"RestoreZoneBinary" => "authzone",
+	"RestoreZoneBulk" => "authzonearray",
+	"SetDnsRecordsBulk" => "authzonearray",
+	"CopyDnsZoneBulk" => "authzone authzonearray",
+#	"CopyDnsLabelBulk" => "authzone allow authnamearray",
+	"DeleteDnsRecordsBulk" => "authzonearray",
+	"AddSlaveZone" => "",
+	"DeleteSlaveZone" => "authslavezone",
+	"GetSlaveZone" => "authslavezone",
+	"EditAccount" => "authaccount",
+	"DeleteAccount" => "authaccount",
+	"GetNameserverGroups" => "",
 };
 
 1;

@@ -23,7 +23,8 @@ BEGIN {
 			my $self = shift;
 	
 			my $retval = eval {
-				$Atomia::DNS::Server::instance->handleOperation($method, $signature_ref, @_);
+				# TODO: Add auth code
+				$Atomia::DNS::Server::instance->handleOperation(undef, $method, $signature_ref, @_);
 			};
 	
 			if ($@) {
