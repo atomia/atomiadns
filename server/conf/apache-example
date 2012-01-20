@@ -9,3 +9,13 @@
 	PerlSetVar dispatch_to "Atomia::DNS::Server"
 	PerlSetVar options "compress_threshold => 10000"
 </Location>
+
+<Location /atomiadns.json>
+        SetHandler perl-script
+        PerlHandler Atomia::DNS::JSONServer
+</Location>
+
+<Location /pretty/atomiadns.json>
+        SetHandler perl-script
+        PerlHandler Atomia::DNS::JSONServer
+</Location>
