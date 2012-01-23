@@ -62,6 +62,11 @@ my $soap = SOAP::Lite
 			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
 		});
 
+if (defined($soap_username)) {
+	$soap->transport->http_request->header('X-Auth-Username' => $soap_username);
+	$soap->transport->http_request->header('X-Auth-Password' => $soap_password);
+}
+
 my $args = parse_args($soap_method_arguments);
 my $res = $soap->$soap_method(@$args);
 print Dumper($res->result);

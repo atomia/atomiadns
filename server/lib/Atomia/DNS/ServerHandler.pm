@@ -865,6 +865,24 @@ sub authorizeZones {
 	}
 }
 
+sub authenticateRequest {
+	my $self = shift;
+	my $request = shift;
+
+	my $authenticated_account = undef;
+
+	if (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Password'})) {
+		$authenticated_account = $self->authenticateAccount($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Password'});
+		die "invalid username or password" unless defined($authenticated_account) && defined($authenticated_account->{"token"});
+		$request->headers_out->{'X-Auth-Token'} = $authenticated_account->{"token"};
+	} elsif (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Token'})) {
+		$authenticated_account = $self->authenticateAccountToken($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Token'});
+		die "invalid token" unless defined($authenticated_account);
+	}
+
+	return $authenticated_account;
+}
+
 sub authenticateAccount {
 	my $self = shift;
 	my $username = shift;

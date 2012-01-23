@@ -21,10 +21,11 @@ BEGIN {
 	
 		__PACKAGE__->meta->add_method($method, sub {
 			my $self = shift;
+			my $request = Apache2::RequestUtil->request();
 	
 			my $retval = eval {
-				# TODO: Add auth code
-				$Atomia::DNS::Server::instance->handleOperation(undef, $method, $signature_ref, @_);
+				my $authenticated_account = $Atomia::DNS::Server::instance->authenticateRequest($request);
+				$Atomia::DNS::Server::instance->handleOperation($authenticated_account, $method, $signature_ref, @_);
 			};
 	
 			if ($@) {

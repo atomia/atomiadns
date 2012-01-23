@@ -55,16 +55,7 @@ sub handler {
 			$request->read($content, $len);
 		}
 
-		my $authenticated_account = undef;
-		my $auth_error = undef;
-		if (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Password'})) {
-			$authenticated_account = $Atomia::DNS::JSONServer::instance->authenticateAccount($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Password'});
-			die "invalid username or password" unless defined($authenticated_account) && defined($authenticated_account->{"token"});
-			$request->headers_out->{'X-Auth-Token'} = $authenticated_account->{"token"};
-		} elsif (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Token'})) {
-			$authenticated_account = $Atomia::DNS::JSONServer::instance->authenticateAccountToken($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Token'});
-			die "invalid token" unless defined($authenticated_account);
-		}
+		my $authenticated_account = $Atomia::DNS::JSONServer::instance->authenticateRequest($request);
 
 		unless (defined($content) && $content =~ /^\s*\[.*\]\s*$/s) {
 			$content = $request->args();
