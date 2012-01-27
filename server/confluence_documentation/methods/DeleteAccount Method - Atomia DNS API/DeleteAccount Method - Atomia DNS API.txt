@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Deletes an account.
+
+h3.Declaration syntax
+{panel}
+void DeleteAccount(
+	string email
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|email|string|the username of the account (email)|
+
+{include:DeleteAccount Method Example - Atomia DNS API}

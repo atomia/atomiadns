@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Get a list of all nameserver groups.
+
+h3.Declaration syntax
+{panel}
+string[] GetNameserverGroups()
+{panel}
+
+{include:GetNameserverGroups Method Example - Atomia DNS API}

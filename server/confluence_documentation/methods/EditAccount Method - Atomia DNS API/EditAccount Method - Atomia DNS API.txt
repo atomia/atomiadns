@@ -1,0 +1,19 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Changes the password for an account with a specified username.
+
+h3.Declaration syntax
+{panel}
+void EditAccount(
+	string email,
+	string password
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|email|string|the username of the account (email)|
+|password|string|the password of the account|
+
+{include:EditAccount Method Example - Atomia DNS API}

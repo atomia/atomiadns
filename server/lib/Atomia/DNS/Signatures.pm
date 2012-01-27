@@ -65,7 +65,7 @@ our $signatures = {
 };
 
 our $authorization_rules = {
-	"AddZone" => "",
+	"AddZone" => "", # No authorization
 	"DeleteZone" => "authzone",
 	"EditZone" => "authzone",
 	"AddDnsRecords" => "authzone",
@@ -84,12 +84,12 @@ our $authorization_rules = {
 	"CopyDnsZoneBulk" => "authzone authzonearray",
 #	"CopyDnsLabelBulk" => "authzone allow authnamearray",
 	"DeleteDnsRecordsBulk" => "authzonearray",
-	"AddSlaveZone" => "",
+	"AddSlaveZone" => "", # No authorization
 	"DeleteSlaveZone" => "authslavezone",
 	"GetSlaveZone" => "authslavezone",
 	"EditAccount" => "authaccount",
 	"DeleteAccount" => "authaccount",
-	"GetNameserverGroups" => "",
+	"GetNameserverGroups" => "", # No authorization
 };
 
 1;

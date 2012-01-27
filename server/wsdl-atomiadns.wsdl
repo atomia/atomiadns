@@ -1193,6 +1193,69 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AddAccount">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="password" type="xsd:string"><xsd:annotation><xsd:documentation>the password of the account</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddAccountResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditAccount">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="password" type="xsd:string"><xsd:annotation><xsd:documentation>the password of the account</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditAccountResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAccount">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAccountResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroups">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroupsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringarray" type="xsdAtomiaStringArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
 		</xsd:schema>
 	</types>
 
@@ -1698,6 +1761,42 @@ atomiaZSKInfo is a struct with the following members:
 		<part name="parameters" element="tns:GetDNSSECZSKInfoResponse"/>
 	</message>
 
+	<message name="AddAccountInput">
+		<documentation>Adds an account with a specified username and password.</documentation>
+		<part name="parameters" element="tns:AddAccount"/>
+	</message>
+
+	<message name="AddAccountOutput">
+		<part name="parameters" element="tns:AddAccountResponse"/>
+	</message>
+
+	<message name="EditAccountInput">
+		<documentation>Changes the password for an account with a specified username.</documentation>
+		<part name="parameters" element="tns:EditAccount"/>
+	</message>
+
+	<message name="EditAccountOutput">
+		<part name="parameters" element="tns:EditAccountResponse"/>
+	</message>
+
+	<message name="DeleteAccountInput">
+		<documentation>Deletes an account.</documentation>
+		<part name="parameters" element="tns:DeleteAccount"/>
+	</message>
+
+	<message name="DeleteAccountOutput">
+		<part name="parameters" element="tns:DeleteAccountResponse"/>
+	</message>
+
+	<message name="GetNameserverGroupsInput">
+		<documentation>Get a list of all nameserver groups.</documentation>
+		<part name="parameters" element="tns:GetNameserverGroups"/>
+	</message>
+
+	<message name="GetNameserverGroupsOutput">
+		<part name="parameters" element="tns:GetNameserverGroupsResponse"/>
+	</message>
+
 	<portType name="AtomiaDNSPortType">
 		<operation name="AddZone">
 			<input message="tns:AddZoneInput"/>
@@ -2184,6 +2283,42 @@ atomiaZSKInfo is a struct with the following members:
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
+
+		<operation name="AddAccount">
+			<input message="tns:AddAccountInput"/>
+			<output message="tns:AddAccountOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="EditAccount">
+			<input message="tns:EditAccountInput"/>
+			<output message="tns:EditAccountOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteAccount">
+			<input message="tns:DeleteAccountInput"/>
+			<output message="tns:DeleteAccountOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetNameserverGroups">
+			<input message="tns:GetNameserverGroupsInput"/>
+			<output message="tns:GetNameserverGroupsOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
 	</portType>
 
 	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
@@ -2563,6 +2698,34 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="GetDNSSECZSKInfo">
 			<documentation>Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECZSKInfo"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="AddAccount">
+			<documentation>Adds an account with a specified username and password.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddAccount"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="EditAccount">
+			<documentation>Changes the password for an account with a specified username.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#EditAccount"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="DeleteAccount">
+			<documentation>Deletes an account.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteAccount"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetNameserverGroups">
+			<documentation>Get a list of all nameserver groups.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserverGroups"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

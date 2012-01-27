@@ -1185,5 +1185,68 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AddAccount">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="password" type="xsd:string"><xsd:annotation><xsd:documentation>the password of the account</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddAccountResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditAccount">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="password" type="xsd:string"><xsd:annotation><xsd:documentation>the password of the account</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="EditAccountResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAccount">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteAccountResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroups">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetNameserverGroupsResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringarray" type="xsdAtomiaStringArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
 		</xsd:schema>
 	</types>

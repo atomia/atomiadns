@@ -56,6 +56,10 @@ methodawk='BEGIN {
 	methods["DeleteDNSSECKey"] = "Removes a DNSSEC key from the database.";
 	methods["DeleteExternalDNSSECKey"] = "Removes an external DNSSEC key from the database.";
 	methods["GetDNSSECZSKInfo"] = "Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.";
+	methods["AddAccount"] = "Adds an account with a specified username and password.";
+	methods["EditAccount"] = "Changes the password for an account with a specified username.";
+	methods["DeleteAccount"] = "Deletes an account.";
+	methods["GetNameserverGroups"] = "Get a list of all nameserver groups.";
 }'
 
 cat <<EOH
@@ -77,15 +81,15 @@ for fault in LogicalError InvalidParametersError SystemError InternalError; do
 	faultmessages="$faultmessages\n\t\t\t<fault message=\"tns:$fault""FaultMessage\" name=\"$fault""Fault\" />"
 done
 
-grep "=>" lib/Atomia/DNS/Server.pm | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t<message name=\"" $2 "Input\">\n\t\t<documentation>" methods[$2] "</documentation>\n\t\t<part name=\"parameters\" element=\"tns:" $2 "\"/>\n\t</message>\n\n\t<message name=\"" $2 "Output\">\n\t\t<part name=\"parameters\" element=\"tns:" $2 "Response\"/>\n\t</message>" }'
+grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t<message name=\"" $2 "Input\">\n\t\t<documentation>" methods[$2] "</documentation>\n\t\t<part name=\"parameters\" element=\"tns:" $2 "\"/>\n\t</message>\n\n\t<message name=\"" $2 "Output\">\n\t\t<part name=\"parameters\" element=\"tns:" $2 "Response\"/>\n\t</message>" }'
 
 echo -n '\n\t<portType name="AtomiaDNSPortType">'
 
-grep "=>" lib/Atomia/DNS/Server.pm | grep -E "$1" | awk -v faults="$faultmessages" -F '"' '{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<input message=\"tns:" $2 "Input\"/>\n\t\t\t<output message=\"tns:" $2 "Output\"/>" faults "\n\t\t</operation>" }'
+grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -v faults="$faultmessages" -F '"' '{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<input message=\"tns:" $2 "Input\"/>\n\t\t\t<output message=\"tns:" $2 "Output\"/>" faults "\n\t\t</operation>" }'
 
 echo '\t</portType>\n\n\t<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">\n\t\t<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>'
 
-grep "=>" lib/Atomia/DNS/Server.pm | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<documentation>" methods[$2] "</documentation>\n\t\t\t<soap:operation soapAction=\"urn:Atomia::DNS::Server#" $2 "\"/>\n\t\t\t<input><soap:body use=\"literal\"/></input>\n\t\t\t<output><soap:body use=\"literal\"/></output>\n\t\t</operation>" }'
+grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<documentation>" methods[$2] "</documentation>\n\t\t\t<soap:operation soapAction=\"urn:Atomia::DNS::Server#" $2 "\"/>\n\t\t\t<input><soap:body use=\"literal\"/></input>\n\t\t\t<output><soap:body use=\"literal\"/></output>\n\t\t</operation>" }'
 
 cat <<EOF
 	</binding>
