@@ -1,0 +1,10 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Do nothing. Meant for generating token without doing anything when authenticating.
+
+h3.Declaration syntax
+{panel}
+string Noop()
+{panel}
+
+{include:Noop Method Example - Atomia DNS API}

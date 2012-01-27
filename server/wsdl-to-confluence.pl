@@ -29,6 +29,7 @@ my $type_mappings = {
 	"atomiaKeySet" => "keyset",
 	"atomiaExternalKeySet" => "external_keyset",
 	"atomiaZSKInfo" => "zskinfo",
+	"atomiaFindResponse" => "findresponse"
 };
 
 use XML::XPath;

@@ -222,6 +222,25 @@ sub handleStringArray {
 	return SOAP::Data->new(name => "stringarray", value => \@rowarray);
 }
 
+sub handleZones {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+
+	my $rows = $sth->fetchall_arrayref();
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	my @rowarray = map {
+		SOAP::Data->new(name => "item", value => $_->[0])
+	} @$rows;
+
+	my $total = scalar(@$rows) == 0 ? 0 : $rows->[0]->[1];
+
+	return SOAP::Data->new(name => "zones", value => { total => $total, zones => SOAP::Data->new(name => "zones", value => \@rowarray) });
+}
+
 sub handleString {
 	my $self = shift;
 	my $method = shift;
@@ -1040,6 +1059,8 @@ sub handleOperation {
 		$retval = $self->handleIntArray($method, $signature, @_);
 	} elsif ($return_type eq "zone") {
 		$retval = $self->handleZone($method, $signature, @_);
+	} elsif ($return_type eq "zones") {
+		$retval = $self->handleZones($method, $signature, @_);
 	} elsif ($return_type eq "slavezone") {
 		$retval = $self->handleSlaveZone($method, $signature, @_);
 	} elsif ($return_type eq "changes") {

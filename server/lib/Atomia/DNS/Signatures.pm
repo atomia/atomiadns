@@ -62,6 +62,8 @@ our $signatures = {
 	"EditAccount" => "void string password",
 	"DeleteAccount" => "void string",
 	"GetNameserverGroups" => "array[string]",
+	"FindZones" => "zones string string int int",
+	"Noop" => "string",
 };
 
 our $authorization_rules = {
@@ -90,6 +92,8 @@ our $authorization_rules = {
 	"EditAccount" => "authaccount",
 	"DeleteAccount" => "authaccount",
 	"GetNameserverGroups" => "", # No authorization
+	"FindZones" => "authaccount",
+	"Noop" => "", # No authorization
 };
 
 1;

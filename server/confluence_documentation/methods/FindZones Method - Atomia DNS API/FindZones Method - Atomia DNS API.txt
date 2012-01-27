@@ -1,0 +1,23 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Search for zones in an account.
+
+h3.Declaration syntax
+{panel}
+[findresponse|findresponse Datatype - Atomia DNS API] FindZones(
+	string email,
+	string pattern,
+	int count,
+	int offset
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|email|string|the username of the account (email)|
+|pattern|string|the pattern to search for with SQL LIKE semantics|
+|count|int|the max number of zones to return|
+|offset|int|the offset of the first zone to return|
+
+{include:FindZones Method Example - Atomia DNS API}

@@ -125,6 +125,19 @@ atomiaLabel is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaFindResponse">
+				<xsd:annotation><xsd:documentation>
+atomiaFindResponse is a struct with the following members:
+|| Member || Type || Description ||
+| total | int | the number of zones matching the query |
+| zones | string[] | the zone names |
+				</xsd:documentation></xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="1" name="total" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaSlaveZones">
 				<xsd:annotation><xsd:documentation>atomiaSlaveZones is an array of atomiaSlaveZoneItem-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
@@ -1256,6 +1269,39 @@ atomiaZSKInfo is a struct with the following members:
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
+
+			<xsd:element name="FindZones">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="email" type="xsd:string"><xsd:annotation><xsd:documentation>the username of the account (email)</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="pattern" type="xsd:string"><xsd:annotation><xsd:documentation>the pattern to search for with SQL LIKE semantics</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:int"><xsd:annotation><xsd:documentation>the max number of zones to return</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="offset" type="xsd:int"><xsd:annotation><xsd:documentation>the offset of the first zone to return</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="FindZonesResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="atomiaFindResponse"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="Noop">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="NoopResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="stringvalue" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
 		</xsd:schema>
 	</types>
 
@@ -1797,6 +1843,24 @@ atomiaZSKInfo is a struct with the following members:
 		<part name="parameters" element="tns:GetNameserverGroupsResponse"/>
 	</message>
 
+	<message name="FindZonesInput">
+		<documentation>Search for zones in an account.</documentation>
+		<part name="parameters" element="tns:FindZones"/>
+	</message>
+
+	<message name="FindZonesOutput">
+		<part name="parameters" element="tns:FindZonesResponse"/>
+	</message>
+
+	<message name="NoopInput">
+		<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
+		<part name="parameters" element="tns:Noop"/>
+	</message>
+
+	<message name="NoopOutput">
+		<part name="parameters" element="tns:NoopResponse"/>
+	</message>
+
 	<portType name="AtomiaDNSPortType">
 		<operation name="AddZone">
 			<input message="tns:AddZoneInput"/>
@@ -2319,6 +2383,24 @@ atomiaZSKInfo is a struct with the following members:
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
+
+		<operation name="FindZones">
+			<input message="tns:FindZonesInput"/>
+			<output message="tns:FindZonesOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="Noop">
+			<input message="tns:NoopInput"/>
+			<output message="tns:NoopOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
 	</portType>
 
 	<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">
@@ -2726,6 +2808,20 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="GetNameserverGroups">
 			<documentation>Get a list of all nameserver groups.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserverGroups"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="FindZones">
+			<documentation>Search for zones in an account.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#FindZones"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="Noop">
+			<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#Noop"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

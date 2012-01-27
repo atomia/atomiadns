@@ -1,0 +1,6 @@
+
+[findresponse|findresponse Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| total | int | the number of zones matching the query |
+| zones | string[] | the zone names |
+				

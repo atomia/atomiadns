@@ -60,6 +60,8 @@ methodawk='BEGIN {
 	methods["EditAccount"] = "Changes the password for an account with a specified username.";
 	methods["DeleteAccount"] = "Deletes an account.";
 	methods["GetNameserverGroups"] = "Get a list of all nameserver groups.";
+	methods["FindZones"] = "Search for zones in an account.";
+	methods["Noop"] = "Do nothing. Meant for generating token without doing anything when authenticating.";
 }'
 
 cat <<EOH
