@@ -48,7 +48,7 @@ sub handler {
 
 		my $content = undef;
 		my $len = $request->headers_in->{'Content-Length'};
-		if (defined($len)) {
+		if (defined($len) && $len > 0) {
 			my $max = $Atomia::DNS::JSONServer::instance->config->{"max_content_length"} || (10 * 1024 * 1024);
 			die "request body is larger than the configured max_content_length value $max" if $len > $max;
 

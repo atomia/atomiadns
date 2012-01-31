@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.0.34
+Version: 1.1.0
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -81,6 +81,8 @@ fi
 exit 0
 
 %changelog
+* Tue Jan 31 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.0-1
+- Add JSON API endpoint, authentication/authorization and a built in webapp client
 * Sat Jan 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.34-1
 - Fix the case which produced an SQL error when the first record in a batch was a dupe
 * Tue Jan 03 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.33-1

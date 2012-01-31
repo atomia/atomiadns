@@ -2,10 +2,11 @@ var global_port = process.env['ATOMIADNS_CONTROLPANEL_PORT'] != null ? process.e
 
 var	express = require('express');
 var     app = express.createServer();
-var 	auth = require('./auth.js');
+var 	auth = require('./auth');
+var 	routes = require('./routes');
 
-// Initialize the auth layer and express.
-var	passport = auth.configure('/login', '/logout', app);
+// Initialize express
+var	passport = require('passport');
 app.configure(function() {
 	app.use(express.logger());
 	app.use(express.cookieParser());
@@ -17,8 +18,10 @@ app.configure(function() {
 	app.use(express.static(__dirname + '/static'));
 });
 
-app.get('/', auth.ensureAuthenticated, function (req, res) {
-	res.render('index.jade');
-});
+// Initialize the auth layer
+auth.configure('/login', '/logout', app);
+
+// Initialize the routes;
+routes.configure(app);
 
 app.listen(global_port);

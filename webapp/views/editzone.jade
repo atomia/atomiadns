@@ -1,0 +1,23 @@
+p Editing zone for #{name}
+
+if error
+	p Something went terribly bad: #{error}
+
+if zone
+	form(method='post', action='/editrecords/#{name}')
+		each label in zone
+			each record in label.records
+				p
+					input(type='hidden', name='records[id][]', value='#{record.id}')
+					input(type='hidden', name='records[class][]', value='#{record.class}')
+					label Name
+						input(name='records[label][]', value='#{record.label}')
+					label Type
+						input(name='records[type][]', value='#{record.type}')
+					label TTL
+						input(name='records[ttl][]', value='#{record.ttl}')
+					label Data
+						input(name='records[rdata][]', value='#{record.rdata}')
+
+		p	
+			input(type='submit', value='Save')

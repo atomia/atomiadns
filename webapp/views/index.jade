@@ -1,1 +1,10 @@
-p Hello Atomia DNS!
+p Hello #{user.email} with token #{user.token}
+
+if error
+	p Something went terribly bad: #{error}
+else
+	p Showing zone #{offset + 1} to #{offset + zones.length} from a total of #{total} in your account.
+
+	each zone in zones
+		li= zone
+			a(href='/zone/#{zone}') edit

@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.0) hardy; urgency=low
+
+  * Add JSON API endpoint, authentication/authorization and a built in webapp client
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 31 Jan 2012 11:02:29 +0100
+
 atomiadns-zoneimport (1.0.34) hardy; urgency=low
 
   * Fix the case which produced an SQL error when the first record in a batch was a dupe

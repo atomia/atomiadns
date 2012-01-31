@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (68);
+INSERT INTO atomiadns_schemaversion (version) VALUES (69);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -185,6 +185,7 @@ END; $$ LANGUAGE plpgsql;
 
 CREATE CONSTRAINT TRIGGER record_constraint AFTER INSERT OR UPDATE
 ON record
+DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE PROCEDURE verify_record();
 

@@ -169,7 +169,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
 		exit 1
 	else
-		latest_version="68"
+		latest_version="69"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -374,6 +374,11 @@ if [ $? != 0 ]; then
 				recreate_procedure "addslavezoneauth"
 				recreate_procedure "findzones"
 				recreate_procedure "noop"
+			fi
+
+			if [ "$schema_version" -lt 69 ]; then
+				execute_query "DROP TRIGGER record_constraint ON record"
+				execute_query "CREATE CONSTRAINT TRIGGER record_constraint AFTER INSERT OR UPDATE ON record DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE verify_record()"
 			fi
 
 			set_schema_version "$latest_version"
