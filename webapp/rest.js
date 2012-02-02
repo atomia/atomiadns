@@ -5,6 +5,8 @@ exports.errorMessageMap = {
 	'LogicalError.DifferentTTLForSameLabelClassAndType': "You can't have records for the same name and type but with different TTL values"
 };
 
+exports.nameserverGroupName = process.env['ATOMIADNS_NAMESERVER_GROUP'] != null ? process.env['ATOMIADNS_NAMESERVER_GROUP'] : "default";
+
 exports.getOperationRequest = function (operation, username, token, password) {
 	var uri_base = process.env['ATOMIADNS_SOAP_URI'] != null ? process.env['ATOMIADNS_SOAP_URI'] : "http://127.0.0.1/atomiadns.json/"
 	if (uri_base.lastIndexOf('/') != uri_base.length - 1) {

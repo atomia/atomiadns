@@ -1,4 +1,4 @@
-p Hello #{user.email} with token #{user.token}
+p Hello #{user.email}
 
 if error
 	p Something went terribly bad: #{error}
@@ -6,5 +6,11 @@ else
 	p Showing zone #{offset + 1} to #{offset + zones.length} from a total of #{total} in your account.
 
 	each zone in zones
-		li= zone
+		li= zone + ' '
 			a(href='/zone/#{zone}') edit
+			a(href='/exportzone/#{zone}') export
+			a(href='/importzone/#{zone}') import
+			a(href='/delzone/#{zone}') delete
+
+	p
+		a(href='/addzone') add new zone

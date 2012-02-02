@@ -12,6 +12,55 @@ exports.configure = function (app) {
 			res.render('editzone.jade', { user: req.user, name: req.param('zone'), zone: response, error: error });
 		});
 	});
+
+	app.get('/exportzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
+		var name = req.param('zoneName');
+
+		rest.executeOperation(req, res, req.user, "GetZoneBinary", [ name ], function (error, response) {
+			res.render('exportzone.jade', { user: req.user, name: name, zone: response, error: error });
+		});
+	});
+
+	app.get('/importzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
+		res.render('importzone.jade', { user: req.user, name: req.param('zoneName'), error: null });
+	});
+
+	app.post('/importzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
+		var name = req.param('zoneName');
+		console.log("name = " + name + ", zone = " + req.body.zone);
+
+		rest.executeOperation(req, res, req.user, "RestoreZoneBinary", [ name, rest.nameserverGroupName, req.body.zone.replace(/\r/g, '') ], function (error, response) {
+			if (error) {
+				res.render('importzone.jade', { user: req.user, name: name, zone: req.body.zone, error: error });
+			} else {
+				res.redirect('/');
+			}
+		});
+	});
+
+	app.get('/delzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
+		rest.executeOperation(req, res, req.user, "DeleteZone", [ name, req.param('zoneName') ], function (error, response) {
+			if (error) {
+				res.render('error.jade', { user: req.user, error: error });
+			} else {
+				res.redirect('/');
+			}
+		});
+	});
+
+	app.get('/deleterecord/:zoneName/:id', auth.ensureAuthenticated, function (req, res) {
+		var name = req.param('zoneName');
+
+		rest.executeOperation(req, res, req.user, "DeleteDnsRecords", [ name, [ { id: req.param('id'), class: 'IN', type: 'A', ttl: 3600, rdata: '127.0.0.1', label: 'foo' } ] ], function (error, response) {
+			rest.executeOperation(req, res, req.user, "GetZone", [ name ], function (geterror, response) {
+				if (geterror || response == null) {
+					error = "invalid JSON returned from GetZone";
+				}
+	
+				res.render('editzone.jade', { user: req.user, name: name, zone: response, error: error });
+			});
+		});
+	});
 	
 	app.get('/editrecords/:zoneName', auth.ensureAuthenticated, function (req, res) {
 		res.redirect('/zone/' + req.param('zoneName'));
@@ -21,7 +70,9 @@ exports.configure = function (app) {
 		var name = req.param('zoneName');
 
 		var records = req.body.records;
-		if (records != null && records.id != null && records.id instanceof Array) {
+		var newrecords = req.body.newrecords;
+
+		if (records != null && records.id != null && records.id instanceof Array && newrecords != null && newrecords.id != null && newrecords.id instanceof Array) {
 			var recordsParam = [];
 			for (var idx = 0; idx < records.id.length; idx++) {
 				var record = {};
@@ -31,21 +82,35 @@ exports.configure = function (app) {
 
 				recordsParam.push(record);
 			}
-
 			records = recordsParam;
+
+			var newRecordsParam = [];
+			for (var idx = 0; idx < newrecords.id.length; idx++) {
+				var record = {};
+				for (var key in newrecords) {
+					record[key] = newrecords[key][idx];
+				}
+
+				if (record.type != null && record.type.length) {
+					newRecordsParam.push(record);
+				}
+			}
+			newrecords = newRecordsParam;
 		}
 
 		rest.executeOperation(req, res, req.user, "EditDnsRecords", [ name, records ], function (error, response) {
-			if (!error && response == null) {
-				error = "invalid JSON returned from EditDnsRecords";
-			} 
-	
-			rest.executeOperation(req, res, req.user, "GetZone", [ name ], function (geterror, response) {
-				if (geterror || response == null) {
-					error = "invalid JSON returned from GetZone";
+			rest.executeOperation(req, res, req.user, "AddDnsRecords", [ name, newrecords ], function (adderror, response) {
+				if (!adderror) {
+					error = adderror;
 				}
 	
-				res.render('editzone.jade', { user: req.user, name: name, zone: response, error: error });
+				rest.executeOperation(req, res, req.user, "GetZone", [ name ], function (geterror, response) {
+					if (geterror || response == null) {
+						error = "invalid JSON returned from GetZone";
+					}
+	
+					res.render('editzone.jade', { user: req.user, name: name, zone: response, error: error });
+				});
 			});
 		});
 	});

@@ -1,0 +1,13 @@
+p Importing zone for #{name}
+
+p
+	a(href='/') Back to index
+
+if error
+	p Something went terribly bad: #{error}
+
+form(method='post')
+	label Zone content (same format as export):
+		textarea(name='zone')
+
+	input(type='submit', value='import')

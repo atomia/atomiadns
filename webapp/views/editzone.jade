@@ -3,6 +3,9 @@ p Editing zone for #{name}
 if error
 	p Something went terribly bad: #{error}
 
+p
+	a(href='/') Back to index
+
 if zone
 	form(method='post', action='/editrecords/#{name}')
 		each label in zone
@@ -18,6 +21,18 @@ if zone
 						input(name='records[ttl][]', value='#{record.ttl}')
 					label Data
 						input(name='records[rdata][]', value='#{record.rdata}')
+					a(href='/deleterecord/#{name}/#{record.id}') delete
+		p
+			input(type='hidden', name='newrecords[id][]', value='-1')
+			input(type='hidden', name='newrecords[class][]', value='IN')
+			label Name
+				input(name='newrecords[label][]', value='')
+			label Type
+				input(name='newrecords[type][]', value='')
+			label TTL
+				input(name='newrecords[ttl][]', value='')
+			label Data
+				input(name='newrecords[rdata][]', value='')
 
 		p	
 			input(type='submit', value='Save')

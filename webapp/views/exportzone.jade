@@ -1,0 +1,10 @@
+p Exporting zone for #{name}
+
+p
+	a(href='/') Back to index
+
+if error
+	p Something went terribly bad: #{error}
+else
+	p This is the exported zone contents:
+	pre= zone
