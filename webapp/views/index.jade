@@ -8,8 +8,11 @@ else
 	each zone in zones
 		li= zone + ' '
 			a(href='/zone/#{zone}') edit
+			| 
 			a(href='/exportzone/#{zone}') export
+			| 
 			a(href='/importzone/#{zone}') import
+			| 
 			a(href='/delzone/#{zone}') delete
 
 	p

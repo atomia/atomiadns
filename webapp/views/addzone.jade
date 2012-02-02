@@ -1,0 +1,16 @@
+p Adding zone
+
+p
+	a(href='/') Back to index
+
+if error
+	p Something went terribly bad: #{error}
+
+form(method='post')
+	label Zone to add:
+		input(name='name', value='#{name}')
+
+	label Copy records from zone (can be empty):
+		input(name='copyFrom', value='')
+
+	input(type='submit', value='Add')

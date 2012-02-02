@@ -8,7 +8,7 @@ var 	routes = require('./routes');
 // Initialize express
 var	passport = require('passport');
 app.configure(function() {
-	app.use(express.logger());
+	//app.use(express.logger());
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.session({ secret: auth.randomString() }));

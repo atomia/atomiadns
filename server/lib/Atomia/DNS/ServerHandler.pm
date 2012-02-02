@@ -504,7 +504,7 @@ sub handleAll {
 	my $void = shift;
 	my $account_id = shift;
 
-	if (defined($account_id) && $account_id =~ /^\d+$/ && $method =~ /^Add(Slave)?Zone$/) {
+	if (defined($account_id) && $account_id =~ /^\d+$/ && $method =~ /^(Add(Slave)?Zone)|(RestoreZone(Binary)?)$/) {
 		unshift @_, $account_id;
 		unshift @$signature, "int";
 		$method .= "Auth";
@@ -520,7 +520,7 @@ sub handleAll {
 	my $zones_for_bulk_operation = undef;
 	my $sth = undef;
 	eval {
-		$method =~ s/Binary$//;
+		$method =~ s/Binary//;
 		$method =~ s/RestoreZoneBulk$/RestoreZone/;
 
 		$sth = $self->dbi->prepare($void ? "SELECT $method($placeholders)" : "SELECT * FROM $method($placeholders)");
@@ -791,6 +791,8 @@ sub mapExceptionToFault {
 		$self->generateException('InvalidParametersError', 'BadInput', $exception);
 	} elsif ($exception =~ /number of parameters doesn.t match the signature for/) {
 		$self->generateException('InvalidParametersError', 'BadNumberOfParameters', $exception);
+	} elsif ($exception =~ /parameter \d+ doesn't match signature /) {
+		$self->generateException('InvalidParametersError', 'BadParameterType', $exception);
 	} elsif ($exception =~ /bad format of (\w+)\.(\w+)/) {
 		$self->generateException('InvalidParametersError', 'Bad' . $1 . $2, $exception);
 	} elsif ($exception =~ /bad .*-array passed |.*\[\] can.t be empty/) {

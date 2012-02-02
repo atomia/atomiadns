@@ -7,6 +7,20 @@ exports.errorMessageMap = {
 
 exports.nameserverGroupName = process.env['ATOMIADNS_NAMESERVER_GROUP'] != null ? process.env['ATOMIADNS_NAMESERVER_GROUP'] : "default";
 
+if (process.env['ATOMIADNS_NAMESERVERS'] == null || !process.env['ATOMIADNS_NAMESERVERS'].length) {
+	throw new Error("You have to specify the environment variable ATOMIADNS_NAMESERVERS, containing comma separated NS-records to use as default for new zones");
+} else {
+	exports.defaultNameservers = process.env['ATOMIADNS_NAMESERVERS'].split(",");
+}
+
+exports.defaultSOAValues = process.env['ATOMIADNS_SOA_DEFAULT'] != null
+	? process.env['ATOMIADNS_NAMESERVER_GROUP'].split(",")
+	: [ 3600, exports.defaultNameservers[0], "hostmaster." + exports.defaultNameservers[0], 10800, 3600, 604800, 86400 ];
+
+if (exports.defaultSOAValues.length != 7) {
+	throw new Error("ATOMIADNS_SOA_DEFAULT should be like '3600,ns.yourserver.com.,hostmaster.yourcompany.com.,10800,3600,604800,86400'");
+}
+
 exports.getOperationRequest = function (operation, username, token, password) {
 	var uri_base = process.env['ATOMIADNS_SOAP_URI'] != null ? process.env['ATOMIADNS_SOAP_URI'] : "http://127.0.0.1/atomiadns.json/"
 	if (uri_base.lastIndexOf('/') != uri_base.length - 1) {

@@ -13,6 +13,44 @@ exports.configure = function (app) {
 		});
 	});
 
+	app.get('/addzone', auth.ensureAuthenticated, function (req, res) {
+		res.render('addzone.jade', { user: req.user, name: "", error: null });
+	});
+
+	app.post('/addzone', auth.ensureAuthenticated, function (req, res) {
+		var name = req.body.name;
+		var copyFrom = req.body.copyFrom;
+
+		var soa = rest.defaultSOAValues.slice(0);
+		soa.unshift(name);
+		soa.push(rest.defaultNameservers);
+		soa.push(rest.nameserverGroupName);
+
+		rest.executeOperation(req, res, req.user, "AddZone", soa, function (error, response) {
+			if (error) {
+				res.render('addzone.jade', { user: req.user, name: name, error: error });
+			} else if (copyFrom != null && copyFrom.length > 0) {
+				rest.executeOperation(req, res, req.user, "GetZoneBinary", [ copyFrom ], function (error, response) {
+					if (error) {
+						res.render('addzone.jade', { user: req.user, name: name, error: error });
+					} else {
+						rest.executeOperation(req, res, req.user, "RestoreZoneBinary",
+							[ name, rest.nameserverGroupName, response ], function (error, response) {
+
+							if (error) {
+								res.render('addzone.jade', { user: req.user, name: name, error: error });
+							} else {
+								res.redirect('/');
+							}
+						});
+					}
+				});
+			} else {
+				res.redirect('/');
+			}
+		});
+	});
+
 	app.get('/exportzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
 		var name = req.param('zoneName');
 
@@ -27,7 +65,6 @@ exports.configure = function (app) {
 
 	app.post('/importzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
 		var name = req.param('zoneName');
-		console.log("name = " + name + ", zone = " + req.body.zone);
 
 		rest.executeOperation(req, res, req.user, "RestoreZoneBinary", [ name, rest.nameserverGroupName, req.body.zone.replace(/\r/g, '') ], function (error, response) {
 			if (error) {
@@ -39,7 +76,7 @@ exports.configure = function (app) {
 	});
 
 	app.get('/delzone/:zoneName', auth.ensureAuthenticated, function (req, res) {
-		rest.executeOperation(req, res, req.user, "DeleteZone", [ name, req.param('zoneName') ], function (error, response) {
+		rest.executeOperation(req, res, req.user, "DeleteZone", [ req.param('zoneName') ], function (error, response) {
 			if (error) {
 				res.render('error.jade', { user: req.user, error: error });
 			} else {
