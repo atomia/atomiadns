@@ -1,18 +1,37 @@
 #!/bin/sh
 
-if [ -z "$1" ]; then
-        echo "usage: $0 ubuntu-version"
-        exit 1
+cd dyndns
+../buildpackages
+git checkout -- patches/Net/DNS/Nameserver.pm.orig
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
 fi
 
-cd dyndns
-./buildpackages "$1"
 cd ../syncer
-./buildpackages "$1"
+../buildpackages
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 cd ../server
-./buildpackages "$1"
+../buildpackages
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 cd ../zonefileimporter
-./buildpackages "$1"
+../buildpackages
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 cd ../powerdns_sync
-./buildpackages "$1"
-cd ..
+../buildpackages
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi

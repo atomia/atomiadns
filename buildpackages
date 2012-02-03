@@ -1,0 +1,10 @@
+#!/bin/sh
+rm -f *deb
+dpkg-buildpackage -rfakeroot -tc -us -uc
+mv ../*deb .
+rm ../atomiadns-*
+mv *deb ..
+
+if [ -d "client" ]; then
+	cd client && make distclean
+fi

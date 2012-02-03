@@ -21,6 +21,6 @@ cd /usr/src/redhat/SPECS
 rpmbuild --sign -ba atomiadns-dyndns.spec
 
 cd "$startdir"
-cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages/"$1"
-cp /usr/src/redhat/SRPMS/atomiadns-* ../packages/"$1"
-rm -f ../packages/*-debuginfo-*
+cp /usr/src/redhat/RPMS/*/atomiadns-* ..
+cp /usr/src/redhat/SRPMS/atomiadns-* ..
+rm -f ../*-debuginfo-*

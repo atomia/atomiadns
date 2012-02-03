@@ -21,5 +21,5 @@ cd /usr/src/redhat/SPECS
 rpmbuild --sign -bb atomiadns-zoneimport.spec
 
 cd "$startdir"
-cp /usr/src/redhat/RPMS/*/atomiadns-* ../packages/"$1"
-rm -f ../packages/*-debuginfo-*
+cp /usr/src/redhat/RPMS/*/atomiadns-* ..
+rm -f ../*-debuginfo-*

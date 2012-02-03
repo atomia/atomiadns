@@ -1,5 +1,0 @@
-#!/bin/sh
-dpkg-buildpackage -rfakeroot -tc -us -uc
-mv ../*deb ../packages/"$1"
-rm ../atomiadns-*
-svn revert patches/Net/DNS/Nameserver.pm.orig
