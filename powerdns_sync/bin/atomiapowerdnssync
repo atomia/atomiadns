@@ -226,7 +226,8 @@ SWITCH: {
 			};
 
 			if ($@) {
-				print "caught exception in atomiapowerdnssync updated: $@\n";
+				my $exception = $@;
+				handle_exception($exception, 0, 1);
 				sleep 5;
 			} else {
 				# Updates disabled, exit.
@@ -243,9 +244,10 @@ SWITCH: {
 sub handle_exception {
 	my $exception = shift;
 	my $no_output = shift;
+	my $no_exit = shift;
 
 	$exception = $exception->faultcode . ": " . $exception->faultstring if ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM');
 	$exception = Dumper($exception) if ref($exception);
 	print "Caught exception handling command: $exception\n" unless defined($no_output) && $no_output == 1;
-	exit 1;
+	exit 1 unless defined($no_exit) && $no_exit;
 }

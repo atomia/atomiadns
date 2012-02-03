@@ -894,8 +894,8 @@ sub authenticateRequest {
 
 	if (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Password'})) {
 		$authenticated_account = $self->authenticateAccount($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Password'});
-		die "invalid username or password" unless defined($authenticated_account) && defined($authenticated_account->{"token"});
-		$request->headers_out->{'X-Auth-Token'} = $authenticated_account->{"token"};
+		die "invalid username or password" unless defined($authenticated_account) && (defined($authenticated_account->{"token"}) || defined($authenticated_account->{"admin"}));
+		$request->headers_out->{'X-Auth-Token'} = $authenticated_account->{"token"} if defined($authenticated_account->{"token"});
 	} elsif (defined($request->headers_in->{'X-Auth-Username'}) && defined($request->headers_in->{'X-Auth-Token'})) {
 		$authenticated_account = $self->authenticateAccountToken($request->headers_in->{'X-Auth-Username'}, $request->headers_in->{'X-Auth-Token'});
 		die "invalid token" unless defined($authenticated_account);
@@ -908,6 +908,14 @@ sub authenticateAccount {
 	my $self = shift;
 	my $username = shift;
 	my $password = shift;
+
+	if (defined($username) && defined($self->config->{"auth_admin_user"}) && length($username) > 0 && $username eq $self->config->{"auth_admin_user"}) {
+		if (defined($password) && length($password) > 0 && defined($self->config->{"auth_admin_pass"}) && $password eq $self->config->{"auth_admin_pass"}) {
+			return { admin => 1 };
+		} else {
+			return undef;
+		}
+	}
 
 	my $auth = $self->retrieveAccount($username);
 	if (defined($auth)) {
@@ -986,14 +994,6 @@ sub authorizeMethod {
 	return undef if defined($authenticated_account->{"admin"}) && $authenticated_account->{"admin"} == 1;
 
 	die "unauthorized access" unless defined($authenticated_account->{"id"}) && $authenticated_account->{"id"} =~ /^\d+$/;
-#root@s97:/home/jma/Dns/trunk/server# cat lib/Atomia/DNS/Signatures.pm  | grep auth | tr -d "\t" | cut -d " " -f 3- | sort | uniq -c
-#      1 = {
-#      2 "authaccount",
-#      2 "authslavezone",
-#     12 "authzone",
-#      1 "authzone allow authnamearray",
-#      4 "authzonearray",
-#      1 "authzone authzonearray",
 
 	my $account_id = $authenticated_account->{"id"};
 

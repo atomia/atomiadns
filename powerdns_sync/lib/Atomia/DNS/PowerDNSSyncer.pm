@@ -54,6 +54,11 @@ sub BUILD {
 
 	die("error instantiating SOAP::Lite") unless defined($soap);
 
+	if (defined($soap_username)) {
+		$soap->transport->http_request->header('X-Auth-Username' => $soap_username);
+		$soap->transport->http_request->header('X-Auth-Password' => $soap_password);
+	}
+
 	$self->soap($soap);
 };
 

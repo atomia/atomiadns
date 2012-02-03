@@ -58,7 +58,6 @@ sub BUILD {
 		}
 	}
 
-
 	my $soap = SOAP::Lite
 		->  uri('urn:Atomia::DNS::Server')
 		->  proxy($soap_uri, timeout => $self->config->{"soap_timeout"} || 600)
@@ -68,6 +67,11 @@ sub BUILD {
 			});
 
 	die("error instantiating SOAP::Lite") unless defined($soap);
+
+	if (defined($soap_username)) {
+		$soap->transport->http_request->header('X-Auth-Username' => $soap_username);
+		$soap->transport->http_request->header('X-Auth-Password' => $soap_password);
+	}
 
 	$self->soap($soap);
 };
