@@ -1,3 +1,21 @@
-body {
-	background: red;
-}
+	body { background: #F0F0F0; width: 100%; margin: 0; text align: center;}
+	div { width: 800px; margin: 0 auto; text-align: left; margin-top: 50px; background: #FFF; padding: 30px; -moz-border-radius: 15px; border-radius: 15px; color: #333;}
+	p { font-family: Arial; color: #333; padding: 0px 10px;}
+	a { font-family: Calibri, Arial; color: #FFF; font-size: 1em; font-weight: bold; padding: 7px 10px 6px 10px; background: #FF3399; border-bottom: 1px solid #CC0066; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
+	a:hover { background: #333; border-color: #000; }
+	li { list-style-type: none; font-size: 1.2em; color: #666; background: #F0F0F0; border: solid 1px #FFF; padding: 10px;}
+	li:hover { background: #FAFAFA; color: #0099FF; border-color: #CCC; }
+	li a { font-family: Arial; color: #ff3399; font-weight: normal; font-size: 0.7em; float: right; margin-left: 10px; padding: 5px 8px 4px 8px; background: #FFF; border-bottom: 1px solid #CCC; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
+	li:hover a { background: #FF3399; border-color: #CC0066; color: #FFF; }
+	li a:hover { background: #333; border-color: #000}
+	form input { width: 115px; padding: 5px 0; margin-left: 10px;}
+	form a { font-family: Arial; color: #ff3399; font-weight: normal; font-size: 0.8em; float: right; margin-top: 1px; padding: 5px 8px 4px 8px; background: #F0F0F0; border-bottom: 1px solid #CCC; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
+	form a:hover { color: #FFF; }
+	form label { margin-right: 10px;}
+	form input[type="submit"] {float: right; font-family: Calibri, Arial; color: #FFF; font-size: 1em; font-weight: bold; padding: 7px 10px 6px 10px; background: #94BB27; border-bottom: 1px solid #80a320; border-top: none; border-left: none; border-right: none; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
+	form input[type="submit"]:hover { background: #333; border-color: #000; cursor: hand; cursor: pointer;}
+	form p { border-top: solid 2px #F0F0F0; padding: 5px 10px; margin: 0; display: block; }
+	#login { width: 600px; font-family: Arial;}
+	#login form input[type="submit"] { padding-top: 5px; padding-bottom: 4px;}
+	#login form input { width: 125px; }
+	#login p { padding-left: 0px;}
