@@ -1,10 +1,11 @@
-p Exporting zone for #{name}
+h2 Exporting zone for 
+	span.zoneName #{name}
 
 p
-	a(href='/') Back to index
+	a(href='/', class='button small pink') &laquo; Back to index
 
 if error
-	p Something went terribly bad: #{error}
+	p.error Something went terribly bad: #{error}
 else
 	p This is the exported zone contents:
-	pre= zone
+	pre.exportData= zone

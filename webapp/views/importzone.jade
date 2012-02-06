@@ -1,13 +1,15 @@
-p Importing zone for #{name}
+h2 Importing zone for 
+	span.zoneName  #{name}
 
 p
-	a(href='/') Back to index
+	a(href='/', class='button small pink') &laquo; Back to index
 
 if error
-	p Something went terribly bad: #{error}
+	p.error Something went terribly bad: #{error}
 
 form(method='post')
 	label Zone content (same format as export):
-		textarea(name='zone')
-
-	input(type='submit', value='import')
+		div
+			textarea.importData(name='zone')
+	div.formFooter
+		input(type='submit', value='import')

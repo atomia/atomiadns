@@ -1,38 +1,39 @@
-p Editing zone for #{name}
+h2 Editing zone for 
+	span.zoneName #{name}
 
 if error
-	p Something went terribly bad: #{error}
+	p.error Something went terribly bad: #{error}
 
 p
-	a(href='/') Back to index
+	a(href='/', class='button small pink') &laquo  Back to index
 
 if zone
 	form(method='post', action='/editrecords/#{name}')
 		each label in zone
 			each record in label.records
-				p
+				div.listRow
 					input(type='hidden', name='records[id][]', value='#{record.id}')
 					input(type='hidden', name='records[class][]', value='#{record.class}')
 					label Name
-						input(name='records[label][]', value='#{record.label}')
+						input.recordLabel(name='records[label][]', value='#{record.label}')
 					label Type
-						input(name='records[type][]', value='#{record.type}')
+						input.recordType(name='records[type][]', value='#{record.type}')
 					label TTL
-						input(name='records[ttl][]', value='#{record.ttl}')
+						input.recordTtl(name='records[ttl][]', value='#{record.ttl}')
 					label Data
-						input(name='records[rdata][]', value='#{record.rdata}')
-					a(href='/deleterecord/#{name}/#{record.id}') delete
-		p
+						input.recordData(name='records[rdata][]', value='#{record.rdata}')
+					a(href='/deleterecord/#{name}/#{record.id}', class="button small delete") delete
+		div.listRow
 			input(type='hidden', name='newrecords[id][]', value='-1')
 			input(type='hidden', name='newrecords[class][]', value='IN')
 			label Name
-				input(name='newrecords[label][]', value='')
+				input.recordLabel(name='newrecords[label][]', value='')
 			label Type
-				input(name='newrecords[type][]', value='')
+				input.recordType(name='newrecords[type][]', value='')
 			label TTL
-				input(name='newrecords[ttl][]', value='')
+				input.recordTtl(name='newrecords[ttl][]', value='')
 			label Data
-				input(name='newrecords[rdata][]', value='')
+				input.recordData(name='newrecords[rdata][]', value='')
 
-		p	
-			input(type='submit', value='Save')
+		div.formFooter
+			input(type="submit", value="save")

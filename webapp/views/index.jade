@@ -1,19 +1,18 @@
-p Hello #{user.email}
-
 if error
-	p Something went terribly bad: #{error}
+	p.error Something went terribly bad: #{error}
 else
+	h2 Your zones
 	p Showing zone #{offset + 1} to #{offset + zones.length} from a total of #{total} in your account.
 
-	each zone in zones
-		li= zone + ' '
-			a(href='/zone/#{zone}') edit
-			| 
-			a(href='/exportzone/#{zone}') export
-			| 
-			a(href='/importzone/#{zone}') import
-			| 
-			a(href='/delzone/#{zone}') delete
-
 	p
-		a(href='/addzone') add new zone
+		a(href='/addzone', class='button small green') + add new zone
+
+	each zone in zones
+		li.listRow= zone + ' '
+			a(href='/delzone/#{zone}', class='button small  delete') delete
+			| 
+			a(href='/exportzone/#{zone}', class='button small export') export
+			| 
+			a(href='/importzone/#{zone}', class='button small  import') import
+			| 
+			a(href='/zone/#{zone}', class='button small  edit') edit

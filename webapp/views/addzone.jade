@@ -1,16 +1,18 @@
-p Adding zone
+h2 Adding zone
 
 p
-	a(href='/') Back to index
+	a(href='/', class="button small pink") &laquo;  Back to index
 
 if error
-	p Something went terribly bad: #{error}
+	p.error Something went terribly bad: #{error}
 
 form(method='post')
-	label Zone to add:
-		input(name='name', value='#{name}')
+	div(class='listRow')
+		label Zone to add:
+			input(name='name', value='#{name}')
+	
+		label Copy records from zone (can be empty):
+			input(name='copyFrom', value='')
 
-	label Copy records from zone (can be empty):
-		input(name='copyFrom', value='')
-
-	input(type='submit', value='Add')
+	div.formFooter
+		input(type='submit', value='Add')

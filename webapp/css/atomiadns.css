@@ -1,21 +1,56 @@
-	body { background: #F0F0F0; width: 100%; margin: 0; text align: center;}
-	div { width: 800px; margin: 0 auto; text-align: left; margin-top: 50px; background: #FFF; padding: 30px; -moz-border-radius: 15px; border-radius: 15px; color: #333;}
-	p { font-family: Arial; color: #333; padding: 0px 10px;}
-	a { font-family: Calibri, Arial; color: #FFF; font-size: 1em; font-weight: bold; padding: 7px 10px 6px 10px; background: #FF3399; border-bottom: 1px solid #CC0066; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
-	a:hover { background: #333; border-color: #000; }
-	li { list-style-type: none; font-size: 1.2em; color: #666; background: #F0F0F0; border: solid 1px #FFF; padding: 10px;}
-	li:hover { background: #FAFAFA; color: #0099FF; border-color: #CCC; }
-	li a { font-family: Arial; color: #ff3399; font-weight: normal; font-size: 0.7em; float: right; margin-left: 10px; padding: 5px 8px 4px 8px; background: #FFF; border-bottom: 1px solid #CCC; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
-	li:hover a { background: #FF3399; border-color: #CC0066; color: #FFF; }
-	li a:hover { background: #333; border-color: #000}
-	form input { width: 115px; padding: 5px 0; margin-left: 10px;}
-	form a { font-family: Arial; color: #ff3399; font-weight: normal; font-size: 0.8em; float: right; margin-top: 1px; padding: 5px 8px 4px 8px; background: #F0F0F0; border-bottom: 1px solid #CCC; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
-	form a:hover { color: #FFF; }
-	form label { margin-right: 10px;}
-	form input[type="submit"] {float: right; font-family: Calibri, Arial; color: #FFF; font-size: 1em; font-weight: bold; padding: 7px 10px 6px 10px; background: #94BB27; border-bottom: 1px solid #80a320; border-top: none; border-left: none; border-right: none; -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
-	form input[type="submit"]:hover { background: #333; border-color: #000; cursor: hand; cursor: pointer;}
-	form p { border-top: solid 2px #F0F0F0; padding: 5px 10px; margin: 0; display: block; }
-	#login { width: 600px; font-family: Arial;}
-	#login form input[type="submit"] { padding-top: 5px; padding-bottom: 4px;}
-	#login form input { width: 125px; }
-	#login p { padding-left: 0px;}
+	/* GENERIC */
+	body {font-family: Arial; background: #ccc; width: 100%; margin: 0; text align: center;}
+	div.wrapper {width: 800px; margin: 0 auto; text-align: left;  margin-top:50px; background: #DCDCDC; -moz-border-radius: 15px; border-radius: 15px;}
+	div.header {padding: 10px 30px;}
+	div.content {background: #FFF; padding: 30px; -moz-border-radius: 15px; border-radius: 15px; color: #333;}
+	div.footer {padding: 10px;}
+	h2 {font-size: 16px; text-transform: uppercase;}
+	p { }
+	p.error {padding: 10px; border: solid 1px #f56b30; background: #fffacd; box-shadow: 0 1px 1px #999; }
+	div.listRow, li.listRow {color: #666; box-shadow: 0 1px 3px #999;  background: #F0F0F0; border: solid 1px #FFF; padding: 10px;}
+	li.listRow {list-style-type: none;}
+	div:hover.listRow {background: #FAFAFA;  border-color: #dcdcdc; } 
+	li:hover.listRow {background: #FAFAFA; color: #0099FF; border-color: #dcdcdc; }	
+	h2 span.zoneName {border-bottom: 1px dotted #666; color: #0099FF;}
+
+	/* HEADER */
+	p.userInfo {color: #666; text-align: right;}
+	span.userName {color: #0099ff;}
+
+	/* EDIT ZONE  */
+	.listRow label input {margin: 0 5px;}
+	.listRow input.recordName {width:100px;}
+	.listRow input.recordType {width:50px;}
+	.listRow input.recordTtl {width: 80px;}
+	.listRow input.recordData {width: 170px;}
+
+	/* FORM FOOTER (container for buttons) - GENERIC */
+	.formFooter {margin-top: 20px;}
+	.formFooter  input[type="submit"] {font-family: Calibri, Arial; color: #FFF; font-size: 14px; font-weight: bold; padding: 10px 20px; background: #94BB27; border: none; box-shadow: 0 1px 1px #999;  border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
+	.formFooter  input[type="submit"]:hover { background: #333; cursor: hand; cursor: pointer;}
+	
+	/* IMPORT & EXPORT ZONE DATA */
+	pre.exportData {overflow-x: scroll; overflow-y: hidden; color: #666; box-shadow: 0 1px 3px #999;  background: #fafafa; border-left: solid 10px #94bb27;  padding: 20px 10px;}
+	textarea.importData {width: 100%; height: 200px;}
+
+	/* LOGIN FORM */
+	span.login {display: block; float: left; width: 100px; padding: 5px 0;}
+	input.login {width: 180px; padding: 5px;}
+
+	/* BUTTONS - GENERIC */
+	a.button {font-family: Calibri, Arial; color: #fff; box-shadow: 0 1px 1px #999; font-weight: bold; text-decoration: none; background: #ccc;  -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; }
+	a:hover.button {background: #666; color: #fff;}
+	a.button.small {padding: 5px 8px 4px 8px; font-size: 12px;}
+	a.button.big {padding: 7px 10px; font-size: 14px;}
+	a.button.pink {background: #cc0066; color: #fff;}
+	a:hover.button.pink {background: #333;}
+	a.button.green {background: #94bb27;}
+	a:hover.button.green {background: #333;}	
+	a.button.logout {background: #333; color: #fff;}
+	a:hover.button.logout {background: #94bb27; border-color: #84b006; }
+	li.listRow a.button, div.listRow a.button  {float: right;  margin-left: 10px; margin-top: -2px;}
+	li:hover.listRow a.button, div:hover.listRow a.button {background: #333; color: #fff;}
+	li:hover.listRow a:hover.button.edit, div:hover.listRow a:hover.button.edit {background: #f56b30;}
+	li:hover.listRow a:hover.button.delete, div:hover.listRow a:hover.button.delete {background: #ea3904;}
+	li:hover.listRow a:hover.button.export, li:hover.listRow a:hover.button.import, div:hover.listRow a:hover.button.export, div:hover.listRow a:hover.button.import {background: #94bb27;}
+	li:hover.listRow a:hover.button, div:hover.listRow a:hover.button {background: #333; border-color: #000;}

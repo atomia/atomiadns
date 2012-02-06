@@ -8,4 +8,15 @@ html(lang="en")
 		- else
 			title Atomia DNS
 	body
-		div!= body
+		div.wrapper
+			div.header
+				- if (user != null && user != 'undefined')
+					p.userInfo Logged in as: 
+						span.userName #{user.email}
+						\ | 
+						a(href='/logout') log out 
+				- else
+					
+			div.content
+				!= body
+			div.footer

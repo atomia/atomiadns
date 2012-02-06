@@ -1,10 +1,13 @@
-p You have to login to be able to administer your zones.
+h2 You have to login to be able to administer your zones.
 
 form(method='post')
-	label Username:
-		input(name='username')
-
-	label Password:
-		input(type="password", name='password')
-
-	input(type="submit", value="Login")
+	p
+		label 
+			span.login Username: 
+			input.login(name='username')
+	p 
+		label 
+			span.login Password: 
+			input.login(type="password", name='password')
+	div.formFooter
+		input(type="submit", value="Login")
