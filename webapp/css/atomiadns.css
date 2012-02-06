@@ -1,5 +1,5 @@
 	/* GENERIC */
-	body {font-family: Arial; background: #ccc; width: 100%; margin: 0; text align: center;}
+	body {font-family: Arial; background: #ccc; width: 100%; margin: 0; text-align: center;}
 	div.wrapper {width: 800px; margin: 0 auto; text-align: left;  margin-top:50px; background: #DCDCDC; -moz-border-radius: 15px; border-radius: 15px;}
 	div.header {padding: 10px 30px;}
 	div.content {background: #FFF; padding: 30px; -moz-border-radius: 15px; border-radius: 15px; color: #333;}
