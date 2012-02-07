@@ -35,3 +35,10 @@ ret=$?
 if [ $ret != 0 ]; then
 	exit $ret
 fi
+
+cd ../webapp
+../buildpackages
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm -f *.deb *.rpm
+
 distributor=`lsb_release -i | awk '{ print $NF }'`
 if [ -z "$distributor" ]; then
         echo "lsb_release -i failed to give distro identifier"

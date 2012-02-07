@@ -1,0 +1,5 @@
+atomiadns-webapp (1.1.0) hardy; urgency=low
+
+  * Add JSON API endpoint, authentication/authorization and a built in webapp client
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 31 Jan 2012 11:02:29 +0100

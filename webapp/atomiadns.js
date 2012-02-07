@@ -1,4 +1,4 @@
-var global_port = process.env['ATOMIADNS_CONTROLPANEL_PORT'] != null ? process.env['ATOMIADNS_CONTROLPANEL_PORT'] : 5380;
+var global_port = process.env['WEBAPP_LISTEN_PORT'] != null ? process.env['WEBAPP_LISTEN_PORT'] : 5380;
 
 var	express = require('express');
 var     app = express.createServer();
@@ -9,6 +9,7 @@ var 	routes = require('./routes');
 var	passport = require('passport');
 app.configure(function() {
 	//app.use(express.logger());
+	app.set('views', __dirname + '/views');
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.session({ secret: auth.randomString() }));

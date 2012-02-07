@@ -1,0 +1,12 @@
+Source: atomiadns-webapp
+Section: non-free/perl
+Priority: optional
+Build-Depends: debhelper (>= 4.0.2)
+Build-Depends-Indep: perl (>= 5.8.6), perl-modules
+Maintainer: Jimmy Bergman <jimmy@pingdom.com>
+Standards-Version: 3.6.1
+
+Package: atomiadns-webapp
+Architecture: any
+Depends: nodejs (>= 0.6.9)
+Description: Atomia DNS webapp

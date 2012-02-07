@@ -5,7 +5,7 @@ exports.configure = function (app) {
 
 	app.get('/css/', function (req, res) {
 		res.contentType('text/css');
-		res.sendfile('css/atomiadns.css');
+		res.sendfile(__dirname + '/css/atomiadns.css');
 	});
 
 	app.get('/zone/:zone', auth.ensureAuthenticated, function (req, res) {
