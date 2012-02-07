@@ -1,0 +1,14 @@
+<section xml:id="datatype-keyset">
+<title>keyset Datatype - Atomia DNS API</title>
+<para>
+[keyset|keyset Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | the id of the key |
+| algorithm | string | the algorithm of the key |
+| activated | int | 0 if the key is inactive and 1 if it is active |
+| keysize | int | the size of the key in bits |
+| keytype | string | ZSK or KSK |
+| activated_at | string | the date of the key activation or empty if not activated |
+| deactivated_at | string | the date of the key deactivation or empty if not deactivated |
+| keydata | string | the private key in Private-key-format v1.2 |
+				</para></section>

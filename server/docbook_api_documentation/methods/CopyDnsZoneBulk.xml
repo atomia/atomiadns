@@ -1,0 +1,16 @@
+<section xml:id="method-CopyDnsZoneBulk">
+<title>CopyDnsZoneBulk Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-CopyDnsZoneBulk">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-CopyDnsZoneBulk">Parameters</link></para></listitem>
+</itemizedlist><para>Copies a complete zone to one or more other zones, overwriting any preexisting data.</para>
+<section xml:id="method-declaration-CopyDnsZoneBulk"><title>Declaration syntax</title><programlisting>
+void CopyDnsZoneBulk(
+	string sourcezone,
+	string[] destinationzones
+)
+</programlisting></section>
+<section xml:id="method-parameters-CopyDnsZoneBulk"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>sourcezone</td><td>string</td><td>the name of the source zone</td></tr>
+<tr><td>destinationzones</td><td>string[]</td><td>an array of the zone names to copy the source zone to</td></tr>
+</tbody></informaltable></section>
+</section>

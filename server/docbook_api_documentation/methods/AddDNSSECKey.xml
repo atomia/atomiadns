@@ -1,0 +1,20 @@
+<section xml:id="method-AddDNSSECKey">
+<title>AddDNSSECKey Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-AddDNSSECKey">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-AddDNSSECKey">Parameters</link></para></listitem>
+</itemizedlist><para>Adds a DNSSEC key to the database.</para>
+<section xml:id="method-declaration-AddDNSSECKey"><title>Declaration syntax</title><programlisting>
+int AddDNSSECKey(
+	string algorithm,
+	int keysize,
+	string keytype,
+	int activated
+)
+</programlisting></section>
+<section xml:id="method-parameters-AddDNSSECKey"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>algorithm</td><td>string</td><td>the algorithm of the key</td></tr>
+<tr><td>keysize</td><td>int</td><td>the size of the key in bits</td></tr>
+<tr><td>keytype</td><td>string</td><td>ZSK or KSK</td></tr>
+<tr><td>activated</td><td>int</td><td>1 if the key should be active or 0 if it is to be inactive</td></tr>
+</tbody></informaltable></section>
+</section>

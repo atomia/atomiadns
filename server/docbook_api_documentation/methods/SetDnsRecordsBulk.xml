@@ -1,0 +1,16 @@
+<section xml:id="method-SetDnsRecordsBulk">
+<title>SetDnsRecordsBulk Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-SetDnsRecordsBulk">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-SetDnsRecordsBulk">Parameters</link></para></listitem>
+</itemizedlist><para>Sets the records for all matching label/type/class-triples in a list of zones to that specified by the records passed.</para>
+<section xml:id="method-declaration-SetDnsRecordsBulk"><title>Declaration syntax</title><programlisting>
+void SetDnsRecordsBulk(
+	string[] zones,
+	[resourcerecord|resourcerecord Datatype - Atomia DNS API][] records
+)
+</programlisting></section>
+<section xml:id="method-parameters-SetDnsRecordsBulk"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zones</td><td>string[]</td><td>an array containing the names of the zone</td></tr>
+<tr><td>records</td><td>[resourcerecord|resourcerecord Datatype - Atomia DNS API][]</td><td>the resourcerecords to set for the zones</td></tr>
+</tbody></informaltable></section>
+</section>

@@ -1,0 +1,7 @@
+<section xml:id="method-GetExternalDNSSECKeys">
+<title>GetExternalDNSSECKeys Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetExternalDNSSECKeys">Declaration syntax</link></para></listitem></itemizedlist><para>Get a list of all external DNSSEC keys stored in this Atomia DNS instance.</para>
+<section xml:id="method-declaration-GetExternalDNSSECKeys"><title>Declaration syntax</title><programlisting>
+[external_keyset|external_keyset Datatype - Atomia DNS API] GetExternalDNSSECKeys()
+</programlisting></section>
+</section>

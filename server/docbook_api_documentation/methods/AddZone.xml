@@ -1,0 +1,32 @@
+<section xml:id="method-AddZone">
+<title>AddZone Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-AddZone">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-AddZone">Parameters</link></para></listitem>
+</itemizedlist><para>Add a zone to the Atomia DNS master database.</para>
+<section xml:id="method-declaration-AddZone"><title>Declaration syntax</title><programlisting>
+void AddZone(
+	string zonename,
+	int zonettl,
+	string mname,
+	string rname,
+	int refresh,
+	int retry,
+	int expire,
+	int minimum,
+	string[] nameservers,
+	string nameservergroup
+)
+</programlisting></section>
+<section xml:id="method-parameters-AddZone"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+<tr><td>zonettl</td><td>int</td><td>the ttl of the SOA-record and the NS-records</td></tr>
+<tr><td>mname</td><td>string</td><td>the SOA mname field</td></tr>
+<tr><td>rname</td><td>string</td><td>the SOA rname field</td></tr>
+<tr><td>refresh</td><td>int</td><td>the SOA refresh field</td></tr>
+<tr><td>retry</td><td>int</td><td>the SOA retry field</td></tr>
+<tr><td>expire</td><td>int</td><td>the SOA expire field</td></tr>
+<tr><td>minimum</td><td>int</td><td>the SOA minimum field</td></tr>
+<tr><td>nameservers</td><td>string[]</td><td>an array of the hostnames of the nameservers for the zone</td></tr>
+<tr><td>nameservergroup</td><td>string</td><td>the nameserver group that should host the zone</td></tr>
+</tbody></informaltable></section>
+</section>

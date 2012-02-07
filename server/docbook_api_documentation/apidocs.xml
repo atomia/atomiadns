@@ -1,0 +1,36 @@
+<section xml:id="apidocs">
+  <title>Atomia DNS API</title>
+  <section xml:id="apidocs-overview">
+    <title>What is the Atomia DNS API?</title>
+    <para>Atomia DNS API is used to create, edit and delete zone data in the Atomia DNS system. All changes done through the API will be provisioned to the nameservers that are configured in the system.</para>
+  </section>
+  <section xml:id="apidocs-accessing">
+    <title>Accessing the API</title>
+    <para>
+      You connect to the SOAP API by using the SOAP endpoint
+      <code>hostname.of.your.soap.server /atomiadns</code>
+      .
+    </para>
+    <para>The URI of the namespace should be urn:Atomia::DNS::Server.</para>
+  </section>
+  <section xml:id="apidocs-manual">
+    <title>Atomia DNS API manual</title>
+    <section xml:id="apidocs-toc">
+	<itemizedlist>
+		<listitem><para><link linkend="api-errors">Atomia DNS API Error handling</link></para></listitem>
+		<listitem>
+			<para><link linkend="api-datatypes">Atomia DNS API Datatypes</link></para>
+			<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="typeindex.xml" />
+		</listitem>
+		<listitem>
+			<para><link linkend="api-methods">Atomia DNS API Methods</link></para>
+			<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methodindex.xml" />
+		</listitem>
+	</itemizedlist>
+    </section>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="errors.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="typeincludes.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methodincludes.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="examples.xml" />
+  </section>
+</section>

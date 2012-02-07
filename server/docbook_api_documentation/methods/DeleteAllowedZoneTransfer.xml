@@ -1,0 +1,16 @@
+<section xml:id="method-DeleteAllowedZoneTransfer">
+<title>DeleteAllowedZoneTransfer Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-DeleteAllowedZoneTransfer">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-DeleteAllowedZoneTransfer">Parameters</link></para></listitem>
+</itemizedlist><para></para>
+<section xml:id="method-declaration-DeleteAllowedZoneTransfer"><title>Declaration syntax</title><programlisting>
+void DeleteAllowedZoneTransfer(
+	string zonename,
+	string allowed_ip
+)
+</programlisting></section>
+<section xml:id="method-parameters-DeleteAllowedZoneTransfer"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone, or * to remove global allows</td></tr>
+<tr><td>allowed_ip</td><td>string</td><td>the IP to remove allowed zone transfers from</td></tr>
+</tbody></informaltable></section>
+</section>

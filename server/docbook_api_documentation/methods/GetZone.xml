@@ -1,0 +1,14 @@
+<section xml:id="method-GetZone">
+<title>GetZone Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetZone">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-GetZone">Parameters</link></para></listitem>
+</itemizedlist><para>Fetches a complete zone from the database.</para>
+<section xml:id="method-declaration-GetZone"><title>Declaration syntax</title><programlisting>
+[zone|zone Datatype - Atomia DNS API] GetZone(
+	string zonename
+)
+</programlisting></section>
+<section xml:id="method-parameters-GetZone"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+</tbody></informaltable></section>
+</section>

@@ -1,0 +1,14 @@
+<section xml:id="method-SetUpdatesDisabled">
+<title>SetUpdatesDisabled Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-SetUpdatesDisabled">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-SetUpdatesDisabled">Parameters</link></para></listitem>
+</itemizedlist><para>Set or reset the updates disabled flag.</para>
+<section xml:id="method-declaration-SetUpdatesDisabled"><title>Declaration syntax</title><programlisting>
+void SetUpdatesDisabled(
+	int disabled
+)
+</programlisting></section>
+<section xml:id="method-parameters-SetUpdatesDisabled"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>disabled</td><td>int</td><td>1 if updates are to be disabled and 0 if not</td></tr>
+</tbody></informaltable></section>
+</section>

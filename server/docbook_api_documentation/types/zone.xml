@@ -1,0 +1,3 @@
+<section xml:id="datatype-zone">
+<title>zone Datatype - Atomia DNS API</title>
+<para>[zone|zone Datatype - Atomia DNS API] is an array of [label|label Datatype - Atomia DNS API]-structs.</para></section>

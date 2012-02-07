@@ -1,0 +1,14 @@
+<section xml:id="method-DeactivateDNSSECKey">
+<title>DeactivateDNSSECKey Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-DeactivateDNSSECKey">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-DeactivateDNSSECKey">Parameters</link></para></listitem>
+</itemizedlist><para>Marks a DNSSEC key as deactivated.</para>
+<section xml:id="method-declaration-DeactivateDNSSECKey"><title>Declaration syntax</title><programlisting>
+void DeactivateDNSSECKey(
+	int keyid
+)
+</programlisting></section>
+<section xml:id="method-parameters-DeactivateDNSSECKey"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>keyid</td><td>int</td><td></td></tr>
+</tbody></informaltable></section>
+</section>

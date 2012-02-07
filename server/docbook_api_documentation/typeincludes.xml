@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<section xml:id="api-datatypes">
+<title>Atomia DNS API Datatypes</title><para>Besides the standard SOAP Data types, the following types are returned by some methods:</para>
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="typeindex.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/resourcerecord.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/hostname.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/label.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zone.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/findresponse.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/slavezones.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/slavezone.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zonestruct.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zones.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/changedzone.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/changes.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/allowedtransfer.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/allowedtransfers.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/binaryzone.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/binaryzones.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/keyset.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/external_keyset.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zskinfo.xml" />
+</section>

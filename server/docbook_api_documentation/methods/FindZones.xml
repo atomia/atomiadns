@@ -1,0 +1,20 @@
+<section xml:id="method-FindZones">
+<title>FindZones Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-FindZones">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-FindZones">Parameters</link></para></listitem>
+</itemizedlist><para>Search for zones in an account.</para>
+<section xml:id="method-declaration-FindZones"><title>Declaration syntax</title><programlisting>
+[findresponse|findresponse Datatype - Atomia DNS API] FindZones(
+	string email,
+	string pattern,
+	int count,
+	int offset
+)
+</programlisting></section>
+<section xml:id="method-parameters-FindZones"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>email</td><td>string</td><td>the username of the account (email)</td></tr>
+<tr><td>pattern</td><td>string</td><td>the pattern to search for with SQL LIKE semantics</td></tr>
+<tr><td>count</td><td>int</td><td>the max number of zones to return</td></tr>
+<tr><td>offset</td><td>int</td><td>the offset of the first zone to return</td></tr>
+</tbody></informaltable></section>
+</section>

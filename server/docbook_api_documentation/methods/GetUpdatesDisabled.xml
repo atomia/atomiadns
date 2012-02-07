@@ -1,0 +1,7 @@
+<section xml:id="method-GetUpdatesDisabled">
+<title>GetUpdatesDisabled Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetUpdatesDisabled">Declaration syntax</link></para></listitem></itemizedlist><para>Fetch information regarding if updates are disabled or not.</para>
+<section xml:id="method-declaration-GetUpdatesDisabled"><title>Declaration syntax</title><programlisting>
+int GetUpdatesDisabled()
+</programlisting></section>
+</section>

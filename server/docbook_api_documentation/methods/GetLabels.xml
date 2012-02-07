@@ -1,0 +1,14 @@
+<section xml:id="method-GetLabels">
+<title>GetLabels Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetLabels">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-GetLabels">Parameters</link></para></listitem>
+</itemizedlist><para>Fetches a list of all labels for a specified zone.</para>
+<section xml:id="method-declaration-GetLabels"><title>Declaration syntax</title><programlisting>
+string[] GetLabels(
+	string zonename
+)
+</programlisting></section>
+<section xml:id="method-parameters-GetLabels"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+</tbody></informaltable></section>
+</section>

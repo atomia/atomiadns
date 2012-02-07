@@ -1,0 +1,8 @@
+<section xml:id="datatype-hostname">
+<title>hostname Datatype - Atomia DNS API</title>
+<para>
+[hostname|hostname Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| zone | string | the name of the zone |
+| label | string | the name of the label |
+				</para></section>

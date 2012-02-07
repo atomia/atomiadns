@@ -1,0 +1,16 @@
+<section xml:id="method-AddDnsRecords">
+<title>AddDnsRecords Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-AddDnsRecords">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-AddDnsRecords">Parameters</link></para></listitem>
+</itemizedlist><para>Adds a list of records to a zone.</para>
+<section xml:id="method-declaration-AddDnsRecords"><title>Declaration syntax</title><programlisting>
+int[] AddDnsRecords(
+	string zonename,
+	[resourcerecord|resourcerecord Datatype - Atomia DNS API][] records
+)
+</programlisting></section>
+<section xml:id="method-parameters-AddDnsRecords"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+<tr><td>records</td><td>[resourcerecord|resourcerecord Datatype - Atomia DNS API][]</td><td>an array of the records to add</td></tr>
+</tbody></informaltable></section>
+</section>

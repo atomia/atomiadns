@@ -1,0 +1,208 @@
+          <section xml:id="api-errors">
+            <title>Atomia DNS API Error handling</title>
+            <para>All methods either succeed or return a SOAP Fault.</para>
+            <para>The faults are categorized into one of three groups:</para>
+            <itemizedlist>
+              <listitem>
+                <para>
+                  <emphasis role="strong">LogicalError:</emphasis>
+                  Data is syntactically valid, but not semantically. An example is violation of a unique-constraint.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="strong">InvalidParametersError:</emphasis>
+                  Data doesn't have valid syntax
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="strong">SystemError:</emphasis>
+                  Error in the communication with the database
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  <emphasis role="strong">InternalError:</emphasis>
+                  These errors should not occur, and should be reported as bugs
+                </para>
+              </listitem>
+            </itemizedlist>
+            <para>In addition users of the DNS SOAP API will have to deal with the possibility of transport errors between the client and the SOAP Server.</para>
+            <para>The current list of thrown exceptions are:</para>
+            <informaltable>
+              <colgroup />
+              <thead>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>Exception</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>Description</para>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InternalError.UnknownException</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This means that an error occured that was not handled by the application. This should not happen.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.Bad*</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This means that some parameter had an invalid format. The exception type differs based on the parameter name, like InvalidParametersError.Badresourcerecordlabel.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.BadArray</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>An array parameter was badly formed.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.BadChangeStatus</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>Thrown when trying to update a change-row to something other than OK or ERROR.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.BadNumberOfParameters</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>Thrown when the number of parameters to a method-call is wrong.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.BadRdataFor</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This is thrown when the format of the rdata for a record is bad. The validation-rules can be found in the table allowed_type in the DNS database.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.BadType</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>The record had a type not allowed. The list of allowed types can be found in the table allowed_type in the DNS database.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>InvalidParametersError.Soa</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>The format of the SOA-record was bad.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.CNAMEAndOtherData</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>Thrown when your modification would have meant that a label in some zone got a CNAME-record together with some other record, which is not allowed.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.CrossObjectMove</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>Thrown when you try to move records cross labels or labels cross zones. This is not supported, instead you add and delete.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.DifferentTTLForSameLabelClassAndType</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>Thrown when your modification would mean that some label got two records in the same class with different TTL:s, which is not allowed.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.EmptyLabel</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This should not occur, but means that the database server didn't accept the change because a label in the database was modified to not having any records (it should be deleted in this case).</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.RecordNotFound</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>A record that the method tried to access was not found.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.SameSourceAndDestination</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This is thrown when trying to do bulk operations with the same source and destination.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.Uniqueness</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This is thrown when trying to add an object which already exists (most often a zone).</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.ZoneNotFound</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This is thrown when trying to administer a zone which doesn't exist.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>LogicalError.ZoneRequiredRecords</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This is thrown if your modification would mean that the zone didn't have a SOA and at least one NS-record.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>SystemError.DatabaseBadResult</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This means that there was an error fetching data from or updating data in the database.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>SystemError.DatabaseConnection</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This means that there was an error when connecting to the database.</para>
+                  </td>
+                </tr>
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <para>SystemError.PreparingStatement</para>
+                  </td>
+                  <td rowspan="1" colspan="1">
+                    <para>This means that there was an error preparing a statement used to access the database.</para>
+                  </td>
+                </tr>
+              </tbody>
+            </informaltable>
+          </section>

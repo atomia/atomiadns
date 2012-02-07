@@ -1,0 +1,87 @@
+            <section xml:id="scroll-bookmark-110">
+              <title>RestoreZoneBinary Method - Atomia DNS API</title>
+              <itemizedlist>
+                <listitem>
+                  <para>
+                    <link linkend="scroll-bookmark-199">Declaration syntax</link>
+                  </para>
+                </listitem>
+                <listitem>
+                  <para>
+                    <link linkend="scroll-bookmark-200">Parameters</link>
+                  </para>
+                </listitem>
+              </itemizedlist>
+              <para>Restore a complete zone (or just set all records for some other reason).</para>
+              <section xml:id="scroll-bookmark-199">
+                <title>Declaration syntax</title>
+                <sidebar>
+                  <para>
+                    void RestoreZoneBinary(
+                    <?linebreak?>
+                    string zonename,
+                    <?linebreak?>
+                    string nameservergroup,
+                    <?linebreak?>
+                    string zone
+                    <?linebreak?>
+                    )
+                  </para>
+                </sidebar>
+              </section>
+              <section xml:id="scroll-bookmark-200">
+                <title>Parameters</title>
+                <informaltable>
+                  <colgroup />
+                  <thead>
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <para>Parameter</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>Type</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>Description</para>
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <para>zonename</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>string</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>the name of the zone</para>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <para>nameservergroup</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>string</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>the nameserver group that should host the zone</para>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <para>zone</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>string</para>
+                      </td>
+                      <td rowspan="1" colspan="1">
+                        <para>the base64 encoded value of the zone to restore</para>
+                      </td>
+                    </tr>
+                  </tbody>
+                </informaltable>
+              </section>
+            </section>
+

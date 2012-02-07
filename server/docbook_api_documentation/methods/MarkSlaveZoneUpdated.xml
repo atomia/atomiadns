@@ -1,0 +1,18 @@
+<section xml:id="method-MarkSlaveZoneUpdated">
+<title>MarkSlaveZoneUpdated Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-MarkSlaveZoneUpdated">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-MarkSlaveZoneUpdated">Parameters</link></para></listitem>
+</itemizedlist><para>Mark a slave zone change-row as handled, removing it if no error occured.</para>
+<section xml:id="method-declaration-MarkSlaveZoneUpdated"><title>Declaration syntax</title><programlisting>
+void MarkSlaveZoneUpdated(
+	int changeid,
+	string changestatus,
+	string errormessage
+)
+</programlisting></section>
+<section xml:id="method-parameters-MarkSlaveZoneUpdated"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>changeid</td><td>int</td><td>the id of the change-row</td></tr>
+<tr><td>changestatus</td><td>string</td><td>ERROR or OK</td></tr>
+<tr><td>errormessage</td><td>string</td><td>error message to set if cstatus is ERROR</td></tr>
+</tbody></informaltable></section>
+</section>

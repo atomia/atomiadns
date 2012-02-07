@@ -1,0 +1,16 @@
+<section xml:id="method-EditAccount">
+<title>EditAccount Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-EditAccount">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-EditAccount">Parameters</link></para></listitem>
+</itemizedlist><para>Changes the password for an account with a specified username.</para>
+<section xml:id="method-declaration-EditAccount"><title>Declaration syntax</title><programlisting>
+void EditAccount(
+	string email,
+	string password
+)
+</programlisting></section>
+<section xml:id="method-parameters-EditAccount"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>email</td><td>string</td><td>the username of the account (email)</td></tr>
+<tr><td>password</td><td>string</td><td>the password of the account</td></tr>
+</tbody></informaltable></section>
+</section>

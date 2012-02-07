@@ -1,0 +1,18 @@
+<section xml:id="method-CopyDnsLabelBulk">
+<title>CopyDnsLabelBulk Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-CopyDnsLabelBulk">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-CopyDnsLabelBulk">Parameters</link></para></listitem>
+</itemizedlist><para>Copies all records from a label in the source zone to the same label in one or more other zones, overwriting any preexisting data.</para>
+<section xml:id="method-declaration-CopyDnsLabelBulk"><title>Declaration syntax</title><programlisting>
+void CopyDnsLabelBulk(
+	string sourcezone,
+	string label,
+	[hostname|hostname Datatype - Atomia DNS API][] destinationzones
+)
+</programlisting></section>
+<section xml:id="method-parameters-CopyDnsLabelBulk"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>sourcezone</td><td>string</td><td>the name of the source zone</td></tr>
+<tr><td>label</td><td>string</td><td>the name of the label to copy</td></tr>
+<tr><td>destinationzones</td><td>[hostname|hostname Datatype - Atomia DNS API][]</td><td>an array of the hostnames to copy the label in the source zone to</td></tr>
+</tbody></informaltable></section>
+</section>

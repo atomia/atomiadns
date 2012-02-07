@@ -1,0 +1,8 @@
+<section xml:id="datatype-binaryzone">
+<title>binaryzone Datatype - Atomia DNS API</title>
+<para>
+[binaryzone|binaryzone Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| name | string | the name of the zone |
+| binaryzone | string | a string representation of the zone, will be sent base64 encoded |
+				</para></section>

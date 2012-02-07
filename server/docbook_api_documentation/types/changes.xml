@@ -1,0 +1,3 @@
+<section xml:id="datatype-changes">
+<title>changes Datatype - Atomia DNS API</title>
+<para>[changes|changes Datatype - Atomia DNS API] is an array of [changedzone|changedzone Datatype - Atomia DNS API]-structs.</para></section>

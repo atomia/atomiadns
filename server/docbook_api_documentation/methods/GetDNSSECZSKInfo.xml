@@ -1,0 +1,7 @@
+<section xml:id="method-GetDNSSECZSKInfo">
+<title>GetDNSSECZSKInfo Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetDNSSECZSKInfo">Declaration syntax</link></para></listitem></itemizedlist><para>Fetch the needed information about all stored ZSKs to be able to perform automated ZSK rollover.</para>
+<section xml:id="method-declaration-GetDNSSECZSKInfo"><title>Declaration syntax</title><programlisting>
+[zskinfo|zskinfo Datatype - Atomia DNS API] GetDNSSECZSKInfo()
+</programlisting></section>
+</section>

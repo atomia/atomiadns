@@ -1,0 +1,8 @@
+<section xml:id="datatype-findresponse">
+<title>findresponse Datatype - Atomia DNS API</title>
+<para>
+[findresponse|findresponse Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| total | int | the number of zones matching the query |
+| zones | string[] | the zone names |
+				</para></section>

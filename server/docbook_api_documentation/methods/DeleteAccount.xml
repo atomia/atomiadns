@@ -1,0 +1,14 @@
+<section xml:id="method-DeleteAccount">
+<title>DeleteAccount Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-DeleteAccount">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-DeleteAccount">Parameters</link></para></listitem>
+</itemizedlist><para>Deletes an account.</para>
+<section xml:id="method-declaration-DeleteAccount"><title>Declaration syntax</title><programlisting>
+void DeleteAccount(
+	string email
+)
+</programlisting></section>
+<section xml:id="method-parameters-DeleteAccount"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>email</td><td>string</td><td>the username of the account (email)</td></tr>
+</tbody></informaltable></section>
+</section>

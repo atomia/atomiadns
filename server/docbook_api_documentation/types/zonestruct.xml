@@ -1,0 +1,8 @@
+<section xml:id="datatype-zonestruct">
+<title>zonestruct Datatype - Atomia DNS API</title>
+<para>
+[zonestruct|zonestruct Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| id | int | id of the zone |
+| name | string | name of the zone |
+				</para></section>

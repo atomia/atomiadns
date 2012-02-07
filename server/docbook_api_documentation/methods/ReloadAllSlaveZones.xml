@@ -1,0 +1,7 @@
+<section xml:id="method-ReloadAllSlaveZones">
+<title>ReloadAllSlaveZones Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-ReloadAllSlaveZones">Declaration syntax</link></para></listitem></itemizedlist><para>Mark all slave zones in the database as changed.</para>
+<section xml:id="method-declaration-ReloadAllSlaveZones"><title>Declaration syntax</title><programlisting>
+void ReloadAllSlaveZones()
+</programlisting></section>
+</section>

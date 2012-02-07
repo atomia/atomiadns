@@ -1,0 +1,7 @@
+<section xml:id="method-Noop">
+<title>Noop Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-Noop">Declaration syntax</link></para></listitem></itemizedlist><para>Do nothing. Meant for generating token without doing anything when authenticating.</para>
+<section xml:id="method-declaration-Noop"><title>Declaration syntax</title><programlisting>
+string Noop()
+</programlisting></section>
+</section>

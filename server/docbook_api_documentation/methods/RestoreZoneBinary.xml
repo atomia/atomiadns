@@ -1,0 +1,18 @@
+<section xml:id="method-RestoreZoneBinary">
+<title>RestoreZoneBinary Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-RestoreZoneBinary">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-RestoreZoneBinary">Parameters</link></para></listitem>
+</itemizedlist><para>Restore a complete zone (or just set all records for some other reason).</para>
+<section xml:id="method-declaration-RestoreZoneBinary"><title>Declaration syntax</title><programlisting>
+void RestoreZoneBinary(
+	string zonename,
+	string nameservergroup,
+	string zone
+)
+</programlisting></section>
+<section xml:id="method-parameters-RestoreZoneBinary"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+<tr><td>nameservergroup</td><td>string</td><td>the nameserver group that should host the zone</td></tr>
+<tr><td>zone</td><td>string</td><td>the base64 encoded value of the zone to restore</td></tr>
+</tbody></informaltable></section>
+</section>

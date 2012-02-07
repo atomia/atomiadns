@@ -1,0 +1,7 @@
+<section xml:id="method-GetAllZones">
+<title>GetAllZones Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetAllZones">Declaration syntax</link></para></listitem></itemizedlist><para>Get a list of all zones in the database.</para>
+<section xml:id="method-declaration-GetAllZones"><title>Declaration syntax</title><programlisting>
+[zones|zones Datatype - Atomia DNS API] GetAllZones()
+</programlisting></section>
+</section>

@@ -1,0 +1,14 @@
+<section xml:id="method-DeleteExternalDNSSECKey">
+<title>DeleteExternalDNSSECKey Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-DeleteExternalDNSSECKey">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-DeleteExternalDNSSECKey">Parameters</link></para></listitem>
+</itemizedlist><para>Removes an external DNSSEC key from the database.</para>
+<section xml:id="method-declaration-DeleteExternalDNSSECKey"><title>Declaration syntax</title><programlisting>
+void DeleteExternalDNSSECKey(
+	int keyid
+)
+</programlisting></section>
+<section xml:id="method-parameters-DeleteExternalDNSSECKey"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>keyid</td><td>int</td><td></td></tr>
+</tbody></informaltable></section>
+</section>

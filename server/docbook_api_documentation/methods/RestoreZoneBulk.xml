@@ -1,0 +1,18 @@
+<section xml:id="method-RestoreZoneBulk">
+<title>RestoreZoneBulk Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-RestoreZoneBulk">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-RestoreZoneBulk">Parameters</link></para></listitem>
+</itemizedlist><para>Restore several complete zones (or just set all records for some other reason).</para>
+<section xml:id="method-declaration-RestoreZoneBulk"><title>Declaration syntax</title><programlisting>
+void RestoreZoneBulk(
+	string[] zonenames,
+	string nameservergroup,
+	string[] zones
+)
+</programlisting></section>
+<section xml:id="method-parameters-RestoreZoneBulk"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonenames</td><td>string[]</td><td>the name of the zones</td></tr>
+<tr><td>nameservergroup</td><td>string</td><td>the nameserver group that should host the zones</td></tr>
+<tr><td>zones</td><td>string[]</td><td>an array of base64 encoded values each containing a zone to restore</td></tr>
+</tbody></informaltable></section>
+</section>

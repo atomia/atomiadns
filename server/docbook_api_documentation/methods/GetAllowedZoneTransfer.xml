@@ -1,0 +1,7 @@
+<section xml:id="method-GetAllowedZoneTransfer">
+<title>GetAllowedZoneTransfer Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetAllowedZoneTransfer">Declaration syntax</link></para></listitem></itemizedlist><para></para>
+<section xml:id="method-declaration-GetAllowedZoneTransfer"><title>Declaration syntax</title><programlisting>
+[allowedtransfers|allowedtransfers Datatype - Atomia DNS API] GetAllowedZoneTransfer()
+</programlisting></section>
+</section>

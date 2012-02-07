@@ -1,0 +1,16 @@
+<section xml:id="method-GetDnsRecords">
+<title>GetDnsRecords Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetDnsRecords">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-GetDnsRecords">Parameters</link></para></listitem>
+</itemizedlist><para>Fetches a list of all records for a specified zone and label.</para>
+<section xml:id="method-declaration-GetDnsRecords"><title>Declaration syntax</title><programlisting>
+[resourcerecord|resourcerecord Datatype - Atomia DNS API][] GetDnsRecords(
+	string zonename,
+	string label
+)
+</programlisting></section>
+<section xml:id="method-parameters-GetDnsRecords"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+<tr><td>label</td><td>string</td><td>the name of the label</td></tr>
+</tbody></informaltable></section>
+</section>

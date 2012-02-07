@@ -1,0 +1,16 @@
+<section xml:id="method-GetChangedZonesBatch">
+<title>GetChangedZonesBatch Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetChangedZonesBatch">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-GetChangedZonesBatch">Parameters</link></para></listitem>
+</itemizedlist><para>Fetches a list of all changed zones for a nameserver, but limit response to a number of changes.</para>
+<section xml:id="method-declaration-GetChangedZonesBatch"><title>Declaration syntax</title><programlisting>
+[changes|changes Datatype - Atomia DNS API] GetChangedZonesBatch(
+	string nameserver,
+	int num
+)
+</programlisting></section>
+<section xml:id="method-parameters-GetChangedZonesBatch"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>nameserver</td><td>string</td><td>the servername to fetch changes for</td></tr>
+<tr><td>num</td><td>int</td><td>the maximum number of changes to return</td></tr>
+</tbody></informaltable></section>
+</section>

@@ -1,0 +1,18 @@
+<section xml:id="method-MarkUpdatedBulk">
+<title>MarkUpdatedBulk Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-MarkUpdatedBulk">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-MarkUpdatedBulk">Parameters</link></para></listitem>
+</itemizedlist><para>Mark a set of change-rows as handled, removing it if no error occured.</para>
+<section xml:id="method-declaration-MarkUpdatedBulk"><title>Declaration syntax</title><programlisting>
+void MarkUpdatedBulk(
+	int[] changeids,
+	string[] changestatuses,
+	string[] errormessages
+)
+</programlisting></section>
+<section xml:id="method-parameters-MarkUpdatedBulk"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>changeids</td><td>int[]</td><td>the ids of the change-rows</td></tr>
+<tr><td>changestatuses</td><td>string[]</td><td>ERROR or OK for every change row</td></tr>
+<tr><td>errormessages</td><td>string[]</td><td>error messages to set if cstatus is ERROR</td></tr>
+</tbody></informaltable></section>
+</section>

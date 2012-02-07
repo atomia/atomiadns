@@ -1,0 +1,22 @@
+<section xml:id="method-AddSlaveZone">
+<title>AddSlaveZone Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-AddSlaveZone">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-AddSlaveZone">Parameters</link></para></listitem>
+</itemizedlist><para>Adds a new slave zone.</para>
+<section xml:id="method-declaration-AddSlaveZone"><title>Declaration syntax</title><programlisting>
+void AddSlaveZone(
+	string zonename,
+	string master_ip,
+	string nameservergroup,
+	string tsig_keyname,
+	string tsig_secret
+)
+</programlisting></section>
+<section xml:id="method-parameters-AddSlaveZone"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone</td></tr>
+<tr><td>master_ip</td><td>string</td><td>the IP-address of the master</td></tr>
+<tr><td>nameservergroup</td><td>string</td><td>the nameserver group that should host the zone</td></tr>
+<tr><td>tsig_keyname</td><td>string</td><td>the TSIG keyname</td></tr>
+<tr><td>tsig_secret</td><td>string</td><td>the TSIG secret</td></tr>
+</tbody></informaltable></section>
+</section>

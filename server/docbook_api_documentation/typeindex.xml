@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<itemizedlist>
+<listitem><para><link linkend="datatype-resourcerecord">resourcerecord Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-hostname">hostname Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-label">label Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-zone">zone Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-findresponse">findresponse Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-slavezones">slavezones Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-slavezone">slavezone Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-zonestruct">zonestruct Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-zones">zones Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-changedzone">changedzone Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-changes">changes Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-allowedtransfer">allowedtransfer Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-allowedtransfers">allowedtransfers Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-binaryzone">binaryzone Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-binaryzones">binaryzones Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-keyset">keyset Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-external_keyset">external_keyset Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-zskinfo">zskinfo Datatype - Atomia DNS API</link></para></listitem>
+</itemizedlist>
