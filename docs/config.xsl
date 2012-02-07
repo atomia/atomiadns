@@ -6,5 +6,5 @@
   <xsl:param name="admon.graphics" select="'1'"/>
   <xsl:param name="admon.graphics.path"></xsl:param>
   <xsl:param name="chunk.section.depth" select="0"></xsl:param>
-  <xsl:param name="html.stylesheet" select="'docbook.css'"/>
+  <xsl:param name="html.stylesheet" select="'resources/css/style.css'"/>
 </xsl:stylesheet>
