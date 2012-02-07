@@ -349,7 +349,7 @@
             </listitem>
             <listitem>
               <para>
-                <link linkend="scroll-bookmark-29">Installation on Ubuntu 8.04 LTS</link>
+                <link linkend="scroll-bookmark-29">Installation on Ubuntu 10.04 LTS</link>
               </para>
             </listitem>
             <listitem>
@@ -373,20 +373,17 @@
             <para>This guide will install the Atomia DNS Master server using a default installation. This means that both the Atomia DNS database and Atomia DNS API will be installed.</para>
           </section>
           <section xml:id="scroll-bookmark-29">
-            <title>Installation on Ubuntu 8.04 LTS</title>
+            <title>Installation on Ubuntu 10.04 LTS</title>
             <orderedlist>
               <listitem>
                 <para>
-                  Install Ubuntu 8.04 LTS using this guide:
-                  <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Ubuntu+8.04+LTS+GC">UCPDOC:Ubuntu 8.04 LTS GC</link>
+                  Do a standard information of Ubuntu 10.04 LTS.
                 </para>
               </listitem>
               <listitem>
                 <para>
-                  Add the Atomia APT Repository to
-                  <code>/etc/apt/sources.list</code>
-                  on all servers, see
-                  <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
+                  Add the Atomia APT Repository to the server using:
+                  <programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
                 </para>
               </listitem>
               <listitem>
@@ -481,13 +478,11 @@
           <title>Atomia DNS Master server manual installation</title>
           <para>This guide will install the Atomia DNS Master server with the Atomia DNS database on a separate server from the Atomia DNS API.</para>
           <section xml:id="scroll-bookmark-33">
-            <title>Installation on Ubuntu 8.04 LTS</title>
+            <title>Installation on Ubuntu 10.04 LTS</title>
             <orderedlist>
               <listitem>
                 <para>
-                  Install Ubuntu 8.04 LTS using this guide:
-                  <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Ubuntu+8.04+LTS+GC">UCPDOC:Ubuntu 8.04 LTS GC</link>
-                  on two servers.
+                  Do a standard information of Ubuntu 10.04 LTS on two servers.
                 </para>
               </listitem>
               <listitem>
@@ -495,10 +490,8 @@
                 <orderedlist>
                   <listitem>
                     <para>
-                      Add the Atomia APT Repository to
-                      <code>/etc/apt/sources.list</code>
-                      , see
-                      <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
+                  	Add the Atomia APT Repository to the server using:
+	                <programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
                     </para>
                   </listitem>
                   <listitem>
@@ -647,7 +640,7 @@
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-38">Updates on Ubuntu 8.04 LTS</link>
+              <link linkend="scroll-bookmark-38">Updates on Ubuntu 10.04 LTS</link>
             </para>
             <itemizedlist>
               <listitem>
@@ -677,7 +670,7 @@
           <para>If the database schema has changed, the schema on the Atomia DNS Master server will be automatically updated. If you have chosen to have the database on a separate server, you will have to update the atomiadns-database package on that server as well. All schema changes are noted in the release notes for the new version.</para>
         </section>
         <section xml:id="scroll-bookmark-38">
-          <title>Updates on Ubuntu 8.04 LTS</title>
+          <title>Updates on Ubuntu 10.04 LTS</title>
           <para>To install an update, complete the following steps:</para>
           <orderedlist>
             <listitem>
@@ -703,8 +696,9 @@
           <section xml:id="scroll-bookmark-39">
             <title>Where to get updates?</title>
             <para>
-              Updates are distributed using the
-              <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
+              Updates are distributed using the Atomia APT repository.
+		If not done, then add the Atomia APT Repository to the server using:
+		<programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
             </para>
           </section>
         </section>
@@ -728,8 +722,7 @@
           <section xml:id="scroll-bookmark-399">
             <title>Where to get updates?</title>
             <para>
-              Updates are distributed using the
-              <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+RPM+Repository">UCPDOC:Atomia RPM Repository</link>
+              Updates are distributed using the Atomia RPM repository.
             </para>
           </section>
         </section>
@@ -919,11 +912,8 @@
             </listitem>
             <listitem>
               <para>
-                Add the Atomia APT Repository to
-                <code>/etc/apt/sources.list</code>
-                on the servers, see
-                <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
-                .
+                  	Add the Atomia APT Repository to the server using:
+	                <programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
               </para>
             </listitem>
             <listitem>
@@ -1288,9 +1278,9 @@
         <section xml:id="scroll-bookmark-229">
           <title>Where to get updates?</title>
           <para>
-            Updates are distributed using the
-            <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
-            .
+              Updates are distributed using the Atomia APT repository.
+		If not done, then add the Atomia APT Repository to the server using:
+		<programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
           </para>
         </section>
         <section xml:id="scroll-bookmark-230">
@@ -1603,11 +1593,8 @@
             </listitem>
             <listitem>
               <para>
-                Add the Atomia APT Repository to
-                <code>/etc/apt/sources.list</code>
-                on the servers, see
-                <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
-                .
+                  	Add the Atomia APT Repository to the server using:
+	                <programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
               </para>
             </listitem>
             <listitem>
@@ -1841,17 +1828,13 @@
           <orderedlist>
             <listitem>
               <para>
-                Install Ubuntu 8.04 LTS using this guide:
-                <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Ubuntu+8.04+LTS+GC">UCPDOC:Ubuntu 8.04 LTS GC</link>
+                  Do a standard information of Ubuntu 10.04 LTS.
               </para>
             </listitem>
             <listitem>
               <para>
-                Add the Atomia APT Repository to
-                <code>/etc/apt/sources.list</code>
-                on the servers, see
-                <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
-                .
+                  	Add the Atomia APT Repository to the server using:
+	                <programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
               </para>
             </listitem>
             <listitem>
@@ -1971,9 +1954,9 @@
         <section xml:id="scroll-bookmark-259">
           <title>Where to get updates?</title>
           <para>
-            Updates are distributed using the
-            <link xlink:href="http://wiki.atomia.com/pages/createpage.action?spaceKey=UCPDOC&amp;title=Atomia+Apt+Repository">UCPDOC:Atomia Apt Repository</link>
-            .
+              Updates are distributed using the Atomia APT repository.
+		If not done, then add the Atomia APT Repository to the server using:
+		<programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
           </para>
         </section>
       </section>
