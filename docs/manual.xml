@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://docbook.org/ns/docbook              http://docbook.org/xml/5.0/xsd/docbook.xsd" version="5.0" xml:id="scroll-bookmark-1">
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://docbook.org/ns/docbook              http://docbook.org/xml/5.0/xsd/docbook.xsd" version="5.0" xml:id="index">
   <info>
     <title>Home</title>
   </info>
-  <section xml:id="scroll-bookmark-2">
-    <title>Atomia DNS 1.0</title>
-    <para />
-    <itemizedlist />
-    <para />
-  </section>
-  <?confluence type="page" ?>
-  <section xml:id="scroll-bookmark-3">
-    <title>Overview</title>
+  <section xml:id="overview">
+    <title>Atomia DNS Overview</title>
     <section xml:id="scroll-bookmark-4">
       <title>What is Atomia DNS</title>
       <para>Atomia DNS is a system to provision and improve administration of DNS settings across several DNS-servers. DNS-servers can be geographically spread and are optimized to handle large amounts of DNS-data by using a local database instead of zone files.</para>
@@ -119,9 +112,8 @@
       </orderedlist>
     </section>
   </section>
-  <?confluence type="page" ?>
-  <section xml:id="scroll-bookmark-6">
-    <title>Features</title>
+  <section xml:id="features">
+    <title>Atomia DNS Features</title>
     <section xml:id="scroll-bookmark-7">
       <title>Features</title>
       <para>The main features of Atomia DNS are:</para>
@@ -194,8 +186,7 @@
       </orderedlist>
     </section>
   </section>
-  <?confluence type="page" ?>
-  <section xml:id="scroll-bookmark-11">
+  <section xml:id="usage">
     <title>Usage</title>
     <itemizedlist>
       <listitem>
@@ -219,7 +210,6 @@
         </para>
       </listitem>
     </itemizedlist>
-    <?confluence type="page" ?>
     <section xml:id="scroll-bookmark-9">
       <title>Atomia DNS Master server</title>
       <section xml:id="scroll-bookmark-14">
@@ -257,7 +247,6 @@
           </listitem>
         </itemizedlist>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-16">
         <title>Atomia DNS Master server installation</title>
         <section xml:id="scroll-bookmark-21">
@@ -350,7 +339,6 @@
             .
           </para>
         </section>
-        <?confluence type="page" ?>
         <section xml:id="scroll-bookmark-23">
           <title>Atomia DNS Master server default installation</title>
           <itemizedlist>
@@ -489,7 +477,6 @@
             <title>Installation troubleshooting</title>
           </section>
         </section>
-        <?confluence type="page" ?>
         <section xml:id="scroll-bookmark-25">
           <title>Atomia DNS Master server manual installation</title>
           <para>This guide will install the Atomia DNS Master server with the Atomia DNS database on a separate server from the Atomia DNS API.</para>
@@ -564,7 +551,6 @@
           </section>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-17">
         <title>Atomia DNS Master server configuration</title>
         <para>If you use the recommended setup for the Atomia DNS Master server you don't need to edit the config file. A password is generated when creating the non-existing schema when the package is installed.</para>
@@ -651,7 +637,6 @@
           </informalexample>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-18">
         <title>Atomia DNS Master server updates</title>
         <itemizedlist>
@@ -749,7 +734,6 @@
           </section>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-19">
         <title>Atomia DNS Master server usage</title>
         <section xml:id="scroll-bookmark-41">
@@ -768,7 +752,6 @@
             .
           </para>
         </section>
-        <?confluence type="page" ?>
         <section xml:id="scroll-bookmark-42">
           <title>Atomia DNS API</title>
           <section xml:id="scroll-bookmark-44">
@@ -1149,7 +1132,6 @@
             </itemizedlist>
             <para />
           </section>
-          <?confluence type="page" ?>
           <section xml:id="scroll-bookmark-47">
             <title>Atomia DNS API Error handling</title>
             <para>All methods either succeed or return a SOAP Fault.</para>
@@ -1358,7 +1340,6 @@
               </tbody>
             </informaltable>
           </section>
-          <?confluence type="page" ?>
           <section xml:id="scroll-bookmark-48">
             <title>Atomia DNS API Datatypes</title>
             <para>Besides the standard SOAP Data types, the following types are returned by some methods:</para>
@@ -1445,7 +1426,6 @@
               </listitem>
             </itemizedlist>
             <para />
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-49">
               <title>allowedtransfer Datatype - Atomia DNS API</title>
               <para>
@@ -1493,7 +1473,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-50">
               <title>allowedtransfers Datatype - Atomia DNS API</title>
               <para>
@@ -1503,7 +1482,6 @@
                 -structs.
               </para>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-51">
               <title>binaryzone Datatype - Atomia DNS API</title>
               <para>
@@ -1551,7 +1529,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-52">
               <title>binaryzones Datatype - Atomia DNS API</title>
               <para>
@@ -1561,7 +1538,6 @@
                 -structs.
               </para>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-53">
               <title>changedzone Datatype - Atomia DNS API</title>
               <para>
@@ -1620,7 +1596,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-54">
               <title>changes Datatype - Atomia DNS API</title>
               <para>
@@ -1630,7 +1605,6 @@
                 -structs.
               </para>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-55">
               <title>hostname Datatype - Atomia DNS API</title>
               <para>
@@ -1678,7 +1652,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-56">
               <title>keyset Datatype - Atomia DNS API</title>
               <para>
@@ -1792,7 +1765,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-57">
               <title>label Datatype - Atomia DNS API</title>
               <para>
@@ -1843,7 +1815,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-58">
               <title>resourcerecord Datatype - Atomia DNS API</title>
               <para>
@@ -1935,7 +1906,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-59">
               <title>slavezone Datatype - Atomia DNS API</title>
               <para>
@@ -1983,7 +1953,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-60">
               <title>slavezones Datatype - Atomia DNS API</title>
               <para>
@@ -1993,7 +1962,6 @@
                 -structs.
               </para>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-61">
               <title>zone Datatype - Atomia DNS API</title>
               <para>
@@ -2003,7 +1971,6 @@
                 -structs.
               </para>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-62">
               <title>zones Datatype - Atomia DNS API</title>
               <para>
@@ -2013,7 +1980,6 @@
                 -structs.
               </para>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-63">
               <title>zonestruct Datatype - Atomia DNS API</title>
               <para>
@@ -2061,7 +2027,6 @@
                 </tbody>
               </informaltable>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-64">
               <title>zskinfo Datatype - Atomia DNS API</title>
               <para>
@@ -2176,7 +2141,6 @@
               </informaltable>
             </section>
           </section>
-          <?confluence type="page" ?>
           <section xml:id="scroll-bookmark-65">
             <title>Atomia DNS API Methods</title>
             <itemizedlist>
@@ -2437,7 +2401,6 @@
               </listitem>
             </itemizedlist>
             <para />
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-66">
               <title>ActivateDNSSECKey Method - Atomia DNS API</title>
               <itemizedlist>
@@ -2496,7 +2459,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-67">
               <title>AddDnsRecords Method - Atomia DNS API</title>
               <itemizedlist>
@@ -2574,7 +2536,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-68">
               <title>AddDNSSECKey Method - Atomia DNS API</title>
               <itemizedlist>
@@ -2674,7 +2635,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-69">
               <title>AddNameserverGroup Method - Atomia DNS API</title>
               <itemizedlist>
@@ -2735,7 +2695,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-70">
               <title>AddNameserver Method - Atomia DNS API</title>
               <itemizedlist>
@@ -2809,7 +2768,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-71">
               <title>AddSlaveZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -2896,7 +2854,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-72">
               <title>AddZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3074,7 +3031,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-73">
               <title>AllowZoneTransfer Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3147,7 +3103,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-74">
               <title>CopyDnsLabelBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3238,7 +3193,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-75">
               <title>CopyDnsZoneBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3312,7 +3266,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-76">
               <title>DeactivateDNSSECKey Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3371,7 +3324,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-77">
               <title>DeleteAllowedZoneTransfer Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3444,7 +3396,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-78">
               <title>DeleteDnsRecordsBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3522,7 +3473,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-79">
               <title>DeleteDnsRecords Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3600,7 +3550,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-80">
               <title>DeleteDNSSECKey Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3659,7 +3608,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-81">
               <title>DeleteNameserverGroup Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3720,7 +3668,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-82">
               <title>DeleteNameserver Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3781,7 +3728,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-83">
               <title>DeleteSlaveZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3842,7 +3788,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-84">
               <title>DeleteZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3903,7 +3848,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-85">
               <title>EditDnsRecords Method - Atomia DNS API</title>
               <itemizedlist>
@@ -3981,7 +3925,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-86">
               <title>EditZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4159,7 +4102,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-87">
               <title>GetAllowedZoneTransfer Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4179,7 +4121,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-88">
               <title>GetAllZones Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4200,7 +4141,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-89">
               <title>GetChangedSlaveZones Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4262,7 +4202,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-90">
               <title>GetChangedZonesBatch Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4337,7 +4276,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-91">
               <title>GetChangedZones Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4399,7 +4337,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-92">
               <title>GetDnsRecords Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4474,7 +4411,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-93">
               <title>GetDNSSECKeys Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4495,7 +4431,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-94">
               <title>GetDNSSECZSKInfo Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4516,7 +4451,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-95">
               <title>GetLabels Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4577,7 +4511,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-96">
               <title>GetNameserverGroup Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4638,7 +4571,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-97">
               <title>GetNameserver Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4699,7 +4631,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-98">
               <title>GetSlaveZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4761,7 +4692,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-99">
               <title>GetUpdatesDisabled Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4779,7 +4709,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-100">
               <title>GetZoneBinary Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4839,7 +4768,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-101">
               <title>GetZoneBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4901,7 +4829,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-102">
               <title>GetZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -4963,7 +4890,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-103">
               <title>MarkAllUpdatedExceptBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5037,7 +4963,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-104">
               <title>MarkAllUpdatedExcept Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5111,7 +5036,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-105">
               <title>MarkSlaveZoneUpdated Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5198,7 +5122,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-106">
               <title>MarkUpdatedBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5285,7 +5208,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-107">
               <title>MarkUpdated Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5372,7 +5294,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-108">
               <title>ReloadAllSlaveZones Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5390,7 +5311,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-109">
               <title>ReloadAllZones Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5408,7 +5328,6 @@
                 </sidebar>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-110">
               <title>RestoreZoneBinary Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5495,7 +5414,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-111">
               <title>RestoreZoneBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5582,7 +5500,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-112">
               <title>RestoreZone Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5672,7 +5589,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-113">
               <title>SetDnsRecordsBulk Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5750,7 +5666,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-114">
               <title>SetDnsRecords Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5828,7 +5743,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-115">
               <title>SetNameserverGroup Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5902,7 +5816,6 @@
                 </informaltable>
               </section>
             </section>
-            <?confluence type="page" ?>
             <section xml:id="scroll-bookmark-116">
               <title>SetUpdatesDisabled Method - Atomia DNS API</title>
               <itemizedlist>
@@ -5964,7 +5877,6 @@
               </section>
             </section>
           </section>
-          <?confluence type="page" ?>
           <section xml:id="scroll-bookmark-117">
             <title>Code Examples</title>
             <section xml:id="scroll-bookmark-213">
@@ -6144,7 +6056,6 @@
           </section>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-20">
         <title>Master database</title>
         <para>
@@ -6233,7 +6144,6 @@
         </para>
       </section>
     </section>
-    <?confluence type="page" ?>
     <section xml:id="scroll-bookmark-10">
       <title>Atomia DNS Nameserver</title>
       <section xml:id="scroll-bookmark-215">
@@ -6271,7 +6181,6 @@
           </listitem>
         </itemizedlist>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-217">
         <title>Atomia DNS Nameserver installation</title>
         <itemizedlist>
@@ -6553,7 +6462,6 @@
           <title>Installation troubleshooting</title>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-218">
         <title>Atomia DNS Nameserver configuration</title>
         <para>You have to configure the Atomia DNS Nameserver to fit your environment.</para>
@@ -6651,7 +6559,6 @@
           </para>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-219">
         <title>Atomia DNS Nameserver updates</title>
         <para>To install an update, complete the following steps:</para>
@@ -6689,7 +6596,6 @@
             .
           </para>
         </section>
-        <?confluence type="page" ?>
         <section xml:id="scroll-bookmark-230">
           <title>Atomia DNS Building new Bind-DLZ RPMS</title>
           <section xml:id="scroll-bookmark-231">
@@ -6752,7 +6658,6 @@
           </section>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-220">
         <title>Atomia DNS Nameserver usage</title>
         <section xml:id="scroll-bookmark-233">
@@ -6766,7 +6671,6 @@
             <programlisting>man atomiadnssync</programlisting>
           </informalexample>
         </section>
-        <?confluence type="page" ?>
         <section xml:id="scroll-bookmark-234">
           <title>Atomia DNS Sync manual</title>
           <section xml:id="scroll-bookmark-235">
@@ -6928,7 +6832,6 @@
           </section>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-221">
         <title>BDB databases on the nameservers</title>
         <para>
@@ -6955,7 +6858,6 @@
         </para>
       </section>
     </section>
-    <?confluence type="page" ?>
     <section xml:id="scroll-bookmark-12">
       <title>Atomia DNS PowerDNS Nameserver</title>
       <section xml:id="scroll-bookmark-242">
@@ -6973,7 +6875,6 @@
           </listitem>
         </itemizedlist>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-244">
         <title>Atomia DNS PowerDNS Nameserver installation</title>
         <itemizedlist>
@@ -7099,7 +7000,6 @@
         </section>
       </section>
     </section>
-    <?confluence type="page" ?>
     <section xml:id="scroll-bookmark-13">
       <title>Atomia DNS DynDNS</title>
       <section xml:id="scroll-bookmark-248">
@@ -7149,7 +7049,6 @@
           </listitem>
         </itemizedlist>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-250">
         <title>Atomia DNS DynDNS configuration</title>
         <para>You have to configure the Atomia DNS DynDNS server to fit your environment.</para>
@@ -7238,7 +7137,6 @@
           </para>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-251">
         <title>Atomia DNS DynDNS installation</title>
         <section xml:id="scroll-bookmark-257">
@@ -7334,7 +7232,6 @@
           </para>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-252">
         <title>Architecture</title>
         <para>
@@ -7345,7 +7242,6 @@
           prerequisite checks and/or updates.
         </para>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-253">
         <title>Atomia DNS DynDNS updates</title>
         <para>To install an update, complete the following steps:</para>
@@ -7384,7 +7280,6 @@
           </para>
         </section>
       </section>
-      <?confluence type="page" ?>
       <section xml:id="scroll-bookmark-254">
         <title>Client applications</title>
         <para>
@@ -7422,8 +7317,7 @@
       </section>
     </section>
   </section>
-  <?confluence type="page" ?>
-  <section xml:id="scroll-bookmark-260">
+  <section xml:id="faq">
     <title>FAQ</title>
     <itemizedlist>
       <listitem>

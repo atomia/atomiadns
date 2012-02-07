@@ -5,6 +5,6 @@
   <xsl:param name="use.id.as.filename" select="'1'"/>
   <xsl:param name="admon.graphics" select="'1'"/>
   <xsl:param name="admon.graphics.path"></xsl:param>
-  <xsl:param name="chunk.section.depth" select="0"></xsl:param>
+  <xsl:param name="chunk.section.depth" select="1"></xsl:param>
   <xsl:param name="html.stylesheet" select="'resources/css/style.css'"/>
 </xsl:stylesheet>
