@@ -1,3 +1,3 @@
 <section xml:id="datatype-allowedtransfers">
 <title>allowedtransfers Datatype - Atomia DNS API</title>
-<para>[allowedtransfers|allowedtransfers Datatype - Atomia DNS API] is an array of [allowedtransfer|allowedtransfer Datatype - Atomia DNS API]-structs.</para></section>
+<para><link linkend="datatype-allowedtransfers">allowedtransfers</link> is an array of <link linkend="datatype-allowedtransfer">allowedtransfer</link>-structs.</para></section>

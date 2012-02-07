@@ -1,14 +1,16 @@
 <section xml:id="datatype-keyset">
 <title>keyset Datatype - Atomia DNS API</title>
 <para>
-[keyset|keyset Datatype - Atomia DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| id | int | the id of the key |
-| algorithm | string | the algorithm of the key |
-| activated | int | 0 if the key is inactive and 1 if it is active |
-| keysize | int | the size of the key in bits |
-| keytype | string | ZSK or KSK |
-| activated_at | string | the date of the key activation or empty if not activated |
-| deactivated_at | string | the date of the key deactivation or empty if not deactivated |
-| keydata | string | the private key in Private-key-format v1.2 |
+<link linkend="datatype-keyset">keyset</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>id</td><td>int</td><td>the id of the key</td></tr>
+<tr><td>algorithm</td><td>string</td><td>the algorithm of the key</td></tr>
+<tr><td>activated</td><td>int</td><td>0 if the key is inactive and 1 if it is active</td></tr>
+<tr><td>keysize</td><td>int</td><td>the size of the key in bits</td></tr>
+<tr><td>keytype</td><td>string</td><td>ZSK or KSK</td></tr>
+<tr><td>activated_at</td><td>string</td><td>the date of the key activation or empty if not activated</td></tr>
+<tr><td>deactivated_at</td><td>string</td><td>the date of the key deactivation or empty if not deactivated</td></tr>
+<tr><td>keydata</td><td>string</td><td>the private key in Private-key-format v1.2</td></tr>
+</tbody></informaltable>
+
 				</para></section>

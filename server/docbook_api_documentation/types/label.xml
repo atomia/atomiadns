@@ -1,8 +1,10 @@
 <section xml:id="datatype-label">
 <title>label Datatype - Atomia DNS API</title>
 <para>
-[label|label Datatype - Atomia DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| name | string | the name of the label |
-| records | [resourcerecord|resourcerecord Datatype - Atomia DNS API][] | an array of resourcerecords |
+<link linkend="datatype-label">label</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>name</td><td>string</td><td>the name of the label</td></tr>
+<tr><td>records</td><td><link linkend="datatype-resourcerecord">resourcerecord</link>[]</td><td>an array of resourcerecords</td></tr>
+</tbody></informaltable>
+
 				</para></section>

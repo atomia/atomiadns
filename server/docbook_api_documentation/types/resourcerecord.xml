@@ -1,13 +1,15 @@
 <section xml:id="datatype-resourcerecord">
 <title>resourcerecord Datatype - Atomia DNS API</title>
 <para>
-[resourcerecord|resourcerecord Datatype - Atomia DNS API] is a struct with the following members:
+<link linkend="datatype-resourcerecord">resourcerecord</link> is a struct with the following members:
 
-|| Member || Type || Description ||
-| id | int | the id of the record |
-| label | string | the label of the record |
-| class | string | the DNS class, almost always IN |
-| ttl | int | the time in seconds which it is valid to cache the record for |
-| type | string | the DNS type of the record |
-| rdata | string | the data of the record, an example for MX would be '10 mailserver.acompany.com.' |
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>id</td><td>int</td><td>the id of the record</td></tr>
+<tr><td>label</td><td>string</td><td>the label of the record</td></tr>
+<tr><td>class</td><td>string</td><td>the DNS class, almost always IN</td></tr>
+<tr><td>ttl</td><td>int</td><td>the time in seconds which it is valid to cache the record for</td></tr>
+<tr><td>type</td><td>string</td><td>the DNS type of the record</td></tr>
+<tr><td>rdata</td><td>string</td><td>the data of the record, an example for MX would be '10 mailserver.acompany.com.'</td></tr>
+</tbody></informaltable>
+
 				</para></section>

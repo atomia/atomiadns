@@ -1,8 +1,10 @@
 <section xml:id="datatype-external_keyset">
 <title>external_keyset Datatype - Atomia DNS API</title>
 <para>
-[external_keyset|external_keyset Datatype - Atomia DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| id | int | the id of the key |
-| keydata | string | the key in DNSKEY RR format |
+<link linkend="datatype-external_keyset">external_keyset</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>id</td><td>int</td><td>the id of the key</td></tr>
+<tr><td>keydata</td><td>string</td><td>the key in DNSKEY RR format</td></tr>
+</tbody></informaltable>
+
 				</para></section>

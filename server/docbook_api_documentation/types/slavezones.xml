@@ -1,3 +1,3 @@
 <section xml:id="datatype-slavezones">
 <title>slavezones Datatype - Atomia DNS API</title>
-<para>[slavezones|slavezones Datatype - Atomia DNS API] is an array of [slavezone|slavezone Datatype - Atomia DNS API]-structs.</para></section>
+<para><link linkend="datatype-slavezones">slavezones</link> is an array of <link linkend="datatype-slavezone">slavezone</link>-structs.</para></section>

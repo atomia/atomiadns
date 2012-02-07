@@ -212,6 +212,13 @@ sub print_type {
 	mkdir($directory) unless -d $directory;
 	mkdir("$directory/types") unless -d "$directory/types";
 
+	$documentation =~ s/\[(.*?)\|\1 Datatype - Atomia DNS API\]/<link linkend="datatype-$1">$1<\/link>/g;
+	$documentation =~ s/\|\| Member \|\| Type \|\| Description \|\|/<informaltable><colgroup \/><thead><tr><td><para>Parameter<\/para><\/td><td><para>Type<\/para><\/td><td><para>Description<\/para><\/td><\/tr><\/thead><tbody>/g;
+	$documentation =~ s/^\| /<tr><td>/gm;
+	$documentation =~ s/ \|$/<\/td><\/tr>/gm;
+	$documentation =~ s/ \| /<\/td><td>/g;
+	$documentation =~ s/{excerpt:hidden=true}{excerpt}/<\/tbody><\/informaltable>\n/;
+
 	open OUTPUT, ">$directory/types/$typename.xml";
 	print OUTPUT "<section xml:id=\"datatype-$typename\">\n";
 	print OUTPUT "<title>$typename Datatype - Atomia DNS API</title>\n";

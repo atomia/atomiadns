@@ -1,8 +1,10 @@
 <section xml:id="datatype-slavezone">
 <title>slavezone Datatype - Atomia DNS API</title>
 <para>
-[slavezone|slavezone Datatype - Atomia DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| name | string | the name of the slave zone |
-| master | string | the ip-address of the master |
+<link linkend="datatype-slavezone">slavezone</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>name</td><td>string</td><td>the name of the slave zone</td></tr>
+<tr><td>master</td><td>string</td><td>the ip-address of the master</td></tr>
+</tbody></informaltable>
+
 				</para></section>

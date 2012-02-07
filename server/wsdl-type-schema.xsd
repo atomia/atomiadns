@@ -61,6 +61,7 @@ atomiaResourceRecord is a struct with the following members:
 | ttl | int | the time in seconds which it is valid to cache the record for |
 | type | string | the DNS type of the record |
 | rdata | string | the data of the record, an example for MX would be '10 mailserver.acompany.com.' |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
@@ -84,6 +85,7 @@ atomiaHostname is a struct with the following members:
 || Member || Type || Description ||
 | zone | string | the name of the zone |
 | label | string | the name of the label |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"/>
@@ -103,6 +105,7 @@ atomiaLabel is a struct with the following members:
 || Member || Type || Description ||
 | name | string | the name of the label |
 | records | atomiaRecordArray | an array of resourcerecords |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
@@ -123,6 +126,7 @@ atomiaFindResponse is a struct with the following members:
 || Member || Type || Description ||
 | total | int | the number of zones matching the query |
 | zones | string[] | the zone names |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
 					<xsd:element minOccurs="1" maxOccurs="1" name="total" type="xsd:int"/>
@@ -143,6 +147,7 @@ atomiaSlaveZoneItem is a struct with the following members:
 || Member || Type || Description ||
 | name | string | the name of the slave zone |
 | master | string | the ip-address of the master |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"/>
@@ -156,6 +161,7 @@ atomiaZoneStruct is a struct with the following members:
 || Member || Type || Description ||
 | id | int | id of the zone |
 | name | string | name of the zone |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
@@ -177,6 +183,7 @@ atomiaChangedZone is a struct with the following members:
 | id | int | the id of the change-row |
 | name | string | the name of the zone this change-row applies to |
 | changetime | int | he unix timestamp of this change (will be used as serial in SOA) |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
@@ -198,6 +205,7 @@ atomiaTransferAllowed is a struct with the following members:
 || Member || Type || Description ||
 | zonename | string | the name of the zone for which transfers are allowed, or * to allow for all zones |
 | allowed_ip | string | the IP to allow transfers from |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"/>
@@ -218,6 +226,7 @@ atomiaBinaryZone is a struct with the following members:
 || Member || Type || Description ||
 | name | string | the name of the zone |
 | binaryzone | string | a string representation of the zone, will be sent base64 encoded |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
@@ -244,6 +253,7 @@ atomiaKeySet is a struct with the following members:
 | activated_at | string | the date of the key activation or empty if not activated |
 | deactivated_at | string | the date of the key deactivation or empty if not deactivated |
 | keydata | string | the private key in Private-key-format v1.2 |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
@@ -263,6 +273,7 @@ atomiaExternalKeySet is a struct with the following members:
 || Member || Type || Description ||
 | id | int | the id of the key |
 | keydata | string | the key in DNSKEY RR format |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
@@ -282,6 +293,7 @@ atomiaZSKInfo is a struct with the following members:
 | created_ago_seconds | int | the number of seconds since the key creation |
 | deactivated_ago_seconds | int | the number of seconds since the key deactivation |
 | max_ttl | int | the maximum TTL of all records in this instance of Atomia DNS |
+{excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
 					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>

@@ -1,14 +1,16 @@
 <section xml:id="datatype-zskinfo">
 <title>zskinfo Datatype - Atomia DNS API</title>
 <para>
-[zskinfo|zskinfo Datatype - Atomia DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| id | int | the id of the key |
-| activated | int | 0 if the key is inactive and 1 if it is active |
-| created_at | string | the date of the key creation |
-| activated_at | string | the date of the key activation or empty if not activated |
-| deactivated_at | string | the date of the key deactivation or empty if not deactivated |
-| created_ago_seconds | int | the number of seconds since the key creation |
-| deactivated_ago_seconds | int | the number of seconds since the key deactivation |
-| max_ttl | int | the maximum TTL of all records in this instance of Atomia DNS |
+<link linkend="datatype-zskinfo">zskinfo</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>id</td><td>int</td><td>the id of the key</td></tr>
+<tr><td>activated</td><td>int</td><td>0 if the key is inactive and 1 if it is active</td></tr>
+<tr><td>created_at</td><td>string</td><td>the date of the key creation</td></tr>
+<tr><td>activated_at</td><td>string</td><td>the date of the key activation or empty if not activated</td></tr>
+<tr><td>deactivated_at</td><td>string</td><td>the date of the key deactivation or empty if not deactivated</td></tr>
+<tr><td>created_ago_seconds</td><td>int</td><td>the number of seconds since the key creation</td></tr>
+<tr><td>deactivated_ago_seconds</td><td>int</td><td>the number of seconds since the key deactivation</td></tr>
+<tr><td>max_ttl</td><td>int</td><td>the maximum TTL of all records in this instance of Atomia DNS</td></tr>
+</tbody></informaltable>
+
 				</para></section>

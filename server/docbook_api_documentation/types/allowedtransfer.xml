@@ -1,8 +1,10 @@
 <section xml:id="datatype-allowedtransfer">
 <title>allowedtransfer Datatype - Atomia DNS API</title>
 <para>
-[allowedtransfer|allowedtransfer Datatype - Atomia DNS API] is a struct with the following members:
-|| Member || Type || Description ||
-| zonename | string | the name of the zone for which transfers are allowed, or * to allow for all zones |
-| allowed_ip | string | the IP to allow transfers from |
+<link linkend="datatype-allowedtransfer">allowedtransfer</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zonename</td><td>string</td><td>the name of the zone for which transfers are allowed, or * to allow for all zones</td></tr>
+<tr><td>allowed_ip</td><td>string</td><td>the IP to allow transfers from</td></tr>
+</tbody></informaltable>
+
 				</para></section>
