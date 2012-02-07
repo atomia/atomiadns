@@ -22,7 +22,7 @@ unset TMPDIR
 start() {
         KIND="Atomia DNS PowerDNS sync daemon"
 	echo -n $"Starting $KIND services: "
-	daemon --user named --check atomiapowerdnssync "sh -c 'atomiapowerdnssync updated 2>&1 | logger -t atomiapowerdnssync_updated &'"
+	daemon --check atomiapowerdnssync "sh -c 'atomiapowerdnssync updated 2>&1 | logger -t atomiapowerdnssync_updated &'"
 	RETVAL=$?
 	echo
 	return $RETVAL

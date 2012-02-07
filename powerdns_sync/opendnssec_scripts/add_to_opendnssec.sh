@@ -1,6 +1,9 @@
 #!/bin/sh
 
-ods_control="/usr/sbin/ods-control"
+ods_control=`whereis ods-control | awk '{ print $2 }'`
+if [ -z "$ods_control" ]; then
+	ods_control="ods-control"
+fi
 
 if [ -z "$1" ]; then
 	echo "usage: $0 zone"

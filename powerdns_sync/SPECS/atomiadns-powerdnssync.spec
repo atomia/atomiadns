@@ -1,7 +1,7 @@
 %define perl_vendorlib %(eval "`%{__perl} -V:installvendorlib`"; echo $installvendorlib)
 %define perl_vendorarch %(eval "`%{__perl} -V:installvendorarch`"; echo $installvendorarch)
 
-%define sourcedir syncer
+%define sourcedir powerdns_sync
 
 Summary: Atomia DNS PowerDNS Sync application
 Name: atomiadns-powerdnssync
@@ -41,6 +41,9 @@ Atomia DNS PowerDNS Sync application.
 %{__cp} SPECS/atomiadns-atomiapowerdnssync.init %{buildroot}/etc/init.d/atomiapowerdnssync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf.atomiapowerdnssync %{buildroot}/usr/share/atomia/conf/
+%{__mkdir} -p %{buildroot}/usr/share/atomia/opendnssec_scripts
+%{__cp} opendnssec_scripts/*.sh %{buildroot}/usr/share/atomia/opendnssec_scripts
+%{__cp} schema/powerdns.sql %{buildroot}/usr/share/atomia
 
 %clean
 %{__rm} -rf %{buildroot}
@@ -49,8 +52,11 @@ Atomia DNS PowerDNS Sync application.
 %defattr(-,root,root,-)
 /usr/bin/atomiapowerdnssync
 /usr/share/atomia/conf/atomiadns.conf.atomiapowerdnssync
+/usr/share/atomia/opendnssec_scripts
+/usr/share/atomia/powerdns.sql
 /etc/init.d/atomiapowerdnssync
 %{perl_vendorlib}/Atomia/DNS/PowerDNSSyncer.pm
+%{perl_vendorlib}/Atomia/DNS/PowerDNSDatabase.pm
 %doc %{_mandir}/man1/atomiapowerdnssync.1.gz
 
 %post

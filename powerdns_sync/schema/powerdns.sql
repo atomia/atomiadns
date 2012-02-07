@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (9);
+INSERT INTO powerdns_schemaversion VALUES (10);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -193,13 +193,15 @@ CREATE TABLE `supermasters` (
 /*!50001 VIEW `domainmetadata` AS 
 SELECT
   d.id AS domain_id,
-  IF(d.type IN ('NATIVE', 'MASTER'), g.kind, 'AXFR-MASTER-TSIG') AS kind,
-  IF(d.type IN ('NATIVE', 'MASTER'), 
-    g.content,
+  IF(d.type IN ('NATIVE', 'MASTER'), IF(g.kind IS NULL, gp.kind, g.kind), 'AXFR-MASTER-TSIG') AS kind,
+  IF(d.type IN ('NATIVE', 'MASTER'),
+    IF(g.kind IS NULL, gp.content, g.content),
     concat('key', k.id, ':', lcase(k.name))) AS content
 FROM domains d
-LEFT JOIN global_domainmetadata g ON d.type IN ('NATIVE', 'MASTER') AND 
+LEFT JOIN global_domainmetadata g ON d.type IN ('NATIVE', 'MASTER') AND
   (SELECT count(0) FROM global_cryptokeys) > 0
+LEFT JOIN global_domainmetadata gp ON g.kind IS NULL AND d.type = 'MASTER' AND
+  (SELECT count(0) FROM global_cryptokeys) = 0
 LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
 WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE')
 */;
