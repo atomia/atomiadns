@@ -15,6 +15,7 @@ included.
 
 In addition Atomia DNS includes a number of clients for making management
 simple, in no particular order:
+
 * Command line management through atomiadnsclient (atomiadns-client)
 * Web-management through atomiadns-webapp
 * Zone-file import through atomiadns-zoneimport
@@ -23,7 +24,7 @@ simple, in no particular order:
 License
 -------
 
-Atomia DNS uses the ISC-license. See LICENSE.txt for details.
+Atomia DNS uses the ISC-license. See [https://github.com/atomia/atomiadns/blob/develop/LICENSE.txt](LICENSE.txt) for details.
 
 More information
 ----------------
