@@ -5,13 +5,13 @@
   </info>
   <section xml:id="overview">
     <title>Atomia DNS Overview</title>
-    <section xml:id="scroll-bookmark-4">
+    <section xml:id="overview-whatis">
       <title>What is Atomia DNS</title>
       <para>Atomia DNS is a system to provision and improve administration of DNS settings across several DNS-servers. DNS-servers can be geographically spread and are optimized to handle large amounts of DNS-data by using a local database instead of zone files.</para>
       <para>The local databases of individual DNS-servers are updated from a main database which contains data for all servers.</para>
       <para>Atomia DNS provides a API which lets applications update DNS-data in a very simple way.</para>
     </section>
-    <section xml:id="scroll-bookmark-5">
+    <section xml:id="overview-system">
       <title>System overview</title>
       <para>Atomia DNS is a DNS system which enables easy management of DNS zones through a programmatic SOAP interface. The system consists of several parts which are described below.</para>
       <para>
@@ -79,8 +79,29 @@
         </listitem>
         <listitem>
           <para>
-            <emphasis role="strong">Atomia DNS Nameserver:</emphasis>
+            <emphasis role="strong">Atomia DNS PowerDNS Nameserver:</emphasis>
             One or more nameservers controlled by the system.
+          </para>
+          <orderedlist>
+            <listitem>
+              <para>
+                <emphasis role="strong">Sync application:</emphasis>
+                Synchronizes data between the Atomia DNS database and the local DNS database on the nameserver. The sync application on the nameserver nodes is provided by the package atomiadns-powerdnssync. The sync application will write data to the local MySQL database.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="strong">PowerDNS:</emphasis>
+                The nameserver software used, can be found at <link xlink:href="http://powerdnssec.org/downloads/packages/">http://powerdnssec.org/downloads/packages/</link>.
+              </para>
+            </listitem>
+          </orderedlist>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="strong">Atomia DNS Bind-DLZ Nameserver:</emphasis>
+            One or more nameservers controlled by the system.
+            <note>We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</note>
           </para>
           <orderedlist>
             <listitem>
@@ -114,7 +135,7 @@
   </section>
   <section xml:id="features">
     <title>Atomia DNS Features</title>
-    <section xml:id="scroll-bookmark-7">
+    <section xml:id="features-mainfeatures">
       <title>Features</title>
       <para>The main features of Atomia DNS are:</para>
       <itemizedlist>
@@ -161,14 +182,14 @@
         <emphasis role="italics">This is a example infrastructure setup where DNS servers are placed in different data centers. The Atomia DNS API and Atomia DNS database can either be installed on the same machine (default) or on separate machines.</emphasis>
       </para>
     </section>
-    <section xml:id="scroll-bookmark-8">
+    <section xml:id="features-functionality">
       <title>Atomia DNS functionality</title>
       <para>The Atomia DNS system consists of:</para>
       <orderedlist>
         <listitem>
           <para>
             <emphasis role="strong">
-              <link linkend="scroll-bookmark-9">Atomia DNS Master server</link>
+              <link linkend="usage-master-server">Atomia DNS Master server</link>
             </emphasis>
             <emphasis role="strong">:</emphasis>
             The master server includes the Atomia DNS API that is used for communicating with nameservers and also used by external applications to provision DNS-data. Also on the master server is the Atomia DNS database which contains DNS-settings for all nameservers. It's possible to install the Atomia DNS API and Atomia DNS database on different machines.
@@ -177,10 +198,20 @@
         <listitem>
           <para>
             <emphasis role="strong">
-              <link linkend="scroll-bookmark-10">Atomia DNS Nameserver</link>
+              <link linkend="usage-powerdns">Atomia DNS PowerDNS Nameserver</link>
+            </emphasis>
+            <emphasis role="strong">:</emphasis>
+            The nameserver includes the popular PowerDNS nameserver configured to use a local MySQL database for zone data. All nameservers will also have the Atomia DNS PowerDNS Sync application installed which provisions changes to the local database and also settings and keys needed for DNSSEC.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="strong">
+              <link linkend="usage-bind-dlz">Optional Atomia DNS Bind-DLZ Nameserver</link>
             </emphasis>
             <emphasis role="strong">:</emphasis>
             The nameserver includes the popular BIND nameserver configured to use a local database instead of zone files. All nameservers will also have the Atomia DNS Sync application installed which provisions changes to the local database and also settings for BIND from the data in the Atomia DNS database.
+            <note>We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</note>
           </para>
         </listitem>
       </orderedlist>
@@ -191,87 +222,96 @@
     <itemizedlist>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-9">Atomia DNS Master server</link>
+          <link linkend="usage-master-server">Atomia DNS Master server</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-10">Atomia DNS Nameserver</link>
+          <link linkend="usage-bind-dlz">Atomia DNS Bind-DLZ Nameserver</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-12">Atomia DNS PowerDNS Nameserver</link>
+          <link linkend="usage-powerdns">Atomia DNS PowerDNS Nameserver</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-13">Atomia DNS DynDNS</link>
+          <link linkend="usage-dyndns">Atomia DNS DynDNS</link>
         </para>
       </listitem>
     </itemizedlist>
-    <section xml:id="scroll-bookmark-9">
+    <section xml:id="usage-master-server">
       <title>Atomia DNS Master server</title>
-      <section xml:id="scroll-bookmark-14">
+      <section xml:id="usage-master-whatis">
         <title>What is the Atomia DNS Master server?</title>
         <para>The master server includes the Atomia DNS API that is used for communicating with the nameservers and also used by external applications to provision DNS data. Also on the master server is the Atomia DNS database which contains DNS settings for all nameservers. It is possible to install the Atomia DNS API and Atomia DNS database on different machines.</para>
       </section>
-      <section xml:id="scroll-bookmark-15">
+      <section xml:id="usage-master-docs">
         <title>Atomia DNS Master server documentation</title>
         <para>Please locate the desired information in one of the following sections:</para>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-16">Atomia DNS Master server installation</link>
+              <link linkend="usage-master-installation">Atomia DNS Master server installation</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-17">Atomia DNS Master server configuration</link>
+              <link linkend="usage-master-configuration">Atomia DNS Master server configuration</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-18">Atomia DNS Master server updates</link>
+              <link linkend="usage-master-updates">Atomia DNS Master server updates</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-19">Atomia DNS Master server usage</link>
+              <link linkend="usage-master-usage">Atomia DNS Master server usage</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-20">Atomia DNS Master server technical information</link>
+              <link linkend="usage-master-techinfo">Atomia DNS Master server technical information</link>
             </para>
           </listitem>
         </itemizedlist>
       </section>
-      <section xml:id="scroll-bookmark-16">
+      <section xml:id="usage-master-installation">
         <title>Atomia DNS Master server installation</title>
-        <section xml:id="scroll-bookmark-21">
+        <section xml:id="usage-master-installation-types">
           <title>Installation</title>
-          <para>The Atomia DNS Master server consists of two different parts, the Atomia DNS database and the Atomia DNS API. It is possible to install the Atomia DNS Master server either with the database and the API on the same machine or on different machines. The default and recommended way is to install both on the same machine.</para>
-          <section xml:id="scroll-bookmark-22">
+          <para>The Atomia DNS Master server consists of two different parts, the Atomia DNS database and the Atomia DNS API. It is possible to install the Atomia DNS Master server either with the database and the API on the same machine or on different machines. The default and recommended way is to install both on the same machine. In addition, if you want to use DNSSEC, it consists of an optional step where you add the initial DNSSEC keyset.</para>
+          <section xml:id="usage-master-installation-default-header">
             <title>Default installation</title>
             <para>The default installation will install both the Atomia DNS database and the Atomia DNS API.</para>
             <para>
               See
-              <link linkend="scroll-bookmark-23">Atomia DNS Master server default installation</link>
+              <link linkend="usage-master-installation-default">Atomia DNS Master server default installation</link>
               for instructions.
             </para>
           </section>
-          <section xml:id="scroll-bookmark-24">
+          <section xml:id="usage-master-installation-manual-header">
             <title>Manual installation</title>
             <para>Using the manual installation guide you can install separate packages and have the Atomia DNS database and the Atomia DNS API on separate machines.</para>
             <para>
               See
-              <link linkend="scroll-bookmark-25">Atomia DNS Master server manual installation</link>
+              <link linkend="usage-master-installation-manual">Atomia DNS Master server manual installation</link>
+              for instructions.
+            </para>
+          </section>
+          <section xml:id="usage-master-installation-dnssec-header">
+            <title>Creating the initial DNSSEC keyset</title>
+            <para>For using DNSSEC you need to create the initial keys used to sign your zones.</para>
+            <para>
+              See
+              <link linkend="usage-master-installation-dnssec">Creating the initial DNSSEC keyset</link>
               for instructions.
             </para>
           </section>
         </section>
-        <section xml:id="scroll-bookmark-26">
+        <section xml:id="usage-master-installation-schema">
           <title>The database schema</title>
           <para>
             The package will create a database called
@@ -293,7 +333,7 @@
             you need to remove or rename that database, or manually install the latest version of the schema to the database, then rerun the installer.
           </para>
         </section>
-        <section xml:id="scroll-bookmark-27">
+        <section xml:id="usage-master-installation-software">
           <title>Software used by Atomia DNS Master server</title>
           <para>On the Atomia DNS Master server the following software is needed (in the recommended installation with Atomia DNS API and Atomia DNS database on the same machine):</para>
           <itemizedlist>
@@ -339,40 +379,40 @@
             .
           </para>
         </section>
-        <section xml:id="scroll-bookmark-23">
+        <section xml:id="usage-master-installation-default">
           <title>Atomia DNS Master server default installation</title>
           <itemizedlist>
             <listitem>
               <para>
-                <link linkend="scroll-bookmark-28">Introduction</link>
+                <link linkend="usage-master-installation-default-intro">Introduction</link>
               </para>
             </listitem>
             <listitem>
               <para>
-                <link linkend="scroll-bookmark-29">Installation on Ubuntu 10.04 LTS</link>
+                <link linkend="usage-master-installation-default-ubuntu">Installation on Ubuntu 10.04 LTS</link>
               </para>
             </listitem>
             <listitem>
               <para>
-                <link linkend="scroll-bookmark-30">Installation on Redhat Enterprise Linux 4</link>
+                <link linkend="usage-master-installation-default-rhel4">Installation on Redhat Enterprise Linux 4</link>
               </para>
             </listitem>
             <listitem>
               <para>
-                <link linkend="scroll-bookmark-31">Installation on Redhat Enterprise Linux 5</link>
+                <link linkend="usage-master-installation-default-rhel5">Installation on Redhat Enterprise Linux 5</link>
               </para>
             </listitem>
             <listitem>
               <para>
-                <link linkend="scroll-bookmark-32">Installation troubleshooting</link>
+                <link linkend="usage-master-installation-default-troubleshoot">Installation troubleshooting</link>
               </para>
             </listitem>
           </itemizedlist>
-          <section xml:id="scroll-bookmark-28">
+          <section xml:id="usage-master-installation-default-intro">
             <title>Introduction</title>
             <para>This guide will install the Atomia DNS Master server using a default installation. This means that both the Atomia DNS database and Atomia DNS API will be installed.</para>
           </section>
-          <section xml:id="scroll-bookmark-29">
+          <section xml:id="usage-master-installation-default-ubuntu">
             <title>Installation on Ubuntu 10.04 LTS</title>
             <orderedlist>
               <listitem>
@@ -398,9 +438,15 @@
                   <programlisting>apt-get install atomiadns-masterserver</programlisting>
                 </informalexample>
               </listitem>
+              <listitem>
+                <para>Add the initial DNSSEC keyset (optional):</para>
+            	<para>
+			See <link linkend="usage-master-installation-dnssec">Creating the initial DNSSEC keyset</link> for instructions.
+		</para>
+              </listitem>
             </orderedlist>
           </section>
-          <section xml:id="scroll-bookmark-30">
+          <section xml:id="usage-master-installation-default-rhel4">
             <title>Installation on Redhat Enterprise Linux 4</title>
             <orderedlist>
               <listitem>
@@ -435,7 +481,7 @@
               </listitem>
             </orderedlist>
           </section>
-          <section xml:id="scroll-bookmark-31">
+          <section xml:id="usage-master-installation-default-rhel5">
             <title>Installation on Redhat Enterprise Linux 5</title>
             <orderedlist>
               <listitem>
@@ -470,14 +516,14 @@
               </listitem>
             </orderedlist>
           </section>
-          <section xml:id="scroll-bookmark-32">
+          <section xml:id="usage-master-installation-default-troubleshoot">
             <title>Installation troubleshooting</title>
           </section>
         </section>
-        <section xml:id="scroll-bookmark-25">
+        <section xml:id="usage-master-installation-manual">
           <title>Atomia DNS Master server manual installation</title>
           <para>This guide will install the Atomia DNS Master server with the Atomia DNS database on a separate server from the Atomia DNS API.</para>
-          <section xml:id="scroll-bookmark-33">
+          <section xml:id="usage-master-installation-manual-ubuntu">
             <title>Installation on Ubuntu 10.04 LTS</title>
             <orderedlist>
               <listitem>
@@ -526,7 +572,7 @@
               </listitem>
             </orderedlist>
           </section>
-          <section xml:id="scroll-bookmark-34">
+          <section xml:id="usage-master-installation-manual-rhel4">
             <title>Installation on Red Hat Enterprise Linux 4</title>
             <note>
               <title>Missing documentation</title>
@@ -534,7 +580,7 @@
             </note>
             <para />
           </section>
-          <section xml:id="scroll-bookmark-35">
+          <section xml:id="usage-master-installation-manual-rhel5">
             <title>Installation on Red Hat Enterprise Linux 5</title>
             <note>
               <title>Missing documentation</title>
@@ -543,11 +589,23 @@
             <para />
           </section>
         </section>
+        <section xml:id="usage-master-installation-dnssec">
+          <title>Creating the initial DNSSEC keyset</title>
+          <para>If you want all zones to be signed, then after the Atomia DNS API server is installed you need to create the initial DNSSEC key set.
+          In addition you will need to use a nameserver synchronization agent that supports DNSSEC; at the moment this means the PowerDNS agent.</para>
+          <para>The DNSSEC setup is completed by executing the following steps:</para>
+          <orderedlist>
+            <listitem><para>Install the command line client:</para><informalexample><programlisting>apt-get install atomiadns-client</programlisting></informalexample></listitem>
+            <listitem><para>Add the active key signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 2048 --arg KSK --arg 1</programlisting></informalexample></listitem>
+            <listitem><para>Add the active zone signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 1</programlisting></informalexample></listitem>
+            <listitem><para>Add the inactive zone signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 0</programlisting></informalexample></listitem>
+          </orderedlist>
+        </section>
       </section>
-      <section xml:id="scroll-bookmark-17">
+      <section xml:id="usage-master-configuration">
         <title>Atomia DNS Master server configuration</title>
         <para>If you use the recommended setup for the Atomia DNS Master server you don't need to edit the config file. A password is generated when creating the non-existing schema when the package is installed.</para>
-        <section xml:id="scroll-bookmark-36">
+        <section xml:id="usage-master-configuration-file">
           <title>Configuration file</title>
           <para>
             The config file used by Atomia DNS API is placed at
@@ -620,56 +678,53 @@
           <informalexample>
             <programlisting>
               db_name = zonedata
-              <?linebreak?>
               db_hostname = localhost
-              <?linebreak?>
               db_username = atomiadns
-              <?linebreak?>
               db_password = autogeneratedpassword
             </programlisting>
           </informalexample>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-18">
+      <section xml:id="usage-master-updates">
         <title>Atomia DNS Master server updates</title>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-37">Introduction</link>
+              <link linkend="usage-master-updates-intro">Introduction</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-38">Updates on Ubuntu 10.04 LTS</link>
+              <link linkend="usage-master-updates-ubuntu">Updates on Ubuntu 10.04 LTS</link>
             </para>
             <itemizedlist>
               <listitem>
                 <para>
-                  <link linkend="scroll-bookmark-39">Where to get updates?</link>
+                  <link linkend="usage-master-updates-where">Where to get updates?</link>
                 </para>
               </listitem>
             </itemizedlist>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-40">Updates on Redhat Enterprise Liux</link>
+              <link linkend="usage-master-updates-rhel">Updates on Redhat Enterprise Linux</link>
             </para>
             <itemizedlist>
               <listitem>
                 <para>
-                  <link linkend="scroll-bookmark-399">Where to get updates?</link>
+                  <link linkend="usage-master-update-rhel-where">Where to get updates?</link>
                 </para>
               </listitem>
             </itemizedlist>
           </listitem>
         </itemizedlist>
-        <section xml:id="scroll-bookmark-37">
+        <section xml:id="usage-master-updates-intro">
           <title>Introduction</title>
           <para>Updates are done by installing the latest version of the installed packages.</para>
           <para>Any change in the dependencies will be handled appropriately by the installation package, upgrading or installing them as needed.</para>
           <para>If the database schema has changed, the schema on the Atomia DNS Master server will be automatically updated. If you have chosen to have the database on a separate server, you will have to update the atomiadns-database package on that server as well. All schema changes are noted in the release notes for the new version.</para>
         </section>
-        <section xml:id="scroll-bookmark-38">
+        <section xml:id="usage-master-updates-ubuntu">
           <title>Updates on Ubuntu 10.04 LTS</title>
           <para>To install an update, complete the following steps:</para>
           <orderedlist>
@@ -693,7 +748,7 @@
           <informalexample>
             <programlisting>apt-get install atomiadns-masterserver=version-number-noted</programlisting>
           </informalexample>
-          <section xml:id="scroll-bookmark-39">
+          <section xml:id="usage-master-updates-where">
             <title>Where to get updates?</title>
             <para>
               Updates are distributed using the Atomia APT repository.
@@ -702,7 +757,7 @@
             </para>
           </section>
         </section>
-        <section xml:id="scroll-bookmark-40">
+        <section xml:id="usage-master-updates-rhel">
           <title>Updates on Redhat Enterprise Liux</title>
           <para>To install an update, complete the following steps:</para>
           <orderedlist>
@@ -719,7 +774,7 @@
               </informalexample>
             </listitem>
           </orderedlist>
-          <section xml:id="scroll-bookmark-399">
+          <section xml:id="usage-master-update-rhel-where">
             <title>Where to get updates?</title>
             <para>
               Updates are distributed using the Atomia RPM repository.
@@ -727,9 +782,9 @@
           </section>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-19">
+      <section xml:id="usage-master-usage">
         <title>Atomia DNS Master server usage</title>
-        <section xml:id="scroll-bookmark-41">
+        <section xml:id="usage-master-usage-api">
           <title>Atomia DNS API</title>
           <para>
             The Atomia DNS Master server is administrated using an API which you can use to create a web interface or other applications. For information on how the API works and how to use it see
@@ -737,20 +792,20 @@
             .
           </para>
         </section>
-        <section xml:id="scroll-bookmark-43">
+        <section xml:id="usage-master-dyndns">
           <title>Atomia DNS DynDNS</title>
           <para>
             The Atomia DNS DynDNS client is used to handle DynDNS updates according to the DNS protocol. The client acts as a regular nameserver but only has support for DynDNS updates. For information on how DynDNS works and how to use it see
-            <link linkend="scroll-bookmark-13">Atomia DNS DynDNS</link>
+            <link linkend="usage-dyndns">Atomia DNS DynDNS</link>
             .
           </para>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-20">
+      <section xml:id="usage-master-techinfo">
         <title>Master database</title>
         <para>
           The schema for the Atomia DNS database can be found on the
-          <link linkend="scroll-bookmark-9">Atomia DNS Master server</link>
+          <link linkend="usage-master-server">Atomia DNS Master server</link>
           in
           <code>/usr/share/atomiadns/schema</code>
           .
@@ -834,77 +889,78 @@
         </para>
       </section>
     </section>
-    <section xml:id="scroll-bookmark-10">
-      <title>Atomia DNS Nameserver</title>
-      <section xml:id="scroll-bookmark-215">
-        <title>What is the Atomia DNS Nameserver?</title>
+    <section xml:id="usage-bind-dlz">
+      <title>Atomia DNS Bind-DLZ Nameserver</title>
+      <section xml:id="usage-bind-dlz-whatis">
+        <title>What is the Atomia DNS Bind-DLZ Nameserver?</title>
+        <note>We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</note>
         <para>The nameserver includes the popular BIND nameserver configured to use a local database instead of zone files. All nameservers will also have the Atomia DNS Sync application installed which provisions changes to the local database and also settings for BIND from the data in the Atomia DNS database.</para>
       </section>
-      <section xml:id="scroll-bookmark-216">
-        <title>Atomia DNS Nameserver documentation</title>
+      <section xml:id="usage-bind-dlz-docs">
+        <title>Atomia DNS Bind-DLZ Nameserver documentation</title>
         <para>Please locate the desired information in one of the following sections:</para>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-217">Atomia DNS Nameserver installation</link>
+              <link linkend="usage-bind-dlz-installation">Atomia DNS Bind-DLZ Nameserver installation</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-218">Atomia DNS Nameserver configuration</link>
+              <link linkend="usage-bind-dlz-configuration">Atomia DNS Bind-DLZ Nameserver configuration</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-219">Atomia DNS Nameserver updates</link>
+              <link linkend="usage-bind-dlz-updates">Atomia DNS Bind-DLZ Nameserver updates</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-220">Atomia DNS Nameserver usage</link>
+              <link linkend="usage-bind-dlz-usage">Atomia DNS Bind-DLZ Nameserver usage</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-221">Atomia DNS Nameserver technical information</link>
+              <link linkend="usage-bind-dlz-techinfo">Atomia DNS Bind-DLZ Nameserver technical information</link>
             </para>
           </listitem>
         </itemizedlist>
       </section>
-      <section xml:id="scroll-bookmark-217">
-        <title>Atomia DNS Nameserver installation</title>
+      <section xml:id="usage-bind-dlz-installation">
+        <title>Atomia DNS Bind-DLZ Nameserver installation</title>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-222">Introduction</link>
+              <link linkend="usage-bind-dlz-installation-intro">Introduction</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-223">Installation on Ubuntu LTS</link>
+              <link linkend="usage-bind-dlz-installation-ubuntu">Installation on Ubuntu LTS</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-224">Installation on Redhat Enterprise Linux 4</link>
+              <link linkend="usage-bind-dlz-installation-rhel4">Installation on Redhat Enterprise Linux 4</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-225">Software used by Atomia DNS Nameserver</link>
+              <link linkend="usage-bind-dlz-installation-software">Software used by Atomia DNS Bind-DLZ Nameserver</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-226">Installation troubleshooting</link>
+              <link linkend="usage-bind-dlz-installation-troubleshoot">Installation troubleshooting</link>
             </para>
           </listitem>
         </itemizedlist>
-        <section xml:id="scroll-bookmark-222">
+        <section xml:id="usage-bind-dlz-installation-intro">
           <title>Introduction</title>
-          <para>This guide will install the Atomia DNS Nameserver.</para>
+          <para>This guide will install the Atomia DNS Bind-DLZ Nameserver.</para>
         </section>
-        <section xml:id="scroll-bookmark-223">
+        <section xml:id="usage-bind-dlz-installation-ubuntu">
           <title>Installation on Ubuntu LTS</title>
           <orderedlist>
             <listitem>
@@ -923,7 +979,7 @@
               </informalexample>
             </listitem>
             <listitem>
-              <para>Install the Atomia DNS Nameserver:</para>
+              <para>Install the Atomia DNS Bind-DLZ Nameserver:</para>
               <informalexample>
                 <programlisting>apt-get install atomiadns-nameserver</programlisting>
               </informalexample>
@@ -951,22 +1007,15 @@
                   <informalexample>
                     <programlisting>
                       servername = your.name.server
-                      <?linebreak?>
-                      <?linebreak?>
                       soap_uri = https://your.atomia.dns.master.server.com/atomiadns
-                      <?linebreak?>
                       soap_cacert = /etc/atomiadns_soap_cert.crt
-                      <?linebreak?>
                       soap_username = atomia
-                      <?linebreak?>
                       soap_password = XXXXXX
-                      <?linebreak?>
-                      <?linebreak?>
                       bdb_environment_path = /var/lib/bind/atomiadns_bdb
-                      <?linebreak?>
                       bdb_filename = dns_data.db
-                      <?linebreak?>
                       rndc_path = /usr/sbin/rndc
+                      slavezones_config = /etc/bind/slave/named-slavezones.conf.local
+                      slavezones_dir = /etc/bind/slave/zones
                     </programlisting>
                   </informalexample>
                 </listitem>
@@ -1004,7 +1053,7 @@
             </listitem>
           </orderedlist>
         </section>
-        <section xml:id="scroll-bookmark-224">
+        <section xml:id="usage-bind-dlz-installation-rhel4">
           <title>Installation on Redhat Enterprise Linux 4</title>
           <orderedlist>
             <listitem>
@@ -1012,7 +1061,6 @@
               <informalexample>
                 <programlisting>
                   rpm -Uhv http://apt.sw.be/redhat/el4/en/i386/rpmforge/RPMS/rpmforge-release-0.3.6-1.el4.rf.i386.rpm
-                  <?linebreak?>
                   rpm -Uhv http://rpm.atomia.com/rhel4/atomia-repository-setup-1.0-1.noarch.rpm
                 </programlisting>
               </informalexample>
@@ -1022,7 +1070,6 @@
               <informalexample>
                 <programlisting>
                   yum atomia http://rpm.atomia.com/rhel4
-                  <?linebreak?>
                   yum dag http://apt.sw.be/redhat/el4/en/$ARCH/dag
                 </programlisting>
               </informalexample>
@@ -1056,22 +1103,15 @@
                   <informalexample>
                     <programlisting>
                       servername = your.name.server
-                      <?linebreak?>
-                      <?linebreak?>
                       soap_uri = https://your.atomia.dns.master.server.com/atomiadns
-                      <?linebreak?>
                       soap_cacert = /etc/atomiadns_soap_cert.crt
-                      <?linebreak?>
                       soap_username = atomia
-                      <?linebreak?>
                       soap_password = XXXXXX
-                      <?linebreak?>
-                      <?linebreak?>
                       bdb_environment_path = /var/lib/bind/atomiadns_bdb
-                      <?linebreak?>
                       bdb_filename = dns_data.db
-                      <?linebreak?>
                       rndc_path = /usr/sbin/rndc
+                      slavezones_config = /etc/bind/slave/named-slavezones.conf.local
+                      slavezones_dir = /etc/bind/slave/zones
                     </programlisting>
                   </informalexample>
                 </listitem>
@@ -1109,8 +1149,8 @@
             </listitem>
           </orderedlist>
         </section>
-        <section xml:id="scroll-bookmark-225">
-          <title>Software used by Atomia DNS Nameserver</title>
+        <section xml:id="usage-bind-dlz-installation-software">
+          <title>Software used by Atomia DNS Bind-DLZ Nameserver</title>
           <para>On the nameservers the following software is needed:</para>
           <itemizedlist>
             <listitem>
@@ -1145,17 +1185,17 @@
             .
           </para>
         </section>
-        <section xml:id="scroll-bookmark-226">
+        <section xml:id="usage-bind-dlz-installation-troubleshoot">
           <title>Installation troubleshooting</title>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-218">
-        <title>Atomia DNS Nameserver configuration</title>
-        <para>You have to configure the Atomia DNS Nameserver to fit your environment.</para>
-        <section xml:id="scroll-bookmark-227">
+      <section xml:id="usage-bind-dlz-configuration">
+        <title>Atomia DNS Bind-DLZ Nameserver configuration</title>
+        <para>You have to configure the Atomia DNS Bind-DLZ Nameserver to fit your environment.</para>
+        <section xml:id="usage-bind-dlz-configuration-file">
           <title>Configuration file</title>
           <para>
-            The config file used by Atomia DNS Nameserver is placed in
+            The config file used by Atomia DNS Bind-DLZ Nameserver is placed in
             <code>/etc/atomiadns.conf</code>
             and contains the following settings:
           </para>
@@ -1228,26 +1268,25 @@
           <informalexample>
             <programlisting>
               bdb_environment_path = /var/lib/bind/atomiadns_bdb
-              <?linebreak?>
               soap_uri = http://your.atomia.dns.master.server.com/atomiadns
-              <?linebreak?>
               bdb_filename = dns_data.db
-              <?linebreak?>
               servername = your.name.server
+              slavezones_config = /etc/bind/slave/named-slavezones.conf.local
+              slavezones_dir = /etc/bind/slave/zones
             </programlisting>
           </informalexample>
         </section>
-        <section xml:id="scroll-bookmark-228">
+        <section xml:id="usage-bind-dlz-scripts">
           <title>Scripts and commands</title>
           <para>
             For more information on how to use the Atomia DNS Sync application see
-            <link linkend="scroll-bookmark-220">Atomia DNS Nameserver usage</link>
+            <link linkend="usage-bind-dlz-usage">Atomia DNS Bind-DLZ Nameserver usage</link>
             .
           </para>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-219">
-        <title>Atomia DNS Nameserver updates</title>
+      <section xml:id="usage-bind-dlz-updates">
+        <title>Atomia DNS Bind-DLZ Nameserver updates</title>
         <para>To install an update, complete the following steps:</para>
         <orderedlist>
           <listitem>
@@ -1264,7 +1303,6 @@
             <informalexample>
               <programlisting>
                 apt-get upgrade atomiadns-nameserver
-                <?linebreak?>
                 /etc/init.d/atomiadns-nameserver restart
               </programlisting>
             </informalexample>
@@ -1275,7 +1313,7 @@
           <programlisting>apt-get install atomiadns-nameserver=version-number-noted</programlisting>
         </informalexample>
         <para>Any changes in the dependencies will be handled appropriately by the installation package, upgrading or installing them as needed.</para>
-        <section xml:id="scroll-bookmark-229">
+        <section xml:id="usage-bind-dlz-updates-where">
           <title>Where to get updates?</title>
           <para>
               Updates are distributed using the Atomia APT repository.
@@ -1283,9 +1321,9 @@
 		<programlisting>wget -q -O - http://public.apt.atomia.com/setup.sh.shtml | sed s/%distcode/`lsb_release -c | awk '{ print $2 }'`/g | sh</programlisting>
           </para>
         </section>
-        <section xml:id="scroll-bookmark-230">
+        <section xml:id="usage-bind-dlz-updates-building-rpms">
           <title>Atomia DNS Building new Bind-DLZ RPMS</title>
-          <section xml:id="scroll-bookmark-231">
+          <section xml:id="usage-bind-dlz-updates-building-rpms-instructions">
             <title>Instructions</title>
             <para>To build new RPMS for Bind-DLZ whenever an important new release is made we use the following steps:</para>
             <orderedlist>
@@ -1295,7 +1333,7 @@
               <listitem>
                 <para>
                   Download
-                  <link xlink:href="$attachmentFilename">bind9_rhel_rpm.atomia.patch</link>
+                  <link xlink:href="https://raw.github.com/atomia/atomiadns/develop/syncer/bind9_rhel5_rpm.patch">bind9_rhel5_rpm.patch</link>
                   and place it in /usr/src/redhat
                 </para>
               </listitem>
@@ -1337,48 +1375,41 @@
               </listitem>
             </orderedlist>
           </section>
-          <section xml:id="scroll-bookmark-232">
-            <title>Download</title>
-            <para>You can find the currently supported packages at 
-        [UCPSW:Atomia DNS supported Bind\-DLZ packages]
-        .</para>
-          </section>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-220">
-        <title>Atomia DNS Nameserver usage</title>
-        <section xml:id="scroll-bookmark-233">
+      <section xml:id="usage-bind-dlz-usage">
+        <title>Atomia DNS Bind-DLZ Nameserver usage</title>
+        <section xml:id="usage-bind-dlz-usage-syncapp">
           <title>Sync application</title>
           <para>
             The sync application is called atomiadnssync. You can view its manual page
-            <link linkend="scroll-bookmark-234">here</link>
+            <link linkend="usage-bind-dlz-usage-syncer-man">here</link>
             or by running:
           </para>
           <informalexample>
             <programlisting>man atomiadnssync</programlisting>
           </informalexample>
         </section>
-        <section xml:id="scroll-bookmark-234">
+        <section xml:id="usage-bind-dlz-usage-syncer-man">
           <title>Atomia DNS Sync manual</title>
-          <section xml:id="scroll-bookmark-235">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-name">
             <title>NAME</title>
             <para>atomiadnssync - An application for synchronizing a local BDB database with the master zone database using SOAP.</para>
           </section>
-          <section xml:id="scroll-bookmark-236">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-synopsis">
             <title>SYNOPSIS</title>
-            <para>
-              <code>atomiadnssync full_reload_offline SERIAL DESTINATION</code>
-              <?linebreak?>
-              <code>atomiadnssync OPTION</code>
-            </para>
+            <para><programlisting>
+		atomiadnssync full_reload_offline SERIAL DESTINATION
+		atomiadnssync OPTION
+            </programlisting></para>
           </section>
-          <section xml:id="scroll-bookmark-237">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-description">
             <title>DESCRIPTION</title>
             <para>atomiadnssync is an application for synchronizing a local BDB database with the master zone database using SOAP.</para>
             <para>It contains options for both doing a full reload of all zones in the master database, and for just fetching the zones changed since the last update and reloading those.</para>
             <para>In addition you can use this tool for adding or removing the subscription of updates for a nameserver, and for enabling and disabling propagation of updates globally across all nameservers.</para>
           </section>
-          <section xml:id="scroll-bookmark-238">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-options">
             <title>OPTIONS</title>
             <para>
               <code>full_reload_offline SERIAL DESTINATION</code>
@@ -1445,7 +1476,7 @@
               </listitem>
             </itemizedlist>
           </section>
-          <section xml:id="scroll-bookmark-239">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-configuration">
             <title>CONFIGURATION</title>
             <para>The application is configured using a config file stored at /etc/atomiadns.conf. All options are required.</para>
             <para>The following options exist:</para>
@@ -1498,7 +1529,7 @@
               </listitem>
             </itemizedlist>
           </section>
-          <section xml:id="scroll-bookmark-240">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-examples">
             <title>EXAMPLES</title>
             <para>To do a full reload to a new folder without missing any updates (assuming the default bdb_environment_path), do:</para>
             <para>1. atomiadnssync disable_updates</para>
@@ -1513,13 +1544,13 @@
             <para>To add the server as a subscriber:</para>
             <para>atomiadnssync add_server</para>
           </section>
-          <section xml:id="scroll-bookmark-241">
+          <section xml:id="usage-bind-dlz-usage-syncer-man-author">
             <title>AUTHOR</title>
-            <para>Atomia DNS was developed by Atomia AB. For support, please see www.atomia.com/.</para>
+            <para>Atomia DNS was developed by Atomia AB. For support, please see <link xlink:href="http://www.atomiadns.com/">http://www.atomiadns.com/</link>.</para>
           </section>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-221">
+      <section xml:id="usage-bind-dlz-techinfo">
         <title>BDB databases on the nameservers</title>
         <para>
           On the nameservers the location of the BDB databases is configured in
@@ -1540,52 +1571,52 @@
         </para>
         <para>
           If the BDB databases were to become corrupt, the recommended solution would be to do a full resync of the BDB databases from the master. This is done using the
-          <link linkend="scroll-bookmark-233">atomiadnssync tool</link>
+          <link linkend="usage-bind-dlz-usage-syncapp">atomiadnssync tool</link>
           .
         </para>
       </section>
     </section>
-    <section xml:id="scroll-bookmark-12">
+    <section xml:id="usage-powerdns">
       <title>Atomia DNS PowerDNS Nameserver</title>
-      <section xml:id="scroll-bookmark-242">
+      <section xml:id="usage-powerdns-whatis">
         <title>What is the Atomia DNS PowerDNS Nameserver?</title>
         <para>The nameserver includes the popular PowerDNS nameserver configured to use a local MySQL database instead of zone files. All PowerDNS nameservers will also have the Atomia DNS PowerDNS Sync application installed which provisions changes to the local database from the data in the Atomia DNS database.</para>
       </section>
-      <section xml:id="scroll-bookmark-243">
+      <section xml:id="usage-powerdns-docs">
         <title>Atomia DNS PowerDNS Nameserver documentation</title>
         <para>Please locate the desired information in one of the following sections:</para>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-244">Atomia DNS PowerDNS Nameserver installation</link>
+              <link linkend="usage-powerdns-installation">Atomia DNS PowerDNS Nameserver installation</link>
             </para>
           </listitem>
         </itemizedlist>
       </section>
-      <section xml:id="scroll-bookmark-244">
+      <section xml:id="usage-powerdns-installation">
         <title>Atomia DNS PowerDNS Nameserver installation</title>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-245">Introduction</link>
+              <link linkend="usage-powerdns-installation-intro">Introduction</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-246">Installation on Ubuntu LTS</link>
+              <link linkend="usage-powerdns-installation-ubuntu">Installation on Ubuntu LTS</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-247">Software used by Atomia DNS Nameserver</link>
+              <link linkend="usage-powerdns-installation-software">Software used by Atomia DNS Bind-DLZ Nameserver</link>
             </para>
           </listitem>
         </itemizedlist>
-        <section xml:id="scroll-bookmark-245">
+        <section xml:id="usage-powerdns-installation-intro">
           <title>Introduction</title>
-          <para>This guide will install the Atomia DNS Nameserver.</para>
+          <para>This guide will install the Atomia DNS Bind-DLZ Nameserver.</para>
         </section>
-        <section xml:id="scroll-bookmark-246">
+        <section xml:id="usage-powerdns-installation-ubuntu">
           <title>Installation on Ubuntu LTS</title>
           <orderedlist>
             <listitem>
@@ -1667,8 +1698,8 @@
             </listitem>
           </orderedlist>
         </section>
-        <section xml:id="scroll-bookmark-247">
-          <title>Software used by Atomia DNS Nameserver</title>
+        <section xml:id="usage-powerdns-installation-software">
+          <title>Software used by Atomia DNS Bind-DLZ Nameserver</title>
           <para>On the nameservers the following software is needed:</para>
           <itemizedlist>
             <listitem>
@@ -1684,9 +1715,9 @@
         </section>
       </section>
     </section>
-    <section xml:id="scroll-bookmark-13">
+    <section xml:id="usage-dyndns">
       <title>Atomia DNS DynDNS</title>
-      <section xml:id="scroll-bookmark-248">
+      <section xml:id="usage-dyndns-whatis">
         <title>What is the Atomia DNS DynDNS server?</title>
         <para>Atomia DNS DynDNS provides a DynDNS server supporting standard DNS update requests, performing the updates using an Atomia DNS Master server installation.</para>
         <para>When using Atomia DNS DynDNS any standard DynDNS client can be used. Examples include:</para>
@@ -1702,41 +1733,41 @@
           </listitem>
         </orderedlist>
       </section>
-      <section xml:id="scroll-bookmark-249">
+      <section xml:id="usage-dyndns-docs">
         <title>Atomia DNS DynDNS server documentation</title>
         <para>Please locate the desired information in one of the following sections:</para>
         <itemizedlist>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-250">Atomia DNS DynDNS configuration</link>
+              <link linkend="usage-dyndns-docs-configuration">Atomia DNS DynDNS configuration</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-251">Atomia DNS DynDNS installation</link>
+              <link linkend="usage-dyndns-docs-installation">Atomia DNS DynDNS installation</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-252">Atomia DNS DynDNS technical information</link>
+              <link linkend="usage-dyndns-docs-techinfo">Atomia DNS DynDNS technical information</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-253">Atomia DNS DynDNS updates</link>
+              <link linkend="usage-dyndns-docs-updates">Atomia DNS DynDNS updates</link>
             </para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="scroll-bookmark-254">Atomia DNS DynDNS usage</link>
+              <link linkend="usage-dyndns-docs-usage">Atomia DNS DynDNS usage</link>
             </para>
           </listitem>
         </itemizedlist>
       </section>
-      <section xml:id="scroll-bookmark-250">
+      <section xml:id="usage-dyndns-docs-configuration">
         <title>Atomia DNS DynDNS configuration</title>
         <para>You have to configure the Atomia DNS DynDNS server to fit your environment.</para>
-        <section xml:id="scroll-bookmark-255">
+        <section xml:id="usage-dyndns-docs-configuration-file">
           <title>Configuration file</title>
           <para>
             The config file used by Atomia DNS DynDNS is placed in
@@ -1812,18 +1843,18 @@
             </programlisting>
           </informalexample>
         </section>
-        <section xml:id="scroll-bookmark-256">
+        <section xml:id="usage-dyndns-docs-scripts">
           <title>Scripts and commands</title>
           <para>
             For more information on how to use the Atomia DNS DynDNS server see
-            <link linkend="scroll-bookmark-254">Atomia DNS DynDNS usage</link>
+            <link linkend="usage-dyndns-docs-usage">Atomia DNS DynDNS usage</link>
             .
           </para>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-251">
+      <section xml:id="usage-dyndns-docs-installation">
         <title>Atomia DNS DynDNS installation</title>
-        <section xml:id="scroll-bookmark-257">
+        <section xml:id="usage-dyndns-docs-installation-server">
           <title>Installing Atomia DNS DynDNS server</title>
           <orderedlist>
             <listitem>
@@ -1885,7 +1916,7 @@
             </listitem>
           </orderedlist>
         </section>
-        <section xml:id="scroll-bookmark-258">
+        <section xml:id="usage-dyndns-docs-installation-server-software">
           <title>Software used by Atomia DNS DynDNS</title>
           <para>On the DynDNS server the following software is needed:</para>
           <itemizedlist>
@@ -1912,7 +1943,7 @@
           </para>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-252">
+      <section xml:id="usage-dyndns-docs-techinfo">
         <title>Architecture</title>
         <para>
           Atomia DNS DynDNS accepts DNS update requests on port 5353, authenticates them using a key shared
@@ -1922,7 +1953,7 @@
           prerequisite checks and/or updates.
         </para>
       </section>
-      <section xml:id="scroll-bookmark-253">
+      <section xml:id="usage-dyndns-docs-updates">
         <title>Atomia DNS DynDNS updates</title>
         <para>To install an update, complete the following steps:</para>
         <orderedlist>
@@ -1951,7 +1982,7 @@
           <programlisting>apt-get install atomia-dyndns=version-number-noted</programlisting>
         </informalexample>
         <para>Any changes in the dependencies will be handled appropriately by the installation package, upgrading or installing them as needed.</para>
-        <section xml:id="scroll-bookmark-259">
+        <section xml:id="usage-dyndns-docs-updates-where">
           <title>Where to get updates?</title>
           <para>
               Updates are distributed using the Atomia APT repository.
@@ -1960,7 +1991,7 @@
           </para>
         </section>
       </section>
-      <section xml:id="scroll-bookmark-254">
+      <section xml:id="usage-dyndns-docs-usage">
         <title>Client applications</title>
         <para>
           The Atomia DNS DynDNS application only comes with the DDNS server. To update zones using the server all
@@ -2002,42 +2033,42 @@
     <itemizedlist>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-261">What hardware is required for the Atomia DNS system?</link>
+          <link linkend="faq-hardware">What hardware is required for the Atomia DNS system?</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-262">What software is required for the Atomia DNS system?</link>
+          <link linkend="faq-software">What software is required for the Atomia DNS system?</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-263">How many queries can Atomia DNS handle?</link>
+          <link linkend="faq-qps">How many queries can Atomia DNS handle?</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-264">How well does Atomia DNS scale?</link>
+          <link linkend="faq-scaling">How well does Atomia DNS scale?</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-265">How do I administrate zones in Atomia DNS?</link>
+          <link linkend="faq-howto-admin">How do I administrate zones in Atomia DNS?</link>
         </para>
       </listitem>
       <listitem>
         <para>
-          <link linkend="scroll-bookmark-266">The database on my Atomia DNS Nameserver has been corrupted. How do I fix it?</link>
+          <link linkend="faq-corrupted-bdb">The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?</link>
         </para>
       </listitem>
     </itemizedlist>
-    <section xml:id="scroll-bookmark-261">
+    <section xml:id="faq-hardware">
       <title>What hardware is required for the Atomia DNS system?</title>
       <para>
         The absolute minimum requirement is one machine, but this would require the
-        <link linkend="scroll-bookmark-9">Atomia DNS Master server</link>
+        <link linkend="usage-master-server">Atomia DNS Master server</link>
         and
-        <link linkend="scroll-bookmark-10">Atomia DNS Nameserver</link>
+        <link linkend="usage-bind-dlz">Atomia DNS Bind-DLZ Nameserver</link>
         to be installed on the same machine which is not recommended.
       </para>
       <para>A more likely scenario would be:</para>
@@ -2049,36 +2080,36 @@
           <para>Backup replica of the Atomia DNS Master database.</para>
         </listitem>
         <listitem>
-          <para>Two or more servers running Atomia DNS Nameserver.</para>
+          <para>Two or more servers running Atomia DNS Bind-DLZ Nameserver.</para>
         </listitem>
       </orderedlist>
       <para>For larger installations it is also possible to install Atomia DNS API and Atomia DNS database on separate machines.</para>
     </section>
-    <section xml:id="scroll-bookmark-262">
+    <section xml:id="faq-software">
       <title>What software is required for the Atomia DNS system?</title>
       <para>
         The software requirements for the Atomia DNS Master are listed in the
-        <link linkend="scroll-bookmark-16">Atomia DNS Master server installation</link>
-        instructions and the software requirements for Atomia DNS Nameserver are listed in the
-        <link linkend="scroll-bookmark-217">Atomia DNS Nameserver installation</link>
+        <link linkend="usage-master-installation">Atomia DNS Master server installation</link>
+        instructions and the software requirements for Atomia DNS Bind-DLZ Nameserver are listed in the
+        <link linkend="usage-bind-dlz-installation">Atomia DNS Bind-DLZ Nameserver installation</link>
         instructions.
       </para>
     </section>
-    <section xml:id="scroll-bookmark-263">
+    <section xml:id="faq-qps">
       <title>How many queries can Atomia DNS handle?</title>
       <para>
-        The Atomia DNS Nameserver has been tested using dnsperf (
+        The Atomia DNS Bind-DLZ Nameserver has been tested using dnsperf (
         <link xlink:href="http://www.nominum.com/services/measurement_tools.php">http://www.nominum.com/services/measurement_tools.php</link>
         ) on a modest system to see its performance.
       </para>
       <para>With dnsperf running on the same machine as the nameserver, this modest system managed to handle 8609 queries per second.</para>
     </section>
-    <section xml:id="scroll-bookmark-264">
+    <section xml:id="faq-scaling">
       <title>How well does Atomia DNS scale?</title>
       <para>Atomia DNS can scale to handle large DNS infrastructures both on the back end and in terms of nameservers. To be able to scale and handle many DNS queries you only need to add more nameservers into the system. The load will then be spread across all nameservers.</para>
       <para>The Atomia DNS Master doesn't usually have a high load since it is only used to provision changes to the nameservers. To scale the Atomia DNS Master server, the Atomia DNS API and Atomia DNS Database can be installed on separate servers. For higher requirements it is also possible to load balance the API using several servers.</para>
     </section>
-    <section xml:id="scroll-bookmark-265">
+    <section xml:id="faq-howto-admin">
       <title>How do I administrate zones in Atomia DNS?</title>
       <para>
         Atomia DNS comes with an
@@ -2086,11 +2117,11 @@
         containing functions for administrating DNS settings.
       </para>
     </section>
-    <section xml:id="scroll-bookmark-266">
-      <title>The database on my Atomia DNS Nameserver has been corrupted. How do I fix it?</title>
+    <section xml:id="faq-corrupted-bdb">
+      <title>The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?</title>
       <para>
         The recommended way is to do a full resync using Atomia DNS Sync. More information about this can be found in the
-        <link linkend="scroll-bookmark-234">Atomia DNS Sync manual</link>
+        <link linkend="usage-bind-dlz-usage-syncer-man">Atomia DNS Sync manual</link>
         .
       </para>
     </section>
