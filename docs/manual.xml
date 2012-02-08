@@ -740,7 +740,7 @@
             <listitem>
               <para>Install updates using:</para>
               <informalexample>
-                <programlisting>apt-get upgrade atomiadns-masterserver</programlisting>
+                <programlisting>apt-get install atomiadns-masterserver</programlisting>
               </informalexample>
             </listitem>
           </orderedlist>
@@ -1302,7 +1302,7 @@
             <para>Install updates using:</para>
             <informalexample>
               <programlisting>
-                apt-get upgrade atomiadns-nameserver
+                apt-get install atomiadns-nameserver
                 /etc/init.d/atomiadns-nameserver restart
               </programlisting>
             </informalexample>
