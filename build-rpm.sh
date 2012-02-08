@@ -2,6 +2,8 @@
 
 version=`cat /etc/redhat-release | sed 's/[^0-9.]//g' | cut -d . -f 1`
 
+rm -f *rpm
+
 cd dyndns
 ./buildrpms rhel"$version"
 cd ../syncer
