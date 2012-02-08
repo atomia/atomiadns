@@ -40,6 +40,7 @@ All changes done through the API will be provisioned to the nameservers that are
 %{__rm} -f %{buildroot}%{perl_archlib}/perllocal.pod
 %{__rm} -f %{buildroot}%{perl_vendorarch}/auto/*/*/*/.packlist
 %{__rm} -f %{buildroot}%{perl_vendorlib}/Atomia/DNS/wsdl-to-confluence.pl
+%{__rm} -f %{buildroot}%{perl_vendorlib}/Atomia/DNS/wsdl-to-docbook.pl
 %{__mkdir} -p %{buildroot}/etc/httpd/conf.d
 %{__cp} conf/atomiadns.conf %{buildroot}/etc
 %{__cp} conf/apache-example %{buildroot}/etc/httpd/conf.d/atomiadns.conf
@@ -59,6 +60,8 @@ All changes done through the API will be provisioned to the nameservers that are
 /etc/httpd/conf.d/atomiadns.conf
 %{perl_vendorlib}/Atomia/DNS/Server.pm
 %{perl_vendorlib}/Atomia/DNS/ServerHandler.pm
+%{perl_vendorlib}/Atomia/DNS/JSONServer.pm
+%{perl_vendorlib}/Atomia/DNS/Signatures.pm
 /usr/share/atomiadns/conf/apache-example
 /usr/share/atomiadns/conf/atomiadns.conf
 /usr/share/atomiadns/examples

@@ -19,9 +19,29 @@ tar cfpz /usr/src/redhat/SOURCES/atomiadns-server.tar.gz --exclude "*/confluence
 
 cd /usr/src/redhat/SPECS
 rpmbuild --sign -ba atomiadns-api.spec
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 rpmbuild --sign -ba atomiadns-client.spec
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 rpmbuild --sign -bb atomiadns-database.spec
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 rpmbuild --sign -bb atomiadns-masterserver.spec
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 
 cd "$startdir"
 cp /usr/src/redhat/RPMS/*/atomiadns-* ..
