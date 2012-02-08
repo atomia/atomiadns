@@ -4,36 +4,36 @@
     
     <div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
         <p>
-          <a class="link" href="faq.html#scroll-bookmark-261" title="What hardware is required for the Atomia DNS system?">What hardware is required for the Atomia DNS system?</a>
+          <a class="link" href="faq.html#faq-hardware" title="What hardware is required for the Atomia DNS system?">What hardware is required for the Atomia DNS system?</a>
         </p>
       </li><li class="listitem">
         <p>
-          <a class="link" href="faq.html#scroll-bookmark-262" title="What software is required for the Atomia DNS system?">What software is required for the Atomia DNS system?</a>
+          <a class="link" href="faq.html#faq-software" title="What software is required for the Atomia DNS system?">What software is required for the Atomia DNS system?</a>
         </p>
       </li><li class="listitem">
         <p>
-          <a class="link" href="faq.html#scroll-bookmark-263" title="How many queries can Atomia DNS handle?">How many queries can Atomia DNS handle?</a>
+          <a class="link" href="faq.html#faq-qps" title="How many queries can Atomia DNS handle?">How many queries can Atomia DNS handle?</a>
         </p>
       </li><li class="listitem">
         <p>
-          <a class="link" href="faq.html#scroll-bookmark-264" title="How well does Atomia DNS scale?">How well does Atomia DNS scale?</a>
+          <a class="link" href="faq.html#faq-scaling" title="How well does Atomia DNS scale?">How well does Atomia DNS scale?</a>
         </p>
       </li><li class="listitem">
         <p>
-          <a class="link" href="faq.html#scroll-bookmark-265" title="How do I administrate zones in Atomia DNS?">How do I administrate zones in Atomia DNS?</a>
+          <a class="link" href="faq.html#faq-howto-admin" title="How do I administrate zones in Atomia DNS?">How do I administrate zones in Atomia DNS?</a>
         </p>
       </li><li class="listitem">
         <p>
-          <a class="link" href="faq.html#scroll-bookmark-266" title="The database on my Atomia DNS Nameserver has been corrupted. How do I fix it?">The database on my Atomia DNS Nameserver has been corrupted. How do I fix it?</a>
+          <a class="link" href="faq.html#faq-corrupted-bdb" title="The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?">The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?</a>
         </p>
       </li></ul></div>
-    <div class="section" title="What hardware is required for the Atomia DNS system?"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-261"></a>What hardware is required for the Atomia DNS system?</h3></div></div></div>
+    <div class="section" title="What hardware is required for the Atomia DNS system?"><div class="titlepage"><div><div><h3 class="title"><a id="faq-hardware"></a>What hardware is required for the Atomia DNS system?</h3></div></div></div>
       
       <p>
         The absolute minimum requirement is one machine, but this would require the
-        <a class="link" href="usage.html#scroll-bookmark-9" title="Atomia DNS Master server">Atomia DNS Master server</a>
+        <a class="link" href="usage.html#usage-master-server" title="Atomia DNS Master server">Atomia DNS Master server</a>
         and
-        <a class="link" href="usage.html#scroll-bookmark-10" title="Atomia DNS Nameserver">Atomia DNS Nameserver</a>
+        <a class="link" href="usage.html#usage-bind-dlz" title="Atomia DNS Bind-DLZ Nameserver">Atomia DNS Bind-DLZ Nameserver</a>
         to be installed on the same machine which is not recommended.
       </p>
       <p>A more likely scenario would be:</p>
@@ -42,35 +42,35 @@
         </li><li class="listitem">
           <p>Backup replica of the Atomia DNS Master database.</p>
         </li><li class="listitem">
-          <p>Two or more servers running Atomia DNS Nameserver.</p>
+          <p>Two or more servers running Atomia DNS Bind-DLZ Nameserver.</p>
         </li></ol></div>
       <p>For larger installations it is also possible to install Atomia DNS API and Atomia DNS database on separate machines.</p>
     </div>
-    <div class="section" title="What software is required for the Atomia DNS system?"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-262"></a>What software is required for the Atomia DNS system?</h3></div></div></div>
+    <div class="section" title="What software is required for the Atomia DNS system?"><div class="titlepage"><div><div><h3 class="title"><a id="faq-software"></a>What software is required for the Atomia DNS system?</h3></div></div></div>
       
       <p>
         The software requirements for the Atomia DNS Master are listed in the
-        <a class="link" href="usage.html#scroll-bookmark-16" title="Atomia DNS Master server installation">Atomia DNS Master server installation</a>
-        instructions and the software requirements for Atomia DNS Nameserver are listed in the
-        <a class="link" href="usage.html#scroll-bookmark-217" title="Atomia DNS Nameserver installation">Atomia DNS Nameserver installation</a>
+        <a class="link" href="usage.html#usage-master-installation" title="Atomia DNS Master server installation">Atomia DNS Master server installation</a>
+        instructions and the software requirements for Atomia DNS Bind-DLZ Nameserver are listed in the
+        <a class="link" href="usage.html#usage-bind-dlz-installation" title="Atomia DNS Bind-DLZ Nameserver installation">Atomia DNS Bind-DLZ Nameserver installation</a>
         instructions.
       </p>
     </div>
-    <div class="section" title="How many queries can Atomia DNS handle?"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-263"></a>How many queries can Atomia DNS handle?</h3></div></div></div>
+    <div class="section" title="How many queries can Atomia DNS handle?"><div class="titlepage"><div><div><h3 class="title"><a id="faq-qps"></a>How many queries can Atomia DNS handle?</h3></div></div></div>
       
       <p>
-        The Atomia DNS Nameserver has been tested using dnsperf (
+        The Atomia DNS Bind-DLZ Nameserver has been tested using dnsperf (
         <a class="ulink" href="http://www.nominum.com/services/measurement_tools.php" target="_top">http://www.nominum.com/services/measurement_tools.php</a>
         ) on a modest system to see its performance.
       </p>
       <p>With dnsperf running on the same machine as the nameserver, this modest system managed to handle 8609 queries per second.</p>
     </div>
-    <div class="section" title="How well does Atomia DNS scale?"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-264"></a>How well does Atomia DNS scale?</h3></div></div></div>
+    <div class="section" title="How well does Atomia DNS scale?"><div class="titlepage"><div><div><h3 class="title"><a id="faq-scaling"></a>How well does Atomia DNS scale?</h3></div></div></div>
       
       <p>Atomia DNS can scale to handle large DNS infrastructures both on the back end and in terms of nameservers. To be able to scale and handle many DNS queries you only need to add more nameservers into the system. The load will then be spread across all nameservers.</p>
       <p>The Atomia DNS Master doesn't usually have a high load since it is only used to provision changes to the nameservers. To scale the Atomia DNS Master server, the Atomia DNS API and Atomia DNS Database can be installed on separate servers. For higher requirements it is also possible to load balance the API using several servers.</p>
     </div>
-    <div class="section" title="How do I administrate zones in Atomia DNS?"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-265"></a>How do I administrate zones in Atomia DNS?</h3></div></div></div>
+    <div class="section" title="How do I administrate zones in Atomia DNS?"><div class="titlepage"><div><div><h3 class="title"><a id="faq-howto-admin"></a>How do I administrate zones in Atomia DNS?</h3></div></div></div>
       
       <p>
         Atomia DNS comes with an
@@ -78,11 +78,11 @@
         containing functions for administrating DNS settings.
       </p>
     </div>
-    <div class="section" title="The database on my Atomia DNS Nameserver has been corrupted. How do I fix it?"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-266"></a>The database on my Atomia DNS Nameserver has been corrupted. How do I fix it?</h3></div></div></div>
+    <div class="section" title="The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?"><div class="titlepage"><div><div><h3 class="title"><a id="faq-corrupted-bdb"></a>The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?</h3></div></div></div>
       
       <p>
         The recommended way is to do a full resync using Atomia DNS Sync. More information about this can be found in the
-        <a class="link" href="usage.html#scroll-bookmark-234" title="Atomia DNS Sync manual">Atomia DNS Sync manual</a>
+        <a class="link" href="usage.html#usage-bind-dlz-usage-syncer-man" title="Atomia DNS Sync manual">Atomia DNS Sync manual</a>
         .
       </p>
     </div>

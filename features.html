@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Atomia DNS Features</title><link rel="stylesheet" href="resources/css/style.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="Home" /><link rel="up" href="index.html" title="Home" /><link rel="prev" href="index.html" title="Home" /><link rel="next" href="usage.html" title="Usage" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Atomia DNS Features</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="index.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="usage.html">Next</a></td></tr></table><hr /></div><div class="section" title="Atomia DNS Features"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="features"></a>Atomia DNS Features</h2></div></div></div>
     
-    <div class="section" title="Features"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-7"></a>Features</h3></div></div></div>
+    <div class="section" title="Features"><div class="titlepage"><div><div><h3 class="title"><a id="features-mainfeatures"></a>Features</h3></div></div></div>
       
       <p>The main features of Atomia DNS are:</p>
       <div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
@@ -39,13 +39,13 @@
         <span class="italics">This is a example infrastructure setup where DNS servers are placed in different data centers. The Atomia DNS API and Atomia DNS database can either be installed on the same machine (default) or on separate machines.</span>
       </p>
     </div>
-    <div class="section" title="Atomia DNS functionality"><div class="titlepage"><div><div><h3 class="title"><a id="scroll-bookmark-8"></a>Atomia DNS functionality</h3></div></div></div>
+    <div class="section" title="Atomia DNS functionality"><div class="titlepage"><div><div><h3 class="title"><a id="features-functionality"></a>Atomia DNS functionality</h3></div></div></div>
       
       <p>The Atomia DNS system consists of:</p>
       <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
           <p>
             <span class="strong"><strong>
-              <a class="link" href="usage.html#scroll-bookmark-9" title="Atomia DNS Master server">Atomia DNS Master server</a>
+              <a class="link" href="usage.html#usage-master-server" title="Atomia DNS Master server">Atomia DNS Master server</a>
             </strong></span>
             <span class="strong"><strong>:</strong></span>
             The master server includes the Atomia DNS API that is used for communicating with nameservers and also used by external applications to provision DNS-data. Also on the master server is the Atomia DNS database which contains DNS-settings for all nameservers. It's possible to install the Atomia DNS API and Atomia DNS database on different machines.
@@ -53,10 +53,19 @@
         </li><li class="listitem">
           <p>
             <span class="strong"><strong>
-              <a class="link" href="usage.html#scroll-bookmark-10" title="Atomia DNS Nameserver">Atomia DNS Nameserver</a>
+              <a class="link" href="usage.html#usage-powerdns" title="Atomia DNS PowerDNS Nameserver">Atomia DNS PowerDNS Nameserver</a>
+            </strong></span>
+            <span class="strong"><strong>:</strong></span>
+            The nameserver includes the popular PowerDNS nameserver configured to use a local MySQL database for zone data. All nameservers will also have the Atomia DNS PowerDNS Sync application installed which provisions changes to the local database and also settings and keys needed for DNSSEC.
+          </p>
+        </li><li class="listitem">
+          <p>
+            <span class="strong"><strong>
+              <a class="link" href="usage.html#usage-bind-dlz" title="Atomia DNS Bind-DLZ Nameserver">Optional Atomia DNS Bind-DLZ Nameserver</a>
             </strong></span>
             <span class="strong"><strong>:</strong></span>
             The nameserver includes the popular BIND nameserver configured to use a local database instead of zone files. All nameservers will also have the Atomia DNS Sync application installed which provisions changes to the local database and also settings for BIND from the data in the Atomia DNS database.
+            </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="note.png" /></td><th align="left">Note</th></tr><tr><td align="left" valign="top">We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</td></tr></table></div><p>
           </p>
         </li></ol></div>
     </div>
