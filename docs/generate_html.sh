@@ -6,4 +6,5 @@ if [ -z "$1" ] || [ ! -d "$1" ]; then
 fi
 
 xmlto xhtml --skip-validation -m config.xsl -o "$1" manual.xml
+./docbook5topdf manual.xml "$1"/manual.pdf
 cp -a *.css images resources "$1"
