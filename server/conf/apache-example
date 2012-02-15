@@ -20,17 +20,17 @@
         PerlHandler Atomia::DNS::JSONServer
 </Location>
 
-<!-- Add this to some virtual host if you want the webapp on some better url:
-<IfModule mod_proxy.c>
-        <Proxy *>
-                Order deny,allow
-                Allow from all
-        </Proxy>
+## Add this to some virtual host if you want the webapp on some better url:
+#<IfModule mod_proxy.c>
+#        <Proxy *>
+#                Order deny,allow
+#                Allow from all
+#        </Proxy>
+#
+#        ProxyRequests Off
+#        AllowEncodedSlashes On
+#
+#	ProxyPass / http://127.0.0.1:5380 nocanon
+#        ProxyPassReverse / http://127.0.0.1:5380
+#</IfModule>
 
-        ProxyRequests Off
-        AllowEncodedSlashes On
-
-	ProxyPass / http://127.0.0.1:5380 nocanon
-        ProxyPassReverse / http://127.0.0.1:5380
-</IfModule>
--->
