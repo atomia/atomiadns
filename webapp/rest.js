@@ -8,7 +8,7 @@ exports.errorMessageMap = {
 exports.nameserverGroupName = process.env['WEBAPP_NAMESERVER_GROUP'] != null ? process.env['WEBAPP_NAMESERVER_GROUP'] : "default";
 
 if (process.env['WEBAPP_NAMESERVERS'] == null || !process.env['WEBAPP_NAMESERVERS'].length) {
-	throw new Error("You have to specify the environment variable WEBAPP_NAMESERVERS, containing comma separated NS-records to use as default for new zones");
+	throw new Error("You have to specify the environment variable WEBAPP_NAMESERVERS, containing comma separated NS-records to use as default for new zones. Add something like this to /etc/atomiadns.conf:\nwebapp_nameservers=ns1.example.com,ns2.example.com");
 } else {
 	exports.defaultNameservers = process.env['WEBAPP_NAMESERVERS'].split(",");
 }
