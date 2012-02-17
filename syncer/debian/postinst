@@ -8,6 +8,10 @@ OPTIONS="-u bind"
 RESOLVCONF="no"
 EOF
 
+if [ ! -f "/etc/atomiadns.conf" ]; then
+	cp /usr/share/atomiadns/atomiadns-bind-dlz-agent.conf /etc/atomiadns.conf
+fi
+
 mkdir -p /etc/bind/slave/zones
 chown -R bind:bind /etc/bind/slave
 

@@ -1,4 +1,3 @@
-/etc/atomiadns.conf
 /etc/bind/named.conf.local
 /etc/bind/named.conf.options
 /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_sync.conf

@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.1.0
+Version: 1.1.1
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -107,6 +107,8 @@ fi
 exit 0
 
 %changelog
+* Fri Feb 17 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.1-1
+- Fix problem with having atomiadns-nameserver and atomiadns-api on the same server and fix invalid apache config introduced in 1.1.0
 * Tue Jan 31 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.0-1
 - Add JSON API endpoint, authentication/authorization and a built in webapp client
 * Sat Jan 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.0.34-1

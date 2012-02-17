@@ -47,10 +47,10 @@ install-stamp:
 #Run commands before making package
 
 	mkdir -p $(TMP)/etc/bind
-	cp conf/atomiadns.conf $(TMP)/etc
 	cp conf/named.conf.* $(TMP)/etc/bind
 
 	mkdir -p $(TMP)/usr/share/atomiadns
+	cp conf/atomiadns.conf $(TMP)/usr/share/atomiadns/atomiadns-bind-dlz-agent.conf
 	cp -a eventlibrary $(TMP)/usr/share/atomiadns
 	find $(TMP)/usr/share/atomiadns -type d -name .svn -exec rm -rf "{}" "+" 
 
