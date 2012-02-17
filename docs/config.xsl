@@ -36,7 +36,7 @@
 
 	<xsl:template name="user.header.content">
 		<div class="header">
-			<img alt="Atomia Docs" src="resources/img/a-docs.png" class="logo" />
+			<a title="Home" href="http://atomia.github.com/atomiadns/" id="books_home"><img alt="Atomia Docs" src="resources/img/a-docs.png" class="logo" /></a>
 			<div class="top_nav">
 				<ul class="books">
 					<li>
