@@ -36,7 +36,7 @@ del {
 	text-decoration:line-through
 }
 table {
-	border-collapse:collapse;
+	border-collapse:separate;
 	border-spacing:0
 }
 /*
@@ -48,6 +48,7 @@ table {
 
 ----------------------------------------------------------------------------------------------
 */
+
 @font-face {
 	font-family: 'Museo700';
 	src: url('../type/museo700-regular-webfont.eot');
@@ -70,62 +71,62 @@ table {
 	font-style: normal;
 }
 @font-face {
-	font-family: 'TeXGyreHerosRegular';
+	font-family: 'TeXGyreHeros';
 	src: url('../type/texgyreheros-regular-webfont.eot');
 	src: url('../type/texgyreheros-regular-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheros-regular-webfont.woff') format('woff'),  url('../type/texgyreheros-regular-webfont.ttf') format('truetype'),  url('../type/texgyreheros-regular-webfont.svg#TeXGyreHerosRegular') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
-	font-family: 'TeXGyreHerosItalic';
+	font-family: 'TeXGyreHeros';
 	src: url('../type/texgyreheros-italic-webfont.eot');
 	src: url('../type/texgyreheros-italic-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheros-italic-webfont.woff') format('woff'),  url('../type/texgyreheros-italic-webfont.ttf') format('truetype'),  url('../type/texgyreheros-italic-webfont.svg#TeXGyreHerosItalic') format('svg');
 	font-weight: normal;
-	font-style: normal;
+	font-style: italic;
 }
 @font-face {
-	font-family: 'TeXGyreHerosBold';
+	font-family: 'TeXGyreHeros';
 	src: url('../type/texgyreheros-bold-webfont.eot');
 	src: url('../type/texgyreheros-bold-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheros-bold-webfont.woff') format('woff'),  url('../type/texgyreheros-bold-webfont.ttf') format('truetype'),  url('../type/texgyreheros-bold-webfont.svg#TeXGyreHerosBold') format('svg');
-	font-weight: normal;
+	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
-	font-family: 'TeXGyreHerosBoldItalic';
+	font-family: 'TeXGyreHeros';
 	src: url('../type/texgyreheros-bolditalic-webfont.eot');
 	src: url('../type/texgyreheros-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheros-bolditalic-webfont.woff') format('woff'),  url('../type/texgyreheros-bolditalic-webfont.ttf') format('truetype'),  url('../type/texgyreheros-bolditalic-webfont.svg#TeXGyreHerosBoldItalic') format('svg');
-	font-weight: normal;
-	font-style: normal;
+	font-weight: bold;
+	font-style: italic;
 }
 @font-face {
-	font-family: 'TeXGyreHerosCnRegular';
+	font-family: 'TeXGyreHerosCn';
 	src: url('../type/texgyreheroscn-regular-webfont.eot');
 	src: url('../type/texgyreheroscn-regular-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheroscn-regular-webfont.woff') format('woff'),  url('../type/texgyreheroscn-regular-webfont.ttf') format('truetype'),  url('../type/texgyreheroscn-regular-webfont.svg#TeXGyreHerosCnRegular') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
-	font-family: 'TeXGyreHerosCnItalic';
+	font-family: 'TeXGyreHerosCn';
 	src: url('../type/texgyreheroscn-italic-webfont.eot');
 	src: url('../type/texgyreheroscn-italic-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheroscn-italic-webfont.woff') format('woff'),  url('../type/texgyreheroscn-italic-webfont.ttf') format('truetype'),  url('../type/texgyreheroscn-italic-webfont.svg#TeXGyreHerosCnItalic') format('svg');
 	font-weight: normal;
-	font-style: normal;
+	font-style: italic;
 }
 @font-face {
-	font-family: 'TeXGyreHerosCnBold';
+	font-family: 'TeXGyreHerosCn';
 	src: url('../type/texgyreheroscn-bold-webfont.eot');
 	src: url('../type/texgyreheroscn-bold-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheroscn-bold-webfont.woff') format('woff'),  url('../type/texgyreheroscn-bold-webfont.ttf') format('truetype'),  url('../type/texgyreheroscn-bold-webfont.svg#TeXGyreHerosCnBold') format('svg');
-	font-weight: normal;
+	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
-	font-family: 'TeXGyreHerosCnBoldItalic';
+	font-family: 'TeXGyreHerosCn';
 	src: url('../type/texgyreheroscn-bolditalic-webfont.eot');
 	src: url('../type/texgyreheroscn-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),  url('../type/texgyreheroscn-bolditalic-webfont.woff') format('woff'),  url('../type/texgyreheroscn-bolditalic-webfont.ttf') format('truetype'),  url('../type/texgyreheroscn-bolditalic-webfont.svg#TeXGyreHerosCnBoldItalic') format('svg');
-	font-weight: normal;
-	font-style: normal;
+	font-weight: bold;
+	font-style: italic;
 }
-strong, th, thead td, h1, h2, h3, h4, h5, h6 {
+strong, th, thead td, h1, h2 {
 	font-weight: bold;
 }
 cite, em, dfn {
@@ -224,18 +225,17 @@ a:hover {
 	color: #fe007e;
 }
 p {
-	font-family: TeXGyreHerosCnRegular;
-	font-size: 1.2em
+	font-size: 15px
 }
 p strong {
-	font-family: TeXGyreHerosCnBold;
-	font-weight: normal
+	font-weight:bold;
 }
 p em {
-	font-family: TeXGyreHerosCnItalic;
+	font-style: italic;
 	font-weight: normal
 }
-h1, h2, h3, h4, .toc-title {
+h1, h2, h3, h4, .toc p {
+	font-family: TeXGyreHerosCn;
 	margin: 1.6em 0 .8em;
 	font-weight: normal
 }
@@ -245,8 +245,8 @@ h5, h6 {
 h1, h2 {
 	font-family: Museo500;
 }
-h3, h4, .toc-title {
-	font-family: TeXGyreHerosCnRegular;
+h3, h4, h5, h6, h7, .toc p {
+	font-weight:bold;
 }
 h1 {
 	font-size: 2.9em;
@@ -256,24 +256,23 @@ h2 {
 	font-size: 2.2em;
 	color: #555;
 }
-h3, .toc-title {
+h3, .toc p {
 	font-size: 1.5em;
 	text-transform: uppercase;
 	color: #c90062
 }
 h4 {
-	font-size: 1.5em;
-	color: #787878;
+	font-size: 18px;
+	color: #5E5E5E;
 	margin-top: 1.2em
 }
 h5 {
-	font-size: 1.1em;
-	text-transform: uppercase;
-	color: #888;
+    color: #636363;
+    font-size: 15px;
 }
 h6 {
-	font-size: 1em;
-	color: #666;
+	font-size: 14px;
+	color: #828282;
 }
 ul li {
 	margin-left: .65em;
@@ -292,11 +291,11 @@ li p {
 	color: #333
 }
 .orderedlist > li {
-	font-size: 1.2em
+	font-size: 15px
 }
 .orderedlist > li > p {
-	font-size: 1em;
-	line-height: 1em
+	font-size: 15px;
+	line-height: 21px
 }
 ol {
 	list-style-position: outside;
@@ -351,7 +350,7 @@ blockquote *:first-child {
 	margin: .8em 0;
 }
 hr, p, ul, ol, dl, pre, blockquote, address, table, form {
-	margin: 0 0 1.6em 0;
+	margin: 0 0 24px 0;
 }
 .error p:last-child, .error-note p:last-child, .warning p:last-child, .notice p:last-child, .success p:last-child {
 	margin-bottom: 0
@@ -394,6 +393,10 @@ code, pre {
 	border-radius: .2em;
 	box-shadow: 0 1px 4px #bebebe;
 	padding: .1em .2em 0;
+}
+
+code, pre span {
+	color: #d8005b;
 }
 /*
 ----------------------------------------------------------------------------------------------
@@ -494,42 +497,88 @@ html {
 }
 body {
 	font-size: 14px;
-	font-family: "TeXGyreHerosCnRegular", "HelveticaNeueCondensed", "HelveticaNeue-Condensed", "Helvetica Neue Condensed", "HelveticaNeueRomanCondensed", "HelveticaNeue-Roman-Condensed", "Helvetica Neue Roman Condensed", "HelveticaNeue", "Helvetica Neue", "HelveticaNeueRoman", "HelveticaNeue-Roman", "Helvetica Neue Roman", 'TeXGyreHerosCnRegular', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+	font-family: "TeXGyreHerosCn", "HelveticaNeueCondensed", "HelveticaNeue-Condensed", "Helvetica Neue Condensed", "HelveticaNeueRomanCondensed", "HelveticaNeue-Roman-Condensed", "Helvetica Neue Roman Condensed", "HelveticaNeue", "Helvetica Neue", "HelveticaNeueRoman", "HelveticaNeue-Roman", "Helvetica Neue Roman", "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
 	line-height: 1.6em;
 	padding: 0;
 	margin: 0;
 	background: url(../img/small-crackle-bright.png)
 }
+div.header {
+    background: none repeat scroll 0 0 #FFFFFF;
+    color: #333333;
+    height: 30px;
+    margin: 42px auto 0;
+    padding: 0 4em;
+    position: relative;
+    width: 60em;
+    z-index: 100;
+}
+body > .section,
 div.article {
 	padding: 3em 4em;
-	margin: 5em auto;
+	margin: 0 auto 1em;
 	width: 60em;
 	color: #333;
 	background: #fff;
-	box-shadow: 0 10px 20px rgba(0,0,0,.4);
+	-moz-box-shadow: 0 0px 20px rgba(0,0,0,.4);
+	-webkit-box-shadow: 0 0px 20px rgba(0,0,0,.4);
+	box-shadow: 0 0px 20px rgba(0,0,0,.4);
 	position: relative
 }
 .toc {
 	background-color: #FFEAF4;
 	border: 2px solid #FFD7EA;
+	-moz-border-radius: 0.5em 0.5em 0.5em 0.5em;
+	-webkit-border-radius: 0.5em 0.5em 0.5em 0.5em;
 	border-radius: 0.5em 0.5em 0.5em 0.5em;
 	padding: 0 2em;
 	width: 22em;
+}
+.toc b {
+	font-weight:normal;
 }
 .toc a {
 	text-decoration: none;
 	font-size: 1.2em;
 }
+.toc dd {
+	font-size: 0.9em;
+    padding-left: 17px;
+}
 .programlisting {
-	background-color: #F2F2F2;
-	border: 2px solid #FFFFFF;
-	border-radius: 0.5em 0.5em 0.5em 0.5em;
-	box-shadow: 0 2px 4px #B8B8B8;
+	background-color: white;
+	border-left: 10px solid #C90062;
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,.4);
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
+	box-shadow: 0 1px 5px rgba(0,0,0,.4);
+	color: #0E0E0E;
+	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+	padding: 1.5em;
+	margin-top: 5px;
+    overflow: auto;
+    white-space: normal;
+}
+.programlisting ol {
+	margin: 0 0 0 1em;
+}
+.programlisting ol li {
+	padding-left: 1em;
+	background-color: #eaeaea
+}
+.programlisting ol li:nth-child(2n+1) {
+	background-color: #f9f9f9
+}
+.programlisting pre {
 	color: #666666;
 	font-family: "Courier New",Courier,monospace;
 	font-size: 1.1em;
-	margin-bottom: 1em;
-	padding: 1em 2em;
+	margin: 0;
+}
+pre ol {
+	color: #0E0E0E;
+}
+.programlisting ol pre {
+	white-space: pre-wrap
 }
 .figure-title {
 	font-size: 1.1em;
@@ -545,46 +594,13 @@ div.article {
 }
 .logo {
 	position: absolute;
-	top:-54px;
+	top:-39px;
 	left: 10px
 }
 .pubdate {
 	color: #888;
 	margin-top: -1.5em;
 	font-size: 1em
-}
-#search input[type=text] {
-	border: none;
-	background: url(../img/search.png);
-	color: #aaa;
-	width: 199px;
-	height: 23px;
-	padding: 6px 10px;
-	position: absolute;
-	top: -40px;
-	right: 34px
-}
-#search input[type=text]:hover, #search input[type=text]:focus {
-	background-position: bottom left;
-	color: #666;
-	outline: none;
-}
-#search input[type=button] {
-	border: none;
-	background: url(../img/search.png) top right;
-	color: #aaa;
-	width: 24px;
-	height: 23px;
-	padding: 6px 10px;
-	position: absolute;
-	top: -40px;
-	right: 10px;
-	text-indent: 40px
-}
-#search input[type=button]:hover, #search input[type=button]:focus {
-	background-position: bottom right;
-	color: #666;
-	outline: none;
 }
 .top_nav {
 	position: absolute;
@@ -648,7 +664,6 @@ div.article {
 	background: url(../img/breadcrumb_separator.png) no-repeat right
 }
 .books li.current > a  {
-	font-family: 'TeXGyreHerosCnBold';
 	cursor: default;
 	background: none
 }
@@ -664,6 +679,9 @@ div.article {
 	padding: 2em 1.5em;
 	box-shadow: 0 3px 10px rgba(0,0,0,.3)
 }
+.books ul.sub_home {
+	margin: 0 0 0 0px
+}
 .books ul li {
 	margin: 0
 }
@@ -677,13 +695,119 @@ div.article {
 	width: 27px;
 	text-indent: 30px;
 }
+.pager li:last-child {
+	-moz-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
 #pager_prev {
 	background: url(../img/navigation_sprites.png) -33px 0
 }
 #pager_prev:hover {
 	background-position: -33px 23px
-}#pager_next {
+}
+#pager_next {
 	background: url(../img/navigation_sprites.png) -60px 0
-}#pager_next:hover {
+}
+#pager_next:hover {
 	background-position: -60px 23px
+}
+.itemizedlist ul > li {
+	list-style-type: none;
+	background: url(../img/star_bullet.png) no-repeat 0 5px;
+	padding-left: 21px
+}
+table {
+	width: 100%;
+	background: url(../img/table_shadow.png) no-repeat center bottom;
+	padding-bottom: 31px;
+	margin: 1.6em 0;
+	position: relative
+}
+tbody tr:nth-child(odd) {
+	background-color: #f2f2f2;
+}
+td,th {
+	padding: .7em 1.6em;
+	line-height: 1.1em
+}
+thead td,
+th {
+	border-bottom: 1px solid #ddd;
+	text-transform: uppercase;
+	font-weight:bold;
+	font-size: 1.2em;
+	padding: .45em 1.35em;
+	color: #1a1a1a
+}
+thead td p {
+	font-weight:bold;
+	font-size: 15px;
+	margin: 0 0 8px;
+}
+tbody td p {
+	margin: 0 0 3px
+}
+th.mark {
+	border-color: #333;
+    border-style: solid;
+    border-width: 10px 2px 1px 2px;
+	border-bottom: 1px solid #ddd !important;
+}
+td.mark {
+	border-color: #333;
+    border-style: solid;
+    border-width: 0 2px;
+}
+tr:last-child td.mark {
+	border-color: #333;
+    border-style: solid;
+    border-width: 0 2px 2px 2px;
+}
+tr:last-child td.mark.pink {
+	border-color: #C90062;
+}
+.mark.pink {
+	background-color: rgba(201, 0, 100, 0.05);
+	border-color: #C90062;
+}
+.emphasize {
+	font-size: 1.2em;
+	font-family: TeXGyreHerosCn;
+	font-weight: bold;
+	color: #000
+}
+.fineprint {
+	font-size: .85em;
+	line-height: 1em;
+	color: #666;
+}
+
+.note {
+	background-color: #eff4ff;
+	color: #3d7099;
+	padding: 1.5em;
+	border: 2px solid #91bbff;
+	border-radius: .5em;
+}
+.footer {
+	width: 66em;
+	margin: 0 auto;
+	position: relative
+}
+.footer p {
+	color: #666
+}
+.footer a {
+	font-weight: bold;
+	color: #555;
+	text-decoration: none
+}
+.footer a:hover {
+	color: #333
+}
+.footer .links {
+	position: absolute;
+	top: 0;
+	right: 0
 }

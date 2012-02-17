@@ -7,4 +7,4 @@ fi
 
 xmlto xhtml --skip-validation -m config.xsl -o "$1" manual.xml
 ./docbook5topdf manual.xml "$1"/manual.pdf
-cp -a *.css images resources "$1"
+cp -a *.html images resources "$1"
