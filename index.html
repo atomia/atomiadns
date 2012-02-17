@@ -1,114 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Home</title><link rel="stylesheet" href="resources/css/style.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="Home" /><link rel="next" href="features.html" title="Atomia DNS Features" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Home</th></tr><tr><td width="20%" align="left"> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="features.html">Next</a></td></tr></table><hr /></div><div class="article" title="Home"><div class="titlepage"><div><div><h2 class="title"><a id="index"></a>Home</h2></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="index.html#overview">Atomia DNS Overview</a></span></dt><dd><dl><dt><span class="section"><a href="index.html#overview-whatis">What is Atomia DNS</a></span></dt><dt><span class="section"><a href="index.html#overview-system">System overview</a></span></dt></dl></dd><dt><span class="section"><a href="features.html">Atomia DNS Features</a></span></dt><dd><dl><dt><span class="section"><a href="features.html#features-mainfeatures">Features</a></span></dt><dt><span class="section"><a href="features.html#features-functionality">Atomia DNS functionality</a></span></dt></dl></dd><dt><span class="section"><a href="usage.html">Usage</a></span></dt><dd><dl><dt><span class="section"><a href="usage.html#usage-master-server">Atomia DNS Master server</a></span></dt><dt><span class="section"><a href="usage.html#usage-bind-dlz">Atomia DNS Bind-DLZ Nameserver</a></span></dt><dt><span class="section"><a href="usage.html#usage-powerdns">Atomia DNS PowerDNS Nameserver</a></span></dt><dt><span class="section"><a href="usage.html#usage-dyndns">Atomia DNS DynDNS</a></span></dt></dl></dd><dt><span class="section"><a href="faq.html">FAQ</a></span></dt><dd><dl><dt><span class="section"><a href="faq.html#faq-hardware">What hardware is required for the Atomia DNS system?</a></span></dt><dt><span class="section"><a href="faq.html#faq-software">What software is required for the Atomia DNS system?</a></span></dt><dt><span class="section"><a href="faq.html#faq-qps">How many queries can Atomia DNS handle?</a></span></dt><dt><span class="section"><a href="faq.html#faq-scaling">How well does Atomia DNS scale?</a></span></dt><dt><span class="section"><a href="faq.html#faq-howto-admin">How do I administrate zones in Atomia DNS?</a></span></dt><dt><span class="section"><a href="faq.html#faq-corrupted-bdb">The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?</a></span></dt></dl></dd><dt><span class="section"><a href="apidocs.html">Atomia DNS API</a></span></dt><dd><dl><dt><span class="section"><a href="apidocs.html#apidocs-overview">What is the Atomia DNS API?</a></span></dt><dt><span class="section"><a href="apidocs.html#apidocs-accessing">Accessing the API</a></span></dt><dt><span class="section"><a href="apidocs.html#apidocs-manual">Atomia DNS API manual</a></span></dt></dl></dd><dt><span class="index"><a href="ix01.html">Index</a></span></dt></dl></div>
-  
-  <div class="section" title="Atomia DNS Overview"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="overview"></a>Atomia DNS Overview</h2></div></div></div>
-    
-    <div class="section" title="What is Atomia DNS"><div class="titlepage"><div><div><h3 class="title"><a id="overview-whatis"></a>What is Atomia DNS</h3></div></div></div>
-      
-      <p>Atomia DNS is a system to provision and improve administration of DNS settings across several DNS-servers. DNS-servers can be geographically spread and are optimized to handle large amounts of DNS-data by using a local database instead of zone files.</p>
-      <p>The local databases of individual DNS-servers are updated from a main database which contains data for all servers.</p>
-      <p>Atomia DNS provides a API which lets applications update DNS-data in a very simple way.</p>
-    </div>
-    <div class="section" title="System overview"><div class="titlepage"><div><div><h3 class="title"><a id="overview-system"></a>System overview</h3></div></div></div>
-      
-      <p>Atomia DNS is a DNS system which enables easy management of DNS zones through a programmatic SOAP interface. The system consists of several parts which are described below.</p>
-      <p>
-        </p><div class="informalfigure">
-          <div class="mediaobject"><img src="images/Atomia_DNS_overview_v2.png" /></div>
-        </div><p>
-      </p>
-      <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
-          <p>
-            <span class="strong"><strong>Clients</strong></span>
-          </p>
-          <div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem">
-              <p>
-                <span class="strong"><strong>DynDNS:</strong></span>
-                DynDNS client description.
-              </p>
-            </li><li class="listitem">
-              <p>
-                <span class="strong"><strong>Web user interface:</strong></span>
-                Web interface to make changes using the API.
-              </p>
-            </li><li class="listitem">
-              <p>
-                <span class="strong"><strong>Command line interface:</strong></span>
-                CLI tool to make changes using the API.
-              </p>
-            </li></ol></div>
-        </li><li class="listitem">
-          <p>
-            <span class="strong"><strong>Atomia DNS API:</strong></span>
-            Part of Atomia DNS Master server
-          </p>
-          <div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem">
-              <p>
-                <span class="strong"><strong>Atomia DNS API:</strong></span>
-                The API is used by clients to make changes in the DNS settings as well as for communicating with different DNS servers. The two logical APIs (SyncSOAP and DNS SOAP API) are both provided by the same SOAP Server, installed using the atomiadns-api package.
-              </p>
-            </li></ol></div>
-        </li><li class="listitem">
-          <p>
-            <span class="strong"><strong>Atomia DNS database:</strong></span>
-            Part of Atomia DNS Master server.
-          </p>
-          <div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem">
-              <p>
-                <span class="strong"><strong>Atomia DNS database:</strong></span>
-                The main database is by default setup on the SOAP Server, but can be set up on an external machine as well if necessary for policy reasons, as shown in the image above.
-              </p>
-            </li></ol></div>
-        </li><li class="listitem">
-          <p>
-            <span class="strong"><strong>Atomia DNS PowerDNS Nameserver:</strong></span>
-            One or more nameservers controlled by the system.
-          </p>
-          <div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem">
-              <p>
-                <span class="strong"><strong>Sync application:</strong></span>
-                Synchronizes data between the Atomia DNS database and the local DNS database on the nameserver. The sync application on the nameserver nodes is provided by the package atomiadns-powerdnssync. The sync application will write data to the local MySQL database.
-              </p>
-            </li><li class="listitem">
-              <p>
-                <span class="strong"><strong>PowerDNS:</strong></span>
-                The nameserver software used, can be found at <a class="ulink" href="http://powerdnssec.org/downloads/packages/" target="_top">http://powerdnssec.org/downloads/packages/</a>.
-              </p>
-            </li></ol></div>
-        </li><li class="listitem">
-          <p>
-            <span class="strong"><strong>Atomia DNS Bind-DLZ Nameserver:</strong></span>
-            One or more nameservers controlled by the system.
-            </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="note.png" /></td><th align="left">Note</th></tr><tr><td align="left" valign="top">We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</td></tr></table></div><p>
-          </p>
-          <div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem">
-              <p>
-                <span class="strong"><strong>Sync application:</strong></span>
-                Synchronizes data between the Atomia DNS database and the local DNS database on the nameserver. All software on the nameserver nodes is provided by the package atomiadns-nameserver. The sync application will write data to the local database. In the case where the nameserver should get slave zones the sync application will write configurations for BIND.
-              </p>
-            </li><li class="listitem">
-              <p>
-                <span class="strong"><strong>BIND9:</strong></span>
-                Nameserver software compiled using database support for quick reload of zone data.
-              </p>
-            </li><li class="listitem">
-              <p>
-                <span class="strong"><strong>BindDLZ/BDBHPT:</strong></span>
-                Stores zone data.
-              </p>
-            </li><li class="listitem">
-              <p>
-                <span class="strong"><strong>Zone files:</strong></span>
-                Zone files are only used for slave zones where data is loaded from another DNS master server according to the DNS protocol.
-              </p>
-            </li></ol></div>
-        </li></ol></div>
-    </div>
-  </div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Home</title><link rel="stylesheet" href="resources/css/style.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="Home" /><link rel="next" href="overview.html" title="1. Atomia DNS Overview" /><script xmlns="" type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script><script xmlns="" type="text/javascript" src="resources/js/custom.js"></script></head><body><div xmlns="" class="header"><img alt="Atomia Docs" src="resources/img/a-docs.png" class="logo" /><div class="top_nav"><ul class="books"><li><a title="Home" href="index.html" id="books_home">Home</a><ul class="sub_home"><li><a href="overview.html">Atomia DNS Overview</a></li><li><a href="features.html">Atomia DNS Features</a></li><li><a href="usage.html">Usage</a></li><li><a href="faq.html">FAQ</a></li><li><a href="apidocs.html">Atomia DNS API</a></li></ul></li><li class="current"><a href="javascript:void(0);">Atomia DNS Overview</a><ul><li><a href="overview.html">Atomia DNS Overview</a></li><li><a href="features.html">Atomia DNS Features</a></li><li><a href="usage.html">Usage</a></li><li><a href="faq.html">FAQ</a></li><li><a href="apidocs.html">Atomia DNS API</a></li></ul></li></ul><ul class="pager"></ul></div></div><div class="article"><div class="titlepage"><div><div><h2 class="title"><a id="index"></a>Home</h2></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="overview.html">1. Atomia DNS Overview</a></span></dt><dd><dl><dt><span class="section"><a href="overview.html#overview-whatis">1.1. What is Atomia DNS</a></span></dt><dt><span class="section"><a href="overview.html#overview-system">1.2. System overview</a></span></dt></dl></dd><dt><span class="section"><a href="features.html">2. Atomia DNS Features</a></span></dt><dd><dl><dt><span class="section"><a href="features.html#features-mainfeatures">2.1. Features</a></span></dt><dt><span class="section"><a href="features.html#features-functionality">2.2. Atomia DNS functionality</a></span></dt></dl></dd><dt><span class="section"><a href="usage.html">3. Usage</a></span></dt><dd><dl><dt><span class="section"><a href="usage.html#usage-master-server">3.1. Atomia DNS Master server</a></span></dt><dt><span class="section"><a href="usage.html#usage-bind-dlz">3.2. Atomia DNS Bind-DLZ Nameserver</a></span></dt><dt><span class="section"><a href="usage.html#usage-powerdns">3.3. Atomia DNS PowerDNS Nameserver</a></span></dt><dt><span class="section"><a href="usage.html#usage-dyndns">3.4. Atomia DNS DynDNS</a></span></dt></dl></dd><dt><span class="section"><a href="faq.html">4. FAQ</a></span></dt><dd><dl><dt><span class="section"><a href="faq.html#faq-hardware">4.1. What hardware is required for the Atomia DNS system?</a></span></dt><dt><span class="section"><a href="faq.html#faq-software">4.2. What software is required for the Atomia DNS system?</a></span></dt><dt><span class="section"><a href="faq.html#faq-qps">4.3. How many queries can Atomia DNS handle?</a></span></dt><dt><span class="section"><a href="faq.html#faq-scaling">4.4. How well does Atomia DNS scale?</a></span></dt><dt><span class="section"><a href="faq.html#faq-howto-admin">4.5. How do I administrate zones in Atomia DNS?</a></span></dt><dt><span class="section"><a href="faq.html#faq-corrupted-bdb">4.6. The database on my Atomia DNS Bind-DLZ Nameserver has been corrupted. How do I fix it?</a></span></dt></dl></dd><dt><span class="section"><a href="apidocs.html">5. Atomia DNS API</a></span></dt><dd><dl><dt><span class="section"><a href="apidocs.html#apidocs-overview">5.1. What is the Atomia DNS API?</a></span></dt><dt><span class="section"><a href="apidocs.html#apidocs-accessing">5.2. Accessing the API</a></span></dt><dt><span class="section"><a href="apidocs.html#apidocs-manual">5.3. Atomia DNS API manual</a></span></dt></dl></dd></dl></div>
   
   
   
   
   
-</div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="features.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top"> </td><td width="20%" align="center"> </td><td width="40%" align="right" valign="top"> Atomia DNS Features</td></tr></table></div></body></html>
+  
+  
+</div><div xmlns="" class="footer"><p>Copyright 2012 Atomia AB. All rights reserved.</p><p class="links"><a href="http://www.atomia.com/">Atomia AB</a> | <a href="http://www.atomiadns.com/">AtomiaDNS</a> | <a href="http://www.atomia.com/blog">Blog</a> | <a href="http://www.twitter.com/atomia">Twitter</a></p></div><script xmlns="" type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-11168442-3']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script></body></html>

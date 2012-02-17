@@ -30,4 +30,20 @@ $(document).ready(function() {
             $(this).val(phvalue);  
         }  
     }); 
+	
+	//Code highliter
+	$("pre").each(function(){
+		var x = $(this).html();
+		// Find string inside quoutes and wrap with span
+		x = x.replace(/"(.*?)"/gm, "\"<span>$1</span>\"");
+		x = x.replace(/'(.*?)'/gm, "\'<span>$1</span>\'");
+		// Trim white space
+		x = x.replace(/^\s+|\s+$/gm, '');
+		// Find double \n and replace with one
+		x = x.replace(/\n\n/gm, "\n");
+		//Wrap each new line with LI
+		x = x.replace(/\n/gm, "</li><li>");
+		//Return wrapped.
+		$(this).html("<ol><li>"+x+"</li></ol>");
+	});
 });

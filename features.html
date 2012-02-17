@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Atomia DNS Features</title><link rel="stylesheet" href="resources/css/style.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="Home" /><link rel="up" href="index.html" title="Home" /><link rel="prev" href="index.html" title="Home" /><link rel="next" href="usage.html" title="Usage" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Atomia DNS Features</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="index.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="usage.html">Next</a></td></tr></table><hr /></div><div class="section" title="Atomia DNS Features"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="features"></a>Atomia DNS Features</h2></div></div></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>2. Atomia DNS Features</title><link rel="stylesheet" href="resources/css/style.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="Home" /><link rel="up" href="index.html" title="Home" /><link rel="prev" href="overview.html" title="1. Atomia DNS Overview" /><link rel="next" href="usage.html" title="3. Usage" /><script xmlns="" type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script><script xmlns="" type="text/javascript" src="resources/js/custom.js"></script></head><body><div xmlns="" class="header"><img alt="Atomia Docs" src="resources/img/a-docs.png" class="logo" /><div class="top_nav"><ul class="books"><li><a title="Home" href="index.html" id="books_home">Home</a><ul class="sub_home"><li><a href="overview.html">Atomia DNS Overview</a></li><li><a href="features.html">Atomia DNS Features</a></li><li><a href="usage.html">Usage</a></li><li><a href="faq.html">FAQ</a></li><li><a href="apidocs.html">Atomia DNS API</a></li></ul></li><li class="current"><a href="javascript:void(0);">Features</a><ul><li><a href="features.html#features-mainfeatures">Features</a></li><li><a href="features.html#features-functionality">Atomia DNS functionality</a></li></ul></li></ul><ul class="pager"><li><a id="pager_prev" href="overview.html">Prev - Atomia DNS Overview</a></li><li><a id="pager_next" href="usage.html">Next - Usage</a></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="features"></a>2. Atomia DNS Features</h2></div></div></div>
     
-    <div class="section" title="Features"><div class="titlepage"><div><div><h3 class="title"><a id="features-mainfeatures"></a>Features</h3></div></div></div>
+    <div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="features-mainfeatures"></a>2.1. Features</h3></div></div></div>
       
       <p>The main features of Atomia DNS are:</p>
       <div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
@@ -39,13 +38,13 @@
         <span class="italics">This is a example infrastructure setup where DNS servers are placed in different data centers. The Atomia DNS API and Atomia DNS database can either be installed on the same machine (default) or on separate machines.</span>
       </p>
     </div>
-    <div class="section" title="Atomia DNS functionality"><div class="titlepage"><div><div><h3 class="title"><a id="features-functionality"></a>Atomia DNS functionality</h3></div></div></div>
+    <div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="features-functionality"></a>2.2. Atomia DNS functionality</h3></div></div></div>
       
       <p>The Atomia DNS system consists of:</p>
       <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
           <p>
             <span class="strong"><strong>
-              <a class="link" href="usage.html#usage-master-server" title="Atomia DNS Master server">Atomia DNS Master server</a>
+              <a class="link" href="usage.html#usage-master-server" title="3.1. Atomia DNS Master server">Atomia DNS Master server</a>
             </strong></span>
             <span class="strong"><strong>:</strong></span>
             The master server includes the Atomia DNS API that is used for communicating with nameservers and also used by external applications to provision DNS-data. Also on the master server is the Atomia DNS database which contains DNS-settings for all nameservers. It's possible to install the Atomia DNS API and Atomia DNS database on different machines.
@@ -53,7 +52,7 @@
         </li><li class="listitem">
           <p>
             <span class="strong"><strong>
-              <a class="link" href="usage.html#usage-powerdns" title="Atomia DNS PowerDNS Nameserver">Atomia DNS PowerDNS Nameserver</a>
+              <a class="link" href="usage.html#usage-powerdns" title="3.3. Atomia DNS PowerDNS Nameserver">Atomia DNS PowerDNS Nameserver</a>
             </strong></span>
             <span class="strong"><strong>:</strong></span>
             The nameserver includes the popular PowerDNS nameserver configured to use a local MySQL database for zone data. All nameservers will also have the Atomia DNS PowerDNS Sync application installed which provisions changes to the local database and also settings and keys needed for DNSSEC.
@@ -61,12 +60,24 @@
         </li><li class="listitem">
           <p>
             <span class="strong"><strong>
-              <a class="link" href="usage.html#usage-bind-dlz" title="Atomia DNS Bind-DLZ Nameserver">Optional Atomia DNS Bind-DLZ Nameserver</a>
+              <a class="link" href="usage.html#usage-bind-dlz" title="3.2. Atomia DNS Bind-DLZ Nameserver">Optional Atomia DNS Bind-DLZ Nameserver</a>
             </strong></span>
             <span class="strong"><strong>:</strong></span>
             The nameserver includes the popular BIND nameserver configured to use a local database instead of zone files. All nameservers will also have the Atomia DNS Sync application installed which provisions changes to the local database and also settings for BIND from the data in the Atomia DNS database.
-            </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="note.png" /></td><th align="left">Note</th></tr><tr><td align="left" valign="top">We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</td></tr></table></div><p>
+            </p><p xmlns="" class="note">We no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC supportWe no longer recommend the Bind-DLZ sync agent, the PowerDNS integration is more actively developed and is a requirement for DNSSEC support</p><p>
           </p>
         </li></ol></div>
     </div>
-  </div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="index.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="usage.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Home </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Usage</td></tr></table></div></body></html>
+  </div><div xmlns="" class="footer"><p>Copyright 2012 Atomia AB. All rights reserved.</p><p class="links"><a href="http://www.atomia.com/">Atomia AB</a> | <a href="http://www.atomiadns.com/">AtomiaDNS</a> | <a href="http://www.atomia.com/blog">Blog</a> | <a href="http://www.twitter.com/atomia">Twitter</a></p></div><script xmlns="" type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-11168442-3']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script></body></html>
