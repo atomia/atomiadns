@@ -139,7 +139,6 @@
 	</xsl:template>
 	<xsl:template match="note">
 		<p class="note">
-			<xsl:value-of select="."/>
 			<xsl:apply-templates />
 		</p>
 	</xsl:template>
