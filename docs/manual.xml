@@ -32,7 +32,7 @@
             <listitem>
               <para>
                 <emphasis role="strong">DynDNS:</emphasis>
-                DynDNS client description.
+                RFC2136 Dynamic DNS update daemon proxying updates to the API.
               </para>
             </listitem>
             <listitem>
@@ -174,7 +174,7 @@
         <informalfigure>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Atomia_DNS_overview_infrastructure_v2.png" />
+              <imagedata fileref="images/Atomia_DNS_overview_infrastructure_v3.png" />
             </imageobject>
           </mediaobject>
         </informalfigure>

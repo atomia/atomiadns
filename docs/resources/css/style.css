@@ -548,15 +548,16 @@ div.article {
 .programlisting {
 	background-color: white;
 	border-left: 10px solid #C90062;
-	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,.4);
-	-moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
-	box-shadow: 0 1px 5px rgba(0,0,0,.4);
 	color: #0E0E0E;
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 	padding: 1.5em;
 	margin-top: 5px;
     overflow: auto;
     white-space: normal;
+	font-size: 13px;
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,.4);
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
+	box-shadow: 0 1px 5px rgba(0,0,0,.4);
 }
 .programlisting ol {
 	margin: 0 0 0 1em;
@@ -571,7 +572,7 @@ div.article {
 .programlisting pre {
 	color: #666666;
 	font-family: "Courier New",Courier,monospace;
-	font-size: 1.1em;
+	font-size: 13px;
 	margin: 0;
 }
 pre ol {
@@ -588,9 +589,14 @@ pre ol {
 .mediaobject img {
 	background-color: #fff;
 	border: 1px solid #ddd;
+	padding: 5px;
+	margin: 7px 0;	
+	-moz-border-radius: 2px 2px 2px 2px;
+	-webkit-border-radius: 2px 2px 2px 2px;
 	border-radius: 2px 2px 2px 2px;
+	-moz-box-shadow: 0 2px 2px #ccc;
+	-webkit-box-shadow: 0 2px 2px #ccc;
 	box-shadow: 0 2px 2px #ccc;
-	padding: 5px;	
 }
 .logo {
 	position: absolute;
