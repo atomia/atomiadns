@@ -14,8 +14,15 @@
 	h2 span.zoneName {border-bottom: 1px dotted #666; color: #0099FF;}
 
 	/* HEADER */
-	p.userInfo {color: #666; text-align: right;}
-	span.userName {color: #0099ff;}
+	div.header p.userInfo {color: #666; text-align: right; font-size: 11px;}
+	div.header span.userName {color: #0099ff;}
+	div.header a {color: #fff; background: #999; text-decoration: none; padding: 2px 4px; -moz-border-radius: 3px; border-radius: 3px;}
+	div.header a:hover {background: #cc0066;} 
+
+	/* FOOTER */
+	div.footer {text-align:center;}
+	div.footer a {color: #cc0066;}
+	div.footer p {color:#666; font-size: 11px;}
 
 	/* EDIT ZONE  */
 	.listRow label input {margin: 0 5px;}
@@ -26,7 +33,7 @@
 
 	/* FORM FOOTER (container for buttons) - GENERIC */
 	.formFooter {margin-top: 20px;}
-	.formFooter  input[type="submit"] {font-family: Calibri, Arial; color: #FFF; font-size: 14px; font-weight: bold; padding: 10px 20px; background: #94BB27; border: none; box-shadow: 0 1px 1px #999;  border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
+	.formFooter  input[type="submit"] {font-family: Calibri, Arial; color: #FFF; font-size: 14px; font-weight: bold; padding: 10px 20px; background: #94BB27; border: none; box-shadow: 0 1px 1px #999;  -moz-border-radius: 5px; border-radius: 5px; text-transform: capitalize; text-decoration: none;}
 	.formFooter  input[type="submit"]:hover { background: #333; cursor: hand; cursor: pointer;}
 	
 	/* IMPORT & EXPORT ZONE DATA */
