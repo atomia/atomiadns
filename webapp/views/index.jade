@@ -9,7 +9,7 @@ else
 
 	each zone in zones
 		li.listRow= zone + ' '
-			a(href='/delzone/#{zone}', class='button small  delete') delete
+			a(href='/delzone/#{zone}', onclick='return confirm(\'Are you sure that you want to delete this zone?\');', class='button small  delete') delete
 			| 
 			a(href='/exportzone/#{zone}', class='button small export') export
 			| 
