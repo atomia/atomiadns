@@ -12,12 +12,15 @@
 	div:hover.listRow {background: #FAFAFA;  border-color: #dcdcdc; } 
 	li:hover.listRow {background: #FAFAFA; color: #0099FF; border-color: #dcdcdc; }	
 	h2 span.zoneName {border-bottom: 1px dotted #666; color: #0099FF;}
+	div.clear {clear: both; height: 0;}
 
 	/* HEADER */
 	div.header p.userInfo {color: #666; text-align: right; font-size: 11px;}
 	div.header span.userName {color: #0099ff;}
 	div.header a {color: #fff; background: #999; text-decoration: none; padding: 2px 4px; -moz-border-radius: 3px; border-radius: 3px;}
-	div.header a:hover {background: #cc0066;} 
+	div.header a:hover {background: #cc0066;}
+	div.header div.logo {background: url('/images/logo.png') no-repeat; float:left; height: 35px; width: 45px;}
+	div.header div.logo:hover {background-position: 0 -36px;}
 
 	/* FOOTER */
 	div.footer {text-align:center;}

@@ -15,8 +15,8 @@ app.configure(function() {
 	app.use(express.session({ secret: auth.randomString() }));
 	app.use(passport.initialize());
 	app.use(passport.session());
-	app.use(app.router);
 	app.use(express.static(__dirname + '/static'));
+	app.use(app.router);
 });
 
 // Initialize the auth layer

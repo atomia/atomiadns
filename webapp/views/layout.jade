@@ -10,12 +10,13 @@ html(lang="en")
 	body
 		div.wrapper
 			div.header
+				div.logo
 				- if (user != null && user != 'undefined')
 					p.userInfo Logged in as: 
 						span.userName #{user.email}
 						\ | 
 						a(href='/logout') log out 
-				- else
+				div.clear
 					
 			div.content
 				!= body
