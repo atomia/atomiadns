@@ -8,7 +8,7 @@ Standards-Version: 3.6.1
 
 Package: atomiadns-masterserver
 Architecture: all
-Depends: atomiadns-api (>= 1.1.2), atomiadns-database (>= 1.1.2)
+Depends: atomiadns-api (>= 1.1.3), atomiadns-database (>= 1.1.3)
 Description: Complete master SOAP server for Atomia DNS
 
 Package: atomiadns-api
