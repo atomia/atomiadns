@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.1
+Version: 1.1.2
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.1 atomiadns-database >= 1.1.1
+Requires: atomiadns-api >= 1.1.2 atomiadns-database >= 1.1.2
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.2-1
+- Minor layout changes in the webapp
 * Fri Feb 17 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.1-1
 - Fix problem with having atomiadns-nameserver and atomiadns-api on the same server and fix invalid apache config introduced in 1.1.0
 * Tue Jan 31 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.0-1

@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.2) hardy; urgency=low
+
+  * Minor layout changes in the webapp
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 1 Mar 2012 14:14:37 +0100
+
 atomiadns-masterserver (1.1.1) hardy; urgency=low
 
   * Fix problem with having atomiadns-nameserver and atomiadns-api on the same server and fix invalid apache config introduced in 1.1.0
