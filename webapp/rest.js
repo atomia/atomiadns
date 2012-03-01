@@ -22,7 +22,7 @@ if (exports.defaultSOAValues.length != 7) {
 }
 
 exports.getOperationRequest = function (operation, username, token, password) {
-	var uri_base = process.env['SOAP_URI'] != null ? process.env['SOAP_URI'] : "http://127.0.0.1/atomiadns.json/"
+	var uri_base = process.env['JSON_URI'] != null ? process.env['JSON_URI'] : "http://127.0.0.1/atomiadns.json/"
 	if (uri_base.lastIndexOf('/') != uri_base.length - 1) {
 		uri_base += "/";
 	}

@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.1.3
+Version: 1.1.4
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -107,6 +107,8 @@ fi
 exit 0
 
 %changelog
+* Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.4-1
+- Fix webapp soap_uri regression introduced in 1.1.2, it is now called json_uri
 * Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.3-1
 - Minor layout changes in the webapp again
 * Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.2-1

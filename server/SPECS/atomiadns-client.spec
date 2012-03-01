@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.3
+Version: 1.1.4
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.4-1
+- Fix webapp soap_uri regression introduced in 1.1.2, it is now called json_uri
 * Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.3-1
 - Minor layout changes in the webapp again
 * Thu Mar 01 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.2-1

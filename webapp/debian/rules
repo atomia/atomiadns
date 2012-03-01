@@ -36,7 +36,7 @@ install-stamp:
 #Run commands before making package
 
 	mkdir -p $(WEBAPP)/usr/lib/atomiadns/webapp
-	cp -a *.js css views node_modules $(WEBAPP)/usr/lib/atomiadns/webapp
+	cp -a *.js css views static node_modules $(WEBAPP)/usr/lib/atomiadns/webapp
 
 	touch install-stamp
 
