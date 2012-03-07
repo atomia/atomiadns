@@ -594,13 +594,12 @@ rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
             <listitem><para>Add the active zone signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 1</programlisting></informalexample></listitem>
             <listitem><para>Add the inactive zone signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 0</programlisting></informalexample></listitem>
           </orderedlist>
-		  <note>Adding DNSSEC keys on a virtual machine where you can't use eyboard input to generate entropy requires an additional step.</note>
+		  <note>Adding DNSSEC keys on a virtual machine where you can't use keyboard input to generate entropy requires an additional step.</note>
 		  <para>Install rng-tools using <code>apt-get install rng-tools</code>, then open <code>/etc/default/rng-tools</code> and add the following line:</para>
 		  <informalexample>
-            <programlisting>HRNGDEVICE = /dev/urandom
-			</programListing>
-		  <informalexamle>
-		  <para>Now, they key creation should be instant.</para>
+			<programlisting>HRNGDEVICE = /dev/urandom</programlisting>
+		  </informalexample>
+		  <para>Now, they key creation should be instant. Note that if you do have better hardware for generating entropy, then by all means - use that instead.</para>
         </section>
       </section>
       <section xml:id="usage-master-configuration">
