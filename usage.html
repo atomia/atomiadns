@@ -159,7 +159,11 @@
               </p>
             </li><li class="listitem">
               <p>
-                <a class="link" href="usage.html#usage-master-installation-default-troubleshoot" title="3.1.3.4.5. Installation troubleshooting">Installation troubleshooting</a>
+                <a class="link" href="usage.html#usage-master-installation-default-rhel6" title="3.1.3.4.5. Installation on Redhat Enterprise Linux 6">Installation on Redhat Enterprise Linux 6</a>
+              </p>
+            </li><li class="listitem">
+              <p>
+                <a class="link" href="usage.html#usage-master-installation-default-troubleshoot" title="3.1.3.4.6. Installation troubleshooting">Installation troubleshooting</a>
               </p>
             </li></ul></div>
           <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-default-intro"></a>3.1.3.4.1. Introduction</h6></div></div></div>
@@ -195,6 +199,7 @@
               </li></ol></div>
           </div>
           <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-default-rhel4"></a>3.1.3.4.3. Installation on Redhat Enterprise Linux 4</h6></div></div></div>
+			<p xmlns="" class="note">We no longer recommend Redhat Enterprise Linux 4, latest version supported is Redhat Enterprise Linux 6</p>
             
             <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
                 <p>First setup the needed repositories.</p>
@@ -223,6 +228,7 @@ rpm -Uhv http://rpm.atomia.com/rhel4/atomia-repository-setup-1.0-1.noarch.rpm
           </div>
           <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-default-rhel5"></a>3.1.3.4.4. Installation on Redhat Enterprise Linux 5</h6></div></div></div>
             
+			<p xmlns="" class="note">We no longer recommend Redhat Enterprise Linux 5, latest version supported is Redhat Enterprise Linux 6</p>
             <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
                 <p>First setup the needed repositories.</p>
                 <div class="informalexample">
@@ -248,7 +254,34 @@ rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
                 </div>
               </li></ol></div>
           </div>
-          <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-default-troubleshoot"></a>3.1.3.4.5. Installation troubleshooting</h6></div></div></div>
+          <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-default-rhel6"></a>3.1.3.4.5. Installation on Redhat Enterprise Linux 6</h6></div></div></div>
+            
+            <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+                <p>First setup the needed repositories.</p>
+                <div class="informalexample">
+                  <pre class="programlisting">rpm -Uhv http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
+rpm -Uhv http://yum.pgsqlrpms.org/reporpms/8.4/pgdg-redhat-8.4-1.noarch.rpm
+rpm -Uhv http://public.rpm.atomia.com/rhel6/atomia-public-repository-setup-1.0-1.el6.noarch.rpm
+                  </pre>
+                </div>
+              </li><li class="listitem">
+                <p>Next install the Atomia DNS master server</p>
+                <div class="informalexample">
+                  <pre class="programlisting">yum install atomiadns-masterserver</pre>
+                </div>
+              </li><li class="listitem">
+                <p>Allow md5 authentication instead of ident for connections to 127.0.0.1/32 in /var/lib/pgsql/data/pg_hba.conf, example row:</p>
+                <div class="informalexample">
+                  <pre class="programlisting">host    all         all         127.0.0.1/32          md5</pre>
+                </div>
+              </li><li class="listitem">
+                <p>Restart postgresql:</p>
+                <div class="informalexample">
+                  <pre class="programlisting">service postgresql restart</pre>
+                </div>
+              </li></ol></div>
+          </div>
+          <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-default-troubleshoot"></a>3.1.3.4.6. Installation troubleshooting</h6></div></div></div>
             
           </div>
         </div>
@@ -292,22 +325,6 @@ rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
                   </li></ol></div>
               </li></ol></div>
           </div>
-          <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-manual-rhel4"></a>3.1.3.5.2. Installation on Red Hat Enterprise Linux 4</h6></div></div></div>
-            
-            <p xmlns="" class="note">
-              
-              <p xmlns="http://www.w3.org/1999/xhtml">This part of documentation is missing</p>
-            </p>
-            <p></p>
-          </div>
-          <div class="section"><div class="titlepage"><div><div><h6 class="title"><a id="usage-master-installation-manual-rhel5"></a>3.1.3.5.3. Installation on Red Hat Enterprise Linux 5</h6></div></div></div>
-            
-            <p xmlns="" class="note">
-              
-              <p xmlns="http://www.w3.org/1999/xhtml">This part of documentation is missing</p>
-            </p>
-            <p></p>
-          </div>
         </div>
         <div class="section"><div class="titlepage"><div><div><h5 class="title"><a id="usage-master-installation-dnssec"></a>3.1.3.6. Creating the initial DNSSEC keyset</h5></div></div></div>
           
@@ -315,6 +332,12 @@ rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
           In addition you will need to use a nameserver synchronization agent that supports DNSSEC; at the moment this means the PowerDNS agent.</p>
           <p>The DNSSEC setup is completed by executing the following steps:</p>
           <div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Install the command line client:</p><div class="informalexample"><pre class="programlisting">apt-get install atomiadns-client</pre></div></li><li class="listitem"><p>Add the active key signing key:</p><div class="informalexample"><pre class="programlisting">atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 2048 --arg KSK --arg 1</pre></div></li><li class="listitem"><p>Add the active zone signing key:</p><div class="informalexample"><pre class="programlisting">atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 1</pre></div></li><li class="listitem"><p>Add the inactive zone signing key:</p><div class="informalexample"><pre class="programlisting">atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 0</pre></div></li></ol></div>
+		  <p xmlns="" class="note">Adding DNSSEC keys on a virtual machine where you can't use keyboard input to generate entropy requires an additional step.</p>
+		  <p>Install rng-tools using <code class="code">apt-get install rng-tools</code>, then open <code class="code">/etc/default/rng-tools</code> and add the following line:</p>
+		  <div class="informalexample">
+			<pre class="programlisting">HRNGDEVICE = /dev/urandom</pre>
+		  </div>
+		  <p>Now, they key creation should be instant. Note that if you do have better hardware for generating entropy, then by all means - use that instead.</p>
         </div>
       </div>
       <div class="section"><div class="titlepage"><div><div><h4 class="title"><a id="usage-master-configuration"></a>3.1.4. Atomia DNS Master server configuration</h4></div></div></div>
@@ -327,7 +350,7 @@ rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
             <code class="code">/etc/atomiadns.conf</code>
             and contains the following settings:
           </p>
-          <table id="id1327000">
+          <table id="id1198480">
             <colgroup></colgroup>
             <thead>
               <tr>
@@ -510,7 +533,7 @@ db_password = autogeneratedpassword
           .
         </p>
         <p>It contains the following tables:</p>
-        <table id="id1327573">
+        <table id="id1199055">
           <colgroup></colgroup>
           <thead>
             <tr>
@@ -845,7 +868,7 @@ slavezones_dir = /etc/bind/slave/zones
             <code class="code">/etc/atomiadns.conf</code>
             and contains the following settings:
           </p>
-          <table id="id1328600">
+          <table id="id1200082">
             <colgroup></colgroup>
             <thead>
               <tr>
@@ -1338,7 +1361,7 @@ soap_password = somepass
             <code class="code">/etc/atomiadns.conf</code>
             and contains the following settings:
           </p>
-          <table id="id1330174">
+          <table id="id1201655">
             <colgroup></colgroup>
             <thead>
               <tr>
