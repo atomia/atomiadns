@@ -1,10 +1,10 @@
-Summary: Atomia RPM Repository setup and public key
-Name: atomia-repository-setup
+Summary: Atomia Public RPM Repository setup and public key
+Name: atomia-public-repository-setup
 Version: 1.0
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Base
-URL: http://rpm.atomia.com/atomia-repository-setup.noarch.rpm
+URL: http://public.rpm.atomia.com/atomia-public-repository-setup-1.0-1.el6.noarch.rpm
 
 Packager: Jimmy Bergman <jimmy@atomia.com>
 Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: noarch
 
 %description
-Atomia RPM Repository setup and public key
+Atomia Public RPM Repository setup and public key
 
 %prep
 
@@ -23,7 +23,7 @@ Atomia RPM Repository setup and public key
 %{__rm} -rf %{buildroot}
 
 %{__mkdir} -p %{buildroot}/etc/pki/rpm-gpg
-%{__cat} > %{buildroot}/etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA <<EOF
+%{__cat} > %{buildroot}/etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA-PUBLIC <<EOF
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
@@ -57,13 +57,13 @@ Qim0s9K0fyFPHnw=
 EOF
 
 %{__mkdir} -p %{buildroot}/etc/yum.repos.d
-%{__cat} > %{buildroot}/etc/yum.repos.d/atomia-rhel6.repo <<EOF
+%{__cat} > %{buildroot}/etc/yum.repos.d/atomia-public-rhel6.repo <<EOF
 [atomia]
-name=Atomia RHEL6 RPM Repository
-baseurl=http://rpm.atomia.com/rhel6/
+name=Atomia Public RHEL6 RPM Repository
+baseurl=http://public.rpm.atomia.com/rhel6/
 enabled=1
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA-PUBLIC
 EOF
 
 %clean
@@ -71,11 +71,11 @@ EOF
 
 %files
 %defattr(-,root,root,-)
-/etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA
-/etc/yum.repos.d/atomia-rhel6.repo
+/etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA-PUBLIC
+/etc/yum.repos.d/atomia-public-rhel6.repo
 
 %post
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ATOMIA-PUBLIC
 
 %changelog
 * Thu Oct 06 2009 Jimmy Bergman <jimmy@atomia.com> - 1.0
