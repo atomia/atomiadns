@@ -404,6 +404,11 @@
             </listitem>
             <listitem>
               <para>
+                <link linkend="usage-master-installation-default-rhel6">Installation on Redhat Enterprise Linux 6</link>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
                 <link linkend="usage-master-installation-default-troubleshoot">Installation troubleshooting</link>
               </para>
             </listitem>
@@ -447,6 +452,7 @@
             </orderedlist>
           </section>
           <section xml:id="usage-master-installation-default-rhel4">
+			<note>We no longer recommend Redhat Enterprise Linux 4, latest version supported is Redhat Enterprise Linux 6</note>
             <title>Installation on Redhat Enterprise Linux 4</title>
             <orderedlist>
               <listitem>
@@ -480,6 +486,7 @@ rpm -Uhv http://rpm.atomia.com/rhel4/atomia-repository-setup-1.0-1.noarch.rpm
           </section>
           <section xml:id="usage-master-installation-default-rhel5">
             <title>Installation on Redhat Enterprise Linux 5</title>
+			<note>We no longer recommend Redhat Enterprise Linux 5, latest version supported is Redhat Enterprise Linux 6</note>
             <orderedlist>
               <listitem>
                 <para>First setup the needed repositories.</para>
@@ -487,6 +494,38 @@ rpm -Uhv http://rpm.atomia.com/rhel4/atomia-repository-setup-1.0-1.noarch.rpm
                   <programlisting>rpm -Uhv http://apt.sw.be/redhat/el5/en/i386/rpmforge/RPMS/rpmforge-release-0.3.6-1.el5.rf.i386.rpm
 rpm -Uhv http://yum.pgsqlrpms.org/reporpms/8.4/pgdg-redhat-8.4-1.noarch.rpm
 rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
+                  </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Next install the Atomia DNS master server</para>
+                <informalexample>
+                  <programlisting>yum install atomiadns-masterserver</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Allow md5 authentication instead of ident for connections to 127.0.0.1/32 in /var/lib/pgsql/data/pg_hba.conf, example row:</para>
+                <informalexample>
+                  <programlisting>host    all         all         127.0.0.1/32          md5</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Restart postgresql:</para>
+                <informalexample>
+                  <programlisting>service postgresql restart</programlisting>
+                </informalexample>
+              </listitem>
+            </orderedlist>
+          </section>
+          <section xml:id="usage-master-installation-default-rhel6">
+            <title>Installation on Redhat Enterprise Linux 6</title>
+            <orderedlist>
+              <listitem>
+                <para>First setup the needed repositories.</para>
+                <informalexample>
+                  <programlisting>rpm -Uhv http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.2-2.el6.rf.i686.rpm
+rpm -Uhv http://yum.pgsqlrpms.org/reporpms/8.4/pgdg-redhat-8.4-1.noarch.rpm
+rpm -Uhv http://public.rpm.atomia.com/rhel6/atomia-public-repository-setup-1.0-1.el6.noarch.rpm
                   </programlisting>
                 </informalexample>
               </listitem>
@@ -565,22 +604,6 @@ rpm -Uhv http://rpm.atomia.com/rhel5/atomia-repository-setup-1.0-1.noarch.rpm
                 </orderedlist>
               </listitem>
             </orderedlist>
-          </section>
-          <section xml:id="usage-master-installation-manual-rhel4">
-            <title>Installation on Red Hat Enterprise Linux 4</title>
-            <note>
-              <title>Missing documentation</title>
-              <para>This part of documentation is missing</para>
-            </note>
-            <para />
-          </section>
-          <section xml:id="usage-master-installation-manual-rhel5">
-            <title>Installation on Red Hat Enterprise Linux 5</title>
-            <note>
-              <title>Missing documentation</title>
-              <para>This part of documentation is missing</para>
-            </note>
-            <para />
           </section>
         </section>
         <section xml:id="usage-master-installation-dnssec">
