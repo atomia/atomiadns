@@ -61,6 +61,6 @@ EOF
 chmod a+x /usr/bin/fop
 
 fofile=`mktemp || exit 1`
-xsltproc /usr/share/xml/docbook/stylesheet/docbook-xsl-ns/fo/docbook.xsl "$1" | sed 's/<fo:list-block[^>]*\/>//g' > "$fofile"
+xsltproc pdf.xsl "$1" | sed 's/<fo:list-block[^>]*\/>//g' > "$fofile"
 fop -d -fo "$fofile" -pdf "$2"
 rm -f "$fofile"

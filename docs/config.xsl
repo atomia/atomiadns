@@ -27,6 +27,7 @@
 	<xsl:param name="generate.index" select="0"></xsl:param>
 	<xsl:param name="generate.meta.abstract" select="1"></xsl:param>
 	
+	
 	<xsl:template name="user.head.content">
 		<xsl:param name="node" select="."/>
 		<script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
