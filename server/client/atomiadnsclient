@@ -9,9 +9,6 @@ use Pod::Usage;
 use Config::General;
 
 my $config_file = undef;
-GetOptions("config=s" => \$config_file);
-$config_file = "/etc/atomiadns.conf" unless defined($config_file);
-
 my $soap_uri = undef;
 my $soap_cacert = undef;
 my $soap_username = undef;
@@ -22,24 +19,29 @@ my $verbose = 0;
 my $help = undef;
 my $timeout = 600;
 
-if (-f "$config_file") {
-	my $conf = new Config::General($config_file);
-	die("config file found at $config_file but it is unreadable" ) unless defined($conf);
-	my %config = $conf->getall;
-	$soap_uri = $config{"soap_uri"};
-	$soap_cacert = $config{"soap_cacert"};
-	$soap_username = $config{"soap_username"};
-	$soap_password = $config{"soap_password"};
-	$timeout = $config{"soap_timeout"} if defined($config{"soap_timeout"});
-}
-
 GetOptions (	"uri=s" => \$soap_uri,
 		"username=s" => \$soap_username,
 		"password=s" => \$soap_password,
+		"cacert=s" => \$soap_cacert,
+		"config=s"=> \$config_file,
+		"timeout=i" => \$timeout,
 		"help|?" => \$help,
 		"method=s" => \$soap_method,
 		"verbose|v" => \$verbose,
 		"arg=s@"  => \$soap_method_arguments) || pod2usage(0);
+$config_file = "/etc/atomiadns.conf" unless defined($config_file);
+
+if (-f "$config_file") {
+	my $conf = new Config::General($config_file);
+	die("config file found at $config_file but it is unreadable" ) unless defined($conf);
+	my %config = $conf->getall;
+	$soap_uri = $config{"soap_uri"} unless defined($soap_uri);
+	$soap_cacert = $config{"soap_cacert"} unless defined($soap_cacert);
+	$soap_username = $config{"soap_username"} unless defined($soap_username);
+	$soap_password = $config{"soap_password"} unless defined($soap_password);
+	$timeout = $config{"soap_timeout"} if defined($config{"soap_timeout"});
+}
+
 pod2usage(-verbose => 1) if $help;
 pod2usage(-verbose => 0) unless defined($soap_uri) && $soap_uri =~ /^http/ && defined($soap_method) && length($soap_method) > 0;
 

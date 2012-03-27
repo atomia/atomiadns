@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.6) hardy; urgency=low
+
+  * Fix atomiadnsclient broken in 1.1.5
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 27 Mar 2012 11:24:18 +0200
+
 atomiadns-zoneimport (1.1.5) hardy; urgency=low
 
   * Allow you to specify username, password and config file location in atomiadnsclient
