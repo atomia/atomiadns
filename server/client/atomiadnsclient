@@ -8,7 +8,10 @@ use Getopt::Long;
 use Pod::Usage;
 use Config::General;
 
-my $config_file = "/etc/atomiadns.conf";
+my $config_file = undef;
+GetOptions("config=s" => \$config_file);
+$config_file = "/etc/atomiadns.conf" unless defined($config_file);
+
 my $soap_uri = undef;
 my $soap_cacert = undef;
 my $soap_username = undef;
@@ -31,6 +34,8 @@ if (-f "$config_file") {
 }
 
 GetOptions (	"uri=s" => \$soap_uri,
+		"username=s" => \$soap_username,
+		"password=s" => \$soap_password,
 		"help|?" => \$help,
 		"method=s" => \$soap_method,
 		"verbose|v" => \$verbose,
@@ -120,7 +125,8 @@ atomiadnsclient - An application for administering a Atomia DNS installation
 
 =over 8
 
-=item atomiadnsclient --uri SOAP_URI --method SOAP_METHOD [--arg ARGUMENT [ --arg ARGUMENT ] ...] [-v] [--help]
+=item atomiadnsclient [ --uri SOAP_URI ] [ --username SOAP_USER] [ --password SOAP_PASS ] [ --config CONFIG_PATH ]
+	--method SOAP_METHOD [ --arg ARGUMENT [ --arg ARGUMENT ] ...] [-v] [--help]
 
 =back
 
