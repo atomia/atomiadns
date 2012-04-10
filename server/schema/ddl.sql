@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (70);
+INSERT INTO atomiadns_schemaversion (version) VALUES (71);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE slavezone (
         id SERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
-	master VARCHAR(255) NOT NULL CONSTRAINT master_format CHECK (master ~* '^(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+))(,(([a-z0-9]([a-z0-9]{0,4}:)+(%[a-z0-9])?)|(([0-9]+[.]){3}[0-9]+)))*$'),
+	master VARCHAR(255) NOT NULL CONSTRAINT master_format CHECK (master ~* '^(([0-9]+[.]){3}[0-9]+)|(((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?)$'),
 	tsig_name VARCHAR(255) CONSTRAINT tsig_name_format CHECK (tsig_name IS NULL OR tsig_name ~* '^[a-zA-Z0-9_-]*'),
 	tsig_secret VARCHAR(255) CONSTRAINT tsig_format CHECK (tsig_secret IS NULL OR tsig_secret ~* '^[a-zA-Z0-9+/=]*'),
 	account_id INT NULL REFERENCES account
