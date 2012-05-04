@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.7) hardy; urgency=low
+
+  * Slavezone master can be IPv6 IP, database creation improvements on FreeBSD
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 4 May 2012 14:14:59 +0200
+
 atomiadns-zoneimport (1.1.6) hardy; urgency=low
 
   * Fix atomiadnsclient broken in 1.1.5

@@ -1,73 +1,112 @@
 #!/bin/sh
 
+pg_user=`grep -i PostgreSQL /etc/passwd | cut -d : -f 1`
+if [ -z "$pg_user" ]; then
+	echo "unable to find postgresql user, defaulting to postgres"
+	pg_user="postgres"
+fi
+
+sudo="sudo -u $pg_user"
+psql="$sudo psql"
+
+sha1=`which sha1sum 2> /dev/null`
+if [ -z "$sha1" ]; then
+	sha1=`which sha1 2> /dev/null`
+fi
+
+if [ -z "$sha1" ]; then
+	echo "can't find sha1 tool, exiting"
+	exit 1
+fi
+
+if [ -d "/usr/share/atomiadns" ]; then
+	basedir="/usr/share/atomiadns"
+elif [ -d "/usr/local/share/atomiadns" ]; then
+	basedir="/usr/local/share/atomiadns"
+else
+	echo "can't find schema install location"
+	exit 1
+fi
+
 createschema() {
-	password=`dd if=/dev/urandom bs=1024 count=1 status=noxfer 2>/dev/null | sha1sum | cut -d " " -f 1`
+	password=`dd if=/dev/urandom bs=1024 count=1 2>/dev/null | "$sha1" | cut -d " " -f 1`
 	if [ -z "$password" ]; then
 		echo "error generating random password"
 		exit 1
 	fi
 
 	if [ ! -f "/etc/atomiadns.conf" ]; then
-		if [ -f "/usr/share/atomiadns/conf/atomiadns.conf" ]; then
-			cp /usr/share/atomiadns/conf/atomiadns.conf /etc
-		elif [ -f "/usr/share/atomiadns/conf/atomiadns-database.conf" ]; then
-			cp /usr/share/atomiadns/conf/atomiadns-database.conf /etc/atomiadns.conf
+		if [ -f "$basedir/conf/atomiadns.conf" ]; then
+			cp "$basedir/conf/atomiadns.conf" /etc
+		elif [ -f "$basedir/conf/atomiadns-database.conf" ]; then
+			cp "$basedir/conf/atomiadns-database.conf" /etc/atomiadns.conf
 		else
 			echo "no config found"
 			exit 1
 		fi
 	fi
 
-	TMPFILE=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
-	sed "s/%password/$password/g" < /etc/atomiadns.conf > "$TMPFILE" || exit 1
-	mv "$TMPFILE" /etc/atomiadns.conf || exit 1
-	chmod a+r /etc/atomiadns.conf || exit 1
+	if grep '%password$' /etc/atomiadns.conf > /dev/null; then
+		echo "Autogenerating the atomiadns role"
 
-	sudo -u postgres psql -c "CREATE ROLE atomiadns WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
-	if [ $? != 0 ]; then
-		echo "error creating role atomiadns, you will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
-		exit 1
+		$psql zonedata -c "CREATE ROLE atomiadns WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
+		if [ $? != 0 ]; then
+			echo "error creating role atomiadns, you will have to make sure that the schema matches $basedir/schema manually"
+			exit 1
+		fi
+
+		sed -i -e "s/%password/$password/g" /etc/atomiadns.conf || exit 1
+	else
+		echo "/etc/atomiadns.conf doesn't contain %password, assuming that the role is already created"
 	fi
 
-	sudo -u postgres createlang -d zonedata plpgsql > /dev/null 2>&1
+	existing_languages=`$sudo createlang -d zonedata -l 2>&1`
 	if [ $? != 0 ]; then
-		echo "error adding plpgsql as language in zonedata, you will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
+		echo "error finding existing languages in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
+	elif echo "$existing_languages" | grep plpgsql > /dev/null; then
+		echo "language plpgsql already added by default when zonedata was created, skipping"
+	else
+		$sudo createlang -d zonedata plpgsql > /dev/null 2>&1
+		if [ $? != 0 ]; then
+			echo "error adding plpgsql as language in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
+			exit 1
+		fi
 	fi
 
-	/usr/share/atomiadns/schema/schema.sh > /dev/null 2>&1
+	"$basedir/schema/schema.sh" > /dev/null 2>&1
 	if [ $? != 0 ]; then
-		echo "error importing schema, you will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
+		echo "error importing schema, you will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	fi
 }
 
 recreate_procedure() {
-	if ! [ -f "/usr/share/atomiadns/schema/$1.sql" ]; then
-		echo "/usr/share/atomiadns/schema/$1.sql doesn't exist, you'll have to migrate the schema manually."
+	if ! [ -f "$basedir/schema/$1.sql" ]; then
+		echo "$basedir/schema/$1.sql doesn't exist, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
-	drop_sql=`sudo -u postgres psql -c '\df '"$1" zonedata 2>&1`
+	drop_sql=`$psql -c '\df '"$1" zonedata 2>&1`
 	if [ $? != 0 ]; then
 		echo "error fetching sql to drop procedure $1, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
 	drop_sql=`echo "$drop_sql" | awk -F "|" '/public/ { print "DROP FUNCTION " $2 "(" $4 ")" }'`
-	sudo -u postgres psql -c "$drop_sql" zonedata > /dev/null 2>&1
+	$psql -c "$drop_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error dropping procedure $1, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
-	procedure_sql=`cat "/usr/share/atomiadns/schema/$1.sql"`
+	procedure_sql=`cat "$basedir/schema/$1.sql"`
 	if [ $? != 0 ]; then
 		echo "error retrieving ddl for procedure $1, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
-	sudo -u postgres psql -c "$procedure_sql" zonedata > /dev/null 2>&1
+	$psql -c "$procedure_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error recreating procedure $1, you'll have to migrate the schema manually."
 		exit 1
@@ -75,13 +114,13 @@ recreate_procedure() {
 }
 
 recreate_ddl_procedure() {
-	procedure_sql=`awk '/^CREATE OR REPLACE FUNCTION '"$1"'/ { inproc = 1 } inproc { print } /^END.*LANGUAGE plpgsql;$/ { inproc = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	procedure_sql=`awk '/^CREATE OR REPLACE FUNCTION '"$1"'/ { inproc = 1 } inproc { print } /^END.*LANGUAGE plpgsql;$/ { inproc = 0 }' "$basedir/schema/ddl.sql"`
 	if [ $? != 0 ]; then
 		echo "error retrieving ddl for procedure $1, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
-	sudo -u postgres psql -c "$procedure_sql" zonedata > /dev/null 2>&1
+	$psql -c "$procedure_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error recreating procedure $1, you'll have to migrate the schema manually."
 		exit 1
@@ -89,13 +128,13 @@ recreate_ddl_procedure() {
 }
 
 create_table() {
-	table_sql=`awk '/^CREATE TABLE '"$1"' / { intable = 1 } intable { print } /^\);$/ { intable = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	table_sql=`awk '/^CREATE TABLE '"$1"' / { intable = 1 } intable { print } /^\);$/ { intable = 0 }' "$basedir/schema/ddl.sql"`
 	if [ $? != 0 ]; then
 		echo "error retrieving ddl for table $1, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
-	sudo -u postgres psql -c "$table_sql" zonedata > /dev/null 2>&1
+	$psql -c "$table_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error creating table $1 using schema $table_sql, you'll have to migrate the schema manually."
 		exit 1
@@ -103,13 +142,13 @@ create_table() {
 }
 
 create_trigger() {
-	trigger_sql=`awk '/^CREATE CONSTRAINT TRIGGER '"$1"'/ { intable = 1 } intable { print } /;$/ { intable = 0 }' "/usr/share/atomiadns/schema/ddl.sql"`
+	trigger_sql=`awk '/^CREATE CONSTRAINT TRIGGER '"$1"'/ { intable = 1 } intable { print } /;$/ { intable = 0 }' "$basedir/schema/ddl.sql"`
 	if [ $? != 0 ]; then
 		echo "error retrieving ddl for trigger $1, you'll have to migrate the schema manually."
 		exit 1
 	fi
 
-	sudo -u postgres psql -c "$trigger_sql" zonedata > /dev/null 2>&1
+	$psql -c "$trigger_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error creating trigger $1 using schema $table_sql, you'll have to migrate the schema manually."
 		exit 1
@@ -123,7 +162,7 @@ alter_check_constraint() {
 
 	query="ALTER TABLE $table DROP CONSTRAINT $constraint_name; ALTER TABLE $table ADD CONSTRAINT $constraint_name CHECK $constraint"
 
-	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
+	$psql -c "$query" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error altering check constraint $table/$constraint_name using $query, you'll have to migrate the schema manually."
 		exit 1
@@ -133,7 +172,7 @@ alter_check_constraint() {
 execute_query() {
 	query="$1"
 
-	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
+	$psql -c "$query" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error executing migration query: $query, you'll have to migrate the schema manually."
 		exit 1
@@ -146,7 +185,7 @@ alter_table_addcolumn() {
 
 	query="ALTER TABLE $table ADD COLUMN $column"
 
-	sudo -u postgres psql -c "$query" zonedata > /dev/null 2>&1
+	$psql -c "$query" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error adding column $table.$column, you'll have to migrate the schema manually."
 		exit 1
@@ -154,19 +193,19 @@ alter_table_addcolumn() {
 }
 
 set_schema_version() {
-	sudo -u postgres psql -c "UPDATE atomiadns_schemaversion SET version = $1" zonedata > /dev/null 2>&1
+	$psql -c "UPDATE atomiadns_schemaversion SET version = $1" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error updating schema-version to $1, you'll have to do it manually."
 		exit 1
 	fi
 }
 
-sudo -u postgres createdb zonedata > /dev/null 2>&1
+$sudo createdb zonedata > /dev/null 2>&1
 if [ $? != 0 ]; then
 
-	schema_version=`sudo -u postgres psql -qAt zonedata -c "SELECT version FROM atomiadns_schemaversion" 2> /dev/null`
+	schema_version=`$psql -qAt zonedata -c "SELECT version FROM atomiadns_schemaversion" 2> /dev/null`
 	if [ $? != 0 ] || [ -z "$schema_version" ]; then
-		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches /usr/share/atomiadns/schema manually"
+		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
 		latest_version="71"
@@ -386,8 +425,7 @@ if [ $? != 0 ]; then
 			fi
 
 			if [ "$schema_version" -lt 71 ]; then
-				alter table slavezone drop constraint "master_format";
-                alter table slavezone add constraint "master_format" CHECK (master::text ~* '^(([0-9]+[.]){3}[0-9]+)|(((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?)$'::text);
+				alter_check_constraint "slavezone" "master_format" "(master ~* '^(([0-9]+[.]){3}[0-9]+)|(((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?)\$')"
 			fi
 
 			set_schema_version "$latest_version"

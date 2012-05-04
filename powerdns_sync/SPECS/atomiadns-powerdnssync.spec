@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS PowerDNS Sync application
 Name: atomiadns-powerdnssync
-Version: 1.1.6
+Version: 1.1.7
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Fri May 04 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.7-1
+- Slavezone master can be IPv6 IP, database creation improvements on FreeBSD
 * Tue Mar 27 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.6-1
 - Fix atomiadnsclient broken in 1.1.5
 * Tue Mar 27 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.5-1
