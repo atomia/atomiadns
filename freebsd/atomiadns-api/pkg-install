@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ x"$2" = x"POST-INSTALL" ]; then
+	if [ -z "$PKG_PREFIX" ]; then
+		PKG_PREFIX="/usr/local"
+	fi
+
+	if [ -d "$PKG_PREFIX/etc/apache22/Includes" ] && [ -f "$PKG_PREFIX/libexec/apache22/mod_perl.so" ]; then
+		if ! grep -r "LoadModule.*perl" "$PKG_PREFIX/etc/apache22" > /dev/null; then
+			echo "mod_perl2 installed, but not loaded, adding to apache includes as mod_perl.conf"
+			echo "LoadModule perl_module $PKG_PREFIX/libexec/apache22/mod_perl.so" > "$PKG_PREFIX/etc/apache22/Includes/mod_perl.conf"
+		fi
+	fi
+
+	if ! kldstat 2>&1 | grep accf_http > /dev/null && ! grep -i "accf_http_load.*YES" /boot/loader.conf > /dev/null 2>&1; then
+		echo "accf_http not loaded, loading and adding to /boot/loader.conf"
+		echo 'accf_http_load="YES"' >> /boot/loader.conf
+		kldload accf_http
+	fi
+
+	if apachectl configtest > /dev/null 2>&1; then
+		echo "apache config ok, restarting"
+		apachectl restart
+	fi
+fi

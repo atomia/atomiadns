@@ -1,0 +1,14 @@
+bin/generate_private_key
+etc/apache22/Includes/atomiadns.conf
+%%SITE_PERL%%/Atomia/DNS/JSONServer.pm
+%%SITE_PERL%%/Atomia/DNS/Server.pm
+%%SITE_PERL%%/Atomia/DNS/ServerHandler.pm
+%%SITE_PERL%%/Atomia/DNS/Signatures.pm
+%%SITE_PERL%%/Atomia/DNS/wsdl-to-confluence.pl
+%%SITE_PERL%%/Atomia/DNS/wsdl-to-docbook.pl
+%%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS/Server/.packlist
+@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS/Server
+@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS
+@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia
+@dirrm %%SITE_PERL%%/Atomia/DNS
+@dirrm %%SITE_PERL%%/Atomia
