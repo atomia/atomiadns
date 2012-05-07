@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if [ x"$2" = x"POST-INSTALL" ] && [ -f "/etc/atomiadns.conf" ] && ! grep "^soap_uri=" /etc/atomiadns.conf > /dev/null 2>&1; then
+	echo "soap_uri=http://localhost/atomiadns" >> /etc/atomiadns.conf
+fi
