@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ x"$2" = x"POST-INSTALL" ]; then
+	if [ -z "$PKG_PREFIX" ]; then
+		PKG_PREFIX="/usr/local"
+	fi
+
+	if [ -f "/usr/local/etc/pdns/pdns.conf" ]; then
+		dbhost=`grep gmysql-host /usr/local/etc/pdns/pdns.conf | cut -d "=" -f 2`
+		dbuser=`grep gmysql-user /usr/local/etc/pdns/pdns.conf | cut -d "=" -f 2`
+		dbpass=`grep gmysql-password /usr/local/etc/pdns/pdns.conf | cut -d "=" -f 2`
+		dbname=`grep gmysql-dbname /usr/local/etc/pdns/pdns.conf | cut -d "=" -f 2`
+	else
+		dbhost="localhost"
+		dbuser="powerdns"
+		dbpass="%password"
+		dbname="powerdns"
+	fi
+	
+	if [ ! -f /etc/atomiadns.conf ] || ! grep "powerdns_db_hostname" /etc/atomiadns.conf > /dev/null; then
+		cat >> /etc/atomiadns.conf <<EOF
+powerdns_db_database = $dbname
+powerdns_db_hostname = $dbhost
+powerdns_db_username = $dbuser
+powerdns_db_password = $dbpass
+
+#servername = powerdns_db1
+#soap_uri = http://atomiadnshost/atomiadns
+EOF
+	fi	
+fi

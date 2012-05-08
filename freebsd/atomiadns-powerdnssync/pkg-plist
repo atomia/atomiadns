@@ -1,0 +1,16 @@
+bin/atomiadns-sync-powerdns-database
+bin/atomiapowerdnssync
+%%SITE_PERL%%/Atomia/DNS/PowerDNSDatabase.pm
+%%SITE_PERL%%/Atomia/DNS/PowerDNSSyncer.pm
+%%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS/PowerDNSSyncer/.packlist
+share/atomiadns/conf/atomiadns.conf.atomiapowerdnssync
+share/atomiadns/conf/pdns.conf
+share/atomiadns/schema/powerdns.sql
+@dirrmtry share/atomiadns/schema
+@dirrmtry share/atomiadns/conf
+@dirrmtry share/atomiadns
+@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS/PowerDNSSyncer
+@dirrmtry %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS
+@dirrmtry %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia
+@dirrmtry %%SITE_PERL%%/Atomia/DNS
+@dirrmtry %%SITE_PERL%%/Atomia
