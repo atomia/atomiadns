@@ -173,12 +173,12 @@ sub handleAddKey {
 
 	die "invalid algoritm or keysize" unless defined($_[0]) && $_[0] =~ /^[A-Z0-9]+$/ && defined($_[1]) && $_[1] =~ /^\d+$/;
 
-	my $generation_command = sprintf "%s %s %d", "/usr/bin/generate_private_key", $_[0], $_[1];
+	my $generation_command = sprintf "%s %s %d", "generate_private_key", $_[0], $_[1];
 	eval {
 		my $key = `$generation_command 2> /dev/null`;
 		my $retval = $? >> 8;
 		if ($retval) {
-			die "error generating key, /usr/bin/generate_private_key exit value was $retval";
+			die "error generating key, generate_private_key exit value was $retval";
 		}
 
 		die "couldn't generate key" unless defined($key) && length($key) > 0;
