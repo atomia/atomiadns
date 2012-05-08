@@ -6,7 +6,7 @@
 #
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.7
+PORTVERSION=	1.1.8
 CATEGORIES=	dns
 MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
 PKGNAMESUFFIX=	-client
@@ -19,7 +19,7 @@ COMMENT=	The Atomia DNS command line client
 LICENSE=	ISCL
 
 PERL_CONFIGURE=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-05a2c15/server/client
+WRKSRC=		${WRKDIR}/atomia-atomiadns-4947088/server/client
 
 MAN1=		atomiadnsclient.1 dnssec_zsk_rollover.1
 
