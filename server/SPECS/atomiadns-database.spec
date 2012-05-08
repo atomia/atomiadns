@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.8
+Version: 1.1.9
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.9-1
+- Always use template for mktemp for portability reasons and change to non opt-out NSEC3 until powerdns supports opt-out for NSEC3
 * Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.8-1
 - Minor FreeBSD fixes
 * Fri May 04 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.7-1

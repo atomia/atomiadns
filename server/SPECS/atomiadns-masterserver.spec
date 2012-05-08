@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.8
+Version: 1.1.9
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.8 atomiadns-database >= 1.1.8
+Requires: atomiadns-api >= 1.1.9 atomiadns-database >= 1.1.9
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.9-1
+- Always use template for mktemp for portability reasons and change to non opt-out NSEC3 until powerdns supports opt-out for NSEC3
 * Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.8-1
 - Minor FreeBSD fixes
 * Fri May 04 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.7-1

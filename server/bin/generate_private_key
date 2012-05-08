@@ -5,7 +5,7 @@ if [ -z "$1" ] || [ -z "$2" ]; then
 	exit 1
 fi
 
-keydir=`mktemp -d`
+keydir=`mktemp -d /tmp/tmp.XXXXXXXXXX`
 if [ $? != 0 ]; then
 	echo "error creating temp dir for key"
 	exit 1
