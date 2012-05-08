@@ -65,6 +65,6 @@ share/atomiadns/schema/setdnsrecords.sql
 share/atomiadns/schema/setdnsrecordsbulk.sql
 share/atomiadns/schema/setnameservergroup.sql
 share/atomiadns/schema/setupdatesdisabled.sql
-@dirrm share/atomiadns/conf
-@dirrm share/atomiadns/schema
-@dirrm share/atomiadns
+@dirrmtry share/atomiadns/conf
+@dirrmtry share/atomiadns/schema
+@dirrmtry share/atomiadns

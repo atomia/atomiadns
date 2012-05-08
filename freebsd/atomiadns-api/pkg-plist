@@ -8,7 +8,7 @@ etc/apache22/Includes/atomiadns.conf
 %%SITE_PERL%%/Atomia/DNS/wsdl-to-docbook.pl
 %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS/Server/.packlist
 @dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS/Server
-@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS
-@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia
-@dirrm %%SITE_PERL%%/Atomia/DNS
-@dirrm %%SITE_PERL%%/Atomia
+@dirrmtry %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia/DNS
+@dirrmtry %%SITE_PERL%%/%%PERL_ARCH%%/auto/Atomia
+@dirrmtry %%SITE_PERL%%/Atomia/DNS
+@dirrmtry %%SITE_PERL%%/Atomia
