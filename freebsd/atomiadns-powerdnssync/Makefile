@@ -6,7 +6,7 @@
 #
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.8
+PORTVERSION=	1.1.9
 CATEGORIES=	dns
 MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
 PKGNAMESUFFIX=	-powerdnssync
@@ -19,7 +19,7 @@ COMMENT=	The Atomia DNS PowerDNS sync agent
 LICENSE=	ISCL
 
 PERL_CONFIGURE=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-4947088/powerdns_sync
+WRKSRC=		${WRKDIR}/atomia-atomiadns-dc3666a/powerdns_sync
 
 RUN_DEPENDS	+=	p5-Config-General>=0:${PORTSDIR}/devel/p5-Config-General
 RUN_DEPENDS	+=	p5-SOAP-Lite>=0.710.08:${PORTSDIR}/net/p5-SOAP-Lite

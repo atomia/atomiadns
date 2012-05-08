@@ -6,7 +6,7 @@
 #
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.8
+PORTVERSION=	1.1.9
 CATEGORIES=	dns
 MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
 PKGNAMESUFFIX=	-database
@@ -20,7 +20,7 @@ LICENSE=	ISCL
 
 USE_PGSQL=	yes
 NO_BUILD=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-4947088
+WRKSRC=		${WRKDIR}/atomia-atomiadns-dc3666a
 
 do-install:
 	cd ${WRKSRC}/server && ${COPYTREE_SHARE} schema ${PREFIX}/share/atomiadns && ${CHMOD} 755 ${PREFIX}/share/atomiadns/schema/*.sh
