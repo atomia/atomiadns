@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.8) hardy; urgency=low
+
+  * Minor FreeBSD fixes
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 8 May 2012 13:01:21 +0200
+
 atomiadns-masterserver (1.1.7) hardy; urgency=low
 
   * Slavezone master can be IPv6 IP, database creation improvements on FreeBSD

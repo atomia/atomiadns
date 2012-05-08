@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.7
+Version: 1.1.8
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.7 atomiadns-database >= 1.1.7
+Requires: atomiadns-api >= 1.1.8 atomiadns-database >= 1.1.8
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.8-1
+- Minor FreeBSD fixes
 * Fri May 04 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.7-1
 - Slavezone master can be IPv6 IP, database creation improvements on FreeBSD
 * Tue Mar 27 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.6-1

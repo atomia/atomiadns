@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.7
+Version: 1.1.8
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.8-1
+- Minor FreeBSD fixes
 * Fri May 04 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.7-1
 - Slavezone master can be IPv6 IP, database creation improvements on FreeBSD
 * Tue Mar 27 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.6-1
