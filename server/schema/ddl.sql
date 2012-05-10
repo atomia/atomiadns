@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (71);
+INSERT INTO atomiadns_schemaversion (version) VALUES (73);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -68,22 +68,22 @@ CREATE TABLE dnssec_keyset (
 INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('A', 'ipv4address', '^([0-9]+[.]){3}[0-9]+$'),
 ('AAAA', 'ipv6address', E'^((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?$'),
-('AFSDB', 'subtype hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]+$'),
+('AFSDB', 'subtype hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]*$'),
 ('CERT', 'type keytag algorithm certificate', '^[0-9]+ [0-9]+ [0-9]+ [A-Za-z0-9+/=]+$'),
-('CNAME', 'hostname', '^[a-z0-9][a-z0-9.-]+$'),
+('CNAME', 'hostname', '^[a-z0-9][a-z0-9.-]*$'),
 ('DNAME', 'domain', '^.+$'),
 ('DNSKEY', 'flag protocol algorithm publickey', '^[0-9]+ [0-9]+ [0-9]+ [A-Za-z0-9+/=]+$'),
 ('DS', 'keytag algorithm digesttype digest', '^[0-9]+ [0-9]+ [0-9]+ [A-Za-z0-9+/=]+$'),
 ('HIP', 'pk-algorithm base16-encoded-hit base64-encoded-public-key [rendezvous-server ..]', '^[0-9]+ [A-F0-9]+ [A-Za-z0-9+/=]+( .*)?$'),
 ('IPSECKEY', 'precedence gateway-type algorithm gateway [base64-encoded-public-key]', '^[0-9]+ [0-9]+ [0-9]+ [a-z0-9][a-z0-9.-]+( [A-Za-z0-9+/=]+)?$'),
 ('LOC', 'd1 [m1 [s1]] N|S d2 [m2 [s2]] E|W alt [siz [hp [vp]]]', '^[0-9]{1,2}( [0-9]{1,2}?( [0-9]{1,2}([.][0-9]{1,3})?)?)? [NS] [0-9]{1,3}( [0-9]{1,2}?( [0-9]{1,2}([.][0-9]{1,3})?)?)? [EW] -?[0-9.]+m?( [0-9.]+m?){0,3}$'),
-('MX', 'prio hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]+$'),
+('MX', 'prio hostname', '^[0-9]+ [a-z0-9][a-z0-9.-]+*'),
 ('NAPTR', 'order pref flags service regexp_without_backslash replacement', '^[0-9]+ [0-9]+ "[^"]*" "[^"]*" "[^"]*" ([a-z0-9_][a-z0-9._-]+)?[.]$'),
-('NS', 'hostname', '^[a-z0-9][a-z0-9.-]+$'),
-('NSEC', 'hostname type [type ..]', '^[a-z0-9][a-z0-9.-]+ [A-Z0-9]+( [A-Z0-9]+)*$'),
+('NS', 'hostname', '^[a-z0-9][a-z0-9.-]*$'),
+('NSEC', 'hostname type [type ..]', '^[a-z0-9][a-z0-9.-]* [A-Z0-9]+( [A-Z0-9]+)*$'),
 ('NSEC3', 'algorithm flags iterations salt next type [.. type]', '^[0-9]+ [0-9]+ [0-9]+ (-|[A-F0-9]+) [A-Z2-7]+ [A-Z0-9]+( [A-Z0-9]+)*$'),
 ('NSEC3PARAM', 'algorithm flags iterations salt', '^[0-9]+ [0-9]+ [0-9]+ (-|[A-F0-9]+)$'),
-('PTR', 'hostname', '^[a-z0-9][a-z0-9.-]+$'),
+('PTR', 'hostname', '^[a-z0-9][a-z0-9.-]*$'),
 ('RRSIG', 'type algorithm labels origttl expiration keytag signer signature', '^[A-Z0-9]+ [0-9]+ [0-9]+ [0-9]+ ([0-9]{1,10}|[0-9]{14}) [0-9]+ [a-z0-9][a-z0-9.-]+ [A-Za-z0-9+/=]+$'),
 ('SOA', 'mname rname %serial refresh retry expire minimum', '^[a-z0-9.-]+ [a-z0-9.-]+ %serial ([0-9]+ ){3}[0-9]+$'),
 ('SPF', 'spfstring', '^"v=spf[0-9][^"]*"$'),

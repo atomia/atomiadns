@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.9
+Version: 1.1.10
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Thu May 10 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.10-1
+- Allow one letter CNAME/NS/PTR records
 * Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.9-1
 - Always use template for mktemp for portability reasons and change to non opt-out NSEC3 until powerdns supports opt-out for NSEC3
 * Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.8-1

@@ -1,3 +1,9 @@
+atomiadns-webapp (1.1.10) hardy; urgency=low
+
+  * Allow one letter CNAME/NS/PTR records
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 10 May 2012 15:09:47 +0200
+
 atomiadns-webapp (1.1.9) hardy; urgency=low
 
   * Always use template for mktemp for portability reasons and change to non opt-out NSEC3 until powerdns supports opt-out for NSEC3

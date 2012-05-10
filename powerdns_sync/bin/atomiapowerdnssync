@@ -112,6 +112,11 @@ Atomia DNS was developed by Atomia AB. For support, please see http://www.atomia
 use warnings;
 use strict;
 
+if (scalar(@ARGV) > 1 && $ARGV[1] eq "--daemonize") {
+	use Proc::Daemon;
+	Proc::Daemon::Init();
+}
+
 use Atomia::DNS::PowerDNSSyncer;
 use Data::Dumper;
 
