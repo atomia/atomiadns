@@ -394,6 +394,11 @@
             </listitem>
             <listitem>
               <para>
+                <link linkend="usage-master-installation-default-freebsd">Installation on FreeBSD</link>
+              </para>
+            </listitem>
+            <listitem>
+              <para>
                 <link linkend="usage-master-installation-default-rhel4">Installation on Redhat Enterprise Linux 4</link>
               </para>
             </listitem>
@@ -441,6 +446,76 @@
                 <para>Install the Atomia DNS Master:</para>
                 <informalexample>
                   <programlisting>apt-get install atomiadns-masterserver</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Add the initial DNSSEC keyset (optional):</para>
+            	<para>
+			See <link linkend="usage-master-installation-dnssec">Creating the initial DNSSEC keyset</link> for instructions.
+		</para>
+              </listitem>
+            </orderedlist>
+          </section>
+          <section xml:id="usage-master-installation-default-freebsd">
+            <title>Installation on FreeBSD</title>
+            <orderedlist>
+              <listitem>
+                <para>
+                  Do a standard information of FreeBSD. The instructions where tested with FreeBSD 9.0-RELEASE, but should work on
+                  other versions as well.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Make sure you have an up-to-date ports collection, as described in
+                  <link xlink:href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/updating-upgrading-portsnap.html">the FreeBSD handbook</link>.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+		  <note>This step is only neccessary as long as the Atomia DNS ports are not in the main ports collection</note>
+		  <informalexample>
+		  	<programlisting>cd /usr/ports/dns ; fetch -q -o - https://github.com/atomia/atomiadns/tarball/develop | tar xvfpz - "*/freebsd"</programlisting>
+		  </informalexample>
+                </para>
+              </listitem>
+              <listitem>
+                <para>Install PostgreSQL:</para>
+                <informalexample>
+                  <programlisting>
+                  	cd /usr/ports/databases/postgresql91-server
+                  	make BATCH=yes all install
+
+			echo 'postgresql_enable="YES"' >> /etc/rc.conf
+			/usr/local/etc/rc.d/postgresql initdb
+			/usr/local/etc/rc.d/postgresql start
+                 </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Install Atomia DNS:</para>
+                <informalexample>
+                  <programlisting>
+			cd /usr/ports/atomiadns-database
+			make BATCH=yes all install
+			atomiadns-sync-database
+
+			cd /usr/ports/atomiadns-api
+			make BATCH=yes all install
+
+			cd /usr/ports/atomiadns-client
+			make BATCH=yes all install
+
+			echo 'apache22_enable="YES"' >> /etc/rc.conf
+                 </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Test the installation by creating your first (and often only) nameserver group:</para>
+                <informalexample>
+                  <programlisting>
+                  	atomiadnsclient --method AddNameserverGroup --arg default
+                 </programlisting>
                 </informalexample>
               </listitem>
               <listitem>
@@ -1623,6 +1698,11 @@ atomiadnssync OPTION
           </listitem>
           <listitem>
             <para>
+              <link linkend="usage-powerdns-installation-freebsd">Installation on FreeBSD</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
               <link linkend="usage-powerdns-installation-software">Software used by Atomia DNS Bind-DLZ Nameserver</link>
             </para>
           </listitem>
@@ -1708,6 +1788,93 @@ soap_password = somepass
               </orderedlist>
             </listitem>
           </orderedlist>
+        </section>
+        <section xml:id="usage-powerdns-installation-freebsd">
+            <title>Installation on FreeBSD</title>
+            <orderedlist>
+              <listitem>
+                <para>
+                  Do a standard information of FreeBSD. The instructions where tested with FreeBSD 9.0-RELEASE, but should work on
+                  other versions as well.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Make sure you have an up-to-date ports collection, as described in
+                  <link xlink:href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/updating-upgrading-portsnap.html">the FreeBSD handbook</link>.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+		  <note>This step is only neccessary as long as the Atomia DNS ports are not in the main ports collection</note>
+		  <informalexample>
+		  	<programlisting>cd /usr/ports/dns ; fetch -q -o - https://github.com/atomia/atomiadns/tarball/develop | tar xvfpz - "*/freebsd"</programlisting>
+		  </informalexample>
+                </para>
+              </listitem>
+              <listitem>
+                <para>Install MySQL and create the database:</para>
+                <informalexample>
+                  <programlisting>
+			cd /usr/ports/databases/mysql55-server
+			make BATCH=yes all install
+
+			echo 'mysql_enable="YES"' &gt;&gt; /etc/rc.conf
+			/usr/local/etc/rc.d/mysql-server start
+			mysql -u root mysql -e "drop database test; delete from db; delete from user where user = ''; delete from user where host &lt;&lt; 'localhost'; flush privileges"
+			
+			mysqladmin create powerdns
+			set powerdns_pw=`sh -c 'dd if=/dev/urandom bs=1024 count=1 2&gt; /dev/null | sha1'`
+			
+			mysql -u root -e "grant all on powerdns.* to 'powerdns'@'localhost' identified by '$powerdns_pw'"
+			
+			cat &gt; /root/pdns.conf.tmp &lt;&lt;EOF
+			launch=gmysql
+			gmysql-host=localhost
+			gmysql-user=powerdns
+			gmysql-dbname=powerdns
+			gmysql-password=$powerdns_pw
+			gmysql-dnssec=yes
+			EOF
+                 </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Install PowerDNS:</para>
+                <informalexample>
+                  <programlisting>
+			cd /usr/ports/dns/powerdns
+			make BATCH=yes MYSQL=on PGSQL=off all install
+			echo 'pdns_enable="YES"' &gt;&gt; /etc/rc.conf
+			echo 'pdns_flags="--daemon --guardian=yes"' &gt;&gt; /etc/rc.conf
+			mv /root/pdns.conf.tmp /usr/local/etc/pdns/pdns.conf
+                 </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Install atomiadns-powerdnssync:</para>
+                <informalexample>
+                  <programlisting>
+			cd /usr/ports/atomiadns-powerdnssync
+			make BATCH=yes all install
+			atomiadns-sync-powerdns-database /usr/local/etc/pdns/pdns.conf
+			echo "servername = $(hostname)" >> /etc/atomiadns.conf
+			atomiapowerdnssync add_server
+			echo 'atomiapowerdnssync_enable="YES"' >> /etc/rc.conf
+			/usr/local/etc/rc.d/atomiapowerdnssync start
+			atomiapowerdnssync full_reload_online
+                 </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Start PowerDNS:</para>
+                <informalexample>
+                  <programlisting>
+                  	/usr/local/etc/rc.d/pdns start
+                 </programlisting>
+                </informalexample>
+              </listitem>
+            </orderedlist>
         </section>
         <section xml:id="usage-powerdns-installation-software">
           <title>Software used by Atomia DNS Bind-DLZ Nameserver</title>
