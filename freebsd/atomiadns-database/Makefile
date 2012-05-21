@@ -22,6 +22,8 @@ USE_PGSQL=	yes
 NO_BUILD=	yes
 WRKSRC=		${WRKDIR}/atomia-atomiadns-c4e6aab
 
+RUN_DEPENDS	+=	sudo>=0:${PORTSDIR}/security/sudo
+
 do-install:
 	cd ${WRKSRC}/server && ${COPYTREE_SHARE} schema ${PREFIX}/share/atomiadns && ${CHMOD} 755 ${PREFIX}/share/atomiadns/schema/*.sh
 	cd ${WRKSRC}/server && ${INSTALL_DATA} -d conf ${PREFIX}/share/atomiadns/conf
