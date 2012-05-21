@@ -6,7 +6,7 @@
 #
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.9
+PORTVERSION=	1.1.10
 CATEGORIES=	dns
 MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
 PKGNAMESUFFIX=	-api
@@ -20,7 +20,7 @@ LICENSE=	ISCL
 
 USE_APACHE=	22+
 PERL_CONFIGURE=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-dc3666a/server
+WRKSRC=		${WRKDIR}/atomia-atomiadns-c4e6aab/server
 
 RUN_DEPENDS	+=	p5-Config-General>=0:${PORTSDIR}/devel/p5-Config-General
 RUN_DEPENDS	+=	p5-DBD-Pg>=2.11.7:${PORTSDIR}/databases/p5-DBD-Pg

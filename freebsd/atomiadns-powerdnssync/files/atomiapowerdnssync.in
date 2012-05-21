@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# $FreeBSD$
+#
+# PROVIDE: atomiapowerdnssync
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# atomiapowerdnssync_enable (bool):	Set to NO by default.
+#				Set it to YES to enable the Atomia DNS powerdns sync agent.
+
+. /etc/rc.subr
+
+name=atomiapowerdnssync
+rcvar=atomiapowerdnssync_enable
+
+load_rc_config $name
+
+: ${atomiapowerdnssync_enable:="NO"}
+
+command="%%PREFIX%%/bin/${name}"
+command_args="updated --daemonize"
+command_interpreter=`head -n 1 "$command" | cut -c 3- | cut -d " " -f 1`
+
+run_rc_command "$1"

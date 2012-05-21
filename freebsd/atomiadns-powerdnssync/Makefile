@@ -6,7 +6,7 @@
 #
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.9
+PORTVERSION=	1.1.10
 CATEGORIES=	dns
 MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
 PKGNAMESUFFIX=	-powerdnssync
@@ -19,15 +19,18 @@ COMMENT=	The Atomia DNS PowerDNS sync agent
 LICENSE=	ISCL
 
 PERL_CONFIGURE=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-dc3666a/powerdns_sync
+WRKSRC=		${WRKDIR}/atomia-atomiadns-c4e6aab/powerdns_sync
 
 RUN_DEPENDS	+=	p5-Config-General>=0:${PORTSDIR}/devel/p5-Config-General
+RUN_DEPENDS	+=	p5-Proc-Daemon>=0:${PORTSDIR}/devel/p5-Proc-Daemon
 RUN_DEPENDS	+=	p5-SOAP-Lite>=0.710.08:${PORTSDIR}/net/p5-SOAP-Lite
 RUN_DEPENDS	+=	p5-Moose>=0.94:${PORTSDIR}/devel/p5-Moose
 RUN_DEPENDS	+=	p5-Net-DNS-Zone-Parser>=0:${PORTSDIR}/dns/p5-Net-DNS-Zone-Parser
 RUN_DEPENDS	+=	p5-Net-DNS>=0:${PORTSDIR}/dns/p5-Net-DNS
 RUN_DEPENDS	+=	p5-MIME-Base32>=0:${PORTSDIR}/converters/p5-MIME-Base32
 RUN_DEPENDS	+=	p5-DBD-mysql55>=0:${PORTSDIR}/databases/p5-DBD-mysql55
+
+USE_RC_SUBR	+=	atomiapowerdnssync
 
 post-install:
 	${INSTALL_DATA} -d ${WRKSRC}/conf ${PREFIX}/share/atomiadns/conf
