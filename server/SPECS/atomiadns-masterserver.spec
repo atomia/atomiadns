@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.13
+Version: 1.1.14
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.13 atomiadns-database >= 1.1.13
+Requires: atomiadns-api >= 1.1.14 atomiadns-database >= 1.1.14
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.14-1
+- Fix so that the webapp starts on 12.04
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.13-1
 - Fix another bug in the powerdns database creation script
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.12-1

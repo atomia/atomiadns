@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.13
+Version: 1.1.14
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.14-1
+- Fix so that the webapp starts on 12.04
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.13-1
 - Fix another bug in the powerdns database creation script
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.12-1

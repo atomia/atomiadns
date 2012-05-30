@@ -1,3 +1,9 @@
+atomiadns-powerdnssync (1.1.14) hardy; urgency=low
+
+  * Fix so that the webapp starts on 12.04
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 30 May 2012 16:01:59 +0200
+
 atomiadns-powerdnssync (1.1.13) hardy; urgency=low
 
   * Fix another bug in the powerdns database creation script
