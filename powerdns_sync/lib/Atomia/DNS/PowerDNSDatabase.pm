@@ -5,7 +5,7 @@ package Atomia::DNS::PowerDNSDatabase;
 use Moose;
 use DBI;
 use MIME::Base32;
-use Digest::SHA1 qw(sha1);
+use Digest::SHA qw(sha1);
 
 has 'config' => (is => 'ro', isa => 'HashRef');
 has 'conn' => (is => 'rw', isa => 'Object');

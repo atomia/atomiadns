@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.1.10
+Version: 1.1.11
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -107,6 +107,8 @@ fi
 exit 0
 
 %changelog
+* Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.11-1
+- Change from Digest::SHA1 to Digest::SHA due to Ubuntu Precise dropping the first one
 * Thu May 10 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.10-1
 - Allow one letter CNAME/NS/PTR records
 * Tue May 08 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.9-1

@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.1.11) hardy; urgency=low
+
+  * Change from Digest::SHA1 to Digest::SHA due to Ubuntu Precise dropping the first one
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 30 May 2012 09:02:57 +0200
+
 atomiadns-nameserver (1.1.10) hardy; urgency=low
 
   * Allow one letter CNAME/NS/PTR records

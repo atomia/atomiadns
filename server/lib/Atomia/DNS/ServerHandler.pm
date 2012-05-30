@@ -11,7 +11,7 @@ use DBI;
 use DBD::Pg qw(:pg_types);
 use Data::Dumper;
 use Authen::Passphrase::BlowfishCrypt;
-use Digest::SHA1 qw(sha1_hex);
+use Digest::SHA qw(sha1_hex);
 use Atomia::DNS::Signatures;
 
 has 'conn' => (is => 'rw', isa => 'Any', default => undef);

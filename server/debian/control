@@ -8,12 +8,12 @@ Standards-Version: 3.6.1
 
 Package: atomiadns-masterserver
 Architecture: all
-Depends: atomiadns-api (>= 1.1.10), atomiadns-database (>= 1.1.10)
+Depends: atomiadns-api (>= 1.1.11), atomiadns-database (>= 1.1.11)
 Description: Complete master SOAP server for Atomia DNS
 
 Package: atomiadns-api
 Architecture: all
-Depends: perl-modules, perl-base, libconfig-general-perl, libdbi-perl, libsoap-lite-perl (>= 0.710.08-2), libdbd-pg-perl (>= 2.11.7-1), libmoose-perl, apache2, apache2-mpm-prefork, libapache2-mod-perl2, bind9utils, libjson-perl, libauthen-passphrase-perl, libdigest-sha1-perl
+Depends: perl-modules, perl-base, libconfig-general-perl, libdbi-perl, libsoap-lite-perl (>= 0.710.08-2), libdbd-pg-perl (>= 2.11.7-1), libmoose-perl, apache2, apache2-mpm-prefork, libapache2-mod-perl2, bind9utils, libjson-perl, libauthen-passphrase-perl, libdigest-sha-perl
 Description: SOAP-server for Atomia DNS
 
 Package: atomiadns-database
