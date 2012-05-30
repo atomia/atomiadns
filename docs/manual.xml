@@ -1756,7 +1756,7 @@ soap_password = somepass
             <listitem>
               <para>Start the daemon:</para>
               <informalexample>
-                <programlisting>/etc/init.d/atomiadns-powerdnssync start</programlisting>
+                <programlisting>start atomiadns-powerdnssync</programlisting>
               </informalexample>
             </listitem>
             <listitem>
