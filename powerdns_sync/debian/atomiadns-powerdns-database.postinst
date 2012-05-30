@@ -16,7 +16,7 @@ else
 fi
 
 if [ -f "/usr/share/atomiadns/powerdns.sql" ]; then
-	schemafile="$schemafile"
+	schemafile="/usr/share/atomiadns/powerdns.sql"
 elif [ -f "/usr/share/atomiadns/schema/powerdns.sql" ]; then
 	schemafile="/usr/share/atomiadns/schema/powerdns.sql"
 elif [ -f "/usr/local/share/atomiadns/schema/powerdns.sql" ]; then

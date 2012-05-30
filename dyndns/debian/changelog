@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.12) hardy; urgency=low
+
+  * Fix bug in powerdns database install script
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 30 May 2012 13:59:47 +0200
+
 atomiadns-dyndns (1.1.11) hardy; urgency=low
 
   * Change from Digest::SHA1 to Digest::SHA due to Ubuntu Precise dropping the first one

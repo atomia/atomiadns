@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.11
+Version: 1.1.12
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.12-1
+- Fix bug in powerdns database install script
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.11-1
 - Change from Digest::SHA1 to Digest::SHA due to Ubuntu Precise dropping the first one
 * Thu May 10 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.10-1

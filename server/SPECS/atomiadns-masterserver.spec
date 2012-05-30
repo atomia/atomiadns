@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.11
+Version: 1.1.12
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.11 atomiadns-database >= 1.1.11
+Requires: atomiadns-api >= 1.1.12 atomiadns-database >= 1.1.12
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.12-1
+- Fix bug in powerdns database install script
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.11-1
 - Change from Digest::SHA1 to Digest::SHA due to Ubuntu Precise dropping the first one
 * Thu May 10 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.10-1
