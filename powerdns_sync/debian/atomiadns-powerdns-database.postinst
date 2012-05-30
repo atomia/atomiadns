@@ -27,7 +27,7 @@ else
 fi
 
 createschema() {
-	if [ x"no_db_create" = x"1" ]; then
+	if [ x"$no_db_create" != x"1" ]; then
 		password=`dd if=/dev/urandom bs=1024 count=1 status=noxfer 2>/dev/null | sha1sum | cut -d " " -f 1`
 		if [ -z "$password" ]; then
 			echo "error generating random password"

@@ -1,3 +1,9 @@
+atomiadns-powerdnssync (1.1.13) hardy; urgency=low
+
+  * Fix another bug in the powerdns database creation script
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 30 May 2012 14:24:32 +0200
+
 atomiadns-powerdnssync (1.1.12) hardy; urgency=low
 
   * Fix bug in powerdns database install script

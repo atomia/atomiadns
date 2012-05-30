@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.12
+Version: 1.1.13
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.13-1
+- Fix another bug in the powerdns database creation script
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.12-1
 - Fix bug in powerdns database install script
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.11-1
