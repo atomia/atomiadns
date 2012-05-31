@@ -497,7 +497,7 @@
                   <programlisting>
 			cd /usr/ports/dns/atomiadns-database
 			make BATCH=yes all install
-			rehash || hash -r
+			test x"$SHELL" = x"/bin/bash" &amp;&amp; hash -r ; echo "$SHELL" | grep csh > /dev/null &amp;&amp; rehash
 			atomiadns-sync-database
 			cd /usr/ports/dns/atomiadns-api
 			make BATCH=yes all install
