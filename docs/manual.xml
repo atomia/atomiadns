@@ -495,12 +495,13 @@
                 <para>Install Atomia DNS:</para>
                 <informalexample>
                   <programlisting>
-			cd /usr/ports/atomiadns-database
+			cd /usr/ports/dns/atomiadns-database
 			make BATCH=yes all install
+			rehash || hash -r
 			atomiadns-sync-database
-			cd /usr/ports/atomiadns-api
+			cd /usr/ports/dns/atomiadns-api
 			make BATCH=yes all install
-			cd /usr/ports/atomiadns-client
+			cd /usr/ports/dns/atomiadns-client
 			make BATCH=yes all install
 			echo 'apache22_enable="YES"' >> /etc/rc.conf
                  </programlisting>
@@ -1847,7 +1848,7 @@ soap_password = somepass
                 <para>Install atomiadns-powerdnssync:</para>
                 <informalexample>
                   <programlisting>
-			cd /usr/ports/atomiadns-powerdnssync
+			cd /usr/ports/dns/atomiadns-powerdnssync
 			make BATCH=yes all install
 			atomiadns-sync-powerdns-database /usr/local/etc/pdns/pdns.conf
 			echo "servername = $(hostname)" >> /etc/atomiadns.conf
