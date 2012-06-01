@@ -143,4 +143,7 @@
 			<xsl:apply-templates />
 		</p>
 	</xsl:template>
+	<xsl:template match="programlisting[@linenumbering = 'unnumbered']" mode="class.value">
+		<xsl:value-of select="'programlisting unnumbered'"/>
+	</xsl:template>
 </xsl:stylesheet>

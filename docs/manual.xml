@@ -484,7 +484,7 @@
                 <informalexample>
                   <programlisting>
                   	cd /usr/ports/databases/postgresql91-server
-                  	make BATCH=yes all install
+                  	make BATCH=yes install
 			echo 'postgresql_enable="YES"' >> /etc/rc.conf
 			/usr/local/etc/rc.d/postgresql initdb
 			/usr/local/etc/rc.d/postgresql start
@@ -496,14 +496,32 @@
                 <informalexample>
                   <programlisting>
 			cd /usr/ports/dns/atomiadns-database
-			make BATCH=yes all install
+			make BATCH=yes install
 			test x"$SHELL" = x"/bin/bash" &amp;&amp; hash -r ; echo "$SHELL" | grep csh > /dev/null &amp;&amp; rehash
 			atomiadns-sync-database
 			cd /usr/ports/dns/atomiadns-api
-			make BATCH=yes all install
+			make BATCH=yes install
 			cd /usr/ports/dns/atomiadns-client
-			make BATCH=yes all install
+			make BATCH=yes install
 			echo 'apache22_enable="YES"' >> /etc/rc.conf
+                 </programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Optionally password protect the Atomia DNS installation (very much recommended):</para>
+                <informalexample>
+                  <programlisting linenumbering="unnumbered">
+                  	cat > /usr/local/etc/apache22/Includes/atomiadns_password_protect.conf &lt;&lt;EOF
+                  	&lt;Location /&gt;
+				AuthUserFile /usr/local/etc/apache22/atomiadns.htpasswd
+				AuthName "Atomia DNS"
+				AuthType Basic
+				require valid-user
+			&lt;/Location&gt;
+                  	EOF
+                  	# Remember the password that you enter, it is used in the next step, and later when you add nameservers.
+                  	htpasswd -c /usr/local/etc/apache22/atomiadns.htpasswd atomiadns
+                  	apachectl graceful
                  </programlisting>
                 </informalexample>
               </listitem>
@@ -511,6 +529,8 @@
                 <para>Test the installation by creating your first (and often only) nameserver group:</para>
                 <informalexample>
                   <programlisting>
+			echo 'soap_username=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_USERNAME" >> /etc/atomiadns.conf
+			echo 'soap_password=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_PASSWORD" >> /etc/atomiadns.conf
                   	atomiadnsclient --method AddNameserverGroup --arg default
                  </programlisting>
                 </informalexample>
@@ -1814,7 +1834,7 @@ soap_password = somepass
                 <informalexample>
                   <programlisting>
 			cd /usr/ports/databases/mysql55-server
-			make BATCH=yes all install
+			make BATCH=yes install
 			echo 'mysql_enable="YES"' &gt;&gt; /etc/rc.conf
 			/usr/local/etc/rc.d/mysql-server start
 			mysql -u root mysql -e "drop database test; delete from db; delete from user where user = ''; delete from user where host &lt;&lt; 'localhost'; flush privileges"
@@ -1837,7 +1857,7 @@ soap_password = somepass
                 <informalexample>
                   <programlisting>
 			cd /usr/ports/dns/powerdns
-			make BATCH=yes MYSQL=on PGSQL=off all install
+			make BATCH=yes MYSQL=on PGSQL=off install
 			echo 'pdns_enable="YES"' &gt;&gt; /etc/rc.conf
 			echo 'pdns_flags="--daemon --guardian=yes"' &gt;&gt; /etc/rc.conf
 			mv /root/pdns.conf.tmp /usr/local/etc/pdns/pdns.conf
@@ -1849,11 +1869,14 @@ soap_password = somepass
                 <informalexample>
                   <programlisting>
 			cd /usr/ports/dns/atomiadns-powerdnssync
-			make BATCH=yes all install
+			make BATCH=yes install
 			atomiadns-sync-powerdns-database /usr/local/etc/pdns/pdns.conf
-			echo "servername = $(hostname)" >> /etc/atomiadns.conf
-			atomiapowerdnssync add_server
+			echo "servername = `hostname`" >> /etc/atomiadns.conf
+			echo 'soap_uri=http://INSERT_IP_OF_API_SERVER/atomiadns' >> /etc/atomiadns.conf
+			echo 'soap_username=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_USERNAME" >> /etc/atomiadns.conf
+			echo 'soap_password=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_PASSWORD" >> /etc/atomiadns.conf
 			echo 'atomiapowerdnssync_enable="YES"' >> /etc/rc.conf
+			atomiapowerdnssync add_server default
 			/usr/local/etc/rc.d/atomiapowerdnssync start
 			atomiapowerdnssync full_reload_online
                  </programlisting>
