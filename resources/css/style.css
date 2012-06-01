@@ -297,11 +297,17 @@ li p {
 	font-size: 15px;
 	line-height: 21px
 }
+
 ol {
 	list-style-position: outside;
 	list-style-type: decimal;
 	color: #c90062
 }
+
+ol.unnumbered {
+	list-style-type: none;
+}
+
 .small {
 	font-size:.8em;
 	margin-bottom:1.875em;

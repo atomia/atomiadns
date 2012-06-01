@@ -33,6 +33,7 @@ $(document).ready(function() {
 	
 	//Code highliter
 	$("pre").each(function(){
+		var olClass = $(this).hasClass("unnumbered") ? ' class="unnumbered"' : '';
 		var x = $(this).html();
 		// Find string inside quoutes and wrap with span
 		x = x.replace(/"(.*?)"/gm, "\"<span>$1</span>\"");
@@ -44,6 +45,6 @@ $(document).ready(function() {
 		//Wrap each new line with LI
 		x = x.replace(/\n/gm, "</li><li>");
 		//Return wrapped.
-		$(this).html("<ol><li>"+x+"</li></ol>");
+		$(this).html("<ol" + olClass + "><li>" + x + "</li></ol>");
 	});
 });
