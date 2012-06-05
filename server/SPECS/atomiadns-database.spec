@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.16
+Version: 1.1.17
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.17-1
+- Fix case where we have require_auth=0 and still send auth headers
 * Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.16-1
 - Fix the DS generation code introduced in 1.1.15
 * Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.15-1

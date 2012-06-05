@@ -1,3 +1,9 @@
+atomiadns-webapp (1.1.17) hardy; urgency=low
+
+  * Fix case where we have require_auth=0 and still send auth headers
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 5 Jun 2012 12:16:59 +0200
+
 atomiadns-webapp (1.1.16) hardy; urgency=low
 
   * Fix the DS generation code introduced in 1.1.15
