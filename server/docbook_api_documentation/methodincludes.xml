@@ -48,6 +48,7 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/GetAllowedZoneTransfer.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/DeleteAllowedZoneTransfer.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/GetDNSSECKeys.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/GetDNSSECKeysDS.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/GetExternalDNSSECKeys.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/AddDNSSECKey.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methods/AddExternalDNSSECKey.xml" />

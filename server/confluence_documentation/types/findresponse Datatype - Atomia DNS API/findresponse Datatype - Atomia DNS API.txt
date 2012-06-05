@@ -3,4 +3,5 @@
 || Member || Type || Description ||
 | total | int | the number of zones matching the query |
 | zones | string[] | the zone names |
+{excerpt:hidden=true}{excerpt}
 				

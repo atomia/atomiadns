@@ -1,0 +1,17 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Get a list of generated DS records for all active KSKs stored in this Atomia DNS instance.
+
+h3.Declaration syntax
+{panel}
+[ds_set|ds_set Datatype - Atomia DNS API] GetDNSSECKeysDS(
+	string zone
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zone|string|the zone to generate DS records for|
+
+{include:GetDNSSECKeysDS Method Example - Atomia DNS API}

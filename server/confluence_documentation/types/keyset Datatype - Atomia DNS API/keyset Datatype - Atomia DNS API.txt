@@ -9,4 +9,5 @@
 | activated_at | string | the date of the key activation or empty if not activated |
 | deactivated_at | string | the date of the key deactivation or empty if not deactivated |
 | keydata | string | the private key in Private-key-format v1.2 |
+{excerpt:hidden=true}{excerpt}
 				

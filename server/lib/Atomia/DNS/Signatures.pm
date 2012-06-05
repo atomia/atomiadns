@@ -50,6 +50,7 @@ our $signatures = {
 	"GetAllowedZoneTransfer" => "allowedtransfer",
 	"DeleteAllowedZoneTransfer" => "void string string",
 	"GetDNSSECKeys" => "keyset",
+	"GetDNSSECKeysDS" => "dsset string",
 	"GetExternalDNSSECKeys" => "keyset",
 	"AddDNSSECKey" => "keyid string int string int",
 	"AddExternalDNSSECKey" => "int string",

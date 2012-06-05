@@ -1,0 +1,12 @@
+<section xml:id="datatype-ds_set">
+<title>ds_set Datatype - Atomia DNS API</title>
+<para>
+<link linkend="datatype-ds_set">ds_set</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>digest</td><td>string</td><td>the digest of a KSK as defined in the RR format of a DS record</td></tr>
+<tr><td>digestType</td><td>int</td><td>the digest algorithm used to create the digest, as defined in the RR format of a DS record</td></tr>
+<tr><td>alg</td><td>int</td><td>the algorithm value of the KSK DNSKEY record that this digest applies to</td></tr>
+<tr><td>keyTag</td><td>int</td><td>the keytag of the KSK DNSKEY record that this digest applies to</td></tr>
+</tbody></informaltable>
+
+				</para></section>

@@ -1,0 +1,9 @@
+
+[ds_set|ds_set Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| digest | string | the digest of a KSK as defined in the RR format of a DS record |
+| digestType | int | the digest algorithm used to create the digest, as defined in the RR format of a DS record |
+| alg | int | the algorithm value of the KSK DNSKEY record that this digest applies to |
+| keyTag | int | the keytag of the KSK DNSKEY record that this digest applies to |
+{excerpt:hidden=true}{excerpt}
+				

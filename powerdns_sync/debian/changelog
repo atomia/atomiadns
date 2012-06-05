@@ -1,3 +1,9 @@
+atomiadns-powerdnssync (1.1.15) hardy; urgency=low
+
+  * Add GetDNSSECKeysDS to simplify integration with external systems not using Atomia Domain Registration
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 5 Jun 2012 11:01:12 +0200
+
 atomiadns-powerdnssync (1.1.14) hardy; urgency=low
 
   * Fix so that the webapp starts on 12.04

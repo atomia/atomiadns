@@ -1,0 +1,14 @@
+<section xml:id="method-GetDNSSECKeysDS">
+<title>GetDNSSECKeysDS Method - Atomia DNS API</title>
+<itemizedlist><listitem><para><link linkend="method-declaration-GetDNSSECKeysDS">Declaration syntax</link></para></listitem><listitem><para><link linkend="method-parameters-GetDNSSECKeysDS">Parameters</link></para></listitem>
+</itemizedlist><para>Get a list of generated DS records for all active KSKs stored in this Atomia DNS instance.</para>
+<section xml:id="method-declaration-GetDNSSECKeysDS"><title>Declaration syntax</title><programlisting>
+[ds_set|ds_set Datatype - Atomia DNS API] GetDNSSECKeysDS(
+	string zone
+)
+</programlisting></section>
+<section xml:id="method-parameters-GetDNSSECKeysDS"><title>Parameters</title>
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>zone</td><td>string</td><td>the zone to generate DS records for</td></tr>
+</tbody></informaltable></section>
+</section>

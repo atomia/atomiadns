@@ -13,6 +13,8 @@ use Data::Dumper;
 use Authen::Passphrase::BlowfishCrypt;
 use Digest::SHA qw(sha1_hex);
 use Atomia::DNS::Signatures;
+use MIME::Base64;
+use Net::DNS::RR;
 
 has 'conn' => (is => 'rw', isa => 'Any', default => undef);
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
@@ -119,6 +121,73 @@ sub handleKeySet {
 	} @$records;
 
 	return SOAP::Data->new(name => "keyset", value => \@soapkeyset);
+}
+
+sub handleDSSet {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+	my $zone = shift;
+
+	shift(@$signature);
+
+	my $sth = $self->handleAll($method, $signature, 0, undef);
+
+	my $records = $sth->fetchall_arrayref({});
+	die("no keyset returned from database") unless defined($records) && !$DBI::err;
+
+	my $soap_dsset = [];
+	KEY: foreach my $key (@$records) {
+		next KEY unless defined($key) && ref($key) eq 'HASH'
+			&& $key->{"key_keytype"} eq "KSK"
+			&& $key->{"key_algorithm"} =~ /^RSA/
+			&& $key->{"key_activated"} == 1;
+
+		my $dsset = $self->generateDSFromPrivateKey($zone, $key->{"key_keydata"});
+		die("no DS records generated despite finding active KSK") unless defined($dsset) && ref($dsset) eq "ARRAY" && scalar(@$dsset) > 0;
+
+		foreach my $ds (@$dsset) {
+			push @$soap_dsset, SOAP::Data->new(name => "ds", value => { digest => $ds->digest(), digestType => $ds->digtype(), alg => $ds->algorithm(), keyTag => $ds->keytag() });
+		}
+	}
+
+	return SOAP::Data->new(name => "dsset", value => $soap_dsset);
+}
+
+sub generateDSFromPrivateKey {
+	my $self = shift;
+	my $zone = shift;
+	my $keydata = shift;
+
+	die "invalid zone" unless defined($zone) && length($zone) > 0;
+	$zone = $zone . "." unless $zone =~ /\.$/;
+
+	if (defined($keydata) && $keydata =~ /^Algorithm:\s+(\d+).*^Modulus:\s+(.*?)$.*^PublicExponent:\s+(.*?)$/ms) {
+		my $algorithm = $1;
+		my $modulus = decode_base64($2);
+		my $exponent = decode_base64($3);
+		my $exponent_length;
+		if (length($exponent) > 255) {
+			$exponent_length = pack("Cn", chr(0), length($exponent));
+		} else {
+			$exponent_length = pack("C", length($exponent));
+		}
+
+		my $rrtext = sprintf("$zone IN DNSKEY 257 3 %d %s", $algorithm, encode_base64($exponent_length . $exponent . $modulus, ''));
+		my $dnskey = Net::DNS::RR->new($rrtext);
+		if (defined($dnskey) && $dnskey->is_sep()) {
+			my $ds_set = [];
+			foreach my $digtype ("SHA1", "SHA256") {
+				push @$ds_set, Net::DNS::RR::DS->create($dnskey, digtype => $digtype);
+			}
+
+			return $ds_set;
+		} else {
+			die("constructed key was not KSK, this is a bug");
+		}
+	} else {
+		die "invalid private key format";
+	}
 }
 
 sub handleZSKInfo {
@@ -522,6 +591,7 @@ sub handleAll {
 	eval {
 		$method =~ s/Binary//;
 		$method =~ s/RestoreZoneBulk$/RestoreZone/;
+		$method =~ s/GetDNSSECKeysDS/GetDNSSECKeys/;
 
 		$sth = $self->dbi->prepare($void ? "SELECT $method($placeholders)" : "SELECT * FROM $method($placeholders)");
 		die("error in dbi->prepare") unless defined($sth);
@@ -1075,6 +1145,8 @@ sub handleOperation {
 		$retval = $self->handleAllowedTransfer($method, $signature, @_);
 	} elsif ($return_type eq "keyset") {
 		$retval = $self->handleKeySet($method, $signature, @_);
+	} elsif ($return_type eq "dsset") {
+		$retval = $self->handleDSSet($method, $signature, @_);
 	} elsif ($return_type eq "zskinfo") {
 		$retval = $self->handleZSKInfo($method, $signature, @_);
 	} elsif ($return_type eq "keyid") {

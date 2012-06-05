@@ -18,6 +18,7 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/binaryzone.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/binaryzones.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/keyset.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/ds_set.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/external_keyset.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zskinfo.xml" />
 </section>

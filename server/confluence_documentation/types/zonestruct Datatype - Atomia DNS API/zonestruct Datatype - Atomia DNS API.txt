@@ -3,4 +3,5 @@
 || Member || Type || Description ||
 | id | int | id of the zone |
 | name | string | name of the zone |
+{excerpt:hidden=true}{excerpt}
 				

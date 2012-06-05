@@ -3,4 +3,5 @@
 || Member || Type || Description ||
 | name | string | the name of the label |
 | records | [resourcerecord|resourcerecord Datatype - Atomia DNS API][] | an array of resourcerecords |
+{excerpt:hidden=true}{excerpt}
 				

@@ -275,6 +275,24 @@ atomiaKeySet is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaDSSet">
+				<xsd:annotation><xsd:documentation>
+atomiaDSSet is a struct with the following members:
+|| Member || Type || Description ||
+| digest | string | the digest of a KSK as defined in the RR format of a DS record |
+| digestType | int | the digest algorithm used to create the digest, as defined in the RR format of a DS record |
+| alg | int | the algorithm value of the KSK DNSKEY record that this digest applies to |
+| keyTag | int | the keytag of the KSK DNSKEY record that this digest applies to |
+{excerpt:hidden=true}{excerpt}
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="digest" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="digestType" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="alg" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keyTag" type="xsd:int"/>
+				</xsd:all>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaExternalKeySet">
 				<xsd:annotation><xsd:documentation>
 atomiaExternalKeySet is a struct with the following members:
@@ -1090,6 +1108,22 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetDNSSECKeysDS">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the zone to generate DS records for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDNSSECKeysDSResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyset" type="atomiaDSSet"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="GetExternalDNSSECKeys">
 				<xsd:complexType>
 					<xsd:all />
@@ -1747,6 +1781,15 @@ atomiaZSKInfo is a struct with the following members:
 		<part name="parameters" element="tns:GetDNSSECKeysResponse"/>
 	</message>
 
+	<message name="GetDNSSECKeysDSInput">
+		<documentation>Get a list of generated DS records for all active KSKs stored in this Atomia DNS instance.</documentation>
+		<part name="parameters" element="tns:GetDNSSECKeysDS"/>
+	</message>
+
+	<message name="GetDNSSECKeysDSOutput">
+		<part name="parameters" element="tns:GetDNSSECKeysDSResponse"/>
+	</message>
+
 	<message name="GetExternalDNSSECKeysInput">
 		<documentation>Get a list of all external DNSSEC keys stored in this Atomia DNS instance.</documentation>
 		<part name="parameters" element="tns:GetExternalDNSSECKeys"/>
@@ -2288,6 +2331,15 @@ atomiaZSKInfo is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetDNSSECKeysDS">
+			<input message="tns:GetDNSSECKeysDSInput"/>
+			<output message="tns:GetDNSSECKeysDSOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="GetExternalDNSSECKeys">
 			<input message="tns:GetExternalDNSSECKeysInput"/>
 			<output message="tns:GetExternalDNSSECKeysOutput"/>
@@ -2736,6 +2788,13 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="GetDNSSECKeys">
 			<documentation>Get a list of all DNSSEC keys stored in this Atomia DNS instance.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECKeys"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetDNSSECKeysDS">
+			<documentation>Get a list of generated DS records for all active KSKs stored in this Atomia DNS instance.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECKeysDS"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

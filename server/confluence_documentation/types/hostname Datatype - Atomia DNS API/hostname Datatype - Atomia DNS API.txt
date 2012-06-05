@@ -3,4 +3,5 @@
 || Member || Type || Description ||
 | zone | string | the name of the zone |
 | label | string | the name of the label |
+{excerpt:hidden=true}{excerpt}
 				

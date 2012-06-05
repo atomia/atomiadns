@@ -9,4 +9,5 @@
 | created_ago_seconds | int | the number of seconds since the key creation |
 | deactivated_ago_seconds | int | the number of seconds since the key deactivation |
 | max_ttl | int | the maximum TTL of all records in this instance of Atomia DNS |
+{excerpt:hidden=true}{excerpt}
 				

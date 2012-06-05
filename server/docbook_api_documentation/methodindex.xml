@@ -46,6 +46,7 @@
 <listitem><para><link linkend="method-GetAllowedZoneTransfer">GetAllowedZoneTransfer Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-DeleteAllowedZoneTransfer">DeleteAllowedZoneTransfer Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-GetDNSSECKeys">GetDNSSECKeys Method - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="method-GetDNSSECKeysDS">GetDNSSECKeysDS Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-GetExternalDNSSECKeys">GetExternalDNSSECKeys Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-AddDNSSECKey">AddDNSSECKey Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-AddExternalDNSSECKey">AddExternalDNSSECKey Method - Atomia DNS API</link></para></listitem>

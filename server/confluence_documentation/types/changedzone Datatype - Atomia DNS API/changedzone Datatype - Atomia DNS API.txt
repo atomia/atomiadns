@@ -4,4 +4,5 @@
 | id | int | the id of the change-row |
 | name | string | the name of the zone this change-row applies to |
 | changetime | int | he unix timestamp of this change (will be used as serial in SOA) |
+{excerpt:hidden=true}{excerpt}
 				

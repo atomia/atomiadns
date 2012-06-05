@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.14
+Version: 1.1.15
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.15-1
+- Add GetDNSSECKeysDS to simplify integration with external systems not using Atomia Domain Registration
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.14-1
 - Fix so that the webapp starts on 12.04
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.13-1

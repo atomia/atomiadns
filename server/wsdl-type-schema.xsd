@@ -267,6 +267,24 @@ atomiaKeySet is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaDSSet">
+				<xsd:annotation><xsd:documentation>
+atomiaDSSet is a struct with the following members:
+|| Member || Type || Description ||
+| digest | string | the digest of a KSK as defined in the RR format of a DS record |
+| digestType | int | the digest algorithm used to create the digest, as defined in the RR format of a DS record |
+| alg | int | the algorithm value of the KSK DNSKEY record that this digest applies to |
+| keyTag | int | the keytag of the KSK DNSKEY record that this digest applies to |
+{excerpt:hidden=true}{excerpt}
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="digest" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="digestType" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="alg" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="keyTag" type="xsd:int"/>
+				</xsd:all>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaExternalKeySet">
 				<xsd:annotation><xsd:documentation>
 atomiaExternalKeySet is a struct with the following members:
@@ -1078,6 +1096,22 @@ atomiaZSKInfo is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="keyset" type="atomiaKeySet"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDNSSECKeysDS">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the zone to generate DS records for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetDNSSECKeysDSResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keyset" type="atomiaDSSet"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

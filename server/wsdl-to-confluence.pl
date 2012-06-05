@@ -27,6 +27,7 @@ my $type_mappings = {
 	"atomiaBinaryZoneArray" => "binaryzones",
 	"atomiaBinaryZone" => "binaryzone",
 	"atomiaKeySet" => "keyset",
+	"atomiaDSSet" => "ds_set",
 	"atomiaExternalKeySet" => "external_keyset",
 	"atomiaZSKInfo" => "zskinfo",
 	"atomiaFindResponse" => "findresponse"

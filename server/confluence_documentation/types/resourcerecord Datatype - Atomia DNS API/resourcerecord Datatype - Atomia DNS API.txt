@@ -8,4 +8,5 @@
 | ttl | int | the time in seconds which it is valid to cache the record for |
 | type | string | the DNS type of the record |
 | rdata | string | the data of the record, an example for MX would be '10 mailserver.acompany.com.' |
+{excerpt:hidden=true}{excerpt}
 				

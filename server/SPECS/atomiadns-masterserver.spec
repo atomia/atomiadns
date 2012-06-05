@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.14
+Version: 1.1.15
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.14 atomiadns-database >= 1.1.14
+Requires: atomiadns-api >= 1.1.15 atomiadns-database >= 1.1.15
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.15-1
+- Add GetDNSSECKeysDS to simplify integration with external systems not using Atomia Domain Registration
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.14-1
 - Fix so that the webapp starts on 12.04
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.13-1
