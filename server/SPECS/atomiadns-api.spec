@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.15
+Version: 1.1.16
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.16-1
+- Fix the DS generation code introduced in 1.1.15
 * Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.15-1
 - Add GetDNSSECKeysDS to simplify integration with external systems not using Atomia Domain Registration
 * Wed May 30 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.14-1

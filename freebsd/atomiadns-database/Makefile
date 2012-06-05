@@ -6,7 +6,7 @@
 #
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.10
+PORTVERSION=	1.1.15
 CATEGORIES=	dns
 MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
 PKGNAMESUFFIX=	-database
@@ -20,7 +20,7 @@ LICENSE=	ISCL
 
 USE_PGSQL=	yes
 NO_BUILD=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-c4e6aab
+WRKSRC=		${WRKDIR}/atomia-atomiadns-45a453e
 
 RUN_DEPENDS	+=	sudo>=0:${PORTSDIR}/security/sudo
 

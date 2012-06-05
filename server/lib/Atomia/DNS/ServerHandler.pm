@@ -162,7 +162,7 @@ sub generateDSFromPrivateKey {
 	die "invalid zone" unless defined($zone) && length($zone) > 0;
 	$zone = $zone . "." unless $zone =~ /\.$/;
 
-	if (defined($keydata) && $keydata =~ /^Algorithm:\s+(\d+).*^Modulus:\s+(.*?)$.*^PublicExponent:\s+(.*?)$/ms) {
+	if (defined($keydata) && $keydata =~ m'^Algorithm:\s+(\d+).*^Modulus:\s+(.*?)$.*^PublicExponent:\s+(.*?)$'ms) {
 		my $algorithm = $1;
 		my $modulus = decode_base64($2);
 		my $exponent = decode_base64($3);
