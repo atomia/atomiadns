@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.17
+Version: 1.1.18
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Thu Jun 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.18-1
+- Add relaxed 'Recommends' dependency to libshell-perl so that powerdnssync doesn't warn on 12.04
 * Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.17-1
 - Fix case where we have require_auth=0 and still send auth headers
 * Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.16-1

@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.18) hardy; urgency=low
+
+  * Add relaxed 'Recommends' dependency to libshell-perl so that powerdnssync doesn't warn on 12.04
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Thu, 7 Jun 2012 09:52:22 +0200
+
 atomiadns-dyndns (1.1.17) hardy; urgency=low
 
   * Fix case where we have require_auth=0 and still send auth headers
