@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.18
+Version: 1.1.19
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Mon Jun 11 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.19-1
+- Convert atomiadns-powerdnssync to upstart on debian/ubuntu
 * Thu Jun 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.18-1
 - Add relaxed 'Recommends' dependency to libshell-perl so that powerdnssync doesn't warn on 12.04
 * Tue Jun 05 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.17-1

@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.19) hardy; urgency=low
+
+  * Convert atomiadns-powerdnssync to upstart on debian/ubuntu
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 11 Jun 2012 08:52:46 +0200
+
 atomiadns-dyndns (1.1.18) hardy; urgency=low
 
   * Add relaxed 'Recommends' dependency to libshell-perl so that powerdnssync doesn't warn on 12.04

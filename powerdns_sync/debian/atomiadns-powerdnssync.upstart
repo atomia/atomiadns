@@ -1,0 +1,12 @@
+description "Atomia DNS PowerDNS sync agent"
+author "Jimmy Bergman <jimmy@atomia.com>"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+respawn limit 10 60
+
+script
+	exec /usr/bin/atomiapowerdnssync updated 2>&1 | logger -t atomiapowerdnssync_updated
+end script
