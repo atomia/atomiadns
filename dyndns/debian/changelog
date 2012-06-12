@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.20) hardy; urgency=low
+
+  * Fix invalid MX regexp introduced a few versions ago when doing a fresh install
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 12 Jun 2012 16:44:01 +0200
+
 atomiadns-dyndns (1.1.19) hardy; urgency=low
 
   * Convert atomiadns-powerdnssync to upstart on debian/ubuntu

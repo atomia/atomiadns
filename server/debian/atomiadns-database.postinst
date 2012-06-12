@@ -208,7 +208,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="73"
+		latest_version="74"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -432,6 +432,10 @@ if [ $? != 0 ]; then
 				execute_query "UPDATE allowed_type SET regexp = '^[a-z0-9][a-z0-9.-]*\$' WHERE regexp = '^[a-z0-9][a-z0-9.-]+\$'"
 				execute_query "UPDATE allowed_type SET regexp = '^[0-9]+ [a-z0-9][a-z0-9.-]*\$' WHERE regexp = '^[0-9]+ [a-z0-9][a-z0-9.-]+\$'"
 				execute_query "UPDATE allowed_type SET regexp = '^[a-z0-9][a-z0-9.-]* [A-Z0-9]+( [A-Z0-9]+)*\$' WHERE type = 'NSEC'";
+			fi
+
+			if [ "$schema_version" -lt 74 ]; then
+				execute_query "UPDATE allowed_type SET regexp = '^[0-9]+ [a-z0-9][a-z0-9.-]*\$' WHERE type = 'MX'"
 			fi
 
 			set_schema_version "$latest_version"

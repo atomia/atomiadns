@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.19
+Version: 1.1.20
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Tue Jun 12 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.20-1
+- Fix invalid MX regexp introduced a few versions ago when doing a fresh install
 * Mon Jun 11 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.19-1
 - Convert atomiadns-powerdnssync to upstart on debian/ubuntu
 * Thu Jun 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.18-1
