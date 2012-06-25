@@ -493,6 +493,7 @@
               </listitem>
               <listitem>
                 <para>Install Atomia DNS:</para>
+		<note>Make sure that your hostname exists in DNS or in /etc/hosts, otherwise the install might fail due to Apache complaining.</note>
                 <informalexample>
                   <programlisting>
 			cd /usr/ports/dns/atomiadns-database
@@ -529,8 +530,8 @@
                 <para>Test the installation by creating your first (and often only) nameserver group:</para>
                 <informalexample>
                   <programlisting>
-			echo 'soap_username=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_USERNAME" >> /etc/atomiadns.conf
-			echo 'soap_password=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_PASSWORD" >> /etc/atomiadns.conf
+			echo 'soap_username=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_USERNAME' >> /etc/atomiadns.conf
+			echo 'soap_password=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_PASSWORD' >> /etc/atomiadns.conf
                   	atomiadnsclient --method AddNameserverGroup --arg default
                  </programlisting>
                 </informalexample>
@@ -1720,7 +1721,7 @@ atomiadnssync OPTION
           </listitem>
           <listitem>
             <para>
-              <link linkend="usage-powerdns-installation-software">Software used by Atomia DNS Bind-DLZ Nameserver</link>
+              <link linkend="usage-powerdns-installation-software">Software used by Atomia DNS PowerDNS Nameserver</link>
             </para>
           </listitem>
         </itemizedlist>
