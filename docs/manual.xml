@@ -1727,7 +1727,7 @@ atomiadnssync OPTION
         </itemizedlist>
         <section xml:id="usage-powerdns-installation-intro">
           <title>Introduction</title>
-          <para>This guide will install the Atomia DNS Bind-DLZ Nameserver.</para>
+          <para>This guide will install the Atomia DNS PowerDNS Nameserver.</para>
         </section>
         <section xml:id="usage-powerdns-installation-ubuntu">
           <title>Installation on Ubuntu LTS</title>
