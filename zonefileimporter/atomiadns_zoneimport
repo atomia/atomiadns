@@ -49,11 +49,6 @@ if ($verbose) {
 	eval 'use SOAP::Lite;';
 }
 
-if (defined($soap_username)) {
-	die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
-	eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
-}
-
 my $soap = SOAP::Lite
 	->  uri('urn:Atomia::DNS::Server')
 	->  proxy($soap_uri)
@@ -61,6 +56,11 @@ my $soap = SOAP::Lite
 			my($soap, $res) = @_;
 			die "got fault of type " . (ref $res ? $res->faultcode  : "transport") . ": " . (ref $res ? $res->faultstring : $soap->transport->status) . "\n";
 		});
+
+if (defined($soap_username)) {
+	$soap->transport->http_request->header('X-Auth-Username' => $soap_username);
+	$soap->transport->http_request->header('X-Auth-Password' => $soap_password);
+}
 
 my $origins = [];
 my $binary_zones = [];
