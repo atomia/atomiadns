@@ -1,3 +1,9 @@
+atomiadns-powerdnssync (1.1.21) hardy; urgency=low
+
+  * Disallow IPv4-addresses in AAAA records
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 6 Aug 2012 17:00:38 +0200
+
 atomiadns-powerdnssync (1.1.20) hardy; urgency=low
 
   * Fix invalid MX regexp introduced a few versions ago when doing a fresh install

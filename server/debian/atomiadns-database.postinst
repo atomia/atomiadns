@@ -208,7 +208,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="74"
+		latest_version="75"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -436,6 +436,11 @@ if [ $? != 0 ]; then
 
 			if [ "$schema_version" -lt 74 ]; then
 				execute_query "UPDATE allowed_type SET regexp = '^[0-9]+ [a-z0-9][a-z0-9.-]*\$' WHERE type = 'MX'"
+			fi
+
+			if [ "$schema_version" -lt 75 ]; then
+				execute_query "UPDATE record SET type = 'A' WHERE type = 'AAAA' AND rdata ~ '^(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3}))\$'"
+				execute_query "UPDATE allowed_type SET regexp = E'"'^((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2}))))(%.+)?$'"' WHERE type = 'AAAA'"
 			fi
 
 			set_schema_version "$latest_version"

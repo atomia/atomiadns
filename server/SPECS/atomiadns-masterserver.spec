@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.20
+Version: 1.1.21
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.20 atomiadns-database >= 1.1.20
+Requires: atomiadns-api >= 1.1.21 atomiadns-database >= 1.1.21
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Mon Aug 06 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.21-1
+- Disallow IPv4-addresses in AAAA records
 * Tue Jun 12 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.20-1
 - Fix invalid MX regexp introduced a few versions ago when doing a fresh install
 * Mon Jun 11 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.19-1
