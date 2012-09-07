@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.21
+Version: 1.1.22
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Fri Sep 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.22-1
+- Make GetZoneBulk more memory efficient
 * Mon Aug 06 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.21-1
 - Disallow IPv4-addresses in AAAA records
 * Tue Jun 12 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.20-1

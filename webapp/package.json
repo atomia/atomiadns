@@ -1,6 +1,6 @@
 {
 	"name": "atomiadns-controlpanel",
-	"version": "1.1.21",
+	"version": "1.1.22",
 	"private": true,
 	"dependencies": {
 		"express":		">= 2.5.6",

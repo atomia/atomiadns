@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.21
+Version: 1.1.22
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.21 atomiadns-database >= 1.1.21
+Requires: atomiadns-api >= 1.1.22 atomiadns-database >= 1.1.22
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Fri Sep 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.22-1
+- Make GetZoneBulk more memory efficient
 * Mon Aug 06 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.21-1
 - Disallow IPv4-addresses in AAAA records
 * Tue Jun 12 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.20-1

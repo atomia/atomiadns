@@ -366,53 +366,40 @@ sub handleBinaryZoneArray {
 	my $signature = shift;
 
 	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
-
-	my $rows = $sth->fetchall_arrayref({});
-	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
-
-	my $zones = {};
-
-	foreach $_ (@$rows) {
-		foreach my $key (keys %$_) {
-			if ($key =~ /^record_/) {
-				my $value = $_->{$key};
-				delete($_->{$key});
-				$key =~ s/^record_//;
-				$_->{$key} = $value;
-			}
-		}
-
-		my $zone = $_->{"zone"};
-		delete($_->{"zone"});
-
-		die "no zone field returned from database" unless defined($zone) && length($zone) > 0;
-
-		my $zonearray = $zones->{$zone};
-		unless (defined($zonearray)) {
-			$zonearray = [];
-			$zones->{$zone} = $zonearray;
-		}
-
-		push @$zonearray, $_;
-	}
+	die "error creating statement for fetching zones from database" unless defined($sth);
 
 	my $binaryzones = [];
-	foreach my $zonename (keys %$zones) {
-		my $records = $zones->{$zonename};
+	my $current_zone = undef;
+	my $current_binaryzone = undef;
 
-		if (scalar(@$records) == 1 && !defined($records->[0]->{"id"})) {
-			push @$binaryzones, { name => $zonename };
-		} else {
-			my $binaryzone = "";
+	ROW: while (my $row = $sth->fetchrow_hashref) {
+		die "error fetching zone rows from database" unless defined($row) && ref($row) eq "HASH" && !$DBI::err;
 
-			foreach my $row (@{$zones->{$zonename}}) {
-				$binaryzone .= sprintf "%d %s %s %d %s %s\n", $row->{"id"}, $row->{"label"}, $row->{"class"}, $row->{"ttl"}, $row->{"type"}, $row->{"rdata"};
+		my $zonename = $row->{"record_zone"};
+		die "error fetching zone rows from database, invalid name" unless defined($zonename) && length($zonename) > 0;
+
+		if (!defined($current_zone) || $current_zone ne $zonename) {
+			if (defined($current_binaryzone) && $current_binaryzone ne "") {
+				chomp($current_binaryzone);
+				push @$binaryzones, { name => $current_zone, zone => SOAP::Data->new(name => "binaryzone", type => "base64", value => $current_binaryzone) };
+			} elsif (defined($current_binaryzone) && $current_binaryzone eq "") {
+				push @$binaryzones, { name => $current_zone };
 			}
 
-			chomp($binaryzone);
-
-			push @$binaryzones, { name => $zonename, zone => SOAP::Data->new(name => "binaryzone", type => "base64", value => $binaryzone) };
+			$current_binaryzone = "";
+			$current_zone = $zonename;
 		}
+
+		next ROW unless defined($row->{"record_id"});
+
+		$current_binaryzone .= sprintf "%d %s %s %d %s %s\n", $row->{"record_id"}, $row->{"record_label"}, $row->{"record_class"}, $row->{"record_ttl"}, $row->{"record_type"}, $row->{"record_rdata"};
+	}
+
+	if (defined($current_binaryzone) && $current_binaryzone ne "") {
+		chomp($current_binaryzone);
+		push @$binaryzones, { name => $current_zone, zone => SOAP::Data->new(name => "binaryzone", type => "base64", value => $current_binaryzone) };
+	} elsif (defined($current_binaryzone) && $current_binaryzone eq "") {
+		push @$binaryzones, { name => $current_zone};
 	}
 
 	return SOAP::Data->new(name => "binaryzones", value => $binaryzones);

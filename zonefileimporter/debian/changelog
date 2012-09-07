@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.22) hardy; urgency=low
+
+  * Make GetZoneBulk more memory efficient
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 7 Sep 2012 13:42:41 +0200
+
 atomiadns-zoneimport (1.1.21) hardy; urgency=low
 
   * Disallow IPv4-addresses in AAAA records
