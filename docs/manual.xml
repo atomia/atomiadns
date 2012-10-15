@@ -710,12 +710,18 @@ rpm -Uhv http://public.rpm.atomia.com/rhel6/atomia-public-repository-setup-1.0-1
             <listitem><para>Add the active zone signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 1</programlisting></informalexample></listitem>
             <listitem><para>Add the inactive zone signing key:</para><informalexample><programlisting>atomiadnsclient --method AddDNSSECKey --arg RSASHA256 --arg 1024 --arg ZSK --arg 0</programlisting></informalexample></listitem>
           </orderedlist>
+		  <note>Warning: The suggested workaround for random number generation in virtual machines will produce easily predictable and
+		  insecure DNSSEC keys. For production purposes, please solve it in a secure way. You have been warned.</note>
 		  <note>Adding DNSSEC keys on a virtual machine where you can't use keyboard input to generate entropy requires an additional step.</note>
-		  <para>Install rng-tools using <code>apt-get install rng-tools</code>, then open <code>/etc/default/rng-tools</code> and add the following line:</para>
+		  <para>Install rng-tools using <code>apt-get install rng-tools</code>, then open <code>/etc/default/rng-tools</code> and add the following line, or better something equivalent but secure:</para>
 		  <informalexample>
-			<programlisting>HRNGDEVICE = /dev/urandom</programlisting>
+			<programlisting>
+				# WARNING: This setup is insecure, you should make sure that you have an adequate setup 
+				# for generating cryptographically strong random numbers instead.
+				HRNGDEVICE = /dev/urandom
+			</programlisting>
 		  </informalexample>
-		  <para>Now, they key creation should be instant. Note that if you do have better hardware for generating entropy, then by all means - use that instead.</para>
+		  <para>Now, they key creation should be instant. Notice though that this setup is really insecure. You should instead configure rng-tools to provide sufficient amounts of random numbers in a secure way, e.g. by having better hardware for generating entropy.</para>
         </section>
       </section>
       <section xml:id="usage-master-configuration">
