@@ -1,62 +1,50 @@
-          <section xml:id="api-examples">
+          <section xml:id="apidocs-examples">
             <title>Code Examples</title>
-            <section xml:id="scroll-bookmark-213">
+            <section xml:id="example-Perl">
               <title>Perl example</title>
               <informalexample>
-                <programlisting>
-                  #!/usr/bin/perl -w
-                  <?linebreak?>
-                  <?linebreak?>
-                  use strict;
-                  <?linebreak?>
-                  use warnings;
-                  <?linebreak?>
-                  <?linebreak?>
-                  use SOAP::Lite;
-                  <?linebreak?>
-                  use Data::Dumper;
-                  <?linebreak?>
-                  <?linebreak?>
-                  my $soap = SOAP::Lite
-                  <?linebreak?>
-                  -&gt;  uri('urn:Atomia::DNS::Server')
-                  <?linebreak?>
-                  -&gt;  proxy('http://your.soap.server/atomiadns')
-                  <?linebreak?>
-                  -&gt;  on_fault(sub {
-                  <?linebreak?>
-                  my($soap, $res) = @_;
-                  <?linebreak?>
-                  die "got fault of type " . $res-&gt;faultcode . ": " . (ref $res ? $res-&gt;faultstring : $soap-&gt;transport-&gt;status) . "\n";
-                  <?linebreak?>
-                  });
-                  <?linebreak?>
-                  <?linebreak?>
-                  my $res;
-                  <?linebreak?>
-                  $res = $soap-&gt;AddZone('example.se', 3600, 'ns1.somecompany.se.', 'registry.somecompany.se.', 10800, 3600, 604800, 86400, [ 'ns1.somecompany.se', 'ns2.somecompany.se' ], 'nameservergroup');
-                  <?linebreak?>
-                  <?linebreak?>
-                  print "AddZone returned " . Dumper($res);
-                  <?linebreak?>
-                  <?linebreak?>
-                  $res = $soap-&gt;AddDnsRecords('example.se', [SOAP::Data-&gt;new(name =&gt; 'resourcerecord', value =&gt; { label =&gt; '@', class =&gt; 'IN', ttl =&gt; 3600, type =&gt; 'A', rdata =&gt; '127.0.0.1' }),
-                  <?linebreak?>
-                  SOAP::Data-&gt;new(name =&gt; 'resourcerecord', value =&gt; { label =&gt; '@', class =&gt; 'IN', ttl =&gt; 3600, type =&gt; 'AAAA', rdata =&gt; '2001:0DB8::1' }),
-                  <?linebreak?>
-                  SOAP::Data-&gt;new(name =&gt; 'resourcerecord', value =&gt; { label =&gt; 'mail', class =&gt; 'IN', ttl =&gt; 3600, type =&gt; 'AAAA', rdata =&gt; '2001:0DB8::2' }),
-                  <?linebreak?>
-                  SOAP::Data-&gt;new(name =&gt; 'resourcerecord', value =&gt; { label =&gt; '@', class =&gt; 'IN', ttl =&gt; 3600, type =&gt; 'MX', rdata =&gt; 'mail.example.se.' })
-                  <?linebreak?>
-                  ]);
-                  <?linebreak?>
-                  <?linebreak?>
-                  print "AddDnsRecords returned " . Dumper($res);
-                </programlisting>
+                <screen><![CDATA[
+#!/usr/bin/perl -w
+use strict;
+use warnings;
+use SOAP::Lite;
+use Data::Dumper;
+
+my $soap = SOAP::Lite
+	-> uri('urn:Atomia::DNS::Server')
+	-> proxy('http://your.soap.server/atomiadns')
+	-> on_fault(sub {
+		my($soap, $res) = @_;
+		die "got fault of type " . $res->faultcode . ": " .
+			(ref $res ? $res->faultstring : $soap->transport->status) . "\n";
+	});
+
+my $res;
+$res = $soap->AddZone('example.se', 3600, 'ns1.somecompany.se.', 'registry.somecompany.se.', 10800,
+	3600, 604800, 86400, [ 'ns1.somecompany.se', 'ns2.somecompany.se' ], 'nameservergroup');
+print "AddZone returned " . Dumper($res);
+
+$res = $soap->AddDnsRecords('example.se', [
+	SOAP::Data->new(name => 'resourcerecord', value => {
+		label => '@', class => 'IN', ttl => 3600, type => 'A', rdata => '127.0.0.1'
+	}),
+	SOAP::Data->new(name => 'resourcerecord', value => {
+		label => '@', class => 'IN', ttl => 3600, type => 'AAAA', rdata => '2001:0DB8::1'
+	}),
+	SOAP::Data->new(name => 'resourcerecord', value => {
+		label => 'mail', class => 'IN', ttl => 3600, type => 'AAAA', rdata => '2001:0DB8::2'
+	}),
+	SOAP::Data->new(name => 'resourcerecord', value => {
+		label => '@', class => 'IN', ttl => 3600, type => 'MX', rdata => 'mail.example.se.'
+	})
+]);
+
+print "AddDnsRecords returned " . Dumper($res);
+                ]]></screen>
               </informalexample>
             </section>
-            <section xml:id="scroll-bookmark-214">
-              <title>.NET Examples</title>
+            <section xml:id="example-DotNet">
+              <title>.NET Example</title>
               <para>Steps:</para>
               <itemizedlist>
                 <listitem>
@@ -72,104 +60,97 @@
                 </listitem>
               </itemizedlist>
               <informalexample>
-                <programlisting>
-                  using System;
-                  <?linebreak?>
-                  using System.Collections.Generic;
-                  <?linebreak?>
-                  using System.Text;
-                  <?linebreak?>
-                  using AtomiaDNSExampleClient.AtomiaDNS;
-                  <?linebreak?>
-                  <?linebreak?>
-                  namespace AtomiaDNSExampleClient
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  class Program
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  static void Main(string[] args)
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  AtomiaDNSService ws = new AtomiaDNSService();
-                  <?linebreak?>
-                  ws.Url = "http://your.soap.server.installation/atomiadns";
-                  <?linebreak?>
-                  <?linebreak?>
-                  try
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  DeleteZone zone = new DeleteZone();
-                  <?linebreak?>
-                  zone.zonename = "testzone-fromdotnet.com";
-                  <?linebreak?>
-                  <?linebreak?>
-                  DeleteZoneResponse response = ws.DeleteZone(zone);
-                  <?linebreak?>
-                  Console.WriteLine("Zone deleted, got status " + response.status);
-                  <?linebreak?>
-                  }
-                  <?linebreak?>
-                  catch (Exception e)
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  Console.WriteLine("Caught exception when removing zone: " + e);
-                  <?linebreak?>
-                  }
-                  <?linebreak?>
-                  <?linebreak?>
-                  try
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  AddZone zone = new AddZone();
-                  <?linebreak?>
-                  zone.mname = "ns1.atomiadns.com.";
-                  <?linebreak?>
-                  zone.refresh = 10800;
-                  <?linebreak?>
-                  zone.retry = 3600;
-                  <?linebreak?>
-                  zone.expire = 604800;
-                  <?linebreak?>
-                  zone.minimum = 3600;
-                  <?linebreak?>
-                  zone.zonettl = 60;
-                  <?linebreak?>
-                  zone.zonename = "testzone-fromdotnet.com";
-                  <?linebreak?>
-                  zone.rname = "registry.atomiadns.com.";
-                  <?linebreak?>
-                  zone.nameservers = new string[] { "ns1.atomiadns.com.", "ns2.atomiadns.com." };
-                  <?linebreak?>
-                  zone.nameservergroup = "someservergroup";
-                  <?linebreak?>
-                  AddZoneResponse response = ws.AddZone(zone);
-                  <?linebreak?>
-                  <?linebreak?>
-                  Console.WriteLine("Zone added, got status " + response.status);
-                  <?linebreak?>
-                  }
-                  <?linebreak?>
-                  catch (Exception e)
-                  <?linebreak?>
-                  {
-                  <?linebreak?>
-                  Console.WriteLine("Caught exception when adding zone: " + e);
-                  <?linebreak?>
-                  }
-                  <?linebreak?>
-                  }
-                  <?linebreak?>
-                  }
-                  <?linebreak?>
-                  }
-                </programlisting>
+                <screen><![CDATA[
+using System;
+using System.Collections.Generic;
+using System.Text;
+using AtomiaDNSExampleClient.AtomiaDNS;
+
+
+namespace AtomiaDNSExampleClient
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            AtomiaDNSService ws = new AtomiaDNSService();
+            ws.Url = "http://your.soap.server.installation/atomiadns";
+
+            try
+            {
+                DeleteZone zone = new DeleteZone();
+                zone.zonename = "testzone-fromdotnet.com";
+
+                DeleteZoneResponse response = ws.DeleteZone(zone);
+                Console.WriteLine("Zone deleted, got status " + response.status);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Caught exception when removing zone: " + e);
+            }
+
+
+            try
+            {
+                AddZone zone = new AddZone();
+                zone.mname = "ns1.atomiadns.com.";
+                zone.refresh = 10800;
+                zone.retry = 3600;
+                zone.expire = 604800;
+                zone.minimum = 3600;
+                zone.zonettl = 60;
+                zone.zonename = "testzone-fromdotnet.com";
+                zone.rname = "registry.atomiadns.com.";
+
+                zone.nameservers = new string[] { "ns1.atomiadns.com.", "ns2.atomiadns.com." };
+
+                zone.nameservergroup = "someservergroup";
+
+                AddZoneResponse response = ws.AddZone(zone);
+
+                Console.WriteLine("Zone added, got status " + response.status);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Caught exception when adding zone: " + e);
+            }
+        }
+    }
+}
+                ]]></screen>
+              </informalexample>
+            </section>
+            <section xml:id="example-Java">
+              <title>Java Example</title>
+              <note>Thanks to Alejandro Alvarez for providing us with this Java example.</note>
+              <para>Steps:</para>
+              <itemizedlist>
+                <listitem>
+                  <para>
+                    Use wsimport on the WSDL found at http://your.soap.server.installation/wsdl-atomiadns.wsdl to generate SOAP proxy classes.
+                  </para>
+                </listitem>
+                <listitem>
+                  <para>Contact the API like in the example below:</para>
+                </listitem>
+              </itemizedlist>
+              <informalexample>
+                <screen><![CDATA[
+AtomiaDNSPortType portType = new AtomiaDNSService().getAtomiaDNSPort();
+	
+Map<String, Object> req_ctx = ((BindingProvider)portType).getRequestContext();
+ 
+Map<String, List<String>> headers = new HashMap<String, List<String>>();
+headers.put("X-Auth-Username", Collections.singletonList(sysParams.getAtomiaSOAPUsername()));
+headers.put("X-Auth-Password", Collections.singletonList(sysParams.getAtomiaSOAPPassword()));
+
+req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);		
+	
+
+GetAllZonesResponse allZonesResponse =  portType.getAllZones(null);
+Gson gson = new Gson();
+String jsonStr = gson.toJson(allZonesResponse.getZones().getZone());
+                ]]></screen>
               </informalexample>
             </section>
           </section>

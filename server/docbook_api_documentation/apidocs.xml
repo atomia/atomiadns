@@ -26,11 +26,15 @@
 			<para><link linkend="api-methods">Atomia DNS API Methods</link></para>
 			<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methodindex.xml" />
 		</listitem>
+		<listitem>
+			<para><link linkend="apidocs-examples">Code Examples</link></para>
+			<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="examplesindex.xml" />
+		</listitem>
 	</itemizedlist>
     </section>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="errors.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="typeincludes.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="methodincludes.xml" />
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="examples.xml" />
   </section>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="examples.xml" />
 </section>

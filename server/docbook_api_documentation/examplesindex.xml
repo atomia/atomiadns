@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<itemizedlist>
+<listitem><para><link linkend="example-Perl">Perl example</link></para></listitem>
+<listitem><para><link linkend="example-DotNet">.NET example</link></para></listitem>
+<listitem><para><link linkend="example-Java">Java example</link></para></listitem>
+</itemizedlist>
