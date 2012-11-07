@@ -32,7 +32,7 @@ $(document).ready(function() {
     }); 
 	
 	//Code highliter
-	$("pre").each(function(){
+	$("pre .programlisting").each(function(){
 		var olClass = $(this).hasClass("unnumbered") ? ' class="unnumbered"' : '';
 		var x = $(this).html();
 		// Find string inside quoutes and wrap with span
