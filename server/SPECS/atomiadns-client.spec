@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.23
+Version: 1.1.24
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Wed Nov 21 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.24-1
+- Make atomiapowerdnssync import_zonefile skip NSEC* and rectify the zone
 * Mon Oct 15 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.23-1
 - Fix SetDnsRecords with multiple records for the same label
 * Fri Sep 07 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.22-1

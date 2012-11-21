@@ -377,12 +377,18 @@ sub import_zonefile {
 	my $zone = { name => $zone_origin };
 	my $records = [];
 
-	foreach my $record (@$parsed_zone) {
+	my $nsec_type = "NSEC";
+	RECORD: foreach my $record (@$parsed_zone) {
+		if ($record->type =~ /^NSEC/) {
+			$nsec_type = "NSEC3" if $record->type eq "NSEC3";
+			next RECORD;
+		}
+
 		my $label = $self->atomia_host_to_label($record->name, $zone_origin);
 		my $rdata = $record->rdatastr;
 		$rdata =~ s/;.*?$//msg;
 		$rdata =~ s/\r?\n/ /msg;
-		if ($record->type =~ /^(SOA|RRSIG|SRV|DNSKEY|NSEC|NSEC3)$/i) {
+		if ($record->type =~ /^(SOA|RRSIG|SRV|DNSKEY)$/i) {
 			$rdata =~ s/[()]//g;
 		}
 		$rdata =~ s/\s+/ /g;
@@ -390,7 +396,7 @@ sub import_zonefile {
 		push @$records, { label => $label, ttl => $record->ttl, class => $record->class, type => $record->type, rdata => $rdata };
 	}
 
-	$self->database->add_zone($zone, $records, "MASTER");
+	$self->database->add_zone($zone, $records, "MASTER", 0, $nsec_type);
 }
 
 sub atomia_host_to_label {

@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.24) hardy; urgency=low
+
+  * Make atomiapowerdnssync import_zonefile skip NSEC* and rectify the zone
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 21 Nov 2012 14:10:12 +0100
+
 atomiadns-zoneimport (1.1.23) hardy; urgency=low
 
   * Fix SetDnsRecords with multiple records for the same label
