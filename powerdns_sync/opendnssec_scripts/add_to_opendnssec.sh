@@ -17,21 +17,31 @@ if [ ! -e "$ods_control" ] || [ ! -x "$ods_control" ]; then
 	exit 1
 fi
 
-"$ods_control" ksm zone list 2>&1 | fgrep "Found Zone: $zone;" > /dev/null 2>&1
-if [ $? != 0 ]; then
-	echo "$zone not found in OpenDNSSEC installation, adding"
+tempf=`mktemp || exit 1`
 
-	"$ods_control" ksm zone add -z "$zone"
-	if [ $? != 0 ]; then
-		echo "error adding zone to opendnssec, retval=$?"
+"$ods_control" ksm zone add -z "$zone" > "$tempf" 2>&1
+retval=$?
+if [ $retval != 0 ]; then
+	if fgrep "it already exists" "$tempf" > /dev/null; then
+		rm -f "$tempf"
+		exit 0
+	else
+		echo "error adding zone to opendnssec, retval=$retval, output was:"
+		cat "$tempf"
+		rm -f "$tempf"
 		exit 1
 	fi
+fi
 
-	"$ods_control" ksm update conf
-	if [ $? != 0 ]; then
-		echo "error updating opendnssec config, retval=$?"
-		exit 1
-	fi
+rm -f "$tempf"
+
+echo "$zone not found in OpenDNSSEC installation, added it successfully, now updating conf"
+
+"$ods_control" ksm update conf
+retval=$?
+if [ $retval != 0 ]; then
+	echo "error updating opendnssec config, retval=$retval"
+	exit 1
 fi
 
 exit 0
