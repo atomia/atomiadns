@@ -1,0 +1,7 @@
+
+[zonemetadata|zonemetadata Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| key | string | the metadata key |
+| value | string | the metadata value |
+{excerpt:hidden=true}{excerpt}
+				

@@ -1,0 +1,21 @@
+{toc:maxLevel=3|type=flat|separator=pipe|includePages=true}
+
+Sets all metadata for a zone.
+
+h3.Declaration syntax
+{panel}
+void SetZoneMetadata(
+	string zonename,
+	string[] keys,
+	string[] values
+)
+{panel}
+
+h3.Parameters
+
+|| Parameter || Type || Description ||
+|zonename|string|the name of the zone|
+|keys|string[]|an array of all metadata keys to set for the zone|
+|values|string[]|an array of all metadata values to set for the zone in the same order as the keys|
+
+{include:SetZoneMetadata Method Example - Atomia DNS API}

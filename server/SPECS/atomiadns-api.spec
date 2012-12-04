@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.24
+Version: 1.1.25
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Tue Jan 08 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.25-1
+- Add GetZoneMetadata and SetZoneMetadata
 * Wed Nov 21 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.24-1
 - Make atomiapowerdnssync import_zonefile skip NSEC* and rectify the zone
 * Mon Oct 15 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.23-1

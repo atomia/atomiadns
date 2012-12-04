@@ -216,6 +216,23 @@ sub handleZSKInfo {
 	return SOAP::Data->new(name => "zskinfo", value => \@soapkeyset);
 }
 
+sub handleZoneMetadata {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+
+	my $records = $sth->fetchall_arrayref({});
+	die("no metadata returned from database") unless defined($records) && !$DBI::err;
+
+	my @soapmetadata = map {
+		SOAP::Data->new(name => "metadataEntry", value => { key => $_->{"metadata_key"}, value => $_->{"metadata_value"} });
+	} @$records;
+
+	return SOAP::Data->new(name => "metadata", value => \@soapmetadata);
+}
+
 sub handleInt {
 	my $self = shift;
 	my $method = shift;
@@ -1147,6 +1164,8 @@ sub handleOperation {
 		$retval = $self->handleZSKInfo($method, $signature, @_);
 	} elsif ($return_type eq "keyid") {
 		$retval = $self->handleAddKey($method, $signature, @_);
+	} elsif ($return_type eq "array[zonemetadata]") {
+		$retval = $self->handleZoneMetadata($method, $signature, @_);
 	} else {
 		die("unknown return-type in signature: $return_type");
 	}

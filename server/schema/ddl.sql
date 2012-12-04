@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (76);
+INSERT INTO atomiadns_schemaversion (version) VALUES (77);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -160,6 +160,16 @@ CREATE TABLE record (
 );
 
 CREATE INDEX record_label_idx ON record(label_id);
+
+CREATE TABLE zone_metadata (
+        id SERIAL PRIMARY KEY NOT NULL,
+        zone_id INT NOT NULL REFERENCES zone,
+        metadata_key VARCHAR(255) NOT NULL,
+        metadata_value VARCHAR(255) NOT NULL,
+	UNIQUE (zone_id, metadata_key)
+);
+
+CREATE INDEX zone_metadata_zone_id_idx ON zone_metadata(zone_id);
 
 CREATE OR REPLACE FUNCTION verify_record() RETURNS trigger AS $$
 DECLARE

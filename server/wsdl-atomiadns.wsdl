@@ -58,6 +58,12 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaMetadataArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="metadataEntry" type="atomiaMetadata" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaResourceRecord">
 				<xsd:annotation><xsd:documentation>
 atomiaResourceRecord is a struct with the following members:
@@ -105,6 +111,20 @@ atomiaHostname is a struct with the following members:
 				<xsd:sequence>
 					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="atomiaHostname" />
 				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaMetadata">
+				<xsd:annotation><xsd:documentation>
+atomiaMetadata is a struct with the following members:
+|| Member || Type || Description ||
+| key | string | the metadata key |
+| value | string | the metadata value |
+{excerpt:hidden=true}{excerpt}
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="key" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="value" type="xsd:string"/>
+				</xsd:all>
 			</xsd:complexType>
 
 			<xsd:complexType name="atomiaLabel">
@@ -755,6 +775,40 @@ atomiaZSKInfo is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneMetadata">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneMetadataResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="unbounded" name="metadata" type="atomiaMetadataArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetZoneMetadata">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keys" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of all metadata keys to set for the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="values" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of all metadata values to set for the zone in the same order as the keys</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetZoneMetadataResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -1475,6 +1529,24 @@ atomiaZSKInfo is a struct with the following members:
 		<part name="parameters" element="tns:GetZoneBinaryResponse"/>
 	</message>
 
+	<message name="GetZoneMetadataInput">
+		<documentation>Fetches all metadata for a zone.</documentation>
+		<part name="parameters" element="tns:GetZoneMetadata"/>
+	</message>
+
+	<message name="GetZoneMetadataOutput">
+		<part name="parameters" element="tns:GetZoneMetadataResponse"/>
+	</message>
+
+	<message name="SetZoneMetadataInput">
+		<documentation>Sets all metadata for a zone.</documentation>
+		<part name="parameters" element="tns:SetZoneMetadata"/>
+	</message>
+
+	<message name="SetZoneMetadataOutput">
+		<part name="parameters" element="tns:SetZoneMetadataResponse"/>
+	</message>
+
 	<message name="RestoreZoneInput">
 		<documentation>Restore a complete zone (or just set all records for some other reason).</documentation>
 		<part name="parameters" element="tns:RestoreZone"/>
@@ -2025,6 +2097,24 @@ atomiaZSKInfo is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
+		<operation name="GetZoneMetadata">
+			<input message="tns:GetZoneMetadataInput"/>
+			<output message="tns:GetZoneMetadataOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="SetZoneMetadata">
+			<input message="tns:SetZoneMetadataInput"/>
+			<output message="tns:SetZoneMetadataOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
 		<operation name="RestoreZone">
 			<input message="tns:RestoreZoneInput"/>
 			<output message="tns:RestoreZoneOutput"/>
@@ -2550,6 +2640,20 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="GetZoneBinary">
 			<documentation></documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneBinary"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="GetZoneMetadata">
+			<documentation>Fetches all metadata for a zone.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneMetadata"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+		</operation>
+
+		<operation name="SetZoneMetadata">
+			<documentation>Sets all metadata for a zone.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#SetZoneMetadata"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 		</operation>

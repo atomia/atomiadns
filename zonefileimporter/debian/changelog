@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.25) hardy; urgency=low
+
+  * Add GetZoneMetadata and SetZoneMetadata
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 8 Jan 2013 13:55:44 +0100
+
 atomiadns-zoneimport (1.1.24) hardy; urgency=low
 
   * Make atomiapowerdnssync import_zonefile skip NSEC* and rectify the zone

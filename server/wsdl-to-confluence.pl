@@ -30,7 +30,9 @@ my $type_mappings = {
 	"atomiaDSSet" => "ds_set",
 	"atomiaExternalKeySet" => "external_keyset",
 	"atomiaZSKInfo" => "zskinfo",
-	"atomiaFindResponse" => "findresponse"
+	"atomiaFindResponse" => "findresponse",
+	"atomiaMetadata" => "zonemetadata",
+	"atomiaMetadataArray" => "zonemetadata[]",
 };
 
 use XML::XPath;

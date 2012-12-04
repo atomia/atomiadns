@@ -12,6 +12,8 @@
 <listitem><para><link linkend="method-GetZone">GetZone Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-GetZoneBulk">GetZoneBulk Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-GetZoneBinary">GetZoneBinary Method - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="method-GetZoneMetadata">GetZoneMetadata Method - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="method-SetZoneMetadata">SetZoneMetadata Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-RestoreZone">RestoreZone Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-RestoreZoneBinary">RestoreZoneBinary Method - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="method-RestoreZoneBulk">RestoreZoneBulk Method - Atomia DNS API</link></para></listitem>

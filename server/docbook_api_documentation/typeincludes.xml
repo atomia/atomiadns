@@ -4,6 +4,7 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="typeindex.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/resourcerecord.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/hostname.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zonemetadata.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/label.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zone.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/findresponse.xml" />

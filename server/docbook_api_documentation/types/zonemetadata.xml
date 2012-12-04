@@ -1,0 +1,10 @@
+<section xml:id="datatype-zonemetadata">
+<title>zonemetadata Datatype - Atomia DNS API</title>
+<para>
+<link linkend="datatype-zonemetadata">zonemetadata</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>key</td><td>string</td><td>the metadata key</td></tr>
+<tr><td>value</td><td>string</td><td>the metadata value</td></tr>
+</tbody></informaltable>
+
+				</para></section>

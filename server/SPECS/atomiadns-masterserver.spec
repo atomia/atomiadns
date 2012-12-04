@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.24
+Version: 1.1.25
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.24 atomiadns-database >= 1.1.24
+Requires: atomiadns-api >= 1.1.25 atomiadns-database >= 1.1.25
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue Jan 08 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.25-1
+- Add GetZoneMetadata and SetZoneMetadata
 * Wed Nov 21 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.24-1
 - Make atomiapowerdnssync import_zonefile skip NSEC* and rectify the zone
 * Mon Oct 15 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.23-1

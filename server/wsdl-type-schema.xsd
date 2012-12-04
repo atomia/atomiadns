@@ -50,6 +50,12 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaMetadataArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="metadataEntry" type="atomiaMetadata" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaResourceRecord">
 				<xsd:annotation><xsd:documentation>
 atomiaResourceRecord is a struct with the following members:
@@ -97,6 +103,20 @@ atomiaHostname is a struct with the following members:
 				<xsd:sequence>
 					<xsd:element minOccurs="1" maxOccurs="unbounded" name="hostname" type="atomiaHostname" />
 				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaMetadata">
+				<xsd:annotation><xsd:documentation>
+atomiaMetadata is a struct with the following members:
+|| Member || Type || Description ||
+| key | string | the metadata key |
+| value | string | the metadata value |
+{excerpt:hidden=true}{excerpt}
+				</xsd:documentation></xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="key" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="value" type="xsd:string"/>
+				</xsd:all>
 			</xsd:complexType>
 
 			<xsd:complexType name="atomiaLabel">
@@ -747,6 +767,40 @@ atomiaZSKInfo is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneMetadata">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneMetadataResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="unbounded" name="metadata" type="atomiaMetadataArray"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetZoneMetadata">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="keys" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of all metadata keys to set for the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="values" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>an array of all metadata values to set for the zone in the same order as the keys</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetZoneMetadataResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

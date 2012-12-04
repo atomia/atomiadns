@@ -1,7 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
    'NAME' => 'atomiadnsclient',
-   'VERSION' => '1.1.24',
+   'VERSION' => '1.1.25',
    'AUTHOR' => 'Jimmy Bergman <jimmy@atomia.com>',
    'EXE_FILES' => [ 'atomiadnsclient', 'dnssec_zsk_rollover' ]
 );

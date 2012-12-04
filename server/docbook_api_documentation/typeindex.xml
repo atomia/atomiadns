@@ -2,6 +2,7 @@
 <itemizedlist>
 <listitem><para><link linkend="datatype-resourcerecord">resourcerecord Datatype - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="datatype-hostname">hostname Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-zonemetadata">zonemetadata Datatype - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="datatype-label">label Datatype - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="datatype-zone">zone Datatype - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="datatype-findresponse">findresponse Datatype - Atomia DNS API</link></para></listitem>
