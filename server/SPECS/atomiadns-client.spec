@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.25
+Version: 1.1.26
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue Jan 15 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.26-1
+- Fix atomiadns-webapp on Ubuntu 12.04 LTS
 * Tue Jan 08 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.25-1
 - Add GetZoneMetadata and SetZoneMetadata
 * Wed Nov 21 2012 Jimmy Bergman <jimmy@atomia.com> - 1.1.24-1

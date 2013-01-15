@@ -1,39 +1,42 @@
-h2 Editing zone for 
-	span.zoneName #{name}
+extends layout
 
-if error
-	p.error Something went terribly bad: #{error}
-
-p
-	a(href='/', class='button small pink') &laquo  Back to index
-
-if zone
-	form(method='post', action='/editrecords/#{name}')
-		each label in zone
-			each record in label.records
-				div.listRow
-					input(type='hidden', name='records[id][]', value='#{record.id}')
-					input(type='hidden', name='records[class][]', value='#{record.class}')
-					label Name
-						input.recordLabel(name='records[label][]', value='#{record.label}')
-					label Type
-						input.recordType(name='records[type][]', value='#{record.type}')
-					label TTL
-						input.recordTtl(name='records[ttl][]', value='#{record.ttl}')
-					label Data
-						input.recordData(name='records[rdata][]', value='#{record.rdata}')
-					a(href='/deleterecord/#{name}/#{record.id}', class="button small delete") delete
-		div.listRow
-			input(type='hidden', name='newrecords[id][]', value='-1')
-			input(type='hidden', name='newrecords[class][]', value='IN')
-			label Name
-				input.recordLabel(name='newrecords[label][]', value='')
-			label Type
-				input.recordType(name='newrecords[type][]', value='')
-			label TTL
-				input.recordTtl(name='newrecords[ttl][]', value='')
-			label Data
-				input.recordData(name='newrecords[rdata][]', value='')
-
-		div.formFooter
-			input(type="submit", value="save")
+block mainContent
+	h2 Editing zone for 
+		span.zoneName #{name}
+	
+	if error
+		p.error Something went terribly bad: #{error}
+	
+	p
+		a(href='/', class='button small pink') &laquo  Back to index
+	
+	if zone
+		form(method='post', action='/editrecords/#{name}')
+			each label in zone
+				each record in label.records
+					div.listRow
+						input(type='hidden', name='records[id][]', value='#{record.id}')
+						input(type='hidden', name='records[class][]', value='#{record.class}')
+						label Name
+							input.recordLabel(name='records[label][]', value='#{record.label}')
+						label Type
+							input.recordType(name='records[type][]', value='#{record.type}')
+						label TTL
+							input.recordTtl(name='records[ttl][]', value='#{record.ttl}')
+						label Data
+							input.recordData(name='records[rdata][]', value='#{record.rdata}')
+						a(href='/deleterecord/#{name}/#{record.id}', class="button small delete") delete
+			div.listRow
+				input(type='hidden', name='newrecords[id][]', value='-1')
+				input(type='hidden', name='newrecords[class][]', value='IN')
+				label Name
+					input.recordLabel(name='newrecords[label][]', value='')
+				label Type
+					input.recordType(name='newrecords[type][]', value='')
+				label TTL
+					input.recordTtl(name='newrecords[ttl][]', value='')
+				label Data
+					input.recordData(name='newrecords[rdata][]', value='')
+	
+			div.formFooter
+				input(type="submit", value="save")

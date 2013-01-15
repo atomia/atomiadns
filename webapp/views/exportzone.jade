@@ -1,11 +1,14 @@
-h2 Exporting zone for 
-	span.zoneName #{name}
+extends layout
 
-p
-	a(href='/', class='button small pink') &laquo; Back to index
-
-if error
-	p.error Something went terribly bad: #{error}
-else
-	p This is the exported zone contents:
-	pre.exportData= zone
+block mainContent
+	h2 Exporting zone for 
+		span.zoneName #{name}
+	
+	p
+		a(href='/', class='button small pink') &laquo; Back to index
+	
+	if error
+		p.error Something went terribly bad: #{error}
+	else
+		p This is the exported zone contents:
+		pre.exportData= zone

@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.26) hardy; urgency=low
+
+  * Fix atomiadns-webapp on Ubuntu 12.04 LTS
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 15 Jan 2013 09:08:03 +0100
+
 atomiadns-dyndns (1.1.25) hardy; urgency=low
 
   * Add GetZoneMetadata and SetZoneMetadata

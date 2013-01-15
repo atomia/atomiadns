@@ -1,15 +1,18 @@
-h2 Importing zone for 
-	span.zoneName  #{name}
+extends layout
 
-p
-	a(href='/', class='button small pink') &laquo; Back to index
-
-if error
-	p.error Something went terribly bad: #{error}
-
-form(method='post')
-	label Zone content (same format as export):
-		div
-			textarea.importData(name='zone')
-	div.formFooter
-		input(type='submit', value='import')
+block mainContent
+	h2 Importing zone for 
+		span.zoneName  #{name}
+	
+	p
+		a(href='/', class='button small pink') &laquo; Back to index
+	
+	if error
+		p.error Something went terribly bad: #{error}
+	
+	form(method='post')
+		label Zone content (same format as export):
+			div
+				textarea.importData(name='zone')
+		div.formFooter
+			input(type='submit', value='import')

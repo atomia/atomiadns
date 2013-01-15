@@ -1,18 +1,21 @@
-if error
-	p.error Something went terribly bad: #{error}
-else
-	h2 Your zones
-	p Showing zone #{offset + 1} to #{offset + zones.length} from a total of #{total} in your account.
+extends layout
 
-	p
-		a(href='/addzone', class='button small green') + add new zone
-
-	each zone in zones
-		li.listRow= zone + ' '
-			a(href='/delzone/#{zone}', onclick='return confirm(\'Are you sure that you want to delete this zone?\');', class='button small  delete') delete
-			| 
-			a(href='/exportzone/#{zone}', class='button small export') export
-			| 
-			a(href='/importzone/#{zone}', class='button small  import') import
-			| 
-			a(href='/zone/#{zone}', class='button small  edit') edit
+block mainContent
+	if error
+		p.error Something went terribly bad: #{error}
+	else
+		h2 Your zones
+		p Showing zone #{offset + 1} to #{offset + zones.length} from a total of #{total} in your account.
+	
+		p
+			a(href='/addzone', class='button small green') + add new zone
+	
+		each zone in zones
+			li.listRow= zone + ' '
+				a(href='/delzone/#{zone}', onclick='return confirm(\'Are you sure that you want to delete this zone?\');', class='button small  delete') delete
+				| 
+				a(href='/exportzone/#{zone}', class='button small export') export
+				| 
+				a(href='/importzone/#{zone}', class='button small  import') import
+				| 
+				a(href='/zone/#{zone}', class='button small  edit') edit
