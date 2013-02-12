@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION AddNameserver(
+CREATE OR REPLACE FUNCTION DeleteNameserverGroup(
 	groupname varchar
 ) RETURNS void AS $$
 DECLARE

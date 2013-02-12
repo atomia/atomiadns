@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.27) hardy; urgency=low
+
+  * Fix DeleteNameserverGroup and AddSlaveZoneAuth
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 12 Feb 2013 08:49:48 +0100
+
 atomiadns-masterserver (1.1.26) hardy; urgency=low
 
   * Fix atomiadns-webapp on Ubuntu 12.04 LTS

@@ -93,7 +93,7 @@ recreate_procedure() {
 		exit 1
 	fi
 
-	drop_sql=`echo "$drop_sql" | awk -F "|" '/public/ { print "DROP FUNCTION " $2 "(" $4 ")" }'`
+	drop_sql=`echo "$drop_sql" | awk -F "|" '/public/ { print "DROP FUNCTION " $2 "(" $4 ");" }'`
 	$psql -c "$drop_sql" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
 		echo "error dropping procedure $1, you'll have to migrate the schema manually."
@@ -208,7 +208,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="77"
+		latest_version="78"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -452,6 +452,13 @@ if [ $? != 0 ]; then
 				execute_query "CREATE INDEX zone_metadata_zone_id_idx ON zone_metadata(zone_id)"
 				recreate_procedure "getzonemetadata"
 				recreate_procedure "setzonemetadata"
+			fi
+
+			if [ "$schema_version" -lt 78 ]; then
+				recreate_procedure "addslavezone"
+				recreate_procedure "addslavezoneauth"
+				recreate_procedure "addnameserver"
+				recreate_procedure "deletenameservergroup"
 			fi
 
 			set_schema_version "$latest_version"

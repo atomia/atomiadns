@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION AddSlaveZone(
+CREATE OR REPLACE FUNCTION AddSlaveZoneAuth(
 	account_id_param int,
 	zonename varchar,
 	master_ip varchar,
