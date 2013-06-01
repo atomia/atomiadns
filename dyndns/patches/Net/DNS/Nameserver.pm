@@ -188,15 +188,8 @@ sub make_reply {
 			my ($rcode, $ans, $auth, $add);
 			
 			if  ($query->header->opcode eq "QUERY") {
-				print "Generating the QUERY Reply packet\n";
 				($rcode, $ans, $auth, $add, $headermask, $tsig_sign) =
 					&{$self->{"ReplyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
-				print "Rcode: $rcode\n";
-				print "Answer:".Dumper($ans)."\n";
-				print "Auth:".Dumper($auth)."\n";
-				print "Add:".Dumper($add)."\n";
-				print "Headermask:".Dumper($headermask)."\n";
-				print "TSIG Signature:".Dumper($tsig_sign)."\n";
 				$headermask->{'opcode'} = $query->header->opcode;
 			} elsif ($query->header->opcode eq "UPDATE") {
 				if (ref $self->{"UpdateHandler"} eq "CODE") {
