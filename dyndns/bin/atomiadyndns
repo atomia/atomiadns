@@ -36,6 +36,13 @@ sub reply_handler {
   my ($rcode, @ans, @auth, @add);
   my ($ttl, $rdata) = (undef, undef);
 
+  my ($time_signed, $request_mac) = (undef, undef);
+
+  my $valid_tsig = verify_tsig($query);
+  if (defined($valid_tsig)) {
+    ($time_signed, $request_mac) = extract_signature_info($valid_tsig);
+  }
+
   if ($qtype eq "A" && $qname eq "foo.example.com" ) {
     ($ttl, $rdata) = (3600, "10.1.2.3");
     $rcode = "NOERROR";
@@ -44,12 +51,16 @@ sub reply_handler {
   } elsif ( $qname eq "example.com" && $qtype eq "SOA") {
     ($ttl, $rdata) = (3600, "dns1.pingdom.com. registry.ipwalk.com. 2010061601 10800 3600 604800 300");
     $rcode = "NOERROR";
-        } else {
+  } else {
     $rcode = "NXDOMAIN";
-        }
+  }
 
   push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata") if defined($ttl) && defined($rdata);
-  return ($rcode, \@ans, \@auth, \@add, { aa => 1 });
+  return ($rcode, \@ans, \@auth, \@add, { aa => 1 }, 
+          { keyname => $config{"tsig_keyname"},
+            key => $config{"tsig_key"},
+            request_mac => $request_mac,
+            time_signed => $time_signed });
 }
 
 sub update_handler {
