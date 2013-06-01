@@ -3,6 +3,7 @@ package Net::DNS::Nameserver;
 # $Id: Nameserver.pm 749 2008-12-19 15:20:22Z olaf $
 #
 
+use Data::Dumper;
 use Net::DNS;
 use IO::Socket;
 use IO::Socket::INET;
@@ -187,8 +188,16 @@ sub make_reply {
 			my ($rcode, $ans, $auth, $add);
 			
 			if  ($query->header->opcode eq "QUERY") {
-			  ($rcode, $ans, $auth, $add, $headermask) =
-				&{$self->{"ReplyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
+				print "Generating the QUERY Reply packet\n";
+				($rcode, $ans, $auth, $add, $headermask, $tsig_sign) =
+					&{$self->{"ReplyHandler"}}($qname, $qclass, $qtype, $peerhost, $query, $conn);
+				print "Rcode: $rcode\n";
+				print "Answer:".Dumper($ans)."\n";
+				print "Auth:".Dumper($auth)."\n";
+				print "Add:".Dumper($add)."\n";
+				print "Headermask:".Dumper($headermask)."\n";
+				print "TSIG Signature:".Dumper($tsig_sign)."\n";
+				$headermask->{'opcode'} = $query->header->opcode;
 			} elsif ($query->header->opcode eq "UPDATE") {
 				if (ref $self->{"UpdateHandler"} eq "CODE") {
 					($rcode, $ans, $auth, $add, $headermask, $tsig_sign) =
@@ -244,7 +253,7 @@ sub make_reply {
 
 	if (defined($tsig_sign) && ref($tsig_sign) eq "HASH" && defined($tsig_sign->{"keyname"}) &&
 		defined($tsig_sign->{"key"}) && defined($tsig_sign->{"request_mac"}) && 
-		defined($tsig_sign->{"time_signed"}) && $query->header->opcode eq "UPDATE") {
+		defined($tsig_sign->{"time_signed"}) ) {
 		
 		if (scalar($reply->additional) != 0) {
 			print "ERROR: invalid response (additional was already set when TSIG signing)\n" if $self->{"Verbose"};
