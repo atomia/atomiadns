@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 BEGIN {
-	unshift @INC, "/usr/share/atomia/patches";
+  unshift @INC, "/usr/share/atomia/patches";
 }
 
 use warnings;
@@ -19,536 +19,536 @@ die("error parsing config") unless defined($conf);
 my %config = $conf->getall;
 
 MAINLOOP: while (1) {
-	eval {
-		main();
-	};
+  eval {
+    main();
+  };
 
-	if ($@) {
-		print "Caught exception: $@";
-		sleep 5;
-	} else {
-		last MAINLOOP;
-	}
+  if ($@) {
+    print "Caught exception: $@";
+    sleep 5;
+  } else {
+    last MAINLOOP;
+  }
 }
 
 sub reply_handler {
-	my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
-	my ($rcode, @ans, @auth, @add);
-	my ($ttl, $rdata) = (undef, undef);
+  my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
+  my ($rcode, @ans, @auth, @add);
+  my ($ttl, $rdata) = (undef, undef);
 
-	if ($qtype eq "A" && $qname eq "foo.example.com" ) {
-		($ttl, $rdata) = (3600, "10.1.2.3");
-		$rcode = "NOERROR";
-	} elsif ( $qname eq "foo.example.com" ) {
-		$rcode = "NOERROR";
-	} elsif ( $qname eq "example.com" && $qtype eq "SOA") {
-		($ttl, $rdata) = (3600, "dns1.pingdom.com. registry.ipwalk.com. 2010061601 10800 3600 604800 300");
-		$rcode = "NOERROR";
+  if ($qtype eq "A" && $qname eq "foo.example.com" ) {
+    ($ttl, $rdata) = (3600, "10.1.2.3");
+    $rcode = "NOERROR";
+  } elsif ( $qname eq "foo.example.com" ) {
+    $rcode = "NOERROR";
+  } elsif ( $qname eq "example.com" && $qtype eq "SOA") {
+    ($ttl, $rdata) = (3600, "dns1.pingdom.com. registry.ipwalk.com. 2010061601 10800 3600 604800 300");
+    $rcode = "NOERROR";
         } else {
-		$rcode = "NXDOMAIN";
+    $rcode = "NXDOMAIN";
         }
 
-	push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata") if defined($ttl) && defined($rdata);
-	return ($rcode, \@ans, \@auth, \@add, { aa => 1 });
+  push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata") if defined($ttl) && defined($rdata);
+  return ($rcode, \@ans, \@auth, \@add, { aa => 1 });
 }
 
 sub update_handler {
-	my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
-	my ($zone, $rcode, @ans, @auth, @add);
-	my ($ttl, $rdata) = (undef, undef);
+  my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
+  my ($zone, $rcode, @ans, @auth, @add);
+  my ($ttl, $rdata) = (undef, undef);
 
-	$zone = undef;
-	$rcode = "SERVFAIL";
+  $zone = undef;
+  $rcode = "SERVFAIL";
 
-	my ($time_signed, $request_mac) = (undef, undef);
+  my ($time_signed, $request_mac) = (undef, undef);
 
-	eval {
+  eval {
 
-		my $valid_tsig = verify_tsig($query);
-		if (defined($valid_tsig)) {
-			($time_signed, $request_mac) = extract_signature_info($valid_tsig);
+    my $valid_tsig = verify_tsig($query);
+    if (defined($valid_tsig)) {
+      ($time_signed, $request_mac) = extract_signature_info($valid_tsig);
 
-			($zone, $rcode) = process_zone($query->zone);
-			if ($rcode eq "NOERROR") {
-				$rcode = process_prereq($zone, $qclass, $query->prerequisite);
+      ($zone, $rcode) = process_zone($query->zone);
+      if ($rcode eq "NOERROR") {
+        $rcode = process_prereq($zone, $qclass, $query->prerequisite);
 
-				if ($rcode eq "NOERROR") {
-					$rcode = process_update_prescan($zone, $qclass, $query->update);
+        if ($rcode eq "NOERROR") {
+          $rcode = process_update_prescan($zone, $qclass, $query->update);
 
-					if ($rcode eq "NOERROR") {
-						$rcode = process_update($zone, $qclass, $query->update);
-					}
-				}
-			}
-		} else {
-			$rcode = "REFUSED";
-		}
-	};
+          if ($rcode eq "NOERROR") {
+            $rcode = process_update($zone, $qclass, $query->update);
+          }
+        }
+      }
+    } else {
+      $rcode = "REFUSED";
+    }
+  };
 
-	if ($@) {
-		print "Caught exception: $@\n";
-		$rcode = "SERVFAIL";
-	}
+  if ($@) {
+    print "Caught exception: $@\n";
+    $rcode = "SERVFAIL";
+  }
 
-	print "$qname update processed with status $rcode\n";
+  print "$qname update processed with status $rcode\n";
 
-	push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata") if defined($ttl) && defined($rdata);
+  push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata") if defined($ttl) && defined($rdata);
 
-	return ($rcode, \@ans, \@auth, \@add, { aa => 1 }, { keyname => $config{"tsig_keyname"}, key => $config{"tsig_key"}, request_mac => $request_mac, time_signed => $time_signed });
+  return ($rcode, \@ans, \@auth, \@add, { aa => 1 }, { keyname => $config{"tsig_keyname"}, key => $config{"tsig_key"}, request_mac => $request_mac, time_signed => $time_signed });
 }
 
 sub extract_signature_info {
-	my $tsig = shift;
+  my $tsig = shift;
 
-	my $mac = $tsig->mac;
-	my $time_signed = $tsig->time_signed;
+  my $mac = $tsig->mac;
+  my $time_signed = $tsig->time_signed;
 
-	my $mac_size = $tsig->mac_size;
-	my $size = unpack("H*", pack('n', $mac_size));
+  my $mac_size = $tsig->mac_size;
+  my $size = unpack("H*", pack('n', $mac_size));
 
-	return ($time_signed, $size . $mac);
+  return ($time_signed, $size . $mac);
 }
 
 sub verify_tsig {
-	my $query = shift;
+  my $query = shift;
 
-	my $tsig_key = $config{"tsig_key"} || die("you have to set tsig_key in the config to a base64-encoded secret");
-	my $tsig_keyname = $config{"tsig_keyname"} || die("you have to set tsig_keyname in the config");
+  my $tsig_key = $config{"tsig_key"} || die("you have to set tsig_key in the config to a base64-encoded secret");
+  my $tsig_keyname = $config{"tsig_keyname"} || die("you have to set tsig_keyname in the config");
 
-	my $tsig = extract_tsig($query);
-	return undef unless defined($tsig);
+  my $tsig = extract_tsig($query);
+  return undef unless defined($tsig);
 
-	$query->sign_tsig($tsig_keyname, $tsig_key);
+  $query->sign_tsig($tsig_keyname, $tsig_key);
 
-	my $verify_packet = Net::DNS::Packet->new(\($query->data));
+  my $verify_packet = Net::DNS::Packet->new(\($query->data));
 
-	my $our_tsig = extract_tsig($verify_packet);
-	return undef unless defined($our_tsig);
+  my $our_tsig = extract_tsig($verify_packet);
+  return undef unless defined($our_tsig);
 
-	return undef unless defined($tsig->mac) && defined($our_tsig->mac) && ref($tsig->mac) eq '' && ref($our_tsig->mac) eq '' && length($tsig->mac) > 0;
+  return undef unless defined($tsig->mac) && defined($our_tsig->mac) && ref($tsig->mac) eq '' && ref($our_tsig->mac) eq '' && length($tsig->mac) > 0;
 
-	return undef unless $tsig->mac eq $our_tsig->mac;
-	return $tsig;
+  return undef unless $tsig->mac eq $our_tsig->mac;
+  return $tsig;
 }
 
 sub extract_tsig {
-	my $packet = shift;
+  my $packet = shift;
 
-	if (scalar($packet->additional) != 1) {
-		return undef;
-	}
+  if (scalar($packet->additional) != 1) {
+    return undef;
+  }
 
-	my $tsig = undef;
+  my $tsig = undef;
 
-	my $item = $packet->pop("additional");
-	if (ref($item) && UNIVERSAL::isa($item, 'Net::DNS::RR::TSIG')) {
-		$tsig = $item;
-	}
+  my $item = $packet->pop("additional");
+  if (ref($item) && UNIVERSAL::isa($item, 'Net::DNS::RR::TSIG')) {
+    $tsig = $item;
+  }
 
-	return $tsig;
+  return $tsig;
 }
 
 sub process_zone {
-	my @zone_section = shift;
+  my @zone_section = shift;
 
-	my $zone = undef;
-	my $rcode = "SERVFAIL";
+  my $zone = undef;
+  my $rcode = "SERVFAIL";
 
-	if (scalar(@zone_section) != 1 || $zone_section[0]->ztype ne "SOA") {
-		$rcode = "FORMERR";
-	} else {
-		$zone = $zone_section[0]->zname;
+  if (scalar(@zone_section) != 1 || $zone_section[0]->ztype ne "SOA") {
+    $rcode = "FORMERR";
+  } else {
+    $zone = $zone_section[0]->zname;
 
-		if (defined($zone) && atomia_check_authorative($zone)) {
-			$rcode = "NOERROR"
-		} else {
-			$rcode = "NOTAUTH"
-		}
-	}
+    if (defined($zone) && atomia_check_authorative($zone)) {
+      $rcode = "NOERROR"
+    } else {
+      $rcode = "NOTAUTH"
+    }
+  }
 
-	return ($zone, $rcode);
+  return ($zone, $rcode);
 }
 
 sub process_prereq {
-	my $zone = shift;
-	my $zclass = shift;
-	my @prereq_section = @_;
+  my $zone = shift;
+  my $zclass = shift;
+  my @prereq_section = @_;
 
-	my %rrsets;
-	foreach my $prereq (@prereq_section) {
-		return "FORMERR" unless $prereq->ttl == 0;
-		return "NOTZONE" unless atomia_is_in_zone($zone, $prereq->name);
+  my %rrsets;
+  foreach my $prereq (@prereq_section) {
+    return "FORMERR" unless $prereq->ttl == 0;
+    return "NOTZONE" unless atomia_is_in_zone($zone, $prereq->name);
 
-		if ($prereq->class eq "ANY") {
-			return "FORMERR" unless $prereq->rdlength == 0;
+    if ($prereq->class eq "ANY") {
+      return "FORMERR" unless $prereq->rdlength == 0;
 
-			if ($prereq->type eq "ANY") {
-				return "NXDOMAIN" unless atomia_label_exists($zone, $prereq->name);
-			} else {
-				return "NXRRSET" unless atomia_zone_has_rrset($zone, $zclass, $prereq->name, $prereq->type, 1);
-			}
-		} elsif ($prereq->class eq "NONE") {
-			return "FORMERR" unless $prereq->rdlength == 0;
-			
-			if ($prereq->type eq "ANY") {
-				return "YXDOMAIN" if atomia_label_exists($zone, $prereq->name);
-			} else {
-				return "YXRRSET" if atomia_zone_has_rrset($zone, $zclass, $prereq->name, $prereq->type, 1);
-			}
-		} elsif ($prereq->class eq $zclass) {
-			my $key = $prereq->name . "/" . $prereq->type;
+      if ($prereq->type eq "ANY") {
+        return "NXDOMAIN" unless atomia_label_exists($zone, $prereq->name);
+      } else {
+        return "NXRRSET" unless atomia_zone_has_rrset($zone, $zclass, $prereq->name, $prereq->type, 1);
+      }
+    } elsif ($prereq->class eq "NONE") {
+      return "FORMERR" unless $prereq->rdlength == 0;
 
-			my $rrset = $rrsets{$key};
-			unless (defined($rrset)) {
-				$rrset = [];
-				$rrsets{$key} = $rrset;
-			}
+      if ($prereq->type eq "ANY") {
+        return "YXDOMAIN" if atomia_label_exists($zone, $prereq->name);
+      } else {
+        return "YXRRSET" if atomia_zone_has_rrset($zone, $zclass, $prereq->name, $prereq->type, 1);
+      }
+    } elsif ($prereq->class eq $zclass) {
+      my $key = $prereq->name . "/" . $prereq->type;
 
-			push @$rrset, $prereq;
-		} else {
-			return "FORMERR";
-		}
-	}
+      my $rrset = $rrsets{$key};
+      unless (defined($rrset)) {
+        $rrset = [];
+        $rrsets{$key} = $rrset;
+      }
 
-	foreach my $rrset (values %rrsets) {
-		return "NXRRSET" unless atomia_zone_has_rrset($zone, $zclass, $rrset->[0]->name, $rrset->[0]->type, 1, $rrset);
-	}
+      push @$rrset, $prereq;
+    } else {
+      return "FORMERR";
+    }
+  }
 
-	return "NOERROR"
+  foreach my $rrset (values %rrsets) {
+    return "NXRRSET" unless atomia_zone_has_rrset($zone, $zclass, $rrset->[0]->name, $rrset->[0]->type, 1, $rrset);
+  }
+
+  return "NOERROR"
 }
 
 sub process_update_prescan {
-	my $zone = shift;
-	my $zclass = shift;
-	my @update_section = @_;
+  my $zone = shift;
+  my $zclass = shift;
+  my @update_section = @_;
 
-	foreach my $update (@update_section) {
-		return "NOTZONE" unless atomia_is_in_zone($zone, $update->name);
+  foreach my $update (@update_section) {
+    return "NOTZONE" unless atomia_is_in_zone($zone, $update->name);
 
-		if ($update->class eq $zclass) {
-			return "FORMERR" if $update->type =~ /^(ANY|AXFR|MAILA|MAILB)$/;
-		} elsif ($update->class eq "ANY") {
-			return "FORMERR" if $update->ttl != 0 || $update->rdlength != 0 || $update->type =~ /^(AXFR|MAILA|MAILB)$/;
-		} elsif ($update->class eq "NONE") {
-			return "FORMERR" if $update->ttl != 0 || $update->type =~ /^(ANY|AXFR|MAILA|MAILB)$/;
-		} else {
-			return "FORMERR";
-		}
-	} 
+    if ($update->class eq $zclass) {
+      return "FORMERR" if $update->type =~ /^(ANY|AXFR|MAILA|MAILB)$/;
+    } elsif ($update->class eq "ANY") {
+      return "FORMERR" if $update->ttl != 0 || $update->rdlength != 0 || $update->type =~ /^(AXFR|MAILA|MAILB)$/;
+    } elsif ($update->class eq "NONE") {
+      return "FORMERR" if $update->ttl != 0 || $update->type =~ /^(ANY|AXFR|MAILA|MAILB)$/;
+    } else {
+      return "FORMERR";
+    }
+  }
 
-	return "NOERROR";
+  return "NOERROR";
 }
 
 sub process_update {
-	my $zone = shift;
-	my $zclass = shift;
-	my @update_section = @_;
+  my $zone = shift;
+  my $zclass = shift;
+  my @update_section = @_;
 
-	UPDATE: foreach my $update (@update_section) {
-		if ($update->class eq $zclass) {
-			if ($update->type eq "CNAME") {
-				next UPDATE if atomia_zone_has_rrset($zone, $zclass, $update->name, "CNAME", 0);
-			} else {
-				next UPDATE if atomia_zone_has_rrset($zone, $zclass, $update->name, "CNAME", 1);
-			}
+  UPDATE: foreach my $update (@update_section) {
+    if ($update->class eq $zclass) {
+      if ($update->type eq "CNAME") {
+        next UPDATE if atomia_zone_has_rrset($zone, $zclass, $update->name, "CNAME", 0);
+      } else {
+        next UPDATE if atomia_zone_has_rrset($zone, $zclass, $update->name, "CNAME", 1);
+      }
 
-			if ($update->type eq "SOA") {
-				next UPDATE;
-			}
+      if ($update->type eq "SOA") {
+        next UPDATE;
+      }
 
-			foreach my $record (@{atomia_get_records($zone, $update->name, $zclass, $update->type)}) {
-				if ($update->type eq "CNAME" || $update->rdatastr eq $record->{"rdata"}) {
-					atomia_update_record($zone, $record, $update);
-					next UPDATE;
-				}
-			}
+      foreach my $record (@{atomia_get_records($zone, $update->name, $zclass, $update->type)}) {
+        if ($update->type eq "CNAME" || $update->rdatastr eq $record->{"rdata"}) {
+          atomia_update_record($zone, $record, $update);
+          next UPDATE;
+        }
+      }
 
-			atomia_add_record($zone, $update)
-		} elsif ($update->class eq "ANY") {
-			if ($update->type eq "ANY") {
-				if ($update->name eq $zone) {
-					atomia_remove_all_records($zone, $zone, '^(SOA|NS)$', 0);
-				} else {
-					atomia_remove_all_records($zone, $update->name, '.', 1);
-				}
-			} elsif ($update->name eq $zone && $update->type =~ /^(SOA|NS)$/) {
-				next UPDATE;
-			} else {
-				my $type = $update->type;
-				atomia_remove_all_records($zone, $update->name, "^$type\$", 1);
-			}
-		} elsif ($update->class eq "NONE") {
-			if ($update->name eq $zone) {
-				next UPDATE if $update->type eq "SOA";
+      atomia_add_record($zone, $update)
+    } elsif ($update->class eq "ANY") {
+      if ($update->type eq "ANY") {
+        if ($update->name eq $zone) {
+          atomia_remove_all_records($zone, $zone, '^(SOA|NS)$', 0);
+        } else {
+          atomia_remove_all_records($zone, $update->name, '.', 1);
+        }
+      } elsif ($update->name eq $zone && $update->type =~ /^(SOA|NS)$/) {
+        next UPDATE;
+      } else {
+        my $type = $update->type;
+        atomia_remove_all_records($zone, $update->name, "^$type\$", 1);
+      }
+    } elsif ($update->class eq "NONE") {
+      if ($update->name eq $zone) {
+        next UPDATE if $update->type eq "SOA";
 
-				if ($update->type eq "NS") {
-					my $ns_records = atomia_get_records($zone, $zone, $zclass, "NS");
-					next UPDATE if scalar(@$ns_records) == 1;
-				}
+        if ($update->type eq "NS") {
+          my $ns_records = atomia_get_records($zone, $zone, $zclass, "NS");
+          next UPDATE if scalar(@$ns_records) == 1;
+        }
 
-				atomia_remove_record($zone, $update);
-			}
-		}
-	}
+        atomia_remove_record($zone, $update);
+      }
+    }
+  }
 
-	return "NOERROR";
+  return "NOERROR";
 }
 
 sub main {
-	my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
-	my $dyndns_port = $config{"dyndns_port"} || die("dyndns_port not defined in config");
+  my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
+  my $dyndns_port = $config{"dyndns_port"} || die("dyndns_port not defined in config");
 
-	my $soap_cacert = $config{"soap_cacert"};
-	if ($soap_uri =~ /^https/) {
-		die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option" unless defined($soap_cacert) && -f $soap_cacert;
-		$ENV{HTTPS_CA_FILE} = $soap_cacert;
-	}
+  my $soap_cacert = $config{"soap_cacert"};
+  if ($soap_uri =~ /^https/) {
+    die "with https as the transport you need to include the location of the CA cert in the soap_cacert config-file option" unless defined($soap_cacert) && -f $soap_cacert;
+    $ENV{HTTPS_CA_FILE} = $soap_cacert;
+  }
 
-	my $soap_username = $config{"soap_username"};
-	my $soap_password = $config{"soap_password"};
-	if (defined($soap_username)) {
-		die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
-		unless (defined(&SOAP::Transport::HTTP::Client::get_basic_credentials)) { # perhaps we should inspect method body and die if different credentials, but we'll give rope instead
-			eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
-		}
-	}
+  my $soap_username = $config{"soap_username"};
+  my $soap_password = $config{"soap_password"};
+  if (defined($soap_username)) {
+    die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
+    unless (defined(&SOAP::Transport::HTTP::Client::get_basic_credentials)) { # perhaps we should inspect method body and die if different credentials, but we'll give rope instead
+      eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
+    }
+  }
 
-	my $ns = Net::DNS::Nameserver->new(
-		LocalAddr    => 0,
-		LocalPort    => $dyndns_port,
-		ReplyHandler => \&reply_handler,
-		UpdateHandler => \&update_handler,
-		Verbose      => 0,
-	) || die "couldn't create nameserver object\n";
+  my $ns = Net::DNS::Nameserver->new(
+    LocalAddr    => 0,
+    LocalPort    => $dyndns_port,
+    ReplyHandler => \&reply_handler,
+    UpdateHandler => \&update_handler,
+    Verbose      => 0,
+  ) || die "couldn't create nameserver object\n";
 
-	$ns->main_loop;
+  $ns->main_loop;
 }
 
 sub webservice {
-	my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
+  my $soap_uri = $config{"soap_uri"} || die("soap_uri not defined in config");
 
-	my $soap = SOAP::Lite
-		->  uri('urn:Atomia::DNS::Server')
-		->  proxy($soap_uri)
-		->  on_fault(sub {
+  my $soap = SOAP::Lite
+    ->  uri('urn:Atomia::DNS::Server')
+    ->  proxy($soap_uri)
+    ->  on_fault(sub {
                         my($soap, $res) = @_;
                         die ref($res) && UNIVERSAL::isa($res, 'SOAP::SOM') ? $res : $soap->transport->status;
                 });
 
-	die("error instantiating webservice object") unless defined($soap);
+  die("error instantiating webservice object") unless defined($soap);
 
-	return $soap;
+  return $soap;
 }
 
 sub atomia_check_authorative {
-	my $zone = shift;
-	my $soap = webservice();
+  my $zone = shift;
+  my $soap = webservice();
 
-	eval {
-		$soap->GetLabels($zone);
-	};
+  eval {
+    $soap->GetLabels($zone);
+  };
 
-	if ($@) {
-		if (ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM') && $@->faultcode eq 'soap:LogicalError.ZoneNotFound') {
-			return 0;
-		} else {
-			die $@;
-		}
-	} else {
-		return 1;
-	}
+  if ($@) {
+    if (ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM') && $@->faultcode eq 'soap:LogicalError.ZoneNotFound') {
+      return 0;
+    } else {
+      die $@;
+    }
+  } else {
+    return 1;
+  }
 }
 
 sub atomia_is_in_zone {
-	my $zone = shift;
-	my $name = shift;
+  my $zone = shift;
+  my $name = shift;
 
-	return 1 if rindex($name, $zone) + length($zone) == length($name);
-	return 0;
+  return 1 if rindex($name, $zone) + length($zone) == length($name);
+  return 0;
 }
 
 sub atomia_add_record {
-	my $zone = shift;
-	my $record = shift;
+  my $zone = shift;
+  my $record = shift;
 
-	my $soap = webservice();
+  my $soap = webservice();
 
-	eval {
-		$soap->AddDnsRecords($zone, [ {
-			label => atomia_host_to_label($record->name, $zone),
-			class => $record->class,
-			ttl => $record->ttl,
-			type => $record->type,
-			rdata => $record->rdatastr
-		} ]);
-	};
+  eval {
+    $soap->AddDnsRecords($zone, [ {
+      label => atomia_host_to_label($record->name, $zone),
+      class => $record->class,
+      ttl => $record->ttl,
+      type => $record->type,
+      rdata => $record->rdatastr
+    } ]);
+  };
 
-	if ($@) {
-		die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
-		die $@;
-	}
+  if ($@) {
+    die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
+    die $@;
+  }
 }
 
 sub atomia_get_records {
-	my $zone = shift;
-	my $name = shift;
-	my $class = shift;
-	my $type = shift;
-	my $with_type = shift;
+  my $zone = shift;
+  my $name = shift;
+  my $class = shift;
+  my $type = shift;
+  my $with_type = shift;
 
-	$with_type = 1 unless defined($with_type);
+  $with_type = 1 unless defined($with_type);
 
-	my $soap = webservice();
+  my $soap = webservice();
 
-	my $response = [];
-	eval {
-		my $ret = $soap->GetDnsRecords($zone, atomia_host_to_label($name, $zone));
-		die("error fetching records") unless defined($ret) && defined($ret->result) && ref($ret->result) eq "ARRAY";
-		$response = $ret->result;
+  my $response = [];
+  eval {
+    my $ret = $soap->GetDnsRecords($zone, atomia_host_to_label($name, $zone));
+    die("error fetching records") unless defined($ret) && defined($ret->result) && ref($ret->result) eq "ARRAY";
+    $response = $ret->result;
 
-		$response = atomia_filter_records($response, '^' . $type . '$', $with_type) if defined($type);
-		$response = atomia_filter_records($response, undef, undef, $class) if defined($class);
-	};
+    $response = atomia_filter_records($response, '^' . $type . '$', $with_type) if defined($type);
+    $response = atomia_filter_records($response, undef, undef, $class) if defined($class);
+  };
 
-	if ($@) {
-		die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
-		die $@;
-	} else {
-		return $response;
-	}
+  if ($@) {
+    die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
+    die $@;
+  } else {
+    return $response;
+  }
 }
 
 sub atomia_label_exists {
-	my $zone = shift;
-	my $name = shift;
+  my $zone = shift;
+  my $name = shift;
 
-	my $label = atomia_host_to_label($name, $zone);
+  my $label = atomia_host_to_label($name, $zone);
 
-	my $soap = webservice();
+  my $soap = webservice();
 
-	my $exists = 0;
-	eval {
-		my $labels = $soap->GetLabels($zone);
-		die("error fetching labels" ) unless defined($labels) && defined($labels->result) && ref($labels->result) eq "ARRAY";
+  my $exists = 0;
+  eval {
+    my $labels = $soap->GetLabels($zone);
+    die("error fetching labels" ) unless defined($labels) && defined($labels->result) && ref($labels->result) eq "ARRAY";
 
-		$exists = scalar(grep { $_ eq $label } @{$labels->result}) > 0;
-	};
+    $exists = scalar(grep { $_ eq $label } @{$labels->result}) > 0;
+  };
 
-	if ($@) {
-		die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
-		die $@;
-	} else {
-		return $exists;
-	}
+  if ($@) {
+    die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
+    die $@;
+  } else {
+    return $exists;
+  }
 }
 
 sub atomia_host_to_label {
-	my $name = shift;
-	my $zone = shift;
+  my $name = shift;
+  my $zone = shift;
 
-	if ($name eq $zone) {
-		return '@';
-	} else {
-		die("atomia_host_to_label called when name not in zone") unless atomia_is_in_zone($zone, $name);
-		return substr($name, 0, length($name) - length($zone) - 1);
-	}
+  if ($name eq $zone) {
+    return '@';
+  } else {
+    die("atomia_host_to_label called when name not in zone") unless atomia_is_in_zone($zone, $name);
+    return substr($name, 0, length($name) - length($zone) - 1);
+  }
 }
 
 sub atomia_filter_records {
-	my $records = shift;
-	my $type_pattern = shift;
-	my $type_matching = shift;
-	my $class_value = shift;
-	my $rdata_value = shift;
+  my $records = shift;
+  my $type_pattern = shift;
+  my $type_matching = shift;
+  my $class_value = shift;
+  my $rdata_value = shift;
 
-	my $filtered = [];
+  my $filtered = [];
 
-	foreach my $record (@$records) {
-		if (!defined($type_pattern) || ($type_matching && $record->{"type"} =~ /$type_pattern/) || (!$type_matching && !($record->{"type"} =~ /$type_pattern/))) {
-			if (!defined($class_value) || $record->{"class"} eq $class_value) {
-				if (!defined($rdata_value) || $record->{"rdata"} eq $rdata_value) {
-					push @$filtered, $record;
-				}
-			}
-		}
-	}
+  foreach my $record (@$records) {
+    if (!defined($type_pattern) || ($type_matching && $record->{"type"} =~ /$type_pattern/) || (!$type_matching && !($record->{"type"} =~ /$type_pattern/))) {
+      if (!defined($class_value) || $record->{"class"} eq $class_value) {
+        if (!defined($rdata_value) || $record->{"rdata"} eq $rdata_value) {
+          push @$filtered, $record;
+        }
+      }
+    }
+  }
 
-	return $filtered;
+  return $filtered;
 }
 
 sub atomia_remove_all_records {
-	my $zone = shift;
-	my $name = shift;
-	my $type_pattern = shift;
-	my $type_matching = shift;
-	my $rdata_value = shift;
+  my $zone = shift;
+  my $name = shift;
+  my $type_pattern = shift;
+  my $type_matching = shift;
+  my $rdata_value = shift;
 
-	my $records = atomia_get_records($zone, $name);
-	my $unfiltered = $records;
-	$records = atomia_filter_records($records, $type_pattern, $type_matching, undef, $rdata_value);
+  my $records = atomia_get_records($zone, $name);
+  my $unfiltered = $records;
+  $records = atomia_filter_records($records, $type_pattern, $type_matching, undef, $rdata_value);
 
-	my $soap = webservice();
+  my $soap = webservice();
 
-	eval {
-		$soap->DeleteDnsRecords($zone, $records) unless scalar(@$records) == 0;
-	};
+  eval {
+    $soap->DeleteDnsRecords($zone, $records) unless scalar(@$records) == 0;
+  };
 
-	if ($@) {
-		die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
-		die $@;
-	} 
+  if ($@) {
+    die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
+    die $@;
+  }
 }
 
 sub atomia_remove_record {
-	my $zone = shift;
-	my $record = shift;
+  my $zone = shift;
+  my $record = shift;
 
-	atomia_remove_all_records($zone, $record->name, '^' . $record->type . '$', 1, $record->rdatastr);
+  atomia_remove_all_records($zone, $record->name, '^' . $record->type . '$', 1, $record->rdatastr);
 }
 
 sub atomia_update_record {
-	my $zone = shift;
-	my $record = shift;
-	my $new_record = shift;
+  my $zone = shift;
+  my $record = shift;
+  my $new_record = shift;
 
-	my $soap = webservice();
+  my $soap = webservice();
 
-	eval {
-		$record->{"ttl"} = $new_record->ttl;
-		$record->{"rdata"} = $new_record->rdatastr;
+  eval {
+    $record->{"ttl"} = $new_record->ttl;
+    $record->{"rdata"} = $new_record->rdatastr;
 
-		$soap->EditDnsRecords($zone, [ $record ]);
-	};
+    $soap->EditDnsRecords($zone, [ $record ]);
+  };
 
-	if ($@) {
-		die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
-		die $@;
-	}
+  if ($@) {
+    die($@->faultcode) if ref($@) && UNIVERSAL::isa($@, 'SOAP::SOM');
+    die $@;
+  }
 }
 
 sub atomia_zone_has_rrset {
-	my $zone = shift;
-	my $class = shift;
-	my $name = shift;
-	my $type = shift;
-	my $with_type = shift;
-	my $exact_rrset = shift;
+  my $zone = shift;
+  my $class = shift;
+  my $name = shift;
+  my $type = shift;
+  my $with_type = shift;
+  my $exact_rrset = shift;
 
-	my $records = atomia_get_records($zone, $name, $class, $type, $with_type);
-	die("error fetching records in atomia_zone_has_rrset") unless defined($records) && ref($records) eq "ARRAY";
+  my $records = atomia_get_records($zone, $name, $class, $type, $with_type);
+  die("error fetching records in atomia_zone_has_rrset") unless defined($records) && ref($records) eq "ARRAY";
 
-	if (defined($exact_rrset)) {
-		return 0 unless scalar(@$records) == scalar(@$exact_rrset);
+  if (defined($exact_rrset)) {
+    return 0 unless scalar(@$records) == scalar(@$exact_rrset);
 
-		my @sorted_in_zone = sort(map { $_->{"rdata"} } @$records);
-		my @sorted_in_prereq = sort(map { $_->rdatastr } @$exact_rrset);
+    my @sorted_in_zone = sort(map { $_->{"rdata"} } @$records);
+    my @sorted_in_prereq = sort(map { $_->rdatastr } @$exact_rrset);
 
-		for (my $idx = 0; $idx < scalar(@sorted_in_zone); $idx++) {
-			return 0 if $sorted_in_zone[$idx] ne $sorted_in_prereq[$idx];
-		}
+    for (my $idx = 0; $idx < scalar(@sorted_in_zone); $idx++) {
+      return 0 if $sorted_in_zone[$idx] ne $sorted_in_prereq[$idx];
+    }
 
-		return 1;
-	} else {
-		return scalar(@$records) > 0;
-	}
+    return 1;
+  } else {
+    return scalar(@$records) > 0;
+  }
 }
