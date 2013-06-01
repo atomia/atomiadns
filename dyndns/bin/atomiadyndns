@@ -43,20 +43,18 @@ sub reply_handler {
     ($time_signed, $request_mac) = extract_signature_info($valid_tsig);
   }
 
-  if ($qtype eq "A" && $qname eq "foo.example.com" ) {
-    ($ttl, $rdata) = (3600, "10.1.2.3");
-    $rcode = "NOERROR";
-  } elsif ( $qname eq "foo.example.com" ) {
-    $rcode = "NOERROR";
-  } elsif ( $qname eq "example.com" && $qtype eq "SOA") {
-    ($ttl, $rdata) = (3600, "dns1.pingdom.com. registry.ipwalk.com. 2010061601 10800 3600 604800 300");
+  # Check the database and return the SOA record if we are
+  # authoritative
+  if ( $qtype eq "SOA" && atomia_check_authorative($qname)) {
+    my $record = atomia_get_records($qname, $qname, $qclass, "SOA");
+    ($ttl, $rdata) = (@$record[0]->{'ttl'}, @$record[0]->{'rdata'});
     $rcode = "NOERROR";
   } else {
     $rcode = "NXDOMAIN";
   }
 
   push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata") if defined($ttl) && defined($rdata);
-  return ($rcode, \@ans, \@auth, \@add, { aa => 1 }, 
+  return ($rcode, \@ans, \@auth, \@add, { aa => 1 },
           { keyname => $config{"tsig_keyname"},
             key => $config{"tsig_key"},
             request_mac => $request_mac,
