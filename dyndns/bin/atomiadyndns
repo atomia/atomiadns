@@ -46,8 +46,10 @@ sub reply_handler {
   # Check the database and return the SOA record if we are
   # authoritative
   if ( $qtype eq "SOA" && atomia_check_authorative($qname)) {
-    my $record = atomia_get_records($qname, $qname, $qclass, "SOA");
-    ($ttl, $rdata) = (@$record[0]->{'ttl'}, @$record[0]->{'rdata'});
+    my $record = ${atomia_get_records($qname, $qname, $qclass, "SOA")}[0];
+    # give a bogus serial at the moment
+    $record->{'rdata'} =~ s/%serial/2013060201/g;
+    ($ttl, $rdata) = ($record->{'ttl'}, $record->{'rdata'});
     $rcode = "NOERROR";
   } else {
     $rcode = "NXDOMAIN";
