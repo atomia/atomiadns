@@ -8,7 +8,7 @@
 PORTNAME=	atomiadns
 PORTVERSION=	1.1.20
 CATEGORIES=	dns
-MASTER_SITES=	https://nodeload.github.com/atomia/atomiadns/tarball/
+MASTER_SITES=	https://codeload.github.com/atomia/atomiadns/tar.gz/
 PKGNAMESUFFIX=	-database
 DISTNAME=	${PORTVERSION}
 EXTRACT_SUFX=
