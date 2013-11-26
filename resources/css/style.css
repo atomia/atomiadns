@@ -559,7 +559,7 @@ div.article {
 	padding: 1.5em;
 	margin-top: 5px;
     overflow: auto;
-    white-space: normal;
+    white-space: pre-line;
 	font-size: 13px;
 	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,.4);
 	-moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
@@ -583,9 +583,6 @@ div.article {
 }
 pre ol {
 	color: #0E0E0E;
-}
-.programlisting ol pre {
-	white-space: pre-wrap
 }
 .figure-title {
 	font-size: 1.1em;
