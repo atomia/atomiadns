@@ -16,7 +16,7 @@ atomiapowerdnssync - An application for synchronizing a PowerDNS mys1l database 
 
 =head1 DESCRIPTION
 
-atomiapowerdnssync is an application for synchronizing a PowerDNS mys1l
+atomiapowerdnssync is an application for synchronizing a PowerDNS MySQL
 database with Atomia DNS.
 
 It contains options for both doing a full reload of all zones in the master
