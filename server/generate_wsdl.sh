@@ -81,9 +81,11 @@ EOH
 cat "$2"
 
 faultmessages=""
+faultoperationparts=""
 for fault in LogicalError InvalidParametersError SystemError InternalError; do
 	echo "\n\t<message name=\"$fault""FaultMessage\">\n\t\t<part element=\"tns:$fault""Fault\" name=\"fault\" />\n\t</message>"
 	faultmessages="$faultmessages\n\t\t\t<fault message=\"tns:$fault""FaultMessage\" name=\"$fault""Fault\" />"
+	faultoperationparts="$faultoperationparts\n\t\t\t<fault name=\"${fault}Fault\"><soap:fault name=\"${fault}Fault\" use=\"literal\" /></fault>"
 done
 
 grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t<message name=\"" $2 "Input\">\n\t\t<documentation>" methods[$2] "</documentation>\n\t\t<part name=\"parameters\" element=\"tns:" $2 "\"/>\n\t</message>\n\n\t<message name=\"" $2 "Output\">\n\t\t<part name=\"parameters\" element=\"tns:" $2 "Response\"/>\n\t</message>" }'
@@ -94,7 +96,7 @@ grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -v fa
 
 echo '\t</portType>\n\n\t<binding name="AtomiaDNSSoapBinding" type="tns:AtomiaDNSPortType">\n\t\t<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>'
 
-grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -F '"' "$methodawk"'{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<documentation>" methods[$2] "</documentation>\n\t\t\t<soap:operation soapAction=\"urn:Atomia::DNS::Server#" $2 "\"/>\n\t\t\t<input><soap:body use=\"literal\"/></input>\n\t\t\t<output><soap:body use=\"literal\"/></output>\n\t\t</operation>" }'
+grep "=>" lib/Atomia/DNS/Signatures.pm | grep -v auth | grep -E "$1" | awk -F '"' -vfaults="$faultoperationparts" "$methodawk"'{ print "\n\t\t<operation name=\"" $2 "\">\n\t\t\t<documentation>" methods[$2] "</documentation>\n\t\t\t<soap:operation soapAction=\"urn:Atomia::DNS::Server#" $2 "\"/>\n\t\t\t<input><soap:body use=\"literal\"/></input>\n\t\t\t<output><soap:body use=\"literal\"/></output>" faults "\n\t\t</operation>" }'
 
 cat <<EOF
 	</binding>

@@ -2565,6 +2565,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteZone">
@@ -2572,6 +2576,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="EditZone">
@@ -2579,6 +2587,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#EditZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddDnsRecords">
@@ -2586,6 +2598,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="EditDnsRecords">
@@ -2593,6 +2609,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#EditDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="SetDnsRecords">
@@ -2600,6 +2620,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#SetDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteDnsRecords">
@@ -2607,6 +2631,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetDnsRecords">
@@ -2614,6 +2642,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDnsRecords"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetLabels">
@@ -2621,6 +2653,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetLabels"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetZone">
@@ -2628,6 +2664,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetZoneBulk">
@@ -2635,6 +2675,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetZoneBinary">
@@ -2642,6 +2686,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneBinary"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetZoneMetadata">
@@ -2649,6 +2697,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneMetadata"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="SetZoneMetadata">
@@ -2656,6 +2708,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#SetZoneMetadata"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="RestoreZone">
@@ -2663,6 +2719,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="RestoreZoneBinary">
@@ -2670,6 +2730,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZoneBinary"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="RestoreZoneBulk">
@@ -2677,6 +2741,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#RestoreZoneBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="SetDnsRecordsBulk">
@@ -2684,6 +2752,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#SetDnsRecordsBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="CopyDnsZoneBulk">
@@ -2691,6 +2763,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#CopyDnsZoneBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="CopyDnsLabelBulk">
@@ -2698,6 +2774,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#CopyDnsLabelBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteDnsRecordsBulk">
@@ -2705,6 +2785,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDnsRecordsBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddNameserver">
@@ -2712,6 +2796,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddNameserver"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteNameserver">
@@ -2719,6 +2807,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteNameserver"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetNameserver">
@@ -2726,6 +2818,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserver"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetChangedZones">
@@ -2733,6 +2829,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetChangedZonesBatch">
@@ -2740,6 +2840,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedZonesBatch"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="MarkUpdated">
@@ -2747,6 +2851,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkUpdated"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="MarkUpdatedBulk">
@@ -2754,6 +2862,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkUpdatedBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="MarkAllUpdatedExcept">
@@ -2761,6 +2873,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkAllUpdatedExcept"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="MarkAllUpdatedExceptBulk">
@@ -2768,6 +2884,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkAllUpdatedExceptBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetAllZones">
@@ -2775,6 +2895,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetAllZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="ReloadAllZones">
@@ -2782,6 +2906,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#ReloadAllZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetUpdatesDisabled">
@@ -2789,6 +2917,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetUpdatesDisabled"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="SetUpdatesDisabled">
@@ -2796,6 +2928,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#SetUpdatesDisabled"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetNameserverGroup">
@@ -2803,6 +2939,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserverGroup"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="SetNameserverGroup">
@@ -2810,6 +2950,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#SetNameserverGroup"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddNameserverGroup">
@@ -2817,6 +2961,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddNameserverGroup"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteNameserverGroup">
@@ -2824,6 +2972,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteNameserverGroup"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddSlaveZone">
@@ -2831,6 +2983,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddSlaveZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteSlaveZone">
@@ -2838,6 +2994,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteSlaveZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetChangedSlaveZones">
@@ -2845,6 +3005,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedSlaveZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="MarkSlaveZoneUpdated">
@@ -2852,6 +3016,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkSlaveZoneUpdated"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetSlaveZone">
@@ -2859,6 +3027,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetSlaveZone"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="ReloadAllSlaveZones">
@@ -2866,6 +3038,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#ReloadAllSlaveZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AllowZoneTransfer">
@@ -2873,6 +3049,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AllowZoneTransfer"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetAllowedZoneTransfer">
@@ -2880,6 +3060,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetAllowedZoneTransfer"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteAllowedZoneTransfer">
@@ -2887,6 +3071,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteAllowedZoneTransfer"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetDNSSECKeys">
@@ -2894,6 +3082,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECKeys"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetDNSSECKeysDS">
@@ -2901,6 +3093,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECKeysDS"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetExternalDNSSECKeys">
@@ -2908,6 +3104,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetExternalDNSSECKeys"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddDNSSECKey">
@@ -2915,6 +3115,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddExternalDNSSECKey">
@@ -2922,6 +3126,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddExternalDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="ActivateDNSSECKey">
@@ -2929,6 +3137,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#ActivateDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeactivateDNSSECKey">
@@ -2936,6 +3148,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeactivateDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteDNSSECKey">
@@ -2943,6 +3159,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteExternalDNSSECKey">
@@ -2950,6 +3170,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteExternalDNSSECKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetDNSSECZSKInfo">
@@ -2957,6 +3181,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetDNSSECZSKInfo"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="AddAccount">
@@ -2964,6 +3192,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#AddAccount"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="EditAccount">
@@ -2971,6 +3203,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#EditAccount"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="DeleteAccount">
@@ -2978,6 +3214,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteAccount"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="GetNameserverGroups">
@@ -2985,6 +3225,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#GetNameserverGroups"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="FindZones">
@@ -2992,6 +3236,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#FindZones"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
 		<operation name="Noop">
@@ -2999,6 +3247,10 @@ atomiaZSKInfo is a struct with the following members:
 			<soap:operation soapAction="urn:Atomia::DNS::Server#Noop"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 	</binding>
 
