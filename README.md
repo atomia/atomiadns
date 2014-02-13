@@ -1,7 +1,7 @@
 Atomia DNS
 ==========
 
-Copyright (c) 2009-2012, Atomia AB <info@atomia.com>
+Copyright (c) 2009-2014, Atomia AB <info@atomia.com>
 
 What is Atomia DNS?
 -------------------
