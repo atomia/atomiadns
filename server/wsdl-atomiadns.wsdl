@@ -58,6 +58,12 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="xsdAtomiaLongArray">
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="xsd:long" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:complexType name="atomiaMetadataArray">
 				<xsd:sequence>
 					<xsd:element minOccurs="1" maxOccurs="unbounded" name="metadataEntry" type="atomiaMetadata" />
@@ -69,7 +75,7 @@
 atomiaResourceRecord is a struct with the following members:
 
 || Member || Type || Description ||
-| id | int | the id of the record |
+| id | bigint | the id of the record |
 | label | string | the label of the record |
 | class | string | the DNS class, almost always IN |
 | ttl | int | the time in seconds which it is valid to cache the record for |
@@ -78,7 +84,7 @@ atomiaResourceRecord is a struct with the following members:
 {excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
-					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:long"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="label" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="class" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="ttl" type="xsd:int"/>
@@ -192,7 +198,7 @@ atomiaZoneStruct is a struct with the following members:
 {excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
-					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:long"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
 				</xsd:all>
 			</xsd:complexType>
@@ -214,7 +220,7 @@ atomiaChangedZone is a struct with the following members:
 {excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
-					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:int"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:long"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
 					<xsd:element minOccurs="1" maxOccurs="1" name="changetime" type="xsd:int"/>
 				</xsd:all>
@@ -428,7 +434,7 @@ atomiaZSKInfo is a struct with the following members:
 			<xsd:element name="MarkUpdated">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:long"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="changestatus" type="xsd:string"><xsd:annotation><xsd:documentation>ERROR or OK</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="errormessage" type="xsd:string"><xsd:annotation><xsd:documentation>error message to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
@@ -446,7 +452,7 @@ atomiaZSKInfo is a struct with the following members:
 			<xsd:element name="MarkUpdatedBulk">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changeids" type="xsdAtomiaIntArray"><xsd:annotation><xsd:documentation>the ids of the change-rows</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeids" type="xsdAtomiaLongArray"><xsd:annotation><xsd:documentation>the ids of the change-rows</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="changestatuses" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>ERROR or OK for every change row</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="errormessages" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>error messages to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
@@ -465,7 +471,7 @@ atomiaZSKInfo is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>zone to mark all updates as updated for</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row to keep</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:long"><xsd:annotation><xsd:documentation>the id of the change-row to keep</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -498,7 +504,7 @@ atomiaZSKInfo is a struct with the following members:
 			<xsd:element name="MarkSlaveZoneUpdated">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:int"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:long"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="changestatus" type="xsd:string"><xsd:annotation><xsd:documentation>ERROR or OK</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="errormessage" type="xsd:string"><xsd:annotation><xsd:documentation>error message to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>

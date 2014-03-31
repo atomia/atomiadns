@@ -43,7 +43,7 @@ sub matchSignature {
 		my $message = "parameter " . ($idx + 1) . " doesn't match signature $sig";
 
 		die($message) unless defined($param);
-		die($message) if $sig eq "int" && !($param =~ /^\d+$/);
+		die($message) if ($sig eq "int" || $sig eq "bigint") && !($param =~ /^\d+$/);
 
 		if ($sig eq "array" || $sig eq "array[resourcerecord]" || $sig eq "zone" || $sig eq "array[hostname]" || $sig eq "array[int]") {
 			my $itemname = ($sig eq "array" || $sig eq "array[int]") ? "item" : ($sig eq "zone" ? "label" : ($sig eq "array[hostname]" ? "hostname" : "resourcerecord"));
@@ -603,6 +603,8 @@ sub handleAll {
 		PARAM: for (my $idx = 0; $idx < scalar(@_); $idx++) {
 			if ($signature->[$idx] eq "int") {
 				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_INT4 });
+			} elsif ($signature->[$idx] eq "bigint") {
+				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_INT8 });
 			} elsif ($signature->[$idx] eq "array") {
 				$sth->bind_param($idx + 1, $_[$idx], { pg_type => PG_VARCHARARRAY });
 			} elsif ($signature->[$idx] eq "array[int]") {
@@ -1140,7 +1142,7 @@ sub handleOperation {
 		$retval = $self->handleBinaryZone($method, $signature, @_);
 	} elsif ($return_type eq "array[binaryzone]") {
 		$retval = $self->handleBinaryZoneArray($method, $signature, @_);
-	} elsif ($return_type eq "array[int]") {
+	} elsif ($return_type eq "array[int]" || $return_type eq "array[bigint]") {
 		$retval = $self->handleIntArray($method, $signature, @_);
 	} elsif ($return_type eq "zone") {
 		$retval = $self->handleZone($method, $signature, @_);

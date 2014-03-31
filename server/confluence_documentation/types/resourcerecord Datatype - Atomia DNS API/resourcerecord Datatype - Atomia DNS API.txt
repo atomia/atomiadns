@@ -2,7 +2,7 @@
 [resourcerecord|resourcerecord Datatype - Atomia DNS API] is a struct with the following members:
 
 || Member || Type || Description ||
-| id | int | the id of the record |
+| id | bigint | the id of the record |
 | label | string | the label of the record |
 | class | string | the DNS class, almost always IN |
 | ttl | int | the time in seconds which it is valid to cache the record for |

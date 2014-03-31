@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION GetChangedZonesBatch(
 	nameservername varchar,
 	changelimit int,
-	out change_id int,
+	out change_id bigint,
 	out change_name varchar,
 	out change_changetime int
 ) RETURNS SETOF record AS $$

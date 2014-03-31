@@ -1,11 +1,11 @@
 CREATE OR REPLACE FUNCTION AddDnsRecords(
 	zonename varchar,
 	records varchar[][],
-	out record_id int
-) RETURNS SETOF int AS $$
+	out record_id bigint
+) RETURNS SETOF bigint AS $$
 DECLARE
-	record_label_id int;
-	record_zone_id int;
+	record_label_id bigint;
+	record_zone_id bigint;
 BEGIN
 	FOR i IN array_lower(records, 1) .. array_upper(records, 1) LOOP
 
@@ -21,13 +21,13 @@ BEGIN
 		END IF;
 
 		IF records[i][1] IS NOT NULL AND records[i][1] != '' AND records[i][1] != '-1' THEN
-			INSERT INTO record (id, label_id, ttl, class, type, rdata) VALUES (records[i][1]::int, record_label_id, 
-					records[i][4]::int, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
-			record_id := records[i][1]::int;
+			INSERT INTO record (id, label_id, ttl, class, type, rdata) VALUES (records[i][1]::bigint, record_label_id, 
+					records[i][4]::bigint, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
+			record_id := records[i][1]::bigint;
 			
 		ELSE
 			INSERT INTO record (label_id, ttl, class, type, rdata) VALUES (record_label_id, 
-					records[i][4]::int, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
+					records[i][4]::bigint, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
 			record_id := currval('record_id_seq');
 		END IF;
 		RETURN NEXT;

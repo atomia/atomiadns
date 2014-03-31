@@ -3,8 +3,8 @@ CREATE OR REPLACE FUNCTION SetDnsRecords(
 	records varchar[][]
 ) RETURNS void AS $$
 DECLARE
-	record_label_id int;
-	record_zone_id int;
+	record_label_id bigint;
+	record_zone_id bigint;
 BEGIN
 	FOR i IN array_lower(records, 1) .. array_upper(records, 1) LOOP
 
@@ -39,6 +39,6 @@ BEGIN
 		END IF;
 
 		INSERT INTO record (label_id, ttl, class, type, rdata) VALUES (record_label_id, 
-					records[i][4]::int, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
+					records[i][4]::bigint, records[i][3]::dnsclass,  records[i][5],  records[i][6]);
 	END LOOP;
 END; $$ LANGUAGE plpgsql;

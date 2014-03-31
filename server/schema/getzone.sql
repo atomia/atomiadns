@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION GetZone(
 	zonename varchar,
-	out record_id int,
+	out record_id bigint,
 	out record_label varchar,
 	out record_class dnsclass,
 	out record_ttl int,

@@ -3,10 +3,10 @@ CREATE OR REPLACE FUNCTION EditDnsRecords(
 	records varchar[][]
 ) RETURNS void AS $$
 DECLARE
-	record_id int;
-	old_record_label_id int;
-	new_record_label_id int;
-	record_zone_id int;
+	record_id bigint;
+	old_record_label_id bigint;
+	new_record_label_id bigint;
+	record_zone_id bigint;
 	num_records int;
 BEGIN
 	FOR i IN array_lower(records, 1) .. array_upper(records, 1) LOOP
@@ -17,7 +17,7 @@ BEGIN
 		END IF;
 
 		SELECT label_id INTO old_record_label_id FROM zone INNER JOIN label ON zone.id = zone_id INNER JOIN record ON label.id = label_id
-		WHERE name = zonename AND record.id = records[i][1]::int;
+		WHERE name = zonename AND record.id = records[i][1]::bigint;
 
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'record with id % doesn''t exist in zone %', records[i][1], zonename;
@@ -31,11 +31,11 @@ BEGIN
 
 		UPDATE record SET
 			label_id = new_record_label_id,
-			ttl = records[i][4]::int,
+			ttl = records[i][4]::bigint,
 			class = records[i][3]::dnsclass,
 			type = records[i][5],
 			rdata = records[i][6]
-		WHERE id = records[i][1]::int;
+		WHERE id = records[i][1]::bigint;
 
 		IF new_record_label_id != old_record_label_id THEN
 			SELECT COUNT(*) INTO num_records FROM label INNER JOIN record ON label.id = label_id WHERE label.id = old_record_label_id;

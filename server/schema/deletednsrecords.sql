@@ -8,13 +8,13 @@ BEGIN
 	FOR i IN array_lower(records, 1) .. array_upper(records, 1) LOOP
 
 		SELECT COUNT(*) INTO num_records FROM zone INNER JOIN label ON zone.id = zone_id INNER JOIN record ON label.id = label_id
-		WHERE name = zonename AND record.id = records[i][1]::int;
+		WHERE name = zonename AND record.id = records[i][1]::bigint;
 
 		IF num_records != 1 THEN
 			RAISE EXCEPTION 'record with id % doesn''t exist in zone %', records[i][1], zonename;
 		END IF;
 
-		DELETE FROM record WHERE id = records[i][1]::int;
+		DELETE FROM record WHERE id = records[i][1]::bigint;
 
 	END LOOP;
 

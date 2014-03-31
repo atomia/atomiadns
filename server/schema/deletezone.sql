@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION DeleteZone (
 	zonename varchar
 ) RETURNS void AS $$
 DECLARE
-	zone_id_var int;
+	zone_id_var bigint;
 BEGIN
 	SELECT id INTO zone_id_var FROM zone WHERE name = zonename;
 	IF NOT FOUND THEN

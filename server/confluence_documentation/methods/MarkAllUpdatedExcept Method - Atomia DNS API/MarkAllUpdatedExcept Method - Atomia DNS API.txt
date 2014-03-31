@@ -6,7 +6,7 @@ h3.Declaration syntax
 {panel}
 void MarkAllUpdatedExcept(
 	string zone,
-	int changeid
+	bigint changeid
 )
 {panel}
 
@@ -14,6 +14,6 @@ h3.Parameters
 
 || Parameter || Type || Description ||
 |zone|string|zone to mark all updates as updated for|
-|changeid|int|the id of the change-row to keep|
+|changeid|bigint|the id of the change-row to keep|
 
 {include:MarkAllUpdatedExcept Method Example - Atomia DNS API}

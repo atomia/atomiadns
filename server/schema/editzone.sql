@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION EditZone(
 	nameserver_group_name varchar
 ) RETURNS void AS $$
 DECLARE
-	origin_label_id int;
+	origin_label_id bigint;
 	nameserver_group_id_var int;
 BEGIN
 	IF refresh < 0 THEN

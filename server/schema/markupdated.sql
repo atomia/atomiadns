@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION MarkUpdated (
-	change_id int,
+	change_id bigint,
 	cstatus varchar, 
 	cmessage varchar 
 ) RETURNS void AS $$

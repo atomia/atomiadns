@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION MarkAllUpdatedExcept (
 	zonearg varchar, 
-	change_id int
+	change_id bigint
 ) RETURNS void AS $$
 DECLARE
         nameserver_id_var int;

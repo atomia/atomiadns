@@ -5,7 +5,7 @@ Mark a slave zone change-row as handled, removing it if no error occured.
 h3.Declaration syntax
 {panel}
 void MarkSlaveZoneUpdated(
-	int changeid,
+	bigint changeid,
 	string changestatus,
 	string errormessage
 )
@@ -14,7 +14,7 @@ void MarkSlaveZoneUpdated(
 h3.Parameters
 
 || Parameter || Type || Description ||
-|changeid|int|the id of the change-row|
+|changeid|bigint|the id of the change-row|
 |changestatus|string|ERROR or OK|
 |errormessage|string|error message to set if cstatus is ERROR|
 

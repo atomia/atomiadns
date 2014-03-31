@@ -192,6 +192,21 @@ alter_table_addcolumn() {
 	fi
 }
 
+alter_table_alter_column_type() {
+	table="$1"
+	column="$2"
+	newtype="$3"
+
+	query="ALTER TABLE $table ALTER COLUMN $column TYPE $newtype"
+
+	$psql -c "$query" zonedata > /dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "error altering type of column $table.$column to $newtype, you'll have to migrate the schema manually."
+		echo "command used was: $psql -c '$query' zonedata"
+		exit 1
+	fi
+}
+
 set_schema_version() {
 	$psql -c "UPDATE atomiadns_schemaversion SET version = $1" zonedata > /dev/null 2>&1
 	if [ $? != 0 ]; then
@@ -208,7 +223,7 @@ if [ $? != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="79"
+		latest_version="80"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -463,6 +478,37 @@ if [ $? != 0 ]; then
 
 			if [ "$schema_version" -lt 79 ]; then
 				execute_query "UPDATE allowed_type SET regexp = '^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}\$' WHERE type = 'A'"
+			fi
+
+			if [ "$schema_version" -lt 80 ]; then
+				alter_table_alter_column_type "change" "id" "bigint"
+				alter_table_alter_column_type "slavezone_change" "id" "bigint"
+				alter_table_alter_column_type "zone" "id" "bigint"
+				alter_table_alter_column_type "slavezone" "id" "bigint"
+				alter_table_alter_column_type "label" "id" "bigint"
+				alter_table_alter_column_type "label" "zone_id" "bigint"
+				alter_table_alter_column_type "zone_metadata" "id" "bigint"
+				alter_table_alter_column_type "zone_metadata" "zone_id" "bigint"
+				alter_table_alter_column_type "record" "id" "bigint"
+				alter_table_alter_column_type "record" "label_id" "bigint"
+				recreate_procedure "adddnsrecords"
+				recreate_procedure "deletednsrecords"
+				recreate_procedure "deletednsrecordsbulk"
+				recreate_procedure "deleteslavezone"
+				recreate_procedure "deletezone"
+				recreate_procedure "editdnsrecords"
+				recreate_procedure "editzone"
+				recreate_procedure "getallzones"
+				recreate_procedure "getchangedslavezones"
+				recreate_procedure "getchangedzones"
+				recreate_procedure "getchangedzonesbatch"
+				recreate_procedure "getdnsrecords"
+				recreate_procedure "getzone"
+				recreate_procedure "getzonebulk"
+				recreate_procedure "markallupdatedexcept"
+				recreate_procedure "markslavezoneupdated"
+				recreate_procedure "markupdated"
+				recreate_procedure "setdnsrecords"
 			fi
 
 			set_schema_version "$latest_version"

@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (79);
+INSERT INTO atomiadns_schemaversion (version) VALUES (80);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE nameserver (
 );
 
 CREATE TABLE change (
-        id SERIAL PRIMARY KEY NOT NULL,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
         nameserver_id INT NOT NULL REFERENCES nameserver,
         zone VARCHAR(255) NOT NULL,
 	status changetype NOT NULL DEFAULT 'PENDING',
@@ -114,7 +114,7 @@ CREATE TABLE change (
 CREATE INDEX change_zone_index ON change(zone, nameserver_id);
 
 CREATE TABLE slavezone_change (
-        id SERIAL PRIMARY KEY NOT NULL,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
         nameserver_id INT NOT NULL REFERENCES nameserver,
         zone VARCHAR(255) NOT NULL,
 	status changetype NOT NULL DEFAULT 'PENDING',
@@ -123,14 +123,14 @@ CREATE TABLE slavezone_change (
 );
 
 CREATE TABLE zone (
-        id SERIAL PRIMARY KEY NOT NULL,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
 	account_id INT NULL REFERENCES account
 );
 
 CREATE TABLE slavezone (
-        id SERIAL PRIMARY KEY NOT NULL,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
 	master VARCHAR(255) NOT NULL CONSTRAINT master_format CHECK (master ~* '^(([0-9]+[.]){3}[0-9]+)|(((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})){3})))(%.+)?)$'),
@@ -142,8 +142,8 @@ CREATE TABLE slavezone (
 CREATE INDEX zone_nameserver_group_idx ON zone(nameserver_group_id);
 
 CREATE TABLE label (
-        id SERIAL PRIMARY KEY NOT NULL,
-        zone_id INT NOT NULL REFERENCES zone,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
+        zone_id BIGINT NOT NULL REFERENCES zone,
         label VARCHAR(255) NOT NULL CONSTRAINT label_format CHECK (label ~* '^(([*][.])?([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*)|[@*]$'),
 	UNIQUE (zone_id, label)
 );
@@ -151,8 +151,8 @@ CREATE TABLE label (
 CREATE INDEX label_zone_id ON label(zone_id);
 
 CREATE TABLE record (
-        id SERIAL PRIMARY KEY NOT NULL,
-        label_id INT NOT NULL REFERENCES label,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
+        label_id BIGINT NOT NULL REFERENCES label,
         class dnsclass NOT NULL,
         type VARCHAR(16) NOT NULL,
         ttl INT NOT NULL CONSTRAINT ttl_not_negative CHECK (ttl >= 0),
@@ -162,8 +162,8 @@ CREATE TABLE record (
 CREATE INDEX record_label_idx ON record(label_id);
 
 CREATE TABLE zone_metadata (
-        id SERIAL PRIMARY KEY NOT NULL,
-        zone_id INT NOT NULL REFERENCES zone,
+        id BIGSERIAL PRIMARY KEY NOT NULL,
+        zone_id BIGINT NOT NULL REFERENCES zone,
         metadata_key VARCHAR(255) NOT NULL,
         metadata_value VARCHAR(255) NOT NULL,
 	UNIQUE (zone_id, metadata_key)

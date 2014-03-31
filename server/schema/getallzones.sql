@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION GetAllZones(
-	out id int,
+	out id bigint,
 	out name varchar
 ) RETURNS SETOF record AS $$
 DECLARE r RECORD;
