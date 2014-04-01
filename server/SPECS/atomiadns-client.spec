@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.27
+Version: 1.1.28
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue Apr 01 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.28-1
+- Update id for zone, label, record, slavezone, change, slavezone_change and zone_metadata to bigint
 * Tue Feb 12 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.27-1
 - Fix DeleteNameserverGroup and AddSlaveZoneAuth
 * Tue Jan 15 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.26-1

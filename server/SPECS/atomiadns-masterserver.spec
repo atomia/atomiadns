@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.27
+Version: 1.1.28
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.27 atomiadns-database >= 1.1.27
+Requires: atomiadns-api >= 1.1.28 atomiadns-database >= 1.1.28
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue Apr 01 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.28-1
+- Update id for zone, label, record, slavezone, change, slavezone_change and zone_metadata to bigint
 * Tue Feb 12 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.27-1
 - Fix DeleteNameserverGroup and AddSlaveZoneAuth
 * Tue Jan 15 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.26-1
