@@ -9,6 +9,24 @@ fi
 sudo="sudo -u $pg_user"
 psql="$sudo psql"
 
+# Patch to allow for non-localhost databases
+db_hostname=$(grep db_hostname /etc/atomiadns.conf | awk '{print $NF;}')
+if [ $? -eq 0 ] && [ "$db_hostname" != "" ] && [ "$db_hostname" != "localhost" ] && [ "$db_hostname" != "127.0.0.1" ]; then
+	echo "Database seems to be remote, reading hostname, username and password from configuration file."
+	sudo=""
+	db_username=$(grep db_username /etc/atomiadns.conf | awk '{print $NF;}')
+	db_password=$(grep db_password /etc/atomiadns.conf | awk '{print $NF;}')
+	if [ "$db_username" = "" ] || [ "$db_password" = "" ]; then
+		echo "Cannot read credentials from configuration, defaulting to postgres user and no password"
+	else
+		export "PGPASSWORD=$db_password"
+	fi
+	psql="psql -h $db_hostname -U $db_username"
+	remote_db=1
+else
+	remote_db=0
+fi
+
 sha1=`which sha1sum 2> /dev/null`
 if [ -z "$sha1" ]; then
 	sha1=`which sha1 2> /dev/null`
@@ -59,16 +77,28 @@ createschema() {
 	else
 		echo "/etc/atomiadns.conf doesn't contain %password, assuming that the role is already created"
 	fi
-
-	existing_languages=`$sudo createlang -d zonedata -l 2>&1`
-	if [ $? != 0 ]; then
+	
+	if [ $remote_db -eq 1 ]; then
+		existing_languages=`createlang -U $db_username -h $db_hostname -d zonedata -l 2>&1`
+		temp=$?
+	else
+		existing_languages=`$sudo createlang -d zonedata -l 2>&1`
+		temp=$?
+	fi
+	if [ $temp != 0 ]; then
 		echo "error finding existing languages in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	elif echo "$existing_languages" | grep plpgsql > /dev/null; then
 		echo "language plpgsql already added by default when zonedata was created, skipping"
 	else
-		$sudo createlang -d zonedata plpgsql > /dev/null 2>&1
-		if [ $? != 0 ]; then
+		if [ $remote_db -eq 1 ]; then
+			createlang -U $db_username -h $db_hostname -d zonedata plpgsql > /dev/null 2>&1
+			temp=$?
+		else
+			$sudo createlang -d zonedata plpgsql > /dev/null 2>&1
+			temp=$?
+		fi
+		if [ $temp != 0 ]; then
 			echo "error adding plpgsql as language in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
 			exit 1
 		fi
@@ -215,8 +245,14 @@ set_schema_version() {
 	fi
 }
 
-$sudo createdb zonedata > /dev/null 2>&1
-if [ $? != 0 ]; then
+if [ $remote_db -eq 1 ]; then
+	createdb -U $db_username -h $db_hostname zonedata > /dev/null 2>&1
+	temp=$?
+else
+	$sudo createdb zonedata > /dev/null 2>&1
+	temp=$?
+fi
+if [ $temp != 0 ]; then
 
 	schema_version=`$psql -qAt zonedata -c "SELECT version FROM atomiadns_schemaversion" 2> /dev/null`
 	if [ $? != 0 ] || [ -z "$schema_version" ]; then
