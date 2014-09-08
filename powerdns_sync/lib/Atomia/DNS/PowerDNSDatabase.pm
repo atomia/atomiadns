@@ -64,6 +64,61 @@ sub dbi {
         }
 }
 
+sub parse_record {
+	my $self = shift;
+	my $record = shift;
+	my $nsec_type = shift;
+	my $zone = shift;
+	my $name = shift;
+
+	my $content = $record->{"rdata"};
+	my $type = $record->{"type"};
+	my $ttl = $record->{"ttl"};
+	my $label = $record->{"label"};
+	my $ordername = '';
+
+	if ($nsec_type eq 'NSEC') {
+		$ordername = lc(join(" ", reverse(split(/\./, ($label eq '@' ? '' : $label)))));
+	} elsif ($nsec_type eq 'NSEC3') {
+		my $nsec3 = $label eq '@' ? $zone->{"name"} : lc($label . "." . $zone->{"name"});
+		my @parts = split(/\./, $nsec3);
+		$nsec3 = join("", map { pack("Ca*", length($_), $_) } @parts) . "\0";
+		$nsec3 = sha1($nsec3, $self->nsec3_salt);
+
+		for (my $idx = 0; $idx < $self->nsec3_iterations; $idx++) {
+			$nsec3 = sha1($nsec3, $self->nsec3_salt);
+		}
+
+		$ordername = lc(MIME::Base32::encode($nsec3));
+	}
+
+	$ordername = $self->dbi->quote($ordername);
+
+	my $prio = "NULL";
+	my $fqdn = $label eq '@' ? $name : $self->dbi->quote($label . "." . $zone->{"name"});
+	my $auth = ($type eq 'NS' && $label ne '@') ? 0 : 1;
+
+	if ($type eq "SOA") {
+		$content =~ s/%serial/$zone->{"changetime"}/g;
+		$content =~ s/\. / /g;
+		$content =~ s/^([^ ]* [^\.]*)\./$1\@/;
+	} elsif ($type =~ /^(CNAME|MX|PTR|NS)$/) {
+		$content = $content . "." . $zone->{"name"} unless $content =~ /\.$/;
+		$content =~ s/\.$//;
+	}
+
+	if ($type =~ /^(MX|SRV)$/) {
+		if ($content =~ /^(\d+)\s+(.*)$/) {
+			$prio = $1;
+			$content = $2;
+		} else {
+			die "bad format of rdata for $type";
+		}
+	}
+
+	return ($fqdn, $label, $type, $content, $ttl, $prio, $auth, $ordername);
+}
+
 sub add_zone {
 	my $self = shift;
 	my $zone = shift;
@@ -86,15 +141,84 @@ sub add_zone {
 			return if $num_row->[0] == 1;
 		}
 
-		$self->dbi->do("DELETE domains, records FROM domains LEFT JOIN records ON domains.id = records.domain_id WHERE domains.name = $name") || die "error removing previous version of zone in add_zone: $DBI::errstr";
+		my $query = "SELECT id, type FROM domains WHERE name = $name";
+		my $domain = $self->dbi->selectrow_arrayref($query);
+		my $domain_id = defined($domain) && ref($domain) eq "ARRAY" && scalar(@$domain) == 2 ? $domain->[0] : -1;
+		my $domain_type = defined($domain) && ref($domain) eq "ARRAY" && scalar(@$domain) == 2 ? $domain->[1] : undef;
+		my $domain_exists = $domain_id != -1 ? 1 : 0;
 
-		my $query = "INSERT INTO domains (name, type) VALUES ($name, '$zone_type')";
+		if ($domain_id == -1) {
+			$query = "INSERT INTO domains (name, type) VALUES ($name, '$zone_type')";
+			$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
+			$domain_id = $self->dbi->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
+		} elsif ($domain_id != -1 && $zone_type ne $domain_type) {
+			$query = "UPDATE domains SET type = '$zone_type' WHERE id = $domain_id";
+			$self->dbi->do($query) || die "error updating zone type: $DBI::errtr";
+		}
 
-		$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
+		my @records_to_insert = ();
 
-		my $domain_id = $self->dbi->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
+		if ($domain_exists) {
+			my @db_ids_to_delete = ();
 
-		my $num_records = scalar(@$records);
+			my $rows = $self->dbi->selectall_arrayref("SELECT id, name, type, content, ttl, prio, auth, ordername FROM records WHERE domain_id = $domain_id");
+
+			RECORD: foreach my $record (@$records) {
+				next RECORD unless defined($record);
+
+				my $record_exists = 0;
+				my ($fqdn, $label, $type, $content, $ttl, $prio, $auth, $ordername) = parse_record($self, $record, $nsec_type, $zone, $name);
+
+				ROW: foreach my $row (@$rows) {
+					next ROW unless defined($row);
+
+					if ($self->dbi->quote($row->[1]) eq $fqdn &&
+						$row->[2] eq $type &&
+						$row->[3] eq $content  &&
+						$row->[4] eq $ttl &&
+						((!defined($row->[5]) and $prio eq "NULL") || ($row->[5] eq $prio))) {
+						$record_exists = 1;
+					}
+				}
+
+				if (!$record_exists) {
+					push(@records_to_insert, $record);
+				}
+			}
+
+			ROW: foreach my $row (@$rows) {
+				next ROW unless defined($row);
+
+				my $row_exists = 0;
+
+				RECORD: foreach my $record (@$records) {
+					next RECORD unless defined($record);
+
+					my ($fqdn, $label, $type, $content, $ttl, $prio, $auth, $ordername) = parse_record($self, $record, $nsec_type, $zone, $name);
+
+					if ($self->dbi->quote($row->[1]) eq $fqdn &&
+						$row->[2] eq $type &&
+						$row->[3] eq $content  &&
+						$row->[4] eq $ttl &&
+						((!defined($row->[5]) and $prio eq "NULL") || ($row->[5] eq $prio))) {
+						$row_exists = 1;
+					}
+				}
+
+				if (!$row_exists) {
+					push(@db_ids_to_delete, $row->[0]);
+				}
+			}
+
+			if (scalar(@db_ids_to_delete) > 0) {
+				$query = "DELETE FROM records WHERE id IN (" . join(",", @db_ids_to_delete) . ")";
+				$self->dbi->do($query) || die "error when removing non existing records in zone: $DBI::errstr";
+			}
+		} else {
+			@records_to_insert = @$records;
+		}
+
+		my $num_records = scalar(@records_to_insert);
 		my $weed_dupes = {};
 
 		for (my $batch = 0; $batch * 1000 < $num_records; $batch++) {
@@ -103,56 +227,12 @@ sub add_zone {
 			my $first_in_batch = 1;
 
 			RECORD: for (my $idx = 0; $idx < 1000 && $batch * 1000 + $idx < $num_records; $idx++) {
-				my $record = $records->[$batch * 1000 + $idx];
-				my $content = $record->{"rdata"};
-				my $type = $record->{"type"};
-				my $ttl = $record->{"ttl"};
-				my $label = $record->{"label"};
-				my $ordername = '';
+				my $record = $records_to_insert[$batch * 1000 + $idx];
+				my ($fqdn, $label, $type, $content, $ttl, $prio, $auth, $ordername) = parse_record($self, $record, $nsec_type, $zone, $name);
 
 				my $dupe_key = "$label/$type/$content";
 				next RECORD if exists($weed_dupes->{$dupe_key});
 				$weed_dupes->{$dupe_key} = 1;
-
-				if ($nsec_type eq 'NSEC') {
-					$ordername = lc(join(" ", reverse(split(/\./, ($label eq '@' ? '' : $label)))));
-				} elsif ($nsec_type eq 'NSEC3') {
-					my $nsec3 = $label eq '@' ? $zone->{"name"} : lc($label . "." . $zone->{"name"});
-					my @parts = split(/\./, $nsec3);
-					$nsec3 = join("", map { pack("Ca*", length($_), $_) } @parts) . "\0";
-					$nsec3 = sha1($nsec3, $self->nsec3_salt);
-					
-					for (my $idx = 0; $idx < $self->nsec3_iterations; $idx++) {
-						$nsec3 = sha1($nsec3, $self->nsec3_salt);
-					}
-
-					$ordername = lc(MIME::Base32::encode($nsec3));
-				}
-
-				$ordername = $self->dbi->quote($ordername);
-
-				my $prio = "NULL";
-				my $fqdn = $label eq '@' ? $name : $self->dbi->quote($label . "." . $zone->{"name"});
-				my $auth = ($type eq 'NS' && $label ne '@') ? 0 : 1;
-
-				if ($type eq "SOA") {
-					$content =~ s/%serial/$zone->{"changetime"}/g;
-					$content =~ s/\. / /g;
-					$content =~ s/^([^ ]* [^\.]*)\./$1\@/;
-				} elsif ($type =~ /^(CNAME|MX|PTR|NS)$/) {
-					$content = $content . "." . $zone->{"name"} unless $content =~ /\.$/;
-					$content =~ s/\.$//;
-				}
-
-				if ($type =~ /^(MX|SRV)$/) {
-					if ($content =~ /^(\d+)\s+(.*)$/) {
-						$prio = $1;
-						$content = $2;
-					} else {
-						die "bad format of rdata for $type";
-					}
-				}
-
 
 				$query .= sprintf("%s(%d, %s, %s, %s, %d, %s, %d, %s)", ($first_in_batch ? '' : ','), $domain_id, $fqdn, $self->dbi->quote($type), $self->dbi->quote($content), $ttl, $prio, $auth, $ordername);
 				$first_in_batch = 0;
