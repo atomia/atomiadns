@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.29) hardy; urgency=low
+
+  * Improve update of large DNS zones in PowerDNS sync agent
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 12 Sep 2014 10:42:45 +0200
+
 atomiadns-dyndns (1.1.28) hardy; urgency=low
 
   * Update id for zone, label, record, slavezone, change, slavezone_change and zone_metadata to bigint

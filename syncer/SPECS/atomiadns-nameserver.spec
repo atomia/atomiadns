@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.1.28
+Version: 1.1.29
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -107,6 +107,8 @@ fi
 exit 0
 
 %changelog
+* Fri Sep 12 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.29-1
+- Improve update of large DNS zones in PowerDNS sync agent
 * Tue Apr 01 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.28-1
 - Update id for zone, label, record, slavezone, change, slavezone_change and zone_metadata to bigint
 * Tue Feb 12 2013 Jimmy Bergman <jimmy@atomia.com> - 1.1.27-1
