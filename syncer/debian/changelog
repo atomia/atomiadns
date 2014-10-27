@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.1.30) hardy; urgency=low
+
+  * Move from Net::DNS::Zone::Parser to Net::DNS::ZoneFile::Fast
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 27 Oct 2014 16:02:01 +0100
+
 atomiadns-nameserver (1.1.29) hardy; urgency=low
 
   * Improve update of large DNS zones in PowerDNS sync agent

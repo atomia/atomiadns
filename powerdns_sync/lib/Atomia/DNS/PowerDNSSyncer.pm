@@ -10,7 +10,7 @@ use Config::General;
 use SOAP::Lite;
 use Data::Dumper;
 use Atomia::DNS::PowerDNSDatabase;
-use Net::DNS::Zone::Parser;
+use Net::DNS::ZoneFile::Fast;
 
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
 has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
@@ -368,11 +368,7 @@ sub import_zonefile {
 
 	$zone_origin =~ s/\.$//;
 
-	my $parser = Net::DNS::Zone::Parser->new;
-	my $parseerror = $parser->read($zone_file, { ORIGIN => $zone_origin, CREATE_RR => 1 });
-	die "Error parsing $zone_file: $parseerror" if $parseerror;
-
-	my $parsed_zone = $parser->get_array;
+	my $parsed_zone = Net::DNS::ZoneFile::Fast::parse(file => $zone_file, origin => $zone_origin);
 
 	my $zone = { name => $zone_origin };
 	my $records = [];
