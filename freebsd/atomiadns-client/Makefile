@@ -1,25 +1,20 @@
-# New ports collection makefile for:	Atomia DNS command line client
-# Date created:				Mon May  7 10:45:05 CEST 2012
-# Whom:					Jimmy Bergman <jimmy@sigint.se>
-#
 # $FreeBSD$
-#
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.20
+PORTVERSION=	1.1.30
 CATEGORIES=	dns
-MASTER_SITES=	https://codeload.github.com/atomia/atomiadns/tar.gz/
+MASTER_SITES=	http://www.atomiadns.com/tarballs/
 PKGNAMESUFFIX=	-client
 DISTNAME=	${PORTVERSION}
-EXTRACT_SUFX=
 
 MAINTAINER=	jimmy@sigint.se
-COMMENT=	The Atomia DNS command line client
+COMMENT=	Atomia DNS command line client
 
 LICENSE=	ISCL
 
-PERL_CONFIGURE=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-aeed2a6/server/client
+USES=		perl5
+USE_PERL5=	configure
+WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}/server/client
 
 MAN1=		atomiadnsclient.1 dnssec_zsk_rollover.1
 

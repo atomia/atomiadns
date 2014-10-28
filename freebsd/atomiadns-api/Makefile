@@ -1,26 +1,21 @@
-# New ports collection makefile for:	Atomia DNS API server
-# Date created:				Fri May  4 08:45:08 CEST 2012
-# Whom:					Jimmy Bergman <jimmy@sigint.se>
-#
 # $FreeBSD$
-#
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.20
+PORTVERSION=	1.1.30
 CATEGORIES=	dns
-MASTER_SITES=	https://codeload.github.com/atomia/atomiadns/tar.gz/
+MASTER_SITES=	http://www.atomiadns.com/tarballs/
 PKGNAMESUFFIX=	-api
 DISTNAME=	${PORTVERSION}
-EXTRACT_SUFX=
 
 MAINTAINER=	jimmy@sigint.se
-COMMENT=	The Atomia DNS API server
+COMMENT=	Atomia DNS API server
 
 LICENSE=	ISCL
 
-USE_APACHE=	22+
-PERL_CONFIGURE=	yes
-WRKSRC=		${WRKDIR}/atomia-atomiadns-aeed2a6/server
+USE_APACHE=	22
+USES=		perl5
+USE_PERL5=	configure
+WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}/server
 
 RUN_DEPENDS	+=	p5-Config-General>=0:${PORTSDIR}/devel/p5-Config-General
 RUN_DEPENDS	+=	p5-DBD-Pg>=2.11.7:${PORTSDIR}/databases/p5-DBD-Pg
@@ -34,7 +29,8 @@ RUN_DEPENDS	+=	p5-Net-DNS-SEC>=0:${PORTSDIR}/dns/p5-Net-DNS-SEC
 RUN_DEPENDS	+=	ap22-mod_perl2>=2:${PORTSDIR}/www/mod_perl2
 
 post-install:
-	${INSTALL_DATA} ${WRKSRC}/conf/apache-example ${PREFIX}/etc/apache22/Includes/atomiadns.conf
+	${MKDIR} ${STAGEDIR}${PREFIX}/etc/apache22/Includes
+	${INSTALL_DATA} ${WRKSRC}/conf/apache-example ${STAGEDIR}${PREFIX}/etc/apache22/Includes/atomiadns.conf
 	PKG_PREFIX=${PREFIX} ${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
 
 .include <bsd.port.mk>
