@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.31) hardy; urgency=low
+
+  * Update PowerDNS schema for 3.4.0
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Wed, 29 Oct 2014 09:27:54 +0100
+
 atomiadns-masterserver (1.1.30) hardy; urgency=low
 
   * Move from Net::DNS::Zone::Parser to Net::DNS::ZoneFile::Fast

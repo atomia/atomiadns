@@ -109,7 +109,7 @@ if [ $showdb_ret = 0 ] && [ -n "$db_exists" ]; then
 			exit 1
 		fi
 	else
-		latest_version="11"
+		latest_version="12"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -157,6 +157,36 @@ WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE')"
 
 			if [ "$schema_version" -lt 11 ]; then
 				execute_query "DELETE FROM global_domainmetadata WHERE kind = 'NSEC3PARAM'"
+			fi
+
+			if [ "$schema_version" -lt 12 ]; then
+				execute_query "DROP INDEX rec_name_index ON records"
+				execute_query "CREATE INDEX recordorder ON records (domain_id, ordername)"
+				execute_query "ALTER TABLE records ADD disabled TINYINT(1) DEFAULT 0 AFTER change_date"
+				execute_query "ALTER TABLE records MODIFY content VARCHAR(64000) DEFAULT NULL"
+				execute_query "ALTER TABLE records MODIFY ordername VARCHAR(255) BINARY DEFAULT NULL"
+				execute_query "ALTER TABLE records MODIFY auth TINYINT(1) DEFAULT 1"
+				execute_query "ALTER TABLE records MODIFY type VARCHAR(10)"
+				execute_query "ALTER TABLE supermasters MODIFY ip VARCHAR(64) NOT NULL"
+				execute_query "ALTER TABLE supermasters ADD PRIMARY KEY(ip, nameserver)"
+				execute_query "ALTER TABLE supermasters MODIFY account VARCHAR(40) NOT NULL"
+				execute_query "ALTER TABLE global_domainmetadata MODIFY kind VARCHAR(32)"
+				execute_query "ALTER TABLE global_domainmetadata ENGINE=InnoDB"
+				execute_query "ALTER TABLE global_cryptokeys ENGINE=InnoDB"
+				execute_query "
+CREATE TABLE comments (
+  id                    INT AUTO_INCREMENT,
+  domain_id             INT NOT NULL,
+  name                  VARCHAR(255) NOT NULL,
+  type                  VARCHAR(10) NOT NULL,
+  modified_at           INT NOT NULL,
+  account               VARCHAR(40) NOT NULL,
+  comment               VARCHAR(64000) NOT NULL,
+  PRIMARY KEY(id)
+) Engine=InnoDB;"
+				execute_query "CREATE INDEX comments_domain_id_idx ON comments (domain_id)"
+				execute_query "CREATE INDEX comments_name_type_idx ON comments (name, type)"
+				execute_query "CREATE INDEX comments_order_idx ON comments (domain_id, modified_at)"
 			fi
 
 			set_schema_version "$latest_version"

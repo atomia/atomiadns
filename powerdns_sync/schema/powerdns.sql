@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (11);
+INSERT INTO powerdns_schemaversion VALUES (12);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -102,7 +102,7 @@ CREATE TABLE `global_cryptokeys` (
   `active` tinyint(1) DEFAULT NULL,
   `content` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,9 +113,9 @@ DROP TABLE IF EXISTS `global_domainmetadata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `global_domainmetadata` (
-  `kind` varchar(15) NOT NULL,
+  `kind` varchar(32) NOT NULL,
   `content` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,19 +129,21 @@ CREATE TABLE `records` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `domain_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `type` varchar(6) DEFAULT NULL,
-  `content` text DEFAULT NULL,
+  `type` varchar(10) DEFAULT NULL,
+  `content` varchar(64000) DEFAULT NULL,
   `ttl` int(11) DEFAULT NULL,
   `prio` int(11) DEFAULT NULL,
   `change_date` int(11) DEFAULT NULL,
-  `auth` tinyint(1) DEFAULT NULL,
-  `ordername` varchar(255) DEFAULT NULL,
+  `disabled` TINYINT(1) DEFAULT 0,
+  `auth` tinyint(1) DEFAULT 1,
+  `ordername` varchar(255) BINARY DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `rec_name_index` (`name`),
   KEY `nametype_index` (`name`,`type`),
-  KEY `domain_id` (`domain_id`)
+  KEY `domain_id` (`domain_id`),
+  KEY `recordorder` (`domain_id`,`ordername`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Table structure for table `supermasters`
@@ -151,9 +153,10 @@ DROP TABLE IF EXISTS `supermasters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `supermasters` (
-  `ip` varchar(25) NOT NULL,
+  `ip` varchar(64) NOT NULL,
   `nameserver` varchar(255) NOT NULL,
-  `account` varchar(40) DEFAULT NULL
+  `account` varchar(40) NOT NULL,
+  PRIMARY KEY (ip, nameserver)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -221,5 +224,20 @@ WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE')
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+CREATE TABLE comments (
+  id                    INT AUTO_INCREMENT,
+  domain_id             INT NOT NULL,
+  name                  VARCHAR(255) NOT NULL,
+  type                  VARCHAR(10) NOT NULL,
+  modified_at           INT NOT NULL,
+  account               VARCHAR(40) NOT NULL,
+  comment               VARCHAR(64000) NOT NULL,
+  PRIMARY KEY(id)
+) Engine=InnoDB;
+
+CREATE INDEX comments_domain_id_idx ON comments (domain_id);
+CREATE INDEX comments_name_type_idx ON comments (name, type);
+CREATE INDEX comments_order_idx ON comments (domain_id, modified_at);
 
 -- Dump completed on 2011-04-15 10:55:35

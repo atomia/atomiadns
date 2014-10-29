@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.30
+Version: 1.1.31
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Wed Oct 29 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.31-1
+- Update PowerDNS schema for 3.4.0
 * Mon Oct 27 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.30-1
 - Move from Net::DNS::Zone::Parser to Net::DNS::ZoneFile::Fast
 * Fri Sep 12 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.29-1
