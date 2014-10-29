@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	atomiadns
-PORTVERSION=	1.1.30
+PORTVERSION=	1.1.31
 CATEGORIES=	dns
 MASTER_SITES=	http://www.atomiadns.com/tarballs/
 PKGNAMESUFFIX=	-client
