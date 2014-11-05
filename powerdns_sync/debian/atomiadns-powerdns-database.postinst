@@ -6,8 +6,11 @@ if [ x"$execname" = x"atomiadns-sync-powerdns-database" ]; then
 		echo "usage: $0 powerdns_config_file"
 		exit 1
 	else
-		mysql="mysql -u $(grep gmysql-user "$1" | cut -d "=" -f 2) -p$(grep gmysql-password "$1" | cut -d "=" -f 2) -h$(grep gmysql-host "$1" | cut -d "=" -f 2)"
-		dbname=`grep gmysql-dbname "$1" | cut -d "=" -f 2`
+		dbuser=`tr -d " \t" < "$1" | grep ^gmysql-user | cut -d "=" -f 2-`
+		dbpass=`tr -d " \t" < "$1" | grep ^gmysql-password | cut -d "=" -f 2-`
+		dbhost=`tr -d " \t" < "$1" | grep ^gmysql-host | cut -d "=" -f 2-`
+		dbname=`tr -d " \t" < "$1" | grep ^gmysql-dbname | cut -d "=" -f 2-`
+		mysql="mysql -u $dbuser -p$dbpass -h$dbhost"
 		no_db_create=1
 	fi
 else
