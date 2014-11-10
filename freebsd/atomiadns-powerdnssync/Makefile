@@ -14,6 +14,7 @@ LICENSE=	ISCL
 
 USES=		perl5
 USE_PERL5=	configure
+DEFAULT_MYSQL_VER=55
 WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}/powerdns_sync
 
 RUN_DEPENDS	+=	p5-Config-General>=0:${PORTSDIR}/devel/p5-Config-General
@@ -23,7 +24,7 @@ RUN_DEPENDS	+=	p5-Moose>=0.94:${PORTSDIR}/devel/p5-Moose
 RUN_DEPENDS	+=	p5-Net-DNS-ZoneFile-Fast>=0:${PORTSDIR}/dns/p5-Net-DNS-ZoneFile-Fast
 RUN_DEPENDS	+=	p5-Net-DNS>=0:${PORTSDIR}/dns/p5-Net-DNS
 RUN_DEPENDS	+=	p5-MIME-Base32>=0:${PORTSDIR}/converters/p5-MIME-Base32
-RUN_DEPENDS	+=	p5-DBD-mysql55>=0:${PORTSDIR}/databases/p5-DBD-mysql55
+RUN_DEPENDS	+=	p5-DBD-mysql>=0:${PORTSDIR}/databases/p5-DBD-mysql
 
 USE_RC_SUBR	+=	atomiapowerdnssync
 
