@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.32) hardy; urgency=low
+
+  * Allow _ in CNAME rdata to take some DKIM deployment scenarios into account
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Mon, 10 Nov 2014 10:02:05 +0100
+
 atomiadns-dyndns (1.1.31) hardy; urgency=low
 
   * Update PowerDNS schema for 3.4.0

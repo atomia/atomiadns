@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.31
+Version: 1.1.32
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.31 atomiadns-database >= 1.1.31
+Requires: atomiadns-api >= 1.1.32 atomiadns-database >= 1.1.32
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Mon Nov 10 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.32-1
+- Allow _ in CNAME rdata to take some DKIM deployment scenarios into account
 * Wed Oct 29 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.31-1
 - Update PowerDNS schema for 3.4.0
 * Mon Oct 27 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.30-1

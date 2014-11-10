@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.31
+Version: 1.1.32
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Mon Nov 10 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.32-1
+- Allow _ in CNAME rdata to take some DKIM deployment scenarios into account
 * Wed Oct 29 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.31-1
 - Update PowerDNS schema for 3.4.0
 * Mon Oct 27 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.30-1
