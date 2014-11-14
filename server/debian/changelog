@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.33) hardy; urgency=low
+
+  * Allow multi string TXT records
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 14 Nov 2014 13:47:51 +0100
+
 atomiadns-masterserver (1.1.32) hardy; urgency=low
 
   * Allow _ in CNAME rdata to take some DKIM deployment scenarios into account

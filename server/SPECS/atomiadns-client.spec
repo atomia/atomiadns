@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.32
+Version: 1.1.33
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Fri Nov 14 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.33-1
+- Allow multi string TXT records
 * Mon Nov 10 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.32-1
 - Allow _ in CNAME rdata to take some DKIM deployment scenarios into account
 * Wed Oct 29 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.31-1
