@@ -12,7 +12,7 @@ COMMENT=	Atomia DNS database setup tools and database schema
 
 LICENSE=	ISCL
 
-USE_PGSQL=	yes
+USES=		pgsql
 NO_BUILD=	yes
 WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}
 

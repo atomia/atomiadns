@@ -1,4 +1,5 @@
 bin/atomiadnsclient
 bin/dnssec_zsk_rollover
-%%SITE_PERL%%/%%PERL_ARCH%%/auto/atomiadnsclient/.packlist
-@dirrm %%SITE_PERL%%/%%PERL_ARCH%%/auto/atomiadnsclient
+%%SITE_PERL%%/%%PERL_VER%%/mach/auto/atomiadnsclient/.packlist
+man/man1/atomiadnsclient.1.gz
+man/man1/dnssec_zsk_rollover.1.gz
