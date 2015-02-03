@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.33
+Version: 1.1.34
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue Feb 03 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.34-1
+- Add support for TLSA
 * Fri Nov 14 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.33-1
 - Allow multi string TXT records
 * Mon Nov 10 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.32-1
