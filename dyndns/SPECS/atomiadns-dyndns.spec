@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.34
+Version: 1.1.35
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Tue Mar 17 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.35-1
+- Fixes to make things work with Ubuntu 14.04 LTS.
 * Tue Feb 03 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.34-1
 - Add support for TLSA
 * Fri Nov 14 2014 Jimmy Bergman <jimmy@atomia.com> - 1.1.33-1

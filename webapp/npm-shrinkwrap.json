@@ -1,0 +1,132 @@
+{
+  "name": "atomiadns-controlpanel",
+  "version": "1.1.34",
+  "dependencies": {
+    "express": {
+      "version": "3.0.6",
+      "from": "express@= 3.0.6",
+      "dependencies": {
+        "connect": {
+          "version": "2.7.2",
+          "from": "connect@2.7.2",
+          "dependencies": {
+            "qs": {
+              "version": "0.5.1",
+              "from": "qs@0.5.1"
+            },
+            "formidable": {
+              "version": "1.0.11",
+              "from": "formidable@1.0.11"
+            },
+            "bytes": {
+              "version": "0.1.0",
+              "from": "bytes@0.1.0"
+            },
+            "pause": {
+              "version": "0.0.1",
+              "from": "pause@0.0.1"
+            }
+          }
+        },
+        "commander": {
+          "version": "0.6.1",
+          "from": "commander@0.6.1"
+        },
+        "range-parser": {
+          "version": "0.0.4",
+          "from": "range-parser@0.0.4"
+        },
+        "mkdirp": {
+          "version": "0.3.3",
+          "from": "mkdirp@0.3.3"
+        },
+        "cookie": {
+          "version": "0.0.5",
+          "from": "cookie@0.0.5"
+        },
+        "buffer-crc32": {
+          "version": "0.1.1",
+          "from": "buffer-crc32@0.1.1"
+        },
+        "fresh": {
+          "version": "0.1.0",
+          "from": "fresh@0.1.0"
+        },
+        "methods": {
+          "version": "0.0.1",
+          "from": "methods@0.0.1"
+        },
+        "send": {
+          "version": "0.1.0",
+          "from": "send@0.1.0",
+          "dependencies": {
+            "mime": {
+              "version": "1.2.6",
+              "from": "mime@1.2.6"
+            }
+          }
+        },
+        "cookie-signature": {
+          "version": "0.0.1",
+          "from": "cookie-signature@0.0.1"
+        },
+        "debug": {
+          "version": "2.1.2",
+          "from": "debug@*",
+          "dependencies": {
+            "ms": {
+              "version": "0.7.0",
+              "from": "ms@0.7.0"
+            }
+          }
+        }
+      }
+    },
+    "jade": {
+      "version": "0.27.7",
+      "from": "jade@= 0.27.7",
+      "dependencies": {
+        "commander": {
+          "version": "0.6.1",
+          "from": "commander@0.6.1"
+        },
+        "mkdirp": {
+          "version": "0.3.5",
+          "from": "mkdirp@0.3.x"
+        },
+        "coffee-script": {
+          "version": "1.4.0",
+          "from": "coffee-script@~1.4.0"
+        }
+      }
+    },
+    "passport": {
+      "version": "0.2.1",
+      "from": "passport@>= 0.1.5",
+      "dependencies": {
+        "passport-strategy": {
+          "version": "1.0.0",
+          "from": "passport-strategy@1.x.x"
+        },
+        "pause": {
+          "version": "0.0.1",
+          "from": "pause@0.0.1"
+        }
+      }
+    },
+    "passport-local": {
+      "version": "1.0.0",
+      "from": "passport-local@>= 0.1.0",
+      "dependencies": {
+        "passport-strategy": {
+          "version": "1.0.0",
+          "from": "passport-strategy@1.x.x"
+        }
+      }
+    },
+    "request": {
+      "version": "2.9.100",
+      "from": "request@= 2.9.100"
+    }
+  }
+}
