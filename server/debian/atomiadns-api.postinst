@@ -6,6 +6,24 @@ if [ ! -e /etc/apache2/mods-enabled/rewrite.load ]; then
 	ln -s ../mods-available/rewrite.load
 fi
 
+if [ -f /usr/bin/lsb_release ] && [ `/usr/bin/lsb_release -rs` = "14.04" ]; then
+	if [ -f /etc/apache2/conf.d/atomiadns ]; then
+		mv /etc/apache2/conf.d/atomiadns /etc/apache2/conf-available/atomiadns.conf
+		cd /etc/apache2/conf-enabled
+		ln -s ../conf-available/atomiadns.conf .
+	fi
+
+	if [ x`a2query -M` != x"prefork" ]; then
+		a2dismod mpm_event
+		a2dismod mpm_worker
+		a2enmod mpm_prefork
+	fi
+
+	if [ -f /var/www/wsdl-atomiadns.wsdl ]; then
+		mv /var/www/wsdl-atomiadns.wsdl /var/www/html
+	fi
+fi
+
 echo "Reloading apache"
 apache2ctl graceful > /dev/null 2>&1
 
