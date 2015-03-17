@@ -8,7 +8,12 @@ respawn
 respawn limit 10 60
 
 script
-	node_bin=`whereis -b node | awk '{ print $2 }'`
+	if [ -f /usr/bin/lsb_release ] && [ `/usr/bin/lsb_release -rs` = "14.04" ]; then
+		node_bin=`whereis -b nodejs | awk '{ print $2 }'`
+	else
+		node_bin=`whereis -b node | awk '{ print $2 }'`
+	fi
+
 	if [ -z "$node_bin" ]; then
 		echo "can't find node binary"
 		exit 1
