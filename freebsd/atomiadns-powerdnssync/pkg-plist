@@ -1,8 +1,7 @@
 bin/atomiadns-sync-powerdns-database
 bin/atomiapowerdnssync
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/PowerDNSDatabase.pm
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/PowerDNSSyncer.pm
-%%SITE_PERL%%/%%PERL_VER%%/mach/auto/Atomia/DNS/PowerDNSSyncer/.packlist
+%%SITE_PERL%%/Atomia/DNS/PowerDNSDatabase.pm
+%%SITE_PERL%%/Atomia/DNS/PowerDNSSyncer.pm
 man/man1/atomiapowerdnssync.1.gz
 %%DATADIR%%/conf/atomiadns.conf.atomiapowerdnssync
 %%DATADIR%%/conf/pdns.conf

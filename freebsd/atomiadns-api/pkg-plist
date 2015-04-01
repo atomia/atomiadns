@@ -1,9 +1,8 @@
 bin/generate_private_key
 %%APACHEETCDIR%%/Includes/%%AP_NAME%%.conf
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/JSONServer.pm
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/Server.pm
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/ServerHandler.pm
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/Signatures.pm
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/wsdl-to-confluence.pl
-%%SITE_PERL%%/%%PERL_VER%%/Atomia/DNS/wsdl-to-docbook.pl
-%%SITE_PERL%%/%%PERL_VER%%/mach/auto/Atomia/DNS/Server/.packlist
+%%SITE_PERL%%/Atomia/DNS/JSONServer.pm
+%%SITE_PERL%%/Atomia/DNS/Server.pm
+%%SITE_PERL%%/Atomia/DNS/ServerHandler.pm
+%%SITE_PERL%%/Atomia/DNS/Signatures.pm
+%%SITE_PERL%%/Atomia/DNS/wsdl-to-confluence.pl
+%%SITE_PERL%%/Atomia/DNS/wsdl-to-docbook.pl
