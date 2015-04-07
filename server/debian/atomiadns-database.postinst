@@ -263,7 +263,7 @@ if [ $retval != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="83"
+		latest_version="84"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -561,6 +561,11 @@ if [ $retval != 0 ]; then
 
 			if [ "$schema_version" -lt 83 ]; then
 				execute_query "INSERT INTO allowed_type (type, synopsis, regexp) VALUES ('TLSA', 'usage selector type certificate', '^[0-9]+ [0-9]+ [0-9]+ [0-9A-F]+\$')"
+			fi
+
+			if [ "$schema_version" -lt 84 ]; then
+				recreate_procedure "markallupdatedexceptbulk"
+				recreate_procedure "markupdatedbulk"
 			fi
 
 			set_schema_version "$latest_version"

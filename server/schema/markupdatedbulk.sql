@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION MarkUpdatedBulk (
-	change_ids int[],
+	change_ids bigint[],
 	cstatus varchar[], 
 	cmessage varchar[]
 ) RETURNS void AS $$

@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.35
+Version: 1.1.36
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.35 atomiadns-database >= 1.1.35
+Requires: atomiadns-api >= 1.1.36 atomiadns-database >= 1.1.36
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue Apr 07 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.36-1
+- Make sure all change-methods take bigint correctly
 * Tue Mar 17 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.35-1
 - Fixes to make things work with Ubuntu 14.04 LTS.
 * Tue Feb 03 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.34-1

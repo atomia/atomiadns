@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.35
+Version: 1.1.36
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue Apr 07 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.36-1
+- Make sure all change-methods take bigint correctly
 * Tue Mar 17 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.35-1
 - Fixes to make things work with Ubuntu 14.04 LTS.
 * Tue Feb 03 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.34-1

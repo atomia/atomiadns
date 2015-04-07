@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.35
+Version: 1.1.36
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Tue Apr 07 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.36-1
+- Make sure all change-methods take bigint correctly
 * Tue Mar 17 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.35-1
 - Fixes to make things work with Ubuntu 14.04 LTS.
 * Tue Feb 03 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.34-1

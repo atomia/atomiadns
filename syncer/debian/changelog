@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.1.36) hardy; urgency=low
+
+  * Make sure all change-methods take bigint correctly
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tue, 7 Apr 2015 08:51:53 +0200
+
 atomiadns-nameserver (1.1.35) hardy; urgency=low
 
   * Fixes to make things work with Ubuntu 14.04 LTS.

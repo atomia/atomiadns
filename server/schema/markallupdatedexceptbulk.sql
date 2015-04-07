@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION MarkAllUpdatedExceptBulk (
 	zonenames varchar[], 
-	change_ids int[]
+	change_ids bigint[]
 ) RETURNS void AS $$
 DECLARE
         nameserver_id_var int;
