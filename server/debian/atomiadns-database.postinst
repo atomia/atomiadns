@@ -65,18 +65,24 @@ createschema() {
 		fi
 	fi
 
-	if grep '%password$' /etc/atomiadns.conf > /dev/null; then
-		echo "Autogenerating the atomiadns role"
+	db_username=`grep ^db_username /etc/atomiadns.conf | awk '{ print $NF }'`
+	db_password=`grep ^db_password /etc/atomiadns.conf | awk '{ print $NF }'`
+	if [ x"$db_password" != x"%password" ]; then
+		password="$db_password"
+	else
+		sed -i -e "s/%password/$password/g" /etc/atomiadns.conf || exit 1
+	fi
 
-		$psql zonedata -c "CREATE ROLE atomiadns WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
+	if $psql zonedata -t -c "SELECT * FROM pg_catalog.pg_user WHERE usename = '$db_username'" 2> /dev/null | grep "$db_username" > /dev/null; then
+		echo "The role with username $db_username already exists, ignoring."
+	else
+		echo "Autogenerating the $db_username role"
+
+		$psql zonedata -c "CREATE ROLE $db_username WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
 		if [ $? != 0 ]; then
 			echo "error creating role atomiadns, you will have to make sure that the schema matches $basedir/schema manually"
 			exit 1
 		fi
-
-		sed -i -e "s/%password/$password/g" /etc/atomiadns.conf || exit 1
-	else
-		echo "/etc/atomiadns.conf doesn't contain %password, assuming that the role is already created"
 	fi
 	
 	if [ $remote_db -eq 1 ]; then

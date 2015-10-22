@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.36
+Version: 1.1.37
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Thu Oct 22 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.37-1
+- Allow pre-specifying database username and password in config instead of generating even with local database
 * Tue Apr 07 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.36-1
 - Make sure all change-methods take bigint correctly
 * Tue Mar 17 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.35-1
