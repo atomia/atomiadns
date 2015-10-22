@@ -1,10 +1,4 @@
-atomiadns-webapp (1.1.38) hardy; urgency=low
-
-  * Improve atomiadns-powerdns-database setup logic
-
- -- Jimmy Bergman <jimmy@sigint.se>  Thu, 22 Oct 2015 15:30:47 +0200
-
-atomiadns-webapp (1.1.37) hardy; urgency=low
+atomiadns-webapp (1.1.39) hardy; urgency=low
 
   * Allow pre-specifying database username and password in config instead of generating even with local database
 

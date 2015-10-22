@@ -57,12 +57,12 @@ createschema() {
 			password="$db_password"
 		else
 			TMPFILE=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
-			TMPFILE2=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
 			sed "s/%password/$password/g" < /etc/atomiadns.conf > "$TMPFILE" || exit 1
 			mv "$TMPFILE" /etc/atomiadns.conf || exit 1
 			chmod a+r /etc/atomiadns.conf || exit 1
 		fi
 
+		TMPFILE2=`mktemp /tmp/atomiadns.XXXXXXXXXX` || exit 1
 		sed "s/%password/$password/g" < /usr/share/atomia/conf/pdns.conf > "$TMPFILE2" || exit 1
 		mkdir -p /etc/powerdns || exit 1
 		mv "$TMPFILE2" /etc/powerdns/pdns.conf || exit 1
