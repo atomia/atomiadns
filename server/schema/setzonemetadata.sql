@@ -18,9 +18,12 @@ BEGIN
 
 	DELETE FROM zone_metadata WHERE zone_id = zone_check;
 
-	FOR i IN array_lower(metadata_keys, 1) .. array_upper(metadata_keys, 1) LOOP
-		INSERT INTO zone_metadata (zone_id, metadata_key, metadata_value)
-		VALUES (zone_check, metadata_keys[i], metadata_values[i]);
-	END LOOP;
-
+	IF array_upper(metadata_keys, 1) IS NULL OR array_upper(metadata_keys, 1) = 0 THEN
+		RETURN;
+	ELSE
+		FOR i IN array_lower(metadata_keys, 1) .. array_upper(metadata_keys, 1) LOOP
+			INSERT INTO zone_metadata (zone_id, metadata_key, metadata_value)
+			VALUES (zone_check, metadata_keys[i], metadata_values[i]);
+		END LOOP;
+	END IF; 
 END; $$ LANGUAGE plpgsql;
