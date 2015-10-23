@@ -1,3 +1,9 @@
+atomiadns-powerdnssync (1.1.40) hardy; urgency=low
+
+  * Fix clearing zone metadata and deletion of zones with metadata
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Fri, 23 Oct 2015 07:53:38 +0200
+
 atomiadns-powerdnssync (1.1.39) hardy; urgency=low
 
   * Allow pre-specifying database username and password in config instead of generating even with local database

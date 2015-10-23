@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.39
+Version: 1.1.40
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,8 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Fri Oct 23 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.40-1
+- Fix clearing zone metadata and deletion of zones with metadata
 * Thu Oct 22 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.39-1
 - Allow pre-specifying database username and password in config instead of generating even with local database
 * Tue Apr 07 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.36-1
