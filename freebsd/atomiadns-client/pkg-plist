@@ -1,4 +1,4 @@
 bin/atomiadnsclient
 bin/dnssec_zsk_rollover
-man/man1/atomiadnsclient.1.gz
-man/man1/dnssec_zsk_rollover.1.gz
+%%PERL5_MAN1%%/atomiadnsclient.1.gz
+%%PERL5_MAN1%%/dnssec_zsk_rollover.1.gz
