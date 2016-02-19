@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.40
+Version: 1.1.42
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.40 atomiadns-database >= 1.1.40
+Requires: atomiadns-api >= 1.1.42 atomiadns-database >= 1.1.42
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Fri Feb 19 2016 Jimmy Bergman <jimmy@atomia.com> - 1.1.42-1
+- Fix verify_zone to treat zone_id and label_id as bigint correctly
 * Fri Oct 23 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.40-1
 - Fix clearing zone metadata and deletion of zones with metadata
 * Thu Oct 22 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.39-1

@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (85);
+INSERT INTO atomiadns_schemaversion (version) VALUES (86);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -205,8 +205,8 @@ DECLARE
 	numsoa int;
 	numcorrectsoa int;
 	numns int;
-	zoneid int;
-	labelid int;
+	zoneid bigint;
+	labelid bigint;
 	emptylabels int;
 BEGIN
 	IF TG_TABLE_NAME = 'zone' THEN
