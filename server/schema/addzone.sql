@@ -37,7 +37,7 @@ BEGIN
 
 	FOR i IN array_lower(nameservers, 1) .. array_upper(nameservers, 1) LOOP
 		INSERT INTO record (label_id, class, type, ttl, rdata)
-		VALUES (currval('label_id_seq'), 'IN', 'NS', zonettl, nameservers[i]);
+		VALUES (currval('label_id_seq'), 'IN', 'NS', zonettl, trim(nameservers[i]));
 	END LOOP;
 
 END; $$ LANGUAGE plpgsql;

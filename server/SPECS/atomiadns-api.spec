@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.42
+Version: 1.1.43
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Sat Oct 22 2016 Oscar Linderholm <oscar@atomia.com> - 1.1.43-1
+- Trim white spaces from the nameservers array in AddZone
 * Fri Feb 19 2016 Jimmy Bergman <jimmy@atomia.com> - 1.1.42-1
 - Fix verify_zone to treat zone_id and label_id as bigint correctly
 * Fri Oct 23 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.40-1
