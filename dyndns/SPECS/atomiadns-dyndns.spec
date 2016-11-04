@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.42
+Version: 1.1.43
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -80,6 +80,8 @@ fi
 exit 0
 
 %changelog
+* Mon Oct 24 2016 Oscar Linderholm <oscar@atomia.com> - 1.1.43-1
+- Correctly trim white spaces from arguments in atomiadnsclient
 * Fri Feb 19 2016 Jimmy Bergman <jimmy@atomia.com> - 1.1.42-1
 - Fix verify_zone to treat zone_id and label_id as bigint correctly
 * Fri Oct 23 2015 Jimmy Bergman <jimmy@atomia.com> - 1.1.40-1

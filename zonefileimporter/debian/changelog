@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.43) hardy; urgency=low
+
+  * Correctly trim white spaces from arguments in atomiadnsclient
+
+ -- Oscar Linderholm <oscar@atomia.com>  Mon, 24 Oct 2016 11:25:30 +0200
+
 atomiadns-zoneimport (1.1.42) hardy; urgency=low
 
   * Fix verify_zone to treat zone_id and label_id as bigint correctly
