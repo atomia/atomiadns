@@ -19,6 +19,11 @@ ifndef PERL
 PERL = /usr/bin/perl
 endif
 
+ifeq ($(shell lsb_release -r |  cut -f2 ),16.04)
+        SUBSTVARS = -Vdist:Depends=""
+else
+        SUBSTVARS = -Vdist:Depends="apache2-mpm-prefork"
+endif
 
 build: build-stamp
 build-stamp:
@@ -96,7 +101,7 @@ binary-indep: build install
 	dh_compress
 	dh_fixperms
 	dh_installdeb
-	dh_gencontrol
+	dh_gencontrol -- $(SUBSTVARS)
 	dh_md5sums
 	dh_builddeb
 
