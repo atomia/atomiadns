@@ -1,0 +1,10 @@
+[Unit]
+Description=Atomia DNS PowerDNS sync agent
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/atomiapowerdnssync updated 2>&1 | logger -t atomiapowerdnssync_updated
+
+[Install]
+WantedBy=multi-user.target
+
