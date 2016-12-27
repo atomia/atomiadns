@@ -17,8 +17,10 @@ endif
 
 ifeq ($(shell lsb_release -r |  cut -f2 ),16.04)
         INITNAME = --name=atomiadns-powerdnssync
+	SUBSTVARS = -Vdist:Depends="libdbi-perl, libdbd-mysql-perl"
 else
 	INITNAME = ""
+	SUBSTVARS = -Vdist:Depends=""
 endif
 
 SYNCER_DIR=$(CURDIR)/debian/atomiadns-powerdnssync

@@ -8,7 +8,7 @@ Standards-Version: 3.6.1
 
 Package: atomiadns-powerdnssync
 Architecture: all
-Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl, libnet-dns-zonefile-fast-perl, libnet-dns-perl, libmime-base32-perl, libproc-daemon-perl, libdigest-sha-perl
+Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl, libnet-dns-zonefile-fast-perl, libnet-dns-perl, libmime-base32-perl, libproc-daemon-perl, libdigest-sha-perl, ${dist:Depends}
 Recommends: libshell-perl
 Description: Atomia DNS PowerDNS Sync application
 
