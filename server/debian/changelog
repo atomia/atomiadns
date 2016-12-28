@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.44) hardy; urgency=low
+
+  * Remove apache2-mpm-prefork dependency on Ubuntu 16.04
+
+ -- Stefan Mortensen <stefan@atomia.com>  Fri, 23 Dec 2016 10:34:17 +0100
+
 atomiadns-masterserver (1.1.43) hardy; urgency=low
 
   * Correctly trim white spaces from arguments in atomiadnsclient

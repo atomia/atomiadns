@@ -6,7 +6,7 @@ if [ ! -e /etc/apache2/mods-enabled/rewrite.load ]; then
 	ln -s ../mods-available/rewrite.load
 fi
 
-if [ -f /usr/bin/lsb_release ] && [ `/usr/bin/lsb_release -rs` = "14.04" ]; then
+if [ -f /usr/bin/lsb_release ] && [ `/usr/bin/lsb_release -rs` = "14.04" ] || [ `/usr/bin/lsb_release -rs` = "16.04" ]; then
 	if [ -f /etc/apache2/conf.d/atomiadns ]; then
 		mv /etc/apache2/conf.d/atomiadns /etc/apache2/conf-available/atomiadns.conf
 		cd /etc/apache2/conf-enabled

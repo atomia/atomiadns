@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.43
+Version: 1.1.44
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1
+- Remove apache2-mpm-prefork dependency on Ubuntu 16.04
 * Mon Oct 24 2016 Oscar Linderholm <oscar@atomia.com> - 1.1.43-1
 - Correctly trim white spaces from arguments in atomiadnsclient
 * Fri Feb 19 2016 Jimmy Bergman <jimmy@atomia.com> - 1.1.42-1

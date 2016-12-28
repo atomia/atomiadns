@@ -15,6 +15,14 @@ ifndef PERL
 PERL = /usr/bin/perl
 endif
 
+ifeq ($(shell lsb_release -r |  cut -f2 ),16.04)
+        INITNAME = --name=atomiadns-powerdnssync
+	SUBSTVARS = -Vdist:Depends="libdbi-perl, libdbd-mysql-perl"
+else
+	INITNAME = ""
+	SUBSTVARS = -Vdist:Depends=""
+endif
+
 SYNCER_DIR=$(CURDIR)/debian/atomiadns-powerdnssync
 DB_DIR=$(CURDIR)/debian/atomiadns-powerdns-database
 
@@ -77,7 +85,7 @@ binary-indep: build install
 	dh_installcron
 #	dh_installmenu
 #	dh_installexamples
-	dh_installinit
+	dh_installinit $(INITNAME)
 	dh_installdocs 
 	dh_installchangelogs 
 	dh_perl
