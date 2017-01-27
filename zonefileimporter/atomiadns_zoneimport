@@ -49,11 +49,6 @@ if ($verbose) {
 	eval 'use SOAP::Lite;';
 }
 
-if (defined($soap_username)) {
-	die "if you specify soap_username, you have to specify soap_password as well" unless defined($soap_password);
-	eval "sub SOAP::Transport::HTTP::Client::get_basic_credentials { return '$soap_username' => '$soap_password' }";
-}
-
 my $soap = SOAP::Lite
 	->  uri('urn:Atomia::DNS::Server')
 	->  proxy($soap_uri)
