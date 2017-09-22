@@ -39,7 +39,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (86);
+INSERT INTO atomiadns_schemaversion (version) VALUES (87);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -90,7 +90,8 @@ INSERT INTO allowed_type (type, synopsis, regexp) VALUES
 ('SRV', 'prio weight port target', '^[0-9]+ [0-9]+ [0-9]+ [a-z0-9][a-z0-9.-]+$'),
 ('SSHFP', 'algorithm fingerprinttype fingerprint', '^[0-9]+ [0-9]+ [0-9A-F]+$'),
 ('TLSA', 'usage selector type certificate', '^[0-9]+ [0-9]+ [0-9]+ [0-9A-F]+$'),
-('TXT', 'quotedstring', '^"[^"]{0,255}"( "[^"]{0,255}")*$');
+('TXT', 'quotedstring', '^"[^"]{0,255}"( "[^"]{0,255}")*$'),
+('CAA', 'certificate authority authorization', '^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]) (issue|issuewild|iodef) ("[^"]{0,255}")*$');
 
 CREATE TABLE nameserver_group (
         id SERIAL PRIMARY KEY NOT NULL,
