@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.44
+Version: 1.1.45
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.44 atomiadns-database >= 1.1.44
+Requires: atomiadns-api >= 1.1.45 atomiadns-database >= 1.1.45
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Thu, 21 Sep 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
+- Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1
 - Remove apache2-mpm-prefork dependency on Ubuntu 16.04
 * Mon Oct 24 2016 Oscar Linderholm <oscar@atomia.com> - 1.1.43-1

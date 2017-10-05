@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.44
+Version: 1.1.45
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -84,6 +84,8 @@ fi
 exit 0
 
 %changelog
+* Thu, 21 Sep 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
+- Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1
 - Remove apache2-mpm-prefork dependency on Ubuntu 16.04
 * Mon Oct 24 2016 Oscar Linderholm <oscar@atomia.com> - 1.1.43-1

@@ -1,3 +1,9 @@
+atomiadns-masterserver (1.1.45) hardy; urgency=low
+
+  * Add support for CAA
+
+ -- Stefan Stankovic <stefan.stankovic@atomia.com>  Thu, 21 Sep 2017 09:42:44 +0100
+ 
 atomiadns-dyndns (1.1.44) hardy; urgency=low
 
   * Remove apache2-mpm-prefork dependency on Ubuntu 16.04
