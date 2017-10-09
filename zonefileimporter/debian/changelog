@@ -1,4 +1,4 @@
-atomiadns-masterserver (1.1.45) hardy; urgency=low
+atomiadns-zoneimport (1.1.45) hardy; urgency=low
 
   * Add support for CAA
 
