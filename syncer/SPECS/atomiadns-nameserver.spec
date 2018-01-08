@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.1.45
+Version: 1.1.46
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -37,8 +37,9 @@ Atomia DNS Sync application.
 %{__rm} -rf %{buildroot}
 %{__make} pure_install
 %{__rm} -f %{buildroot}%{perl_vendorarch}/auto/*/*/*/.packlist
-%{__mkdir} -p %{buildroot}/etc/init.d
-%{__cp} SPECS/atomiadns-atomiadnssync.init %{buildroot}/etc/init.d/atomiadnssync
+%{__mkdir} -p %{buildroot}/etc/systemd
+%{__mkdir} -p %{buildroot}/etc/systemd/system
+%{__cp} debian/atomiadns-atomiadnssync.service %{buildroot}/etc/systemd/system/atomiadns-atomiadnssync.service
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
@@ -54,7 +55,7 @@ Atomia DNS Sync application.
 %defattr(-,root,root,-)
 /usr/bin/atomiadnssync
 /usr/share/atomia/conf/atomiadns.conf.atomiadnssync
-/etc/init.d/atomiadnssync
+/etc/systemd/system/atomiadns-atomiadnssync.service
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
 %doc %{_mandir}/man1/atomiadnssync.1.gz
 %attr(0640 root named) /var/named/atomiadns.named.conf
@@ -76,7 +77,7 @@ fi
 exit 0
 
 %post
-/sbin/chkconfig --add atomiadnssync
+/usr/bin/systemctl enable atomiadns-atomiadnssync
 
 if [ -f /etc/atomiadns.conf ]; then
 	if [ -z "$(grep "^bdb_filename" /etc/atomiadns.conf)" ]; then
@@ -91,7 +92,7 @@ if [ -f /etc/named.conf ] && [ -z "$(grep atomiadns.named.conf /etc/named.conf)"
 fi
 
 if [ "$1" -gt 1 ]; then
-	/sbin/service atomiadnssync restart
+	/usr/bin/systemctl restart atomiadns-atomiadnssync
 fi
 
 chgrp named /var/run/named
@@ -101,12 +102,14 @@ exit 0
 
 %preun
 if [ "$1" = 0 ]; then
-	/sbin/service atomiadnssync stop
-	/sbin/chkconfig --del atomiadnssync
+	/usr/bin/systemctl stop atomiadns-atomiadnssync
+	/usr/bin/systemctl disable atomiadns-atomiadnssync
 fi
 exit 0
 
 %changelog
+* Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
+- Switch to Systemd startup for RHEL
 * Thu Sep 21 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1

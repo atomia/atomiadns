@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS PowerDNS Sync application
 Name: atomiadns-powerdnssync
-Version: 1.1.45
+Version: 1.1.46
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -37,8 +37,9 @@ Atomia DNS PowerDNS Sync application.
 %{__rm} -rf %{buildroot}
 %{__make} pure_install
 %{__rm} -f %{buildroot}%{perl_vendorarch}/auto/*/*/*/.packlist
-%{__mkdir} -p %{buildroot}/etc/init.d
-%{__cp} SPECS/atomiadns-atomiapowerdnssync.init %{buildroot}/etc/init.d/atomiapowerdnssync
+%{__mkdir} -p %{buildroot}/etc/systemd
+%{__mkdir} -p %{buildroot}/etc/systemd/system
+%{__cp} debian/atomiadns-powerdnssync.atomiadns-powerdnssync.service %{buildroot}/etc/systemd/system/atomiadns-powerdnssync.service
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf.atomiapowerdnssync %{buildroot}/usr/share/atomia/conf/
 %{__mkdir} -p %{buildroot}/usr/share/atomia/opendnssec_scripts
@@ -54,13 +55,13 @@ Atomia DNS PowerDNS Sync application.
 /usr/share/atomia/conf/atomiadns.conf.atomiapowerdnssync
 /usr/share/atomia/opendnssec_scripts
 /usr/share/atomia/powerdns.sql
-/etc/init.d/atomiapowerdnssync
+/etc/systemd/system/atomiadns-powerdnssync.service
 %{perl_vendorlib}/Atomia/DNS/PowerDNSSyncer.pm
 %{perl_vendorlib}/Atomia/DNS/PowerDNSDatabase.pm
 %doc %{_mandir}/man1/atomiapowerdnssync.1.gz
 
 %post
-/sbin/chkconfig --add atomiapowerdnssync
+/usr/bin/systemctl enable atomiadns-powerdnssync
 
 if [ -f /etc/atomiadns.conf ]; then
 	if [ -z "$(grep "^powerdns" /etc/atomiadns.conf)" ]; then
@@ -71,19 +72,21 @@ else
 fi
 
 if [ "$1" -gt 1 ]; then
-	/sbin/service atomiapowerdnssync restart
+	/usr/bin/systemctl restart atomiadns-powerdnssync
 fi
 
 exit 0
 
 %preun
 if [ "$1" = 0 ]; then
-	/sbin/service atomiapowerdnssync stop
-	/sbin/chkconfig --del atomiapowerdnssync
+	/usr/bin/systemctl stop atomiadns-powerdnssync
+	/usr/bin/systemctl disable atomiadns-powerdnssync
 fi
 exit 0
 
 %changelog
+* Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
+- Switch to Systemd startup for RHEL
 * Thu Sep 21 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1

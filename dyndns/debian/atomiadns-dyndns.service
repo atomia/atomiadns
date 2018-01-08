@@ -1,0 +1,10 @@
+[Unit]
+Description=AtomiaDns DynDns server
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/atomiadns.conf
+ExecStart=/usr/bin/atomiadyndns 2>&1 | logger -t atomiadyndns
+
+[Install]
+WantedBy=multi-user.target

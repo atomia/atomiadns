@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.45
+Version: 1.1.46
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -37,8 +37,9 @@ Atomia DNS DDNS server.
 %{__mkdir} -p %{buildroot}/usr/share/atomia/patches/Net/DNS
 %{__cp} patches/Net-DNS-Nameserver-UpdateHandler.patch %{buildroot}/usr/share/atomia/patches
 %{__cp} patches/Net/DNS/Nameserver.pm %{buildroot}/usr/share/atomia/patches/Net/DNS
-%{__mkdir} -p %{buildroot}/etc/init.d
-%{__cp} SPECS/atomiadns-dyndns.init %{buildroot}/etc/init.d/atomiadyndns
+%{__mkdir} -p %{buildroot}/etc/systemd
+%{__mkdir} -p %{buildroot}/etc/systemd/system
+%{__cp} debian/atomiadns-dyndns.service %{buildroot}/etc/systemd/system/atomiadns-dyndns.service
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiadyndns
 
@@ -51,10 +52,11 @@ Atomia DNS DDNS server.
 /usr/share/atomia/patches/Net-DNS-Nameserver-UpdateHandler.patch
 /usr/share/atomia/patches/Net/DNS/Nameserver.pm
 /usr/share/atomia/conf/atomiadns.conf.atomiadyndns
-/etc/init.d/atomiadyndns
+/etc/systemd/system/atomiadns-dyndns.service
 
 %post
-/sbin/chkconfig --add atomiadyndns
+/usr/bin/systemctl enable atomiadns-dyndns
+/usr/bin/systemctl daemon-reload
 
 if [ -f /etc/atomiadns.conf ]; then
 	if [ -z "$(grep "^tsig_key" /etc/atomiadns.conf)" ]; then
@@ -65,21 +67,23 @@ else
 fi
 
 if [ "$1" = 1 ]; then
-	/sbin/service atomiadyndns start
+	/usr/bin/systemctl start atomiadns-dyndns
 else
-	/sbin/service atomiadyndns restart
+	/usr/bin/systemctl restart atomiadns-dyndns
 fi
 
 exit 0
 
 %preun
 if [ "$1" = 0 ]; then
-	/sbin/service atomiadyndns stop
-	/sbin/chkconfig --del atomiadyndns
+	/usr/bin/systemctl stop atomiadns-dyndns
+	/usr/bin/systemctl disable atomiadns-dyndns
 fi
 exit 0
 
 %changelog
+* Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
+- Switch to Systemd startup for RHEL
 * Thu Sep 20 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1

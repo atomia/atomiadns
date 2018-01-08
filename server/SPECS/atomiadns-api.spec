@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.45
+Version: 1.1.46
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -69,21 +69,24 @@ All changes done through the API will be provisioned to the nameservers that are
 /var/www/html/wsdl-atomiadns.wsdl
 
 %post
-/sbin/chkconfig --add httpd
-/sbin/service httpd graceful
+/usr/bin/systemctl enable httpd
+/usr/bin/systemctl daemon-reload
+/usr/bin/systemctl reload httpd
 /usr/sbin/semanage fcontext -a -t httpd_sys_content_t /etc/atomiadns.conf
 /sbin/restorecon -R -v /etc/atomiadns.conf
 /usr/sbin/setsebool httpd_can_network_connect_db 1
 
 %postun
 if [ "$1" = 0 ] ; then
-	/sbin/service httpd graceful
+	/usr/bin/systemctl reload httpd
 	/usr/sbin/semanage fcontext -d -t httpd_sys_content_t /etc/atomiadns.conf
 	/usr/sbin/setsebool httpd_can_network_connect_db 0
 fi
 exit 0
 
 %changelog
+* Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
+- Switch to Systemd startup for RHEL
 * Thu Sep 21 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1
