@@ -80,7 +80,7 @@ fi
 exit 0
 
 %changelog
-* Thu, 21 Sep 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
+* Thu Sep 20 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1
 - Remove apache2-mpm-prefork dependency on Ubuntu 16.04
