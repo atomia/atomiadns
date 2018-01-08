@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.45
+Version: 1.1.46
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
+- Switch to Systemd startup for RHEL
 * Thu Sep 21 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1

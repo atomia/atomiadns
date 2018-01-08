@@ -1,3 +1,9 @@
+atomiadns-zoneimport (1.1.46) hardy; urgency=low
+
+  * Switch to Systemd startup for RHEL
+
+ -- Zeljko Zivkovic <zeljko@atomia.com> Tue, 9 Jan 2018 07:23:23 +0000
+
 atomiadns-zoneimport (1.1.45) hardy; urgency=low
 
   * Add support for CAA

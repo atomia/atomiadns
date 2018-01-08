@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.45
+Version: 1.1.46
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -45,13 +45,15 @@ The Atomia DNS database schema.
 /usr/share/atomiadns/conf/atomiadns-database.conf
 
 %post
-/sbin/chkconfig --add postgresql
-/sbin/service postgresql initdb > /dev/null
-/sbin/service postgresql start
-/sbin/chkconfig --level 345 postgresql on
+/usr/bin/systemctl enable postgresql
+/usr/bin/systemctl daemon-reload
+/usr/bin/postgresql-setup initdb > /dev/null
+/usr/bin/systemctl start postgresql
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
+- Switch to Systemd startup for RHEL
 * Thu Sep 21 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
 - Add support for CAA
 * Fri Dec 23 2016 Stefan Mortensen <stefan@atomia.com> - 1.1.44-1
