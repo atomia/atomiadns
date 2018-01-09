@@ -31,12 +31,20 @@ if [ ! "$version_num" -gt "$current_version_num" ]; then
 	exit 1
 fi
 
+author_realname=`git config user.name`
+author_email=`git config user.email`
+if [ -z "$author_realname" ] || [ -z "$author_email" ]; then
+	author="Jimmy Bergman <jimmy@atomia.com>"
+else
+	author="$author_realname <$author_email>"
+fi
+
 # Update *.spec
 find dyndns syncer server powerdns_sync webapp -name "*.spec" -type f | while read f; do
 	version_subs="%%s/^Version: .*/Version: $version/"
 	require_subs="%%s/^Requires: atomiadns-api >= .* atomiadns-database >= .*/Requires: atomiadns-api >= $version atomiadns-database >= $version/"
 	goto_changelog="/^%%changelog/+1i"
-	change_header="* $(date +"%a %b %d %Y") Jimmy Bergman <jimmy@atomia.com> - ${version}-1"
+	change_header="* $(date +"%a %b %d %Y") $author - ${version}-1"
 	ed_script=`printf "$version_subs\n$require_subs\n$goto_changelog\n$change_header\n- $message\n.\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
@@ -59,7 +67,7 @@ done
 find dyndns syncer server zonefileimporter powerdns_sync webapp -name "changelog" | while read f; do
 	date=`date +"%a, %-d %b %Y %T %z"`
 	package=`grep " hardy; " "$f" | head -n 1 | cut -d " " -f 1`
-	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- Jimmy Bergman <jimmy@sigint.se>  %s" "$package" "$version" "$message" "$date"`
+	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- $author %s" "$package" "$version" "$message" "$date"`
 	ed_script=`printf "1i\n%s\n\n.\nw\nq\n" "$changelog"`
 	echo "$ed_script" | ed "$f"
 done
