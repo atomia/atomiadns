@@ -17,7 +17,7 @@ Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires(pre): shadow-utils
-Requires: bind-dlz-bdbhpt-driver perl-Class-MOP >= 0.92
+Requires: bind-dlz-bdbhpt-driver perl-Moose >= 2.0
 
 BuildArch: noarch
 BuildRequires: perl

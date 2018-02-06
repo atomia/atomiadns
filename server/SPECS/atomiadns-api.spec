@@ -16,7 +16,7 @@ Packager: Jimmy Bergman <jimmy@atomia.com>
 Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
-Requires: httpd mod_perl >= 2.0 perl-Class-MOP >= 0.92
+Requires: httpd mod_perl >= 2.0 perl-Moose >= 2.0
 
 BuildArch: noarch
 BuildRequires: perl
