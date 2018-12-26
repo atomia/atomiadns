@@ -10,14 +10,17 @@
 # If set to a true value then MakeMaker's prompt function will
 # always return the default without waiting for user input.
 
-PACKAGE=$(shell dh_listpackages)
+ifeq ($(shell lsb_release -r |  cut -f2 ),16.04)
+	INITNAME = --name=atomiadns-webapp
+else
+	INITNAME = ""
+endif
 
 WEBAPP	=$(CURDIR)/debian/atomiadns-webapp
 
 build: build-stamp
 build-stamp:
 	dh_testdir
-	npm install -d
 
 	touch build-stamp
 
@@ -35,8 +38,10 @@ install-stamp:
 
 #Run commands before making package
 
-	mkdir -p $(WEBAPP)/usr/lib/atomiadns/webapp
-	cp -a *.js css views static node_modules $(WEBAPP)/usr/lib/atomiadns/webapp
+	npm install -d
+	mkdir -p "$(WEBAPP)/usr/lib/atomiadns/webapp"
+	cp -a *.js *.sh css views static node_modules "$(WEBAPP)/usr/lib/atomiadns/webapp"
+	find "$(WEBAPP)/usr/lib/atomiadns/webapp" -type d -name .svn -exec rm -rf "{}" "+"
 
 	touch install-stamp
 
@@ -49,7 +54,7 @@ binary-indep: build install
 	dh_installcron
 #	dh_installmenu
 #	dh_installexamples
-	dh_installinit
+	dh_installinit $(INITNAME)
 	dh_installdocs 
 	dh_installchangelogs 
 	dh_perl
