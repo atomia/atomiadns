@@ -174,7 +174,19 @@ CREATE TABLE `supermasters` (
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `cryptokeys` AS select `c`.`id` AS `id`,`d`.`id` AS `domain_id`,`c`.`flags` AS `flags`,`c`.`active` AS `active`,`c`.`content` AS `content` from (`domains` `d` join `global_cryptokeys` `c`) where d.type = 'NATIVE' */;
+/*!50001 VIEW `cryptokeys` AS 
+SELECT
+  `c`.`id` AS `id`,
+  `d`.`id` AS `domain_id`,
+  `c`.`flags` AS `flags`,
+  `c`.`active` AS `active`,
+  `c`.`content` AS `content`
+FROM (
+  `powerdns`.`domains` `d`
+  JOIN `powerdns`.`global_cryptokeys` `c`
+)
+WHERE `d`.`type` IN ('NATIVE', 'MASTER')
+*/;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
