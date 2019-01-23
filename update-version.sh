@@ -67,7 +67,7 @@ done
 find dyndns syncer server zonefileimporter powerdns_sync webapp -name "changelog" | while read f; do
 	date=`date +"%a, %-d %b %Y %T %z"`
 	package=`grep " hardy; " "$f" | head -n 1 | cut -d " " -f 1`
-	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- $author %s" "$package" "$version" "$message" "$date"`
+	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- $author  %s" "$package" "$version" "$message" "$date"`
 	ed_script=`printf "1i\n%s\n\n.\nw\nq\n" "$changelog"`
 	echo "$ed_script" | ed "$f"
 done
