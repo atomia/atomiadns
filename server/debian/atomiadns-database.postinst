@@ -269,7 +269,7 @@ if [ $retval != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="87"
+		latest_version="88"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -585,6 +585,16 @@ if [ $retval != 0 ]; then
 
 			if [ "$schema_version" -lt 87 ]; then
 				execute_query "INSERT INTO allowed_type (type, synopsis, regexp) VALUES ('CAA', 'certificate authority authorization', '"'^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]) (issue|issuewild|iodef) ("[^"]{0,255}")*$'"')"
+			fi
+
+			if [ "$schema_version" -lt 88 ]; then
+				execute_query "ALTER TYPE algorithmtype RENAME TO _algorithmtype"
+				execute_query "CREATE TYPE algorithmtype AS ENUM('RSASHA1', 'RSASHA256', 'RSASHA512', 'ECDSAP256SHA256', 'ECDSAP384SHA384')"
+				execute_query "ALTER TABLE dnssec_keyset ALTER COLUMN algorithm TYPE algorithmtype USING algorithm::text::algorithmtype"
+				execute_query "ALTER TABLE dnssec_keyset DROP CONSTRAINT dnssec_keyset_keysize_check, ADD CONSTRAINT dnssec_keyset_keysize_check CHECK (keysize >= 256)"
+				recreate_procedure "adddnsseckey"
+				recreate_procedure "getdnsseckeys"
+				execute_query "DROP TYPE _algorithmtype"
 			fi
 
 			set_schema_version "$latest_version"

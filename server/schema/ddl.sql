@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS dnssec_external_key;
 CREATE TYPE dnsclass AS ENUM('IN', 'CH');
 CREATE TYPE changetype AS ENUM('PENDING', 'ERROR', 'OK');
 CREATE TYPE dnsseckeytype AS ENUM('KSK', 'ZSK');
-CREATE TYPE algorithmtype AS ENUM('RSASHA1', 'RSASHA256', 'RSASHA512');
+CREATE TYPE algorithmtype AS ENUM('RSASHA1', 'RSASHA256', 'RSASHA512', 'ECDSAP256SHA256', 'ECDSAP384SHA384');
 
 CREATE TABLE allowed_type (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE dnssec_external_key (
 CREATE TABLE dnssec_keyset (
         id SERIAL PRIMARY KEY NOT NULL,
 	algorithm algorithmtype NOT NULL,
-	keysize INT NOT NULL CHECK (keysize >= 512),
+	keysize INT NOT NULL CHECK (keysize >= 256),
 	keytype dnsseckeytype NOT NULL,
 	activated INT NOT NULL CHECK (activated IN (0, 1)),
 	keydata TEXT NOT NULL,

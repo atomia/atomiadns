@@ -1,8 +1,14 @@
+atomiadns-webapp (1.1.47) hardy; urgency=low
+
+  * Add support for ECDSA256 and ECDSA384 algorithms for DNSSEC
+
+ -- Andreas Dilworth <andreas.dilworth@binero.se>  Wed, 23 Jan 2019 12:42:09 +0100
+
 atomiadns-webapp (1.1.46) hardy; urgency=low
 
   * Switch to Systemd startup for RHEL
 
- -- Zeljko Zivkovic <zeljko@atomia.com> Tue, 9 Jan 2018 07:23:23 +0000
+ -- Zeljko Zivkovic <zeljko@atomia.com>  Tue, 9 Jan 2018 07:23:23 +0000
 
 atomiadns-webapp (1.1.45) hardy; urgency=low
 
