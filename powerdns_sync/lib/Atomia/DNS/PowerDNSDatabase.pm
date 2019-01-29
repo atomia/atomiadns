@@ -39,7 +39,7 @@ sub dbi {
 
         my $dbh = $self->conn;
 
-        if (defined($dbh) && $dbh->ping) {
+        if (defined($dbh)) {
                 return $dbh;
         } else {
                 my $dbname = $self->config->{"powerdns_db_database"};
