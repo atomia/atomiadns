@@ -120,7 +120,7 @@ if [ $showdb_ret = 0 ] && [ -n "$db_exists" ]; then
 			exit 1
 		fi
 	else
-		latest_version="12"
+		latest_version="13"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -198,6 +198,22 @@ CREATE TABLE comments (
 				execute_query "CREATE INDEX comments_domain_id_idx ON comments (domain_id)"
 				execute_query "CREATE INDEX comments_name_type_idx ON comments (name, type)"
 				execute_query "CREATE INDEX comments_order_idx ON comments (domain_id, modified_at)"
+			fi
+
+			if [ "$schema_version" -lt 13 ]; then
+				execute_query "
+ALTER VIEW powerdns.cryptokeys AS
+  SELECT
+    c.id AS id,
+    d.id AS domain_id,
+    c.flags AS flags,
+    c.active AS active,
+    c.content AS content
+  FROM (
+    powerdns.domains d
+    JOIN powerdns.global_cryptokeys c
+  )
+  WHERE d.type IN ('NATIVE', 'MASTER')"
 			fi
 
 			set_schema_version "$latest_version"

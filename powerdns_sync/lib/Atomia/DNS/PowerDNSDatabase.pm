@@ -34,12 +34,16 @@ sub validate_config {
 
 sub dbi {
         my $self = shift;
+        my $no_ping_check = shift;
 
         $self->validate_config($self->config);
 
         my $dbh = $self->conn;
 
-        if (defined($dbh) && $dbh->ping) {
+        if (defined($dbh) && defined($no_ping_check) && $no_ping_check == 1) {
+                return $dbh;
+        }
+        elsif (defined($dbh) && $dbh->ping) {
                 return $dbh;
         } else {
                 my $dbname = $self->config->{"powerdns_db_database"};
@@ -150,7 +154,7 @@ sub add_zone {
 		if ($domain_id == -1) {
 			$query = "INSERT INTO domains (name, type) VALUES ($name, '$zone_type')";
 			$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
-			$domain_id = $self->dbi->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
+			$domain_id = $self->dbi(1)->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
 		} elsif ($domain_id != -1 && $zone_type ne $domain_type) {
 			$query = "UPDATE domains SET type = '$zone_type' WHERE id = $domain_id";
 			$self->dbi->do($query) || die "error updating zone type: $DBI::errstr";
@@ -379,7 +383,7 @@ sub add_slave_zone {
 		$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
 
 		if (defined($tsig)) {
-			my $domain_id = $self->dbi->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
+			my $domain_id = $self->dbi(1)->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
 			$query = "INSERT INTO outbound_tsig_keys (domain_id, secret, name) VALUES ($domain_id, $tsig, $tsig_name)";
 			$self->dbi->do($query) || die "error inserting tsig row using $query: $DBI::errstr";
 		}

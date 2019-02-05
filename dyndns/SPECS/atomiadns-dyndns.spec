@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS DDNS server
 Name: atomiadns-dyndns
-Version: 1.1.46
+Version: 1.1.47
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -82,6 +82,8 @@ fi
 exit 0
 
 %changelog
+* Wed Jan 23 2019 Andreas Dilworth <andreas.dilworth@binero.se> - 1.1.47-1
+- Add support for ECDSA256 and ECDSA384 algorithms for DNSSEC
 * Tue Jan 09 2018 Zeljko Zivkovic <zeljko@atomia.com> - 1.1.46-1
 - Switch to Systemd startup for RHEL
 * Thu Sep 20 2017 Stefan Stankovic <stefan.stankovic@atomia.com> 1.1.45-1
