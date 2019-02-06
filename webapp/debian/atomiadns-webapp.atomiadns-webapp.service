@@ -1,0 +1,11 @@
+[Unit]
+Description=Atomia DNS WEBAPP server
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/atomiadns/webapp/webapp_service_init.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

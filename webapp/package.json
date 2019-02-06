@@ -1,12 +1,12 @@
 {
 	"name": "atomiadns-controlpanel",
-	"version": "1.1.47",
+	"version": "1.1.46",
 	"private": true,
 	"dependencies": {
-		"express": "= 3.0.6",
-		"jade": "= 0.27.7",
-		"passport": ">= 0.1.5",
-		"passport-local": ">= 0.1.0",
-		"request": "= 2.9.100"
+		"express":		"= 3.11.0",
+		"jade":			"= 0.27.7",
+		"passport":		">= 0.1.5",
+		"passport-local":	">= 0.1.0",
+		"request":		"= 2.26.0"
 	}
 }
