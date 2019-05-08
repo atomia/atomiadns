@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (12);
+INSERT INTO powerdns_schemaversion VALUES (14);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -253,3 +253,212 @@ CREATE INDEX comments_name_type_idx ON comments (name, type);
 CREATE INDEX comments_order_idx ON comments (domain_id, modified_at);
 
 -- Dump completed on 2011-04-15 10:55:35
+
+DROP VIEW IF EXISTS domainmetadata;
+ALTER TABLE global_domainmetadata CHARACTER SET 'latin1';
+
+CREATE TABLE domainmetadata (
+  id                    INT AUTO_INCREMENT,
+  domain_id             INT NOT NULL,
+  kind                  VARCHAR(32),
+  content               TEXT,
+  PRIMARY KEY(id)
+) Engine=InnoDB CHARACTER SET 'latin1';
+
+CREATE INDEX domainmetadata_idx ON domainmetadata (domain_id, kind);
+
+INSERT INTO domainmetadata(domain_id, kind, content)
+SELECT
+  d.id AS domain_id,
+  IF(d.type IN ('NATIVE', 'MASTER'), IF(g.kind IS NULL, gp.kind, g.kind), 'AXFR-MASTER-TSIG') AS kind,
+  IF(d.type IN ('NATIVE', 'MASTER'),
+    IF(g.kind IS NULL, gp.content, g.content),
+    concat('key', k.id, ':', lcase(k.name))) AS content
+FROM domains d
+LEFT JOIN global_domainmetadata g ON d.type IN ('NATIVE', 'MASTER') AND
+  (SELECT count(0) FROM global_cryptokeys) > 0
+LEFT JOIN global_domainmetadata gp ON g.kind IS NULL AND d.type = 'MASTER' AND
+  (SELECT count(0) FROM global_cryptokeys) = 0
+LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
+WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE');
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS sync_global_domainmetadata //
+CREATE PROCEDURE sync_global_domainmetadata
+(
+    IN trigger_operation varchar(10),
+    IN old_kind VARCHAR(32),
+    IN old_content TEXT,
+    IN new_kind VARCHAR(32),
+    IN new_content TEXT
+)
+BEGIN
+    DECLARE global_cryptokeys_count INT DEFAULT 0;
+
+    IF trigger_operation = 'INSERT' THEN
+
+        SET global_cryptokeys_count = (SELECT count(0) FROM global_cryptokeys);
+
+        IF global_cryptokeys_count > 0 THEN
+            INSERT INTO domainmetadata (domain_id, kind, content)
+            SELECT 
+            d.id AS domain_id,
+            IF(d.type IN ('NATIVE', 'MASTER'), new_kind, 'AXFR-MASTER-TSIG') AS kind,
+            IF(d.type IN ('NATIVE', 'MASTER'),
+                new_content,
+                concat('key', k.id, ':', lcase(k.name))) AS content
+            FROM domains d
+            LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
+            WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE');
+        ELSE
+            INSERT INTO domainmetadata (domain_id, kind, content)
+            SELECT 
+            d.id AS domain_id,
+            IF(d.type IN ('MASTER'), new_kind, 'AXFR-MASTER-TSIG') AS kind,
+            IF(d.type IN ('MASTER'),
+                new_content,
+                concat('key', k.id, ':', lcase(k.name))) AS content
+            FROM domains d
+            LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
+            WHERE d.type IN ('MASTER', 'SLAVE');
+        END IF;
+    ELSEIF trigger_operation = 'UPDATE' THEN
+        UPDATE domainmetadata
+        SET kind = new_kind,
+            content = new_content
+        WHERE kind = old_kind
+            AND content = old_content;
+    ELSEIF trigger_operation = 'DELETE' THEN
+        DELETE dm FROM domainmetadata AS dm WHERE dm.kind = old_kind AND dm.content = old_content;
+    END IF;
+END //
+
+DROP PROCEDURE IF EXISTS sync_domains_domainmetadata //
+CREATE PROCEDURE sync_domains_domainmetadata
+(
+    IN trigger_operation varchar(10),
+    IN domain_id BIGINT,
+    in domain_type varchar(6)
+)
+BEGIN
+    DECLARE global_domainmetadata_count INT DEFAULT 0;
+    SET global_domainmetadata_count = (SELECT count(0) FROM global_domainmetadata);
+
+    IF global_domainmetadata_count > 0 THEN
+        IF trigger_operation = 'INSERT' THEN
+            IF domain_type = 'NATIVE' OR domain_type = 'MASTER' THEN
+                INSERT INTO domainmetadata(domain_id, kind, content)
+                SELECT
+                domain_id,
+                g.kind AS kind,
+                g.content
+                FROM global_domainmetadata AS g;
+            ELSEIF domain_type = 'SLAVE' THEN
+                INSERT INTO domainmetadata(domain_id, kind, content)
+                SELECT
+                domain_id,
+                g.kind AS kind,
+                concat('key', k.id, ':', lcase(k.name)) AS content
+                FROM global_domainmetadata AS g
+                LEFT JOIN outbound_tsig_keys k ON k.domain_id = domain_id;
+            END IF;
+        ELSEIF trigger_operation = 'DELETE' THEN
+            DELETE gd FROM domainmetadata AS gd WHERE gd.domain_id = domain_id;
+        END IF;
+    END IF;
+END //
+
+DROP PROCEDURE IF EXISTS sync_cryptokeys_domainmetadata //
+CREATE PROCEDURE sync_cryptokeys_domainmetadata
+(
+    IN trigger_operation varchar(10)
+)
+BEGIN
+    DECLARE global_domainmetadata_count INT DEFAULT 0;
+    SET global_domainmetadata_count = (SELECT count(0) FROM global_domainmetadata);
+
+    IF global_domainmetadata_count > 0 THEN
+        DELETE FROM domainmetadata;
+        IF trigger_operation = 'INSERT' THEN
+            INSERT INTO domainmetadata(domain_id, kind, content)
+            SELECT d.id AS domain_id,
+            IF(d.TYPE IN ( 'NATIVE', 'MASTER' ), g.kind, 'AXFR-MASTER-TSIG') AS kind,
+            IF(d.TYPE IN ( 'NATIVE', 'MASTER' ), g.content,  Concat('key', k.id, ':', Lcase(k.name))) AS content
+            FROM   domains d
+                    left join global_domainmetadata g
+                            ON d.TYPE IN ( 'NATIVE', 'MASTER' )
+                    left join outbound_tsig_keys k
+                            ON k.domain_id = d.id
+                            AND d.TYPE = 'SLAVE'
+            WHERE d.type IN ('NATIVE', 'MASTER', 'SLAVE');
+        ELSEIF trigger_operation = 'DELETE' THEN
+            INSERT INTO domainmetadata(domain_id, kind, content)
+            SELECT
+            d.id AS domain_id,
+            IF(d.type = 'MASTER', gp.kind, 'AXFR-MASTER-TSIG') AS kind,
+            IF(d.type = 'MASTER', gp.content, concat('key', k.id, ':', lcase(k.name))) AS content
+            FROM domains d
+            LEFT JOIN global_domainmetadata gp ON d.type = 'MASTER'
+            LEFT JOIN outbound_tsig_keys k ON k.domain_id = d.id AND d.type = 'SLAVE'
+            WHERE d.type IN ('MASTER', 'SLAVE');
+        END IF;
+    END IF;
+END //
+
+DROP TRIGGER IF EXISTS insert_domainmetadata //
+CREATE TRIGGER insert_domainmetadata AFTER INSERT ON global_domainmetadata
+FOR EACH ROW
+BEGIN
+  call sync_global_domainmetadata('INSERT', '', '', NEW.kind, NEW.content);
+END//
+
+DROP TRIGGER IF EXISTS update_domainmetadata //
+CREATE TRIGGER update_domainmetadata AFTER UPDATE ON global_domainmetadata
+FOR EACH ROW
+BEGIN
+  call sync_global_domainmetadata('UPDATE', OLD.kind, OLD.content, NEW.kind, NEW.content);
+END//
+
+DROP TRIGGER IF EXISTS delete_domainmetadata //
+CREATE TRIGGER delete_domainmetadata AFTER DELETE ON global_domainmetadata
+FOR EACH ROW
+BEGIN
+  call sync_global_domainmetadata('DELETE', OLD.kind, OLD.content, '', '');
+END//
+
+DROP TRIGGER IF EXISTS insert_domain //
+CREATE TRIGGER insert_domain AFTER INSERT ON domains
+FOR EACH ROW
+BEGIN
+  call sync_domains_domainmetadata('INSERT', NEW.id, NEW.type);
+END//
+
+DROP TRIGGER IF EXISTS delete_domain //
+CREATE TRIGGER delete_domain AFTER DELETE ON domains
+FOR EACH ROW
+BEGIN
+  call sync_domains_domainmetadata('DELETE', OLD.id, '');
+END//
+
+DROP TRIGGER IF EXISTS insert_cryptokey //
+CREATE TRIGGER insert_cryptokey AFTER INSERT ON global_cryptokeys
+FOR EACH ROW
+BEGIN
+    DECLARE cryptokeys_count INT;
+    SET cryptokeys_count = (SELECT count(0) FROM global_cryptokeys);
+    IF cryptokeys_count = 1 THEN
+        call sync_cryptokeys_domainmetadata('INSERT');
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS delete_cryptokey //
+CREATE TRIGGER delete_cryptokey AFTER DELETE ON global_cryptokeys
+FOR EACH ROW
+BEGIN
+    DECLARE cryptokeys_count INT;
+    SET cryptokeys_count = (SELECT count(0) FROM global_cryptokeys);
+    IF cryptokeys_count = 0 THEN
+        call sync_cryptokeys_domainmetadata('DELETE');
+    END IF;
+END//
+DELIMITER ;
