@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.1.48) hardy; urgency=low
+
+  * Update PowerDNS DB schema in order to pdns upgrade
+
+ -- Jimmy Bergman <jimmy@atomia.com>  Wed, 8 May 2019 00:44:58 -0700
+
 atomiadns-nameserver (1.1.47) hardy; urgency=low
 
   * Add support for ECDSA256 and ECDSA384 algorithms for DNSSEC
