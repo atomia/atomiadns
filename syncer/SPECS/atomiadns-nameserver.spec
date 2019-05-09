@@ -108,7 +108,7 @@ fi
 exit 0
 
 %changelog
-* Wed May 08 2019 Jimmy Bergman <jimmy@atomia.com> - 1.1.48-1
+* Wed May 08 2019 Stefan Stankovic <stefan.stankovic@atomia.com> - 1.1.48-1
 - Update PowerDNS DB schema in order to pdns upgrade
 * Wed Jan 23 2019 Andreas Dilworth <andreas.dilworth@binero.se> - 1.1.47-1
 - Add support for ECDSA256 and ECDSA384 algorithms for DNSSEC
