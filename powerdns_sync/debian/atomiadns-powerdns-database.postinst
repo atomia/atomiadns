@@ -218,7 +218,6 @@ ALTER VIEW powerdns.cryptokeys AS
 
 			if [ "$schema_version" -lt 14 ]; then
 				execute_query "DROP VIEW IF EXISTS domainmetadata"
-				execute_query "ALTER TABLE global_domainmetadata CHARACTER SET 'latin1'"
 				execute_query "CREATE TABLE domainmetadata (
 												id                    INT AUTO_INCREMENT,
 												domain_id             INT NOT NULL,
@@ -260,7 +259,7 @@ ALTER VIEW powerdns.cryptokeys AS
 
 															IF global_cryptokeys_count > 0 THEN
 																	INSERT INTO domainmetadata (domain_id, kind, content)
-																	SELECT 
+																	SELECT
 																	d.id AS domain_id,
 																	IF(d.type IN ('NATIVE', 'MASTER'), new_kind, 'AXFR-MASTER-TSIG') AS kind,
 																	IF(d.type IN ('NATIVE', 'MASTER'),

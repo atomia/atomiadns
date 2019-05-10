@@ -255,8 +255,6 @@ CREATE INDEX comments_order_idx ON comments (domain_id, modified_at);
 -- Dump completed on 2011-04-15 10:55:35
 
 DROP VIEW IF EXISTS domainmetadata;
-ALTER TABLE global_domainmetadata CHARACTER SET 'latin1';
-
 CREATE TABLE domainmetadata (
   id                    INT AUTO_INCREMENT,
   domain_id             INT NOT NULL,
