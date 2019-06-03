@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (14);
+INSERT INTO powerdns_schemaversion VALUES (15);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -460,3 +460,15 @@ BEGIN
     END IF;
 END//
 DELIMITER ;
+
+ALTER TABLE domains MODIFY account VARCHAR(40) CHARACTER SET 'utf8' DEFAULT NULL;
+
+CREATE INDEX ordername ON records (ordername);
+DROP INDEX recordorder ON records;
+
+ALTER TABLE supermasters MODIFY account VARCHAR(40) CHARACTER SET 'utf8' NOT NULL;
+
+ALTER TABLE comments MODIFY account VARCHAR(40) CHARACTER SET 'utf8' DEFAULT NULL;
+ALTER TABLE comments MODIFY comment TEXT CHARACTER SET 'utf8' NOT NULL;
+ALTER TABLE comments CHARACTER SET 'latin1';
+DROP INDEX comments_domain_id_idx ON comments;
