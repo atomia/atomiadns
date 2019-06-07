@@ -120,7 +120,7 @@ if [ $showdb_ret = 0 ] && [ -n "$db_exists" ]; then
 			exit 1
 		fi
 	else
-		latest_version="14"
+		latest_version="15"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -430,7 +430,16 @@ ALTER VIEW powerdns.cryptokeys AS
 											END//
 											DELIMITER ;"
 			fi
-
+			if [ "$schema_version" -lt 15 ]; then
+				execute_query "ALTER TABLE domains MODIFY account VARCHAR(40) CHARACTER SET 'utf8' DEFAULT NULL;"
+				execute_query "CREATE INDEX ordername ON records (ordername);"
+				execute_query "DROP INDEX recordorder ON records;"
+				execute_query "ALTER TABLE supermasters MODIFY account VARCHAR(40) CHARACTER SET 'utf8' NOT NULL;"
+				execute_query "ALTER TABLE comments MODIFY account VARCHAR(40) CHARACTER SET 'utf8' DEFAULT NULL;"
+				execute_query "ALTER TABLE comments MODIFY comment TEXT CHARACTER SET 'utf8' NOT NULL;"
+				execute_query "ALTER TABLE comments CHARACTER SET 'latin1';"
+				execute_query "DROP INDEX comments_domain_id_idx ON comments;"
+			fi
 			set_schema_version "$latest_version"
 		else
 			echo "database powerdns already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
