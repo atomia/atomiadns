@@ -8,6 +8,6 @@ Standards-Version: 3.6.1
 
 Package: atomiadns-zoneimport
 Architecture: all
-Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libnet-dns-zonefile-fast-perl, libnet-dns-perl
+Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libnet-dns-perl
 Recommends: libshell-perl
 Description: Atomia DNS zone file importer.

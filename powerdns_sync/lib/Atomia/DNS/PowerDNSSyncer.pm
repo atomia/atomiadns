@@ -10,7 +10,7 @@ use Config::General;
 use SOAP::Lite;
 use Data::Dumper;
 use Atomia::DNS::PowerDNSDatabase;
-use Net::DNS::ZoneFile::Fast;
+use Net::DNS::ZoneFile;
 
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
 has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
@@ -368,7 +368,8 @@ sub import_zonefile {
 
 	$zone_origin =~ s/\.$//;
 
-	my $parsed_zone = Net::DNS::ZoneFile::Fast::parse(file => $zone_file, origin => $zone_origin);
+    my $zonefile = new Net::DNS::ZoneFile( $zone_file, [$zone_origin] );
+	my $parsed_zone = $zonefile->read;
 
 	my $zone = { name => $zone_origin };
 	my $records = [];
