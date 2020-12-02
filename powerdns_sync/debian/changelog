@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.48) hardy; urgency=low
+
+  * Move from NET::DNS::ZoneFile::Fast to NET::DNS::ZoneFile
+  
+ -- Jovana Stamenkovic <jovana.stamenkovic@atomia.com> Wed, 2 Dec 2020 11:44:30 +0100
+   
 atomiadns-powerdnssync (1.1.48) hardy; urgency=low
 
   * Update PowerDNS DB schema in order to pdns upgrade
