@@ -1,4 +1,4 @@
-atomiadns-dyndns (1.1.49) hardy; urgency=low
+atomiadns-zoneimport (1.1.49) hardy; urgency=low
 
   * Move from NET::DNS::ZoneFile::Fast to NET::DNS::ZoneFile
   
