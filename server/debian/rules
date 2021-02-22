@@ -19,10 +19,13 @@ ifndef PERL
 PERL = /usr/bin/perl
 endif
 
+SUBSTVARS = -Vdist:Depends="apache2-mpm-prefork"
+
 ifeq ($(shell lsb_release -r |  cut -f2 ),16.04)
         SUBSTVARS = -Vdist:Depends=""
-else
-        SUBSTVARS = -Vdist:Depends="apache2-mpm-prefork"
+endif
+ifeq ($(shell lsb_release -r |  cut -f2 ),18.04)
+        SUBSTVARS = -Vdist:Depends=""
 endif
 
 build: build-stamp
