@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.49
+Version: 1.1.50
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.49 atomiadns-database >= 1.1.49
+Requires: atomiadns-api >= 1.1.50 atomiadns-database >= 1.1.50
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Tue Mar 02 2021 Jovana Stamenkovic <jovana.stamenkovic@atomia.com> - 1.1.50-1
+- Bump version to 1.1.50
 * Wed Dec 02 2020 Jovana Stamenkovic <jovana.stamenkovic@atomia.com> - 1.1.49-1
 - Move from NET::DNS::ZoneFile::Fast to NET::DNS::ZoneFile
 * Wed May 08 2019 Stefan Stankovic <stefan.stankovic@atomia.com> - 1.1.48-1
