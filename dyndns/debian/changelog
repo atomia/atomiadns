@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.50) hardy; urgency=low
+
+  * Bump version to 1.1.50
+
+ -- Jovana Stamenkovic <jovana.stamenkovic@atomia.com>  Tue, 2 Mar 2021 04:02:51 -0800
+
 atomiadns-dyndns (1.1.49) hardy; urgency=low
 
   * Move from NET::DNS::ZoneFile::Fast to NET::DNS::ZoneFile
