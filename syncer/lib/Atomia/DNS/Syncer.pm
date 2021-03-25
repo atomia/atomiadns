@@ -18,9 +18,9 @@ has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf")
 has 'bdb_environment' => (is => 'rw', isa => 'Any', default => undef);
 has 'bdb_environment_path' => (is => 'rw', isa => 'Any', default => undef);
 has 'soap' => (is => 'rw', isa => 'Any', default => undef);
-has 'slavezones_config' => (is => 'rw', isa => 'Str', default => undef);
-has 'slavezones_dir' => (is => 'rw', isa => 'Str', default => undef);
-has 'rndc_path' => (is => 'rw', isa => 'Str', default => undef);
+has 'slavezones_config' => (is => 'rw', isa => 'Maybe[Str]', default => undef);
+has 'slavezones_dir' => (is => 'rw', isa => 'Maybe[Str]', default => undef);
+has 'rndc_path' => (is => 'rw', isa => 'Maybe[Str]', default => undef);
 
 sub BUILD {
         my $self = shift;
