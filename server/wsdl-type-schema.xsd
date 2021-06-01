@@ -1387,6 +1387,12 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AddTSIGKey">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />

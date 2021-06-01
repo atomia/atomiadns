@@ -1395,6 +1395,20 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AddTSIGKey">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="AddTSIGKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />
@@ -1985,6 +1999,15 @@ atomiaZSKInfo is a struct with the following members:
 		<part name="parameters" element="tns:FindZonesResponse"/>
 	</message>
 
+	<message name="AddTSIGKeyInput">
+		<documentation>Adds a new TSIG key.</documentation>
+		<part name="parameters" element="tns:AddTSIGKey"/>
+	</message>
+
+	<message name="AddTSIGKeyOutput">
+		<part name="parameters" element="tns:AddTSIGKeyResponse"/>
+	</message>
+
 	<message name="NoopInput">
 		<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
 		<part name="parameters" element="tns:Noop"/>
@@ -2547,6 +2570,15 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="FindZones">
 			<input message="tns:FindZonesInput"/>
 			<output message="tns:FindZonesOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="AddTSIGKey">
+			<input message="tns:AddTSIGKeyInput"/>
+			<output message="tns:AddTSIGKeyOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -3240,6 +3272,17 @@ atomiaZSKInfo is a struct with the following members:
 		<operation name="FindZones">
 			<documentation>Search for zones in an account.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#FindZones"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
+		</operation>
+
+		<operation name="AddTSIGKey">
+			<documentation>Testing.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#AddTSIGKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>

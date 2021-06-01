@@ -66,7 +66,8 @@ our $signatures = {
 	"DeleteAccount" => "void string",
 	"GetNameserverGroups" => "array[string]",
 	"FindZones" => "zones string string int int",
-	"Noop" => "string",
+	"AddTSIGKey" => "void string string string string",
+	"Noop" => "string"
 };
 
 our $authorization_rules = {
