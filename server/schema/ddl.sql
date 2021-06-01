@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS updates_disabled;
 DROP TABLE IF EXISTS allow_zonetransfer;
 DROP TABLE IF EXISTS dnssec_keyset;
 DROP TABLE IF EXISTS dnssec_external_key;
+DROP TABLE IF EXISTS tsigkey_change;
 
 CREATE TYPE dnsclass AS ENUM('IN', 'CH');
 CREATE TYPE changetype AS ENUM('PENDING', 'ERROR', 'OK');
@@ -339,3 +340,34 @@ ON slavezone
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE PROCEDURE slavezone_update();
+
+CREATE TABLE tsigkey (
+	id BIGSERIAL PRIMARY KEY NOT NULL,
+	nameserver_group_id INT NOT NULL REFERENCES nameserver,
+    name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT tsig_name_format CHECK (name IS NULL OR name ~* '^[a-zA-Z0-9_-]*'),
+	secret VARCHAR(255) CONSTRAINT tsig_format CHECK (secret IS NULL OR secret ~* '^[a-zA-Z0-9+/=]*'),
+	algorithm VARCHAR(255)
+);
+
+CREATE TABLE tsigkey_change (
+	id BIGSERIAL PRIMARY KEY NOT NULL,
+	nameserver_id INT NOT NULL REFERENCES nameserver,
+	tsigkey_name VARCHAR(255) NOT NULL,
+	status changetype NOT NULL DEFAULT 'PENDING',
+	errormessage TEXT NULL,
+	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
+);
+
+CREATE OR REPLACE FUNCTION tsigkey_update() RETURNS trigger AS $$
+BEGIN
+	INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
+	SELECT nameserver.id, NEW.name FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
+
+	RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER tsigkey_trigger AFTER INSERT OR UPDATE OR DELETE
+ON tsigkey
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE PROCEDURE tsigkey_update();
