@@ -40,7 +40,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (89);
+INSERT INTO atomiadns_schemaversion (version) VALUES (90);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -360,6 +360,15 @@ CREATE TABLE tsigkey_change (
 
 CREATE OR REPLACE FUNCTION tsigkey_update() RETURNS trigger AS $$
 BEGIN
+	IF TG_OP = 'DELETE' THEN
+		INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
+		SELECT nameserver.id, OLD.name FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		RETURN OLD;
+	ELSIF TG_OP = 'UPDATE' THEN
+		INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
+		SELECT nameserver.id, OLD.name FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+	END IF;
+
 	INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
 	SELECT nameserver.id, NEW.name FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
 

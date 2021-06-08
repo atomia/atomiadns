@@ -417,4 +417,53 @@ sub remove_slave_zone {
 	}
 }
 
+sub add_tsig_key {
+	my $self = shift;
+	my $tsig_key_name = shift;
+	my $tsig_key_data = shift;
+
+	die "bad input data to add tsig key" unless defined($tsig_key_name) && ref($tsig_key_name) eq "" && $tsig_key_name =~ /^[a-zA-Z0-9_-]*$/ && defined($tsig_key_data) && ref($tsig_key_data) eq "HASH";
+	die "tsig secret missing" unless defined($tsig_key_data->{"secret"}) && length($tsig_key_data->{"secret"}) > 0;
+	die "algorithm missing" unless defined($tsig_key_data->{"algorithm"}) && length($tsig_key_data->{"algorithm"}) > 0;
+
+	eval {
+		my $name = $self->dbi->quote($tsig_key_name);
+		my $secret = $self->dbi->quote($tsig_key_data->{"secret"});
+		my $algorithm = $self->dbi->quote($tsig_key_data->{"algorithm"});
+
+		$self->dbi->do("DELETE FROM tsigkeys WHERE name = $name") || die "error removing previous tsigkey with the same name in add_tsig_key: $DBI::errstr";
+
+		my $query = "INSERT INTO tsigkeys (name, algorithm, secret) VALUES ($name, $algorithm, $secret)";
+
+		$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
+
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error rolling due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
+sub remove_tsig_key {
+	my $self = shift;
+	my $tsig_key_name = shift;
+
+	eval {
+		my $name = $self->dbi->quote($tsig_key_name);
+		$self->dbi->do("DELETE FROM tsigkeys WHERE name = $name") || die "error removing tsigkey: $DBI::errstr";
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error rolling due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
 1;

@@ -67,6 +67,9 @@ our $signatures = {
 	"GetNameserverGroups" => "array[string]",
 	"FindZones" => "zones string string int int",
 	"AddTSIGKey" => "void string string string string",
+	"GetChangedTSIGKeys" => "changes string",
+	"GetTSIGKey" => "tsigkey string",
+	"MarkTSIGKeyUpdated" => "void bigint string string",
 	"Noop" => "string"
 };
 

@@ -65,6 +65,9 @@ methodawk='BEGIN {
 	methods["GetNameserverGroups"] = "Get a list of all nameserver groups.";
 	methods["FindZones"] = "Search for zones in an account.";
 	methods["AddTSIGKey"] = "Adds a new TSIG key.";
+	methods["GetChangedTSIGKeys"] = "Gets changed TSIG keys from change table.";
+	methods["GetTSIGKey"] = "Gets TSIG key data for the specified TSIG key.";
+	methods["MarkTSIGKeyUpdated"] = "Marks a TSIG key as updated in the change table.";
 	methods["Noop"] = "Do nothing. Meant for generating token without doing anything when authenticating.";
 }'
 

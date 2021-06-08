@@ -570,6 +570,35 @@ sub handleZoneStruct {
 	return SOAP::Data->new(name => "zones", value => \@zones);
 }
 
+sub handleTSIGKey {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+	} @$rows;
+
+	my $tsigkeys = [];
+	foreach my $row (@$rows) {
+		push (@$tsigkeys, SOAP::Data->new(name => "tsigkey", value => $row));	
+	}
+
+	return SOAP::Data->new(name => "tsigkeys", value => $tsigkeys);
+}
+
 sub handleAll {
 	my $self = shift;
 	my $method = shift;
@@ -1168,6 +1197,8 @@ sub handleOperation {
 		$retval = $self->handleAddKey($method, $signature, @_);
 	} elsif ($return_type eq "array[zonemetadata]") {
 		$retval = $self->handleZoneMetadata($method, $signature, @_);
+	} elsif ($return_type eq "tsigkey") {
+		$retval = $self->handleTSIGKey($method, $signature, @_);
 	} else {
 		die("unknown return-type in signature: $return_type");
 	}

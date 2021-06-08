@@ -1393,6 +1393,64 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="AddTSIGKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedTSIGKeys">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetChangedTSIGKeysResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changes" type="atomiaChanges"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetTSIGKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkey_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the tsig key</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="GetTSIGKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeys" type="atomiaTSIGKeys"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkTSIGKeyUpdated">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changeid" type="xsd:long"><xsd:annotation><xsd:documentation>the id of the change-row</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="changestatus" type="xsd:string"><xsd:annotation><xsd:documentation>ERROR or OK</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="errormessage" type="xsd:string"><xsd:annotation><xsd:documentation>error message to set if cstatus is ERROR</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="MarkTSIGKeyUpdatedResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />
