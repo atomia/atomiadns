@@ -1505,6 +1505,22 @@ atomiaTSIGKeyItem is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="DeleteTSIGKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_key_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the tsig key to delete</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteTSIGKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />
@@ -2131,6 +2147,15 @@ atomiaTSIGKeyItem is a struct with the following members:
 		<part name="parameters" element="tns:MarkTSIGKeyUpdatedResponse"/>
 	</message>
 
+	<message name="DeleteTSIGKeyInput">
+		<documentation>Removes a slave zone.</documentation>
+		<part name="parameters" element="tns:DeleteTSIGKey"/>
+	</message>
+
+	<message name="DeleteTSIGKeyOutput">
+		<part name="parameters" element="tns:DeleteTSIGKeyResponse"/>
+	</message>
+
 	<message name="NoopInput">
 		<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
 		<part name="parameters" element="tns:Noop"/>
@@ -2729,6 +2754,15 @@ atomiaTSIGKeyItem is a struct with the following members:
 		<operation name="MarkTSIGKeyUpdated">
 			<input message="tns:MarkTSIGKeyUpdatedInput"/>
 			<output message="tns:MarkTSIGKeyUpdatedOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="DeleteTSIGKey">
+			<input message="tns:DeleteTSIGKeyInput"/>
+			<output message="tns:DeleteTSIGKeyOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -3466,6 +3500,17 @@ atomiaTSIGKeyItem is a struct with the following members:
 		<operation name="MarkTSIGKeyUpdated">
 			<documentation>Mark a slave zone change-row as handled, removing it if no error occured.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#MarkTSIGKeyUpdated"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
+		</operation>
+
+		<operation name="DeleteTSIGKey">
+			<documentation>Removes a TSIG key.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#DeleteTSIGKey"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>

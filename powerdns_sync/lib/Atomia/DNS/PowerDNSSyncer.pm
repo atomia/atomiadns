@@ -463,9 +463,22 @@ sub reload_updated_tsig_keys {
 
 		if ($@) {
 			my $exception = $@;
-			my $errormessage = $exception;
-			$errormessage = Dumper($errormessage) if ref($errormessage);
-			$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.TSIGKeyNotFound') {
+				eval {
+					$self->sync_tsig_key($tsig_key_name, undef);
+					$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "OK", "");
+				};
+
+				if ($@) {
+					my $errormessage = $@;
+					$errormessage = Dumper($errormessage) if ref($errormessage);
+					$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				}
+			} else {
+				my $errormessage = $exception;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
+				$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+			}
 		}
 	}
 }

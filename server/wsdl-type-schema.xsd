@@ -1451,6 +1451,22 @@ atomiaZSKInfo is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="DeleteTSIGKey">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_key_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the tsig key to delete</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="DeleteTSIGKeyResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />

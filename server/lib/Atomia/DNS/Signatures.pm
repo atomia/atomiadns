@@ -70,6 +70,7 @@ our $signatures = {
 	"GetChangedTSIGKeys" => "changes string",
 	"GetTSIGKey" => "tsigkey string",
 	"MarkTSIGKeyUpdated" => "void bigint string string",
+	"DeleteTSIGKey" => "void string",
 	"Noop" => "string"
 };
 

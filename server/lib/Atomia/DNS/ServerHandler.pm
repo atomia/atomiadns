@@ -883,6 +883,8 @@ sub mapExceptionToFault {
 		$self->generateException('LogicalError', 'ZoneRequiredRecords', $exception);
 	} elsif ($exception =~ /all labels have to have records/) {
 		$self->generateException('LogicalError', 'EmptyLabel', $exception);
+	} elsif ($exception =~ /TSIG key .* not found/) {
+		$self->generateException('LogicalError', 'TSIGKeyNotFound', $exception);
 # InvalidParametersError.*
 	} elsif ($exception =~ /(refresh|retry|expire|minimum) value of .* is out of range/) {
 		$self->generateException('InvalidParametersError', 'Soa' . $1, $exception);
