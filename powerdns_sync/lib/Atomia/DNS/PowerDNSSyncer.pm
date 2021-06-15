@@ -438,7 +438,7 @@ sub reload_updated_tsig_keys {
 	my $self = shift;
 
 	my $change_table_tsig_keys = $self->soap->GetChangedTSIGKeys($self->config->{"servername"} || die("you have to specify servername in config"));
-	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($change_table_tsig_keys) &&
+	die("error fetching updated tsig keys, got no or bad result from soap-server") unless defined($change_table_tsig_keys) &&
 		$change_table_tsig_keys->result && ref($change_table_tsig_keys->result) eq "ARRAY";
 	$change_table_tsig_keys = $change_table_tsig_keys->result;
 
@@ -492,6 +492,68 @@ sub sync_tsig_key {
 		$self->database->add_tsig_key($tsig_key_name, $tsig_key_data);
 	} else {
 		$self->database->remove_tsig_key($tsig_key_name);
+	}
+}
+
+sub reload_updated_domainmetadata {
+	my $self = shift;
+
+	my $change_table_domain_ids = $self->soap->GetChangedDomainIDs($self->config->{"servername"} || die("you have to specify servername in config"));
+	die("error fetching updated domain ids, got no or bad result from soap-server") unless defined($change_table_domain_ids) &&
+		$change_table_domain_ids->result && ref($change_table_domain_ids->result) eq "ARRAY";
+	$change_table_domain_ids = $change_table_domain_ids->result;
+
+	return if scalar(@$change_table_domain_ids) == 0;
+
+	foreach my $change_table_domain_id (@$change_table_domain_ids) {
+		my $domain_id = $change_table_domain_id->{"domain_id"};
+
+		my $domainmetadata;
+		eval {
+			$domainmetadata = $self->soap->GetDomainMetaData($domain_id);
+
+			die("error fetching domainmetata for $domainmetadata") unless defined($domainmetadata) && $domainmetadata->result && ref($domainmetadata->result) eq "ARRAY";
+			$domainmetadata = $domainmetadata->result;
+			die("bad response from GetDomainMetaData") unless scalar(@$domainmetadata) == 1;
+			$domainmetadata = $domainmetadata->[0];
+
+			die("error fetching domainmetadata for domain id: $domain_id") unless !defined($domainmetadata) || (ref($domainmetadata) eq "HASH" && defined($domainmetadata->{"tsigkey_name"}));
+
+			$self->sync_domainmetadata($domain_id, $domainmetadata);
+			$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+		};
+		
+		if ($@) {
+			my $exception = $@;
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.DomainMetaDataNotFound') {
+				eval {
+					$self->sync_domainmetadata($domain_id, undef);
+					$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+				};
+
+				if ($@) {
+					my $errormessage = $@;
+					$errormessage = Dumper($errormessage) if ref($errormessage);
+					$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				}
+			} else {
+				my $errormessage = $exception;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
+				$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+			}
+		}
+	}
+}
+
+sub sync_domainmetadata {
+	my $self = shift;
+	my $domain_id = shift;
+	my $domainmetadata = shift;
+
+	if (defined($domainmetadata)) {
+		$self->database->assign_tsig_key($domain_id, $domainmetadata);
+	} else {
+		$self->database->unassign_tsig_key($domain_id);
 	}
 }
 

@@ -69,6 +69,11 @@ methodawk='BEGIN {
 	methods["GetTSIGKey"] = "Gets TSIG key data for the specified TSIG key.";
 	methods["MarkTSIGKeyUpdated"] = "Marks a TSIG key as updated in the change table.";
 	methods["DeleteTSIGKey"] = "Delete a TSIG key with the given name.";
+	methods["AssignTSIGKey"] = "Assigns a TSIG key to a domain.";
+	methods["GetChangedDomainIDs"] = "Gets domains with newly assigned TSIG keys.";
+	methods["GetDomainMetaData"] = "Gets data for assigning a TSIG key.";
+	methods["MarkDomainMetaDataUpdated"] = "Marks a domain meta data as updated after asigning a TSIG key.";
+	methods["UnassignTSIGKey"] = "Unassigns a TSIG key to a domain.";
 	methods["Noop"] = "Do nothing. Meant for generating token without doing anything when authenticating.";
 }'
 

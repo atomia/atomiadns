@@ -71,6 +71,12 @@ our $signatures = {
 	"GetTSIGKey" => "tsigkey string",
 	"MarkTSIGKeyUpdated" => "void bigint string string",
 	"DeleteTSIGKey" => "void string",
+	"AssignTSIGKey" => "void string string string string",
+	"GetChangedDomainIDs" => "changes string",
+	"GetDomainMetaData" => "domainmetadata string",
+	"MarkDomainMetaDataUpdated" => "void bigint string string",
+	"UnassignTSIGKey" => "void string",
+	"TestOp" => "void string string string string",
 	"Noop" => "string"
 };
 

@@ -606,6 +606,12 @@ if [ $retval != 0 ]; then
 				recreate_procedure "getchangedtsigkeys"
 				recreate_procedure "gettsigkey"
 				recreate_procedure "marktsigkeyupdated"
+				recreate_procedure "deletetsigkey"
+				recreate_procedure "assigntsigkey"
+				recreate_procedure "getchangeddomainids"
+				recreate_procedure "getdomainmetadata"
+				recreate_procedure "markdomainmetadataupdated"
+				recreate_procedure "unassigntsigkey"
 			fi
 
 			set_schema_version "$latest_version"

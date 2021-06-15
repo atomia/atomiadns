@@ -435,7 +435,7 @@ sub add_tsig_key {
 
 		my $query = "INSERT INTO tsigkeys (name, algorithm, secret) VALUES ($name, $algorithm, $secret)";
 
-		$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
+		$self->dbi->do($query) || die "error inserting row: $DBI::errstr";
 
 		$self->dbi->commit();
 	};
@@ -460,7 +460,56 @@ sub remove_tsig_key {
 
 	if ($@) {
 		my $exception = $@;
-		$self->dbi->rollback() || die "error rolling due to exception $exception";
+		$self->dbi->rollback() || die "error while rolling back due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
+sub assign_tsig_key {
+	my $self = shift;
+	my $domain_id = shift;
+	my $domainmetadata = shift;
+
+	die "bad input data to assign tsig key" unless defined($domain_id) && ref($domain_id) eq "" && defined($domainmetadata) && ref($domainmetadata) eq "HASH";
+	die "tsig key name missing" unless defined($domainmetadata->{"tsigkey_name"}) && length($domainmetadata->{"tsigkey_name"}) > 0;
+	die "tsig type missing" unless defined($domainmetadata->{"kind"}) && length($domainmetadata->{"kind"}) > 0;
+
+	eval {
+		my $domain_id = $self->dbi->quote($domain_id);
+		my $tsigkey_name = $self->dbi->quote($domainmetadata->{"tsigkey_name"});
+		my $kind = $self->dbi->quote($domainmetadata->{"kind"});
+
+		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id") || die "error removing previous assignment to the same domain in assign_tsig_key: $DBI::errstr";
+
+		my $query = "INSERT INTO domainmetadata (domain_id, kind, content) VALUES ($domain_id, $kind, $tsigkey_name)";
+
+		$self->dbi->do($query) || die "error inserting row: $DBI::errstr";
+
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error while rolling back due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
+sub unassign_tsig_key {
+	my $self = shift;
+	my $domain_id = shift;
+
+	eval {
+		my $domain_id = $self->dbi->quote($domain_id);
+		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id AND kind LIKE 'TSIG-%'") || die "error unassigning tsigkey: $DBI::errstr";
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error while rolling back due to exception $exception";
 		
 		die "caught exception $exception, rollback successfull";
 	}
