@@ -503,7 +503,7 @@ sub unassign_tsig_key {
 
 	eval {
 		my $domain_id = $self->dbi->quote($domain_id);
-		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id AND kind LIKE 'TSIG-%'") || die "error unassigning tsigkey: $DBI::errstr";
+		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id AND kind IN ('TSIG-ALLOW-AXFR', 'AXFR-MASTER-TSIG')") || die "error unassigning tsigkey: $DBI::errstr";
 		$self->dbi->commit();
 	};
 
