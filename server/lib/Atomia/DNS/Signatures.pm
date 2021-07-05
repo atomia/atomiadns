@@ -66,7 +66,18 @@ our $signatures = {
 	"DeleteAccount" => "void string",
 	"GetNameserverGroups" => "array[string]",
 	"FindZones" => "zones string string int int",
-	"Noop" => "string",
+	"AddTSIGKey" => "void string string string string",
+	"GetChangedTSIGKeys" => "changes string",
+	"GetTSIGKey" => "tsigkey string",
+	"MarkTSIGKeyUpdated" => "void bigint string string",
+	"DeleteTSIGKey" => "void string",
+	"AssignTSIGKey" => "void string string string string",
+	"GetChangedDomainIDs" => "changes string",
+	"GetDomainMetaData" => "domainmetadata string",
+	"MarkDomainMetaDataUpdated" => "void bigint string string",
+	"UnassignTSIGKey" => "void string",
+	"TestOp" => "void string string string string",
+	"Noop" => "string"
 };
 
 our $authorization_rules = {

@@ -417,4 +417,102 @@ sub remove_slave_zone {
 	}
 }
 
+sub add_tsig_key {
+	my $self = shift;
+	my $tsig_key_name = shift;
+	my $tsig_key_data = shift;
+
+	die "bad input data to add tsig key" unless defined($tsig_key_name) && ref($tsig_key_name) eq "" && $tsig_key_name =~ /^[a-zA-Z0-9_-]*$/ && defined($tsig_key_data) && ref($tsig_key_data) eq "HASH";
+	die "tsig secret missing" unless defined($tsig_key_data->{"secret"}) && length($tsig_key_data->{"secret"}) > 0;
+	die "algorithm missing" unless defined($tsig_key_data->{"algorithm"}) && length($tsig_key_data->{"algorithm"}) > 0;
+
+	eval {
+		my $name = $self->dbi->quote($tsig_key_name);
+		my $secret = $self->dbi->quote($tsig_key_data->{"secret"});
+		my $algorithm = $self->dbi->quote($tsig_key_data->{"algorithm"});
+
+		$self->dbi->do("DELETE FROM tsigkeys WHERE name = $name") || die "error removing previous tsigkey with the same name in add_tsig_key: $DBI::errstr";
+
+		my $query = "INSERT INTO tsigkeys (name, algorithm, secret) VALUES ($name, $algorithm, $secret)";
+
+		$self->dbi->do($query) || die "error inserting row: $DBI::errstr";
+
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error rolling due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
+sub remove_tsig_key {
+	my $self = shift;
+	my $tsig_key_name = shift;
+
+	eval {
+		my $name = $self->dbi->quote($tsig_key_name);
+		$self->dbi->do("DELETE FROM tsigkeys WHERE name = $name") || die "error removing tsigkey: $DBI::errstr";
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error while rolling back due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
+sub assign_tsig_key {
+	my $self = shift;
+	my $domain_id = shift;
+	my $domainmetadata = shift;
+
+	die "bad input data to assign tsig key" unless defined($domain_id) && ref($domain_id) eq "" && defined($domainmetadata) && ref($domainmetadata) eq "HASH";
+	die "tsig key name missing" unless defined($domainmetadata->{"tsigkey_name"}) && length($domainmetadata->{"tsigkey_name"}) > 0;
+	die "tsig type missing" unless defined($domainmetadata->{"kind"}) && length($domainmetadata->{"kind"}) > 0;
+
+	eval {
+		my $domain_id = $self->dbi->quote($domain_id);
+		my $tsigkey_name = $self->dbi->quote($domainmetadata->{"tsigkey_name"});
+		my $kind = $self->dbi->quote($domainmetadata->{"kind"});
+
+		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id") || die "error removing previous assignment to the same domain in assign_tsig_key: $DBI::errstr";
+
+		my $query = "INSERT INTO domainmetadata (domain_id, kind, content) VALUES ($domain_id, $kind, $tsigkey_name)";
+
+		$self->dbi->do($query) || die "error inserting row: $DBI::errstr";
+
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error while rolling back due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
+sub unassign_tsig_key {
+	my $self = shift;
+	my $domain_id = shift;
+
+	eval {
+		my $domain_id = $self->dbi->quote($domain_id);
+		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id AND kind IN ('TSIG-ALLOW-AXFR', 'AXFR-MASTER-TSIG')") || die "error unassigning tsigkey: $DBI::errstr";
+		$self->dbi->commit();
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$self->dbi->rollback() || die "error while rolling back due to exception $exception";
+		
+		die "caught exception $exception, rollback successfull";
+	}
+}
+
 1;

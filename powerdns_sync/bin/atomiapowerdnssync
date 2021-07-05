@@ -226,6 +226,8 @@ SWITCH: {
 					$syncer->reload_updated_zones();
 					$syncer->reload_updated_slavezones();
 					$syncer->sync_zone_transfers();
+					$syncer->reload_updated_tsig_keys();
+					$syncer->reload_updated_domainmetadata();
 					sleep 10;
 				}
 			};

@@ -570,6 +570,64 @@ sub handleZoneStruct {
 	return SOAP::Data->new(name => "zones", value => \@zones);
 }
 
+sub handleTSIGKey {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+	} @$rows;
+
+	my $tsigkeys = [];
+	foreach my $row (@$rows) {
+		push (@$tsigkeys, SOAP::Data->new(name => "tsigkey", value => $row));	
+	}
+
+	return SOAP::Data->new(name => "tsigkeys", value => $tsigkeys);
+}
+
+sub handleDomainMetaData {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+	} @$rows;
+
+	my $domainmetadata = [];
+	foreach my $row (@$rows) {
+		push (@$domainmetadata, SOAP::Data->new(name => "domainmetadataitem", value => $row));	
+	}
+
+	return SOAP::Data->new(name => "domainmetadata", value => $domainmetadata);
+}
+
 sub handleAll {
 	my $self = shift;
 	my $method = shift;
@@ -854,6 +912,10 @@ sub mapExceptionToFault {
 		$self->generateException('LogicalError', 'ZoneRequiredRecords', $exception);
 	} elsif ($exception =~ /all labels have to have records/) {
 		$self->generateException('LogicalError', 'EmptyLabel', $exception);
+	} elsif ($exception =~ /TSIG key .* not found/) {
+		$self->generateException('LogicalError', 'TSIGKeyNotFound', $exception);
+	} elsif ($exception =~ /Domain id .* not found/) {
+		$self->generateException('LogicalError', 'DomainMetaDataNotFound', $exception);
 # InvalidParametersError.*
 	} elsif ($exception =~ /(refresh|retry|expire|minimum) value of .* is out of range/) {
 		$self->generateException('InvalidParametersError', 'Soa' . $1, $exception);
@@ -1168,6 +1230,10 @@ sub handleOperation {
 		$retval = $self->handleAddKey($method, $signature, @_);
 	} elsif ($return_type eq "array[zonemetadata]") {
 		$retval = $self->handleZoneMetadata($method, $signature, @_);
+	} elsif ($return_type eq "tsigkey") {
+		$retval = $self->handleTSIGKey($method, $signature, @_);
+	} elsif ($return_type eq "domainmetadata") {
+        $retval = $self->handleDomainMetaData($method, $signature, @_);
 	} else {
 		die("unknown return-type in signature: $return_type");
 	}

@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS updates_disabled;
 DROP TABLE IF EXISTS allow_zonetransfer;
 DROP TABLE IF EXISTS dnssec_keyset;
 DROP TABLE IF EXISTS dnssec_external_key;
+DROP TABLE IF EXISTS tsigkey_change;
 
 CREATE TYPE dnsclass AS ENUM('IN', 'CH');
 CREATE TYPE changetype AS ENUM('PENDING', 'ERROR', 'OK');
@@ -39,7 +40,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (89);
+INSERT INTO atomiadns_schemaversion (version) VALUES (90);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -339,3 +340,83 @@ ON slavezone
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE PROCEDURE slavezone_update();
+
+CREATE TABLE tsigkey (
+	id BIGSERIAL PRIMARY KEY NOT NULL,
+	nameserver_group_id INT NOT NULL REFERENCES nameserver,
+    name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT tsig_name_format CHECK (name IS NULL OR name ~* '^[a-zA-Z0-9_-]*'),
+	secret VARCHAR(255) CONSTRAINT tsig_format CHECK (secret IS NULL OR secret ~* '^[a-zA-Z0-9+/=]*'),
+	algorithm VARCHAR(255)
+);
+
+CREATE TABLE tsigkey_change (
+	id BIGSERIAL PRIMARY KEY NOT NULL,
+	nameserver_id INT NOT NULL REFERENCES nameserver,
+	tsigkey_name VARCHAR(255) NOT NULL,
+	status changetype NOT NULL DEFAULT 'PENDING',
+	errormessage TEXT NULL,
+	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
+);
+
+CREATE OR REPLACE FUNCTION tsigkey_update() RETURNS trigger AS $$
+BEGIN
+	IF TG_OP = 'DELETE' THEN
+		INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
+		SELECT nameserver.id, OLD.name FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		RETURN OLD;
+	ELSIF TG_OP = 'UPDATE' THEN
+		INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
+		SELECT nameserver.id, OLD.name FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+	END IF;
+
+	INSERT INTO tsigkey_change (nameserver_id, tsigkey_name)
+	SELECT nameserver.id, NEW.name FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
+
+	RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER tsigkey_trigger AFTER INSERT OR UPDATE OR DELETE
+ON tsigkey
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE PROCEDURE tsigkey_update();
+
+CREATE TABLE domainmetadata (
+	id BIGSERIAL PRIMARY KEY NOT NULL,
+	nameserver_group_id INT NOT NULL REFERENCES nameserver,
+	domain_id INT NOT NULL UNIQUE REFERENCES zone,
+	kind VARCHAR(255) NOT NULL CONSTRAINT kind_format CHECK (kind IN ('TSIG-ALLOW-AXFR','AXFR-MASTER-TSIG')),
+    tsigkey_name VARCHAR(255) NOT NULL CONSTRAINT tsig_name_format CHECK (tsigkey_name ~* '^[a-zA-Z0-9_-]*')
+);
+
+CREATE TABLE domainmetadata_change (
+	id BIGSERIAL PRIMARY KEY NOT NULL,
+	nameserver_id INT NOT NULL REFERENCES nameserver,
+	domain_id VARCHAR(255) NOT NULL,
+	status changetype NOT NULL DEFAULT 'PENDING',
+	errormessage TEXT NULL,
+	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
+);
+
+CREATE OR REPLACE FUNCTION domainmetadata_update() RETURNS trigger AS $$
+BEGIN
+	IF TG_OP = 'DELETE' THEN
+		INSERT INTO domainmetadata_change (nameserver_id, domain_id)
+		SELECT nameserver.id, OLD.domain_id FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		RETURN OLD;
+	ELSIF TG_OP = 'UPDATE' THEN
+		INSERT INTO domainmetadata_change (nameserver_id, domain_id)
+		SELECT nameserver.id, OLD.domain_id FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+	END IF;
+
+	INSERT INTO domainmetadata_change (nameserver_id, domain_id)
+	SELECT nameserver.id, NEW.domain_id FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
+
+	RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER domainmetadata_trigger AFTER INSERT OR UPDATE OR DELETE
+ON domainmetadata
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE PROCEDURE domainmetadata_update();
