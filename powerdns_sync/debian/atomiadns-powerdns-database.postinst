@@ -120,7 +120,7 @@ if [ $showdb_ret = 0 ] && [ -n "$db_exists" ]; then
 			exit 1
 		fi
 	else
-		latest_version="15"
+		latest_version="16"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -440,6 +440,18 @@ ALTER VIEW powerdns.cryptokeys AS
 				execute_query "ALTER TABLE comments CHARACTER SET 'latin1';"
 				execute_query "DROP INDEX comments_domain_id_idx ON comments;"
 			fi
+			if [ "$schema_version" -lt 16 ]; then
+				execute_query "DROP VIEW IF EXISTS tsigkeys;
+					CREATE TABLE tsigkeys (
+					id                    INT AUTO_INCREMENT,
+					name                  VARCHAR(255),
+					algorithm             VARCHAR(50),
+					secret                VARCHAR(255),
+					PRIMARY KEY (id)0
+					) Engine=InnoDB CHARACTER SET 'latin1';
+					CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);"
+			fi
+
 			set_schema_version "$latest_version"
 		else
 			echo "database powerdns already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
