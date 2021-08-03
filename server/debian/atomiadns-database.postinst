@@ -612,6 +612,14 @@ if [ $retval != 0 ]; then
 				recreate_procedure "getdomainmetadata"
 				recreate_procedure "markdomainmetadataupdated"
 				recreate_procedure "unassigntsigkey"
+				create_table "tsigkey"
+				create_table "tsigkey_change"
+				recreate_ddl_procedure "tsigkey_update"
+				create_trigger "tsigkey_trigger"
+				create_table "domainmetadata"
+				create_table "domainmetadata_change"
+				recreate_ddl_procedure "domainmetadata_update"
+				create_trigger "domainmetadata_trigger"
 			fi
 
 			set_schema_version "$latest_version"
