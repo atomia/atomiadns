@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (15);
+INSERT INTO powerdns_schemaversion VALUES (16);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -472,3 +472,13 @@ ALTER TABLE comments MODIFY account VARCHAR(40) CHARACTER SET 'utf8' DEFAULT NUL
 ALTER TABLE comments MODIFY comment TEXT CHARACTER SET 'utf8' NOT NULL;
 ALTER TABLE comments CHARACTER SET 'latin1';
 DROP INDEX comments_domain_id_idx ON comments;
+
+DROP VIEW IF EXISTS tsigkeys;
+CREATE TABLE tsigkeys (
+id                    INT AUTO_INCREMENT,
+name                  VARCHAR(255),
+algorithm             VARCHAR(50),
+secret                VARCHAR(255),
+PRIMARY KEY (id)
+) Engine=InnoDB CHARACTER SET 'latin1';
+CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);
