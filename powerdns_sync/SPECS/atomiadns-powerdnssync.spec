@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS PowerDNS Sync application
 Name: atomiadns-powerdnssync
-Version: 1.1.50
+Version: 1.1.51
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -85,6 +85,8 @@ fi
 exit 0
 
 %changelog
+* Thu Jul 29 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.51-1
+- Bump version to 1.1.51
 * Tue Mar 02 2021 Jovana Stamenkovic <jovana.stamenkovic@atomia.com> - 1.1.50-1
 - Bump version to 1.1.50
 * Wed Dec 02 2020 Jovana Stamenkovic <jovana.stamenkovic@atomia.com> - 1.1.49-1

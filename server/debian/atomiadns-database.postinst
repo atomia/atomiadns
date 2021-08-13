@@ -269,7 +269,7 @@ if [ $retval != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="89"
+		latest_version="90"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -599,6 +599,27 @@ if [ $retval != 0 ]; then
 
 			if [ "$schema_version" -lt 89 ]; then
 				execute_query "INSERT INTO allowed_type (type, synopsis, regexp) VALUES ('ALIAS', 'hostname', '^[a-z0-9_][a-z0-9._-]*$')"
+			fi
+
+			if [ "$schema_version" -lt 90 ]; then
+				recreate_procedure "addtsigkey"
+				recreate_procedure "getchangedtsigkeys"
+				recreate_procedure "gettsigkey"
+				recreate_procedure "marktsigkeyupdated"
+				recreate_procedure "deletetsigkey"
+				recreate_procedure "assigntsigkey"
+				recreate_procedure "getchangeddomainids"
+				recreate_procedure "getdomainmetadata"
+				recreate_procedure "markdomainmetadataupdated"
+				recreate_procedure "unassigntsigkey"
+				create_table "tsigkey"
+				create_table "tsigkey_change"
+				recreate_ddl_procedure "tsigkey_update"
+				create_trigger "tsigkey_trigger"
+				create_table "domainmetadata"
+				create_table "domainmetadata_change"
+				recreate_ddl_procedure "domainmetadata_update"
+				create_trigger "domainmetadata_trigger"
 			fi
 
 			set_schema_version "$latest_version"
