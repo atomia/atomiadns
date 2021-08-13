@@ -285,43 +285,26 @@ sub sync_records {
 
 		my $zone_records_path = $self->get_zone_record_path($zone->{"name"});
 
+		$self->clear_file($zone_records_path);
+		open(my $zf, '>>', $zone_records_path) or die $!;
+
 		my $record_order = [];
 		my $idx = 1;
 
 		foreach my $record (@$records) {
 			if ($record->{"type"} eq "SOA") {
+				$record->{"rdata"} =~ s/%serial(.*)/($zone->{"changetime"}$1)/g;
 				@$record_order[0] = $record;
 			}
-			else{
+			else {
 				@$record_order[$idx] = $record;
 				$idx++;
 			}
 		}
 
-		$self->clear_file($zone_records_path);
-		open(my $zf, '>>', $zone_records_path) or die $!;
-
 		foreach my $record (@$record_order) {
 
-			my $class = $record->{"class"};
-
-			if ($record->{"type"} eq "SOA")
-			{
-				$record->{"rdata"} =~ s/%serial(.*)/($zone->{"changetime"}$1)/g;
-				$class = "@";	
-			}
-
-			my $record_host = "";
-
-			if ($record->{"type"} eq "A" || $record->{"type"} eq "CNAME")
-			{
-				$record_host = $record->{"label"};
-
-			}
-
-			my $record_data = $record_host . " " . $class . " " . $record->{"type"} ." ". $record->{"rdata"};
-			$record_data =~ s/^\s+//g if $record->{"type"} ne "NS";
-
+			my $record_data = $record->{"label"} . " " . $record->{"class"} . " " . $record->{"ttl"} . " " . $record->{"type"} ." ". $record->{"rdata"};
 			print $zf $record_data;
 			print $zf "\n";
 		}
