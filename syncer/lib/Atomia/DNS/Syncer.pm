@@ -23,12 +23,12 @@ has 'zone_file_config' => (is => 'rw', isa => 'Str');
 has 'base_config_dir' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
-    my $self = shift;
+	my $self = shift;
 	my $conf = new Config::General($self->configfile);
-    
+
 	die("config not found at $self->configfile") unless defined($conf);
-    my %config = $conf->getall;
-    $self->config(\%config);
+	my %config = $conf->getall;
+	$self->config(\%config);
 	
 	$self->slavezones_config($self->config->{"slavezones_config"});
 	die("you have to specify slavezones_config as an existing file") unless defined($self->slavezones_config) && -f $self->slavezones_config;
@@ -73,7 +73,7 @@ sub BUILD {
 			});
 
 	die("error instantiating SOAP::Lite") unless defined($soap);
-        
+
 	if (defined($soap_username)) {
 		$soap->transport->http_request->header('X-Auth-Username' => $soap_username);
 		$soap->transport->http_request->header('X-Auth-Password' => $soap_password);
@@ -134,27 +134,26 @@ sub sync_zone_transfers {
 			$allowed_zones->{$zonename} = [];
 		}
 
-		push $allowed_zones->{$zonename}, $allowed_transfer->{"allowed_ip"};
+		push @{$allowed_zones->{$zonename}}, $allowed_transfer->{"allowed_ip"};
 	}
 
 		
-		foreach my $zonename (keys %$allowed_zones) {
-			eval {	
-				my $sub_zonefile = $self->get_zone_config_file($zonename);
-				my $zones = $self->parse_zone_config($sub_zonefile);
-				my $allowed_ips = $allowed_zones->{$zonename};
+	foreach my $zonename (keys %$allowed_zones) {
+		eval {
+			my $sub_zonefile = $self->get_zone_config_file($zonename);
+			my $zones = $self->parse_zone_config($sub_zonefile);
+			my $allowed_ips = $allowed_zones->{$zonename};
 
-				foreach my $ip(@$allowed_ips)
-				{
-					if (index($zones->{$zonename}, "$ip;") == -1) {
-						$zones->{$zonename} = $zones->{$zonename}. $ip . ";" ;
-					} 
-				}	
+			foreach my $ip(@$allowed_ips) {
+				if (index($zones->{$zonename}, "$ip;") == -1) {
+					$zones->{$zonename} = $zones->{$zonename}. $ip . ";" ;
+				} 
+			}	
 
-				my $filename = $self->write_zone_tempfile($zones);
-				$self->move_zone_into_place($filename, $sub_zonefile);
-			};
-		}
+			my $filename = $self->write_zone_tempfile($zones);
+			$self->move_zone_into_place($filename, $sub_zonefile);
+		};
+	}
 	if ($@) {
 		my $abort_ret = 0;
 		my $errormessage = $@;
@@ -178,6 +177,8 @@ sub sync_all_zones {
 
 	$self->clear_file($self->zone_file_config);
 
+	my $zones_mapping_to_files = {};
+
 	foreach my $zone (@$zones) {
 		die("bad zone fetched") unless defined($zone) && ref($zone) eq "HASH";
 		die("fetched zone.id had bad format") unless defined($zone->{"id"}) && $zone->{"id"} =~ /^\d+$/;
@@ -185,13 +186,34 @@ sub sync_all_zones {
 
 		$zone->{"changetime"} = $timestamp;
 
-		my $zonename = $zone->{"name"};
 		my $sub_zonefile = $self->get_zone_config_file($zone->{"name"});
 
-		$self->add_include_string_into_config($sub_zonefile);
+		if (!defined($zones_mapping_to_files->{$sub_zonefile}))
+		{
+			$zones_mapping_to_files->{$sub_zonefile} = [];
+		}
 
+		push @{$zones_mapping_to_files->{$sub_zonefile}}, $zone;
+	}
+
+	foreach my $sub_zonefile (keys %$zones_mapping_to_files) {	
+		
+		my @zones = @{$zones_mapping_to_files->{$sub_zonefile}};
+
+		my $config_created = $self->create_zone_config_file($sub_zonefile);
+
+		if ($config_created){
+			$self->add_include_string_into_config($sub_zonefile);
+		}
+		
 		my $parsed_zones = $self->parse_zone_config($sub_zonefile);
-		$parsed_zones->{$zonename} = "";
+
+		foreach my $zone (@zones)
+		{
+			my $zonename = $zone->{"name"};
+			$parsed_zones->{$zonename} = "";
+		}
+
 		my $filename = $self->write_zone_tempfile($parsed_zones);
 		$self->move_zone_into_place($filename, $sub_zonefile);
 	}
@@ -211,6 +233,8 @@ sub sync_updated_zones {
 
 	my $changes_to_keep = [];
 	my $changes_to_keep_name = [];
+	my $zones_mapping_to_files = {};
+
 	foreach my $zone (@$zones) {
 		my $keep_zonename = $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified");
 		my $keep_change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
@@ -222,20 +246,24 @@ sub sync_updated_zones {
 			$changes_to_keep = [];
 			$changes_to_keep_name = [];
 		}
+		my $sub_zonefile = $self->get_zone_config_file($zone->{"name"});
+		
+		if (!defined($zones_mapping_to_files->{$sub_zonefile}))
+		{
+			$zones_mapping_to_files->{$sub_zonefile} = [];
+		}
+
+		push @{$zones_mapping_to_files->{$sub_zonefile}}, $zone;
 	}
 
 	if (scalar(@$changes_to_keep) > 0) {
 		$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
 	}
 
-	my $num_zones = scalar(@$zones);
-	my $bulk_size = 500;
 
-	for (my $offset = 0; $offset < $num_zones; $offset += $bulk_size) {
-		my $num = $num_zones - $offset;
-		$num = $bulk_size if $num > $bulk_size;
+	foreach my $sub_zonefile (keys %$zones_mapping_to_files) {
 
-		my @batch = @{$zones}[$offset .. ($offset + $num - 1)];
+		my @batch = @{$zones_mapping_to_files->{$sub_zonefile}};
 
 		my @get_zone_bulk_arg = map { $_->{"name"} } @batch;
 		my $fetched_records_for_zones = $self->fetch_records_for_zones(\@get_zone_bulk_arg);
@@ -243,6 +271,14 @@ sub sync_updated_zones {
 		my $changes_successful = [];
 		my $changes_status = [];
 		my $changes_message = [];
+
+		my $config_created = $self->create_zone_config_file($sub_zonefile);
+
+		if($config_created){
+			$self->add_include_string_into_config($sub_zonefile);
+		}
+
+		my $old_zones = $self->parse_zone_config($sub_zonefile);
 
 		foreach my $zone (@batch) {
 
@@ -252,7 +288,16 @@ sub sync_updated_zones {
 				$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
 				$self->remove_records($zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified"));
 				my $num_records = $self->sync_records([ $zone ], $fetched_records_for_zones);
-				$self->sync_zone($zone->{"name"}, $num_records);
+				my $zonename = $zone->{"name"};
+
+				if ($num_records > 0) {
+					if ( !$old_zones->{$zonename})
+					{
+						$old_zones->{$zonename} = "";
+					}
+					} else {
+						delete $old_zones->{$zonename};
+				}
 
 				push @$changes_successful, $change_id;
 				push @$changes_status, "OK";
@@ -267,8 +312,13 @@ sub sync_updated_zones {
 			}
 		}
 
+		my $filename = $self->write_zone_tempfile($old_zones);
+		$self->move_zone_into_place($filename, $sub_zonefile);
+
 		$self->soap->MarkUpdatedBulk($changes_successful, $changes_status, $changes_message) if scalar(@$changes_successful) > 0;
 	}
+
+	$self->signal_bind_reconfig();
 }
 
 sub sync_records {
@@ -283,10 +333,6 @@ sub sync_records {
 		my $records = defined($prefetched_records) && defined($prefetched_records->{$zone->{"name"}})
 			? $prefetched_records->{$zone->{"name"}} : $self->fetch_records_for_zone($zone->{"name"});
 
-		my $zone_records_path = $self->get_zone_record_path($zone->{"name"});
-
-		$self->clear_file($zone_records_path);
-		open(my $zf, '>>', $zone_records_path) or die $!;
 
 		my $record_order = [];
 		my $idx = 1;
@@ -302,19 +348,25 @@ sub sync_records {
 			}
 		}
 
-		foreach my $record (@$record_order) {
+		my $record_string = "";
 
+		foreach my $record (@$record_order) {
 			my $record_data = $record->{"label"} . " " . $record->{"class"} . " " . $record->{"ttl"} . " " . $record->{"type"} ." ". $record->{"rdata"};
-			print $zf $record_data;
-			print $zf "\n";
+			$record_string = $record_string . $record_data . "\n";
 		}
 
+		my $zone_records_path = $self->get_zone_record_path($zone->{"name"});
 
-		close($zf);
+		if (scalar(@$records) > 0)
+		{
+			open(my $zf, '>', $zone_records_path) or die $!;
+			print $zf $record_string;
+			close($zf);
+		}
+
 		$synced_records += scalar(@$records);
 	}
-	
-	$self->signal_bind_reconfig();
+
 	return $synced_records;
 }
 
@@ -375,30 +427,6 @@ sub fetch_records_for_zones {
 	}
 
 	return $zone_hash;
-}
-
-sub sync_zone {
-	my $self = shift;
-	my $zonename = shift;
-	my $num_records = shift;
-
-    my $sub_zonefile = $self->get_zone_config_file($zonename);
-	$self->add_include_string_into_config($sub_zonefile);
-
-	my $zones = $self->parse_zone_config($sub_zonefile);
-	
-	if ($num_records > 0) {
-		if ( !$zones->{$zonename})
-		{
-			$zones->{$zonename} = "";
-		}
-	} else {
-		delete $zones->{$zonename};
-	}
-	
-	my $filename = $self->write_zone_tempfile($zones);
-	$self->move_zone_into_place($filename, $sub_zonefile);
-	$self->signal_bind_reconfig();
 }
 
 sub remove_records {
@@ -476,15 +504,15 @@ sub full_reload_slavezones {
 sub reload_updated_slavezones {
 	my $self = shift;
 	my $config_zones = $self->parse_slavezone_config();
-        my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
-        die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
-                $zones->result && ref($zones->result) eq "ARRAY";
-        $zones = $zones->result;
+	my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+	
+	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) && $zones->result && ref($zones->result) eq "ARRAY";
+	$zones = $zones->result;
 
 	return if scalar(@$zones) == 0;
 
 	my $changes = [];
-        foreach my $zonerec (@$zones) {
+	foreach my $zonerec (@$zones) {
 		my $zonename = $zonerec->{"name"};
 
 		my $zone;
@@ -721,22 +749,14 @@ sub add_include_string_into_config {
 	my $self = shift;
 	my $sub_zonefile = shift;
 
-	open(my $zf, '<', $self->zone_file_config) or die $!;
-	my $file_matched = grep {/$sub_zonefile/} <$zf>;
-	close $zf;
-
-    if (!$file_matched)
-   	{   
-		eval { 
-			open(my $zf, '>>', $self->zone_file_config) or die $!;
-  			print $zf "include \"$sub_zonefile\";\n";
- 			close $zf;
-		};
-		if($@)
-		{
-			die "Couldn't write to " . $self->zone_file_config . ":". $@;
-		}
-
+	eval { 
+		open(my $zf, '>>', $self->zone_file_config) or die $!;
+		print $zf "include \"$sub_zonefile\";\n";
+		close $zf;
+	};
+	if($@)
+	{
+		die "Couldn't write to " . $self->zone_file_config . ":". $@;
 	}
 }
 
@@ -754,11 +774,6 @@ sub get_zone_record_path {
 
 	my $zone_config_file_path = $zone_records_dir . "/" . $zonename;
 
-	if (! -f $zone_config_file_path)
-	{
-		open TEMP,'>',$zone_config_file_path or die $!;
-		close TEMP;
-	}
 
 	return $zone_config_file_path;
 
@@ -771,13 +786,21 @@ sub get_zone_config_file {
 
 	my $zone_config_path = $self->base_config_dir . '/'. substr($zonename,0,1).".conf";
 
+	return $zone_config_path;
+}
+
+sub create_zone_config_file {
+	my $self = shift;
+	my $zone_config_path = shift;
+
 	if (! -f $zone_config_path)
 	{
 		open TEMP,'>',$zone_config_path or die $!;
 		close TEMP;
+		return 1;
 	}
 
-	return $zone_config_path;
+	return 0;
 }
 
 sub write_zone_tempfile {
