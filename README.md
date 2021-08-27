@@ -29,5 +29,5 @@ Atomia DNS uses the ISC-license. See [https://github.com/atomia/atomiadns/blob/d
 More information
 ----------------
 
-You can find more information at [http://atomia.github.com/atomiadns](http://atomia.github.com/atomiadns)
+You can find more information at [http://atomia.github.io/atomiadns](http://atomia.github.io/atomiadns)
 which is generated from docs/manual.xml.
