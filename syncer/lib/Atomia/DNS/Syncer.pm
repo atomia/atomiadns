@@ -102,7 +102,7 @@ sub reload_updated_zones {
 	my $self = shift;
 
 	eval {
-		
+
 		$self->sync_updated_zones();
 		$self->sync_zone_transfers();
 
@@ -152,6 +152,7 @@ sub sync_zone_transfers {
 
 			my $filename = $self->write_zone_tempfile($zones);
 			$self->move_zone_into_place($filename, $sub_zonefile);
+
 		};
 	}
 	if ($@) {
@@ -225,8 +226,14 @@ sub sync_all_zones {
 sub sync_updated_zones {
 	my $self = shift;
            
-	my $zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
-           
+	my $zones_batch_size = 10000;
+
+	if (defined($self->config->{"changed_zones_batch_size"})) {
+		$zones_batch_size = $self->config->{"changed_zones_batch_size"};
+	}
+
+	my $zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), $zones_batch_size);
+
 	die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
 		$zones->result && ref($zones->result) eq "ARRAY";
 	$zones = $zones->result;
@@ -259,7 +266,6 @@ sub sync_updated_zones {
 	if (scalar(@$changes_to_keep) > 0) {
 		$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
 	}
-
 
 	foreach my $sub_zonefile (keys %$zones_mapping_to_files) {
 
@@ -329,10 +335,27 @@ sub sync_records {
 	my $synced_records = 0;
 
 	foreach my $zone (@$zones) {
+		my $records = [];
 
-		my $records = defined($prefetched_records) && defined($prefetched_records->{$zone->{"name"}})
-			? $prefetched_records->{$zone->{"name"}} : $self->fetch_records_for_zone($zone->{"name"});
+		if (defined($self->config->{"zone_records_batch_size"})) {
+			my $records_batch = [];
+			my $offset = 0;
+			my $limit = $self->config->{"zone_records_batch_size"};
 
+			do { 
+				$records_batch = $self->fetch_limited_num_records_for_zone($zone->{"name"}, $limit, $offset);
+				$offset += $limit;
+				push @$records, @$records_batch if (scalar(@$records_batch) > 0);
+			} while (scalar(@$records_batch) > 0);
+		}
+		else {
+			if (defined($prefetched_records) && defined($prefetched_records->{$zone->{"name"}})) {
+				$records = $prefetched_records->{$zone->{"name"}};
+			}
+			else {
+				my $records = $self->fetch_records_for_zone($zone->{"name"});
+			}
+		}
 
 		my $record_order = [];
 		my $idx = 1;
@@ -377,6 +400,33 @@ sub fetch_records_for_zone {
 	my $records = undef;
 	eval {
 		my $zone = $self->soap->GetZone($zonename);
+		die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
+		my @records = map { @{$_->{"records"}} } @{$zone->result};
+		$records = \@records;
+	};
+
+	if ($@) {
+		my $exception = $@;
+		if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.ZoneNotFound') {
+			return [];
+		} else {
+			die $exception;
+		}
+	}
+	
+	die "error fetching zones" unless defined($records) && ref($records) eq "ARRAY";
+	return $records;
+}
+
+sub fetch_limited_num_records_for_zone {
+	my $self = shift;
+	my $zonename = shift;
+	my $limit = shift;
+	my $offset = shift;
+
+	my $records = undef;
+	eval {
+		my $zone = $self->soap->GetZoneWithRecordsLimit($zonename, $limit, $offset);
 		die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
 		my @records = map { @{$_->{"records"}} } @{$zone->result};
 		$records = \@records;

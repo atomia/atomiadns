@@ -14,6 +14,7 @@ our $signatures = {
 	"GetDnsRecords" => "array[resourcerecord] string string",
 	"GetLabels" => "array[string] string",
 	"GetZone" => "zone string",
+	"GetZoneWithRecordsLimit" => "zone string int int",
 	"GetZoneBulk" => "array[binaryzone] array",
 	"GetZoneBinary" => "binaryzone string",
 	"GetZoneMetadata" => "array[zonemetadata] string",
