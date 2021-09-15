@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: bindsyncer
-Version: 1.1.1
+Version: 1.1.51
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
