@@ -1,0 +1,6 @@
+options {
+	recursion no;
+	additional-from-cache no;
+	listen-on-v6 { any; };
+};
+

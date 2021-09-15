@@ -1,0 +1,11 @@
+--- contrib/dlz/drivers/dlz_bdbhpt_driver.c.orig	2010-11-29 10:38:52.000000000 +0100
++++ contrib/dlz/drivers/dlz_bdbhpt_driver.c	2010-11-29 10:39:09.000000000 +0100
+@@ -457,7 +457,7 @@
+ 		xfr_cursor->c_close(xfr_cursor);
+ 
+ 	if (dns_cursor != NULL)
+-		dns_cursor->c_close(xfr_cursor);
++		dns_cursor->c_close(dns_cursor);
+ 
+ 	return result;
+ }

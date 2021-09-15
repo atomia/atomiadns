@@ -1,0 +1,13 @@
+Source: bindsyncer
+Section: non-free/perl
+Priority: optional
+Build-Depends: debhelper (>= 4.0.2)
+Build-Depends-Indep: perl (>= 5.8.6), perl-modules
+Maintainer: Jimmy Bergman <jimmy@pingdom.com>
+Standards-Version: 3.6.1
+
+Package: bindsyncer
+Architecture: all
+Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl, libberkeleydb-perl, bind9-dlz-bdbhpt
+Replaces: bind9-dlz-bdbhpt
+Description: Atomia DNS Sync application

@@ -1,0 +1,10 @@
+[Unit]
+Description=AtomiaDns Syncer service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/atomiadns.conf
+ExecStart=atomiadnssync updated 2>&1 | logger -t atomiadnssync_updated
+
+[Install]
+WantedBy=multi-user.target

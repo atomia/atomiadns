@@ -1,0 +1,7 @@
+/etc/bind/named.conf.local
+/etc/bind/named.conf.options
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_sync.conf
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_add_zone.sh
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_allow_zone_transfer.sh
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_delete_zone.sh
+/usr/share/atomiadns/eventlibrary/afilias_sync/afilias_get_nameservers.sh
