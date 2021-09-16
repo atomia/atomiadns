@@ -42,7 +42,7 @@ if [ $ret != 0 ]; then
 fi
 
 cd ../bind_sync
-../buildpackages
+./buildrpms rhel"$version"
 ret=$?
 if [ $ret != 0 ]; then
 	exit $ret
