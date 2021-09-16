@@ -1,0 +1,85 @@
+--- ../bind9-9.7.0-P1.dfsg/contrib/dlz/drivers/dlz_bdbhpt_driver.c	2005-09-05 02:10:55.000000000 +0200
++++ contrib/dlz/drivers/dlz_bdbhpt_driver.c	2011-01-21 13:43:12.073833007 +0100
+@@ -250,6 +250,7 @@
+ 	isc_result_t result;
+ 	bdbhpt_instance_t *db = (bdbhpt_instance_t *) dbdata;
+ 	DBT key, data;
++	char *cidr_buf;
+ 
+ 	/* check to see if we are authoritative for the zone first. */
+ 	result = bdbhpt_findzone(driverarg, dbdata, name);
+@@ -276,7 +277,64 @@
+ 
+ 	switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)) {
+ 	case DB_NOTFOUND:
+-		result = ISC_R_NOTFOUND;
++		/* not found, try with wildcard as well */
++		if (key.data != NULL)
++			free(key.data);
++		key.data = strdup("*");
++		key.size = 1;
++
++		switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)){
++			case DB_NOTFOUND:
++				/* not found, try with x.y.z.0/24 */
++				if (data.data != NULL)
++					free(data.data);
++
++				data.data = malloc(strlen(client) + 3 + 1);
++				strncpy(data.data, client, strlen(client) + 1);
++				for (cidr_buf = data.data + strlen(data.data); cidr_buf > data.data && *cidr_buf != '.'; cidr_buf--) {
++					; /* do nothing, only search for last . */
++				}
++
++				if (*cidr_buf == '.') {
++					strncpy (cidr_buf, ".0/24", strlen(".0/24") + 1);
++					data.size = strlen(data.data);
++
++					switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)){
++						case DB_NOTFOUND:
++							/* not found with ip/zone, ip/*, cidr/*, trying cidr/zone */
++							if (key.data != NULL)
++								free(key.data);
++
++							key.data = strdup(name);
++							key.size = strlen(name);
++
++							switch(db->client->get(db->client, NULL, &key, &data, DB_GET_BOTH)){
++								case DB_NOTFOUND:
++									result = ISC_R_NOTFOUND;
++									break;
++								case 0:
++									result = ISC_R_SUCCESS;
++									break;
++								default:
++									result = ISC_R_FAILURE;
++							}
++							break;
++						case 0:
++							result = ISC_R_SUCCESS;
++							break;
++						default:
++							result = ISC_R_FAILURE;
++					}
++				} else {
++					result = ISC_R_NOTFOUND;
++				}
++				break;
++			case 0:
++				result = ISC_R_SUCCESS;
++				break;
++			default:
++				result = ISC_R_FAILURE;
++		}
+ 		break;
+ 	case 0:
+ 		result = ISC_R_SUCCESS;
+@@ -442,7 +500,7 @@
+ 		xfr_cursor->c_close(xfr_cursor);
+ 
+ 	if (dns_cursor != NULL)
+-		dns_cursor->c_close(xfr_cursor);
++		dns_cursor->c_close(dns_cursor);
+ 
+ 	return result;
+ }

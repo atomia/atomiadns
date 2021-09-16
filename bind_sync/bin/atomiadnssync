@@ -1,0 +1,316 @@
+#!/usr/bin/perl -w
+
+=encoding utf8
+
+=head1 NAME
+
+atomiadnssync - An application for synchronizing a local BDB database with the master zone database using SOAP.
+
+=head1 SYNOPSIS
+
+=over 8
+
+=item atomiadnssync full_reload_offline SERIAL DESTINATION
+
+=item atomiadnssync OPTION
+
+=back
+
+=head1 DESCRIPTION
+
+atomiadnssync is an application for synchronizing a local BDB database with the
+master zone database using SOAP.
+
+It contains options for both doing a full reload of all zones in the master
+database, and for just fetching the zones changed since the last update and
+reloading those.
+
+In addition you can use this tool for adding or removing the subscription of
+updates for a nameserver, and for enabling and disabling propagation of updates
+globally across all nameservers.
+
+=head1 OPTIONS
+
+=over 8
+
+=item full_reload_offline SERIAL DESTINATION
+
+Propagates all zones to a fresh BDB environment stored in the destination
+folder (should be empty before running).  All zones get the serial specified in
+their SOA-record.  This command should always be run with the same user BIND is
+running as.
+
+=item full_reload_online
+
+Marks all zones as changed so that the update-process propagates them on all nameservers.
+
+=item full_reload_slavezones
+
+Marks all slave zones as changed so that the update-process propagates them on all nameservers.
+
+=item updated
+
+Fetches a list of changed zones and adds/removes them from the local BDB
+database.  This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-bindsync.
+You should never run this manually.
+
+=item eventchain
+
+Fetches a list of changed zones and executes all defined event listeners for the
+action in question.
+
+The event listeners are defined in the/etc/atomiadns.conf like:
+
+	<change_event_chain>
+		event_listener_subscribername some-unique-key
+		on_update /usr/local/atomiadns_events/add_or_update_zone_1.sh
+		on_update /usr/local/atomiadns_events/add_or_update_zone_2.sh
+		on_delete /usr/local/atomiadns_events/delete_zone.sh
+	</change_event_chain>
+
+This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-bindsync.
+You should never run this manually.
+
+=item get_server
+
+Checks if this server is added as a subscriber of changed zones and displays the group it is configured
+to handle zones for.
+
+A return value of 0 means that the server is added as a subscriber, 1 means it is not.
+
+=item add_server GROUP
+
+Adds this server (configured using servername in /etc/atomiadns.conf) as a
+subscriber of the data set defined by the nameserver group GROUP on the configured SOAP server.
+
+=item remove_server
+
+Remove the subscription of the data set on the configured SOAP server for this
+server (configured using servername in /etc/atomiadns.conf).
+
+=item disable_updates
+
+Disable propagation of changes to the nameservers.
+
+=item enable_updates
+
+Enable propagation of changes to the nameservers
+
+=back
+
+=head1 CONFIGURATION
+
+The application is configured using a config file stored at /etc/atomiadns.conf. All options are required.
+
+The following options exist:
+
+=over 8
+
+=item bdb_environment_path
+
+Specifies the path of the local BDB environment. The default is
+/var/lib/bind/atomiadns_bdb, and does probably not need to change.
+
+=item bdb_filename
+
+Specifies the filename (relative to bdb_environment_path) of the local BDB
+database. The default is dns_data.db, and does probably not need to change.
+
+=item soap_uri
+
+Specifies the URI of the SOAP Server to fetch changes from.
+
+=item servername
+
+Specifies the hostname used when subscribing and checking for changes.
+
+=item slavezones_config
+
+Specifies the filename which contain a list of the configured slave zones.
+
+=item slavezones_dir
+
+Specifies the directory where zone files for the slave zones are stored.
+
+=back
+
+=head1 EXAMPLES
+
+To do a full reload to a new folder without missing any updates (assuming the
+default bdb_environment_path), do:
+
+1. atomiadnssync disable_updates
+
+2. Verify manually that no pending changes exist.
+
+3. Write down the output (unix timestamp) of `date +%s`
+
+4. Run `atomiadnssync full_reload_offline the_timestamp /var/lib/bind/atomiadns_bdb_new
+
+5. rm -rf /var/lib/bind/atomiadns_bdb_old ; mv /var/lib/bind/atomiadns_bdb /var/lib/bind/atomiadns_bdb_old ; mv /var/lib/bind/atomiadns_bdb_new /var/lib/bind/atomiadns_bdb
+
+6. rndc reload
+
+7. atomiadnssync enable_updates
+
+Or to accomplish the same thing using the online reload feature (much better and the preferred way):
+
+atomiadnssync full_reload_online
+
+To add the server as a subscriber:
+
+atomiadnssync add_server somegroup
+
+=head1 AUTHOR
+
+Atomia DNS was developed by Atomia AB. For support, please see http://www.atomia.com/.
+
+=cut
+
+use warnings;
+use strict;
+
+use Atomia::DNS::Syncer;
+use Data::Dumper;
+
+# Flush stdout after every write
+$| = 1;
+
+if (scalar(@ARGV) < 1) {
+	print "usage: $0 mode\n";
+	print "where mode is one of full_reload_offline, full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates\n";
+	exit 1;
+}
+
+$_ = $ARGV[0];
+
+SWITCH: {
+	/^(remove_server|disable_updates|enable_updates|full_reload_online|full_reload_slavezones)$/i && do {
+		my $command = $_;
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->$command();
+		};
+
+		handle_exception($@) if $@;
+		last SWITCH;
+	};
+
+	/^full_reload_offline$/i && do {
+		if (scalar(@ARGV) < 3) {
+			print "usage: $0 full_reload timestamp destination_folder\n";
+			exit 1;
+		}
+
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf", bdb_environment_path => $ARGV[2]);
+			$syncer->$_($ARGV[1]);
+		};
+
+		handle_exception($@) if $@;
+		last SWITCH;
+	};
+
+	/^add_server$/i && do {
+		if (scalar(@ARGV) < 2) {
+			print "usage: $0 add_server group\n";
+			exit 1;
+		}
+
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->add_server($ARGV[1]);
+		};
+
+		my $exception = $@;
+		if ($exception) {
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.Uniqueness/) {
+				print "This server is already added, you can use get_server to check the current settings.\n";
+				exit 1;
+			} else {
+				handle_exception($exception);
+			}
+		}
+		last SWITCH;
+	};
+
+	/^get_server$/i && do {
+		eval {
+			my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+			my $group = $syncer->get_server();
+			print "$group\n";
+		};
+
+		my $exception = $@;
+		if ($exception) {
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode =~ /LogicalError.NameserverNotFound/) {
+				print STDERR "Warning: This nameserver is not configured as a member of any group.\n";
+				exit 1;
+			} else {
+				handle_exception($exception);
+			}
+		}
+		last SWITCH;
+	};
+
+	/^updated$/i && do {
+		FOREVER: while(1) {
+			eval {
+				my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+
+				while (1) {
+					last if $syncer->updates_disabled();
+					#$syncer->reload_updated_zones();
+					$syncer->reload_updated_slavezones();
+					sleep 10;
+				}
+			};
+
+			if ($@) {
+				print "caught exception in atomiadnssync updated: $@\n";
+				sleep 5;
+			} else {
+				# Updates disabled, exit.
+				last;
+			}
+		}
+
+		last SWITCH;
+	};
+
+	/^eventchain$/i && do {
+		FOREVER: while(1) {
+			eval {
+				my $syncer = Atomia::DNS::Syncer->new(configfile => "/etc/atomiadns.conf");
+
+				while (1) {
+					last if $syncer->updates_disabled();
+					$syncer->event_chain();
+					sleep 10;
+				}
+			};
+
+			if ($@) {
+				print "caught exception in atomiadnssync eventchain: $@\n";
+				sleep 5;
+			} else {
+				# Updates disabled, exit.
+				last;
+			}
+		}
+
+		last SWITCH;
+	};
+
+	die("parameter $_ is not supported");
+}
+
+sub handle_exception {
+	my $exception = shift;
+	my $no_output = shift;
+
+	$exception = $exception->faultcode . ": " . $exception->faultstring if ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM');
+	$exception = Dumper($exception) if ref($exception);
+	print "Caught exception handling command: $exception\n" unless defined($no_output) && $no_output == 1;
+	exit 1;
+}

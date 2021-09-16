@@ -1,0 +1,21 @@
+#!/bin/sh
+
+mkdir -p /var/lib/bind/atomiadns_bdb || exit 1
+chown bind:bind /var/lib/bind/atomiadns_bdb
+
+cat > /etc/default/bind9 <<EOF
+OPTIONS="-u bind"
+RESOLVCONF="no"
+EOF
+
+if [ ! -f "/etc/atomiadns.conf" ]; then
+	cp /usr/share/atomiadns/atomiadns-bind-dlz-agent.conf /etc/atomiadns.conf
+fi
+
+mkdir -p /etc/bind/slave/zones
+chown -R bind:bind /etc/bind/slave
+
+touch /etc/bind/slave/named-slavezones.conf.local
+chown bind:bind /etc/bind/slave/named-slavezones.conf.local
+
+/usr/sbin/update-rc.d atomiadns-bindsync defaults

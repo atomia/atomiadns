@@ -1,0 +1,642 @@
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.dirs bind9-9.4.2.dfsg.P2/debian/bind9.dirs
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.dirs	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.dirs	1970-01-01 01:00:00.000000000 +0100
+@@ -1,6 +0,0 @@
+-etc/apparmor.d/force-complain
+-etc/bind
+-usr/bin
+-usr/sbin
+-var/cache/bind
+-var/run/bind/run
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.docs bind9-9.4.2.dfsg.P2/debian/bind9.docs
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.docs	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.docs	1970-01-01 01:00:00.000000000 +0100
+@@ -1,2 +0,0 @@
+-FAQ
+-README
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.init bind9-9.4.2.dfsg.P2/debian/bind9.init
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.init	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.init	1970-01-01 01:00:00.000000000 +0100
+@@ -1,112 +0,0 @@
+-#!/bin/sh
+-
+-### BEGIN INIT INFO
+-# Provides:          bind9
+-# Required-Start:    $remote_fs
+-# Required-Stop:     $remote_fs
+-# Should-Start:      $network $syslog
+-# Should-Stop:       $network $syslog
+-# Default-Start:     2 3 4 5
+-# Default-Stop:      0 1 6
+-# Short-Description: Start and stop bind9
+-# Description:       bind9 is a Domain Name Server (DNS)
+-#        which translates ip addresses to and from internet names
+-### END INIT INFO
+-
+-PATH=/sbin:/bin:/usr/sbin:/usr/bin
+-
+-# for a chrooted server: "-u bind -t /var/lib/named"
+-# Don't modify this line, change or create /etc/default/bind9.
+-OPTIONS=""
+-RESOLVCONF=yes
+-
+-test -f /etc/default/bind9 && . /etc/default/bind9
+-
+-test -x /usr/sbin/rndc || exit 0
+-
+-. /lib/lsb/init-functions
+-DISTRO=$(lsb_release -is 2>/dev/null || echo Debian)
+-
+-check_network() {
+-    if [ -z "$(/sbin/ifconfig)" ]; then
+-    	#log_action_msg "No networks configured."
+-	return 1 
+-    fi
+-    return 0
+-}
+-
+-case "$1" in
+-    start)
+-	log_daemon_msg "Starting domain name service..." "bind"
+-
+-	modprobe capability >/dev/null 2>&1 || true
+-
+-	# dirs under /var/run can go away on reboots.
+-	mkdir -p /var/run/bind/run
+-	chmod 775 /var/run/bind/run
+-	chown root:bind /var/run/bind/run >/dev/null 2>&1 || true
+-
+-	if [ ! -x /usr/sbin/named ]; then
+-	    log_action_msg "named binary missing - not starting"
+-	    log_end_msg 1
+-	    exit 1
+-	fi
+-
+-	if ! check_network; then
+-	    log_end_msg 1
+-	    exit 1
+-	fi
+-
+-	if start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/named \
+-		--pidfile /var/run/bind/run/named.pid -- $OPTIONS; then
+-	    if [ "X$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
+-		echo "nameserver 127.0.0.1" | /sbin/resolvconf -a lo.named
+-	    fi
+-	    log_end_msg 0
+-	else
+-	    log_end_msg 1
+-	fi
+-    ;;
+-
+-    stop)
+-	log_daemon_msg "Stopping domain name service..." "bind"
+-	if ! check_network; then
+-	    log_end_msg 1
+-	    exit 1
+-	fi
+-
+-	if [ "X$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
+-	    /sbin/resolvconf -d lo.named
+-	fi
+-	/usr/sbin/rndc stop
+-	log_end_msg $?
+-    ;;
+-
+-    reload|force-reload)
+-	log_daemon_msg "Reloading domain name service..." "bind"
+-	if ! check_network; then
+-	    log_end_msg 1
+-	    exit 1
+-	fi
+-
+-	/usr/sbin/rndc reload >/dev/null
+-	log_end_msg $?
+-    ;;
+-
+-    restart)
+-	if ! check_network; then
+-	    exit 1
+-	fi
+-
+-	$0 stop
+-	sleep 2
+-	$0 start
+-    ;;
+-    
+-    *)
+-	log_action_msg "Usage: /etc/init.d/bind9 {start|stop|reload|restart|force-reload}"
+-	exit 1
+-    ;;
+-esac
+-
+-exit 0
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.NEWS bind9-9.4.2.dfsg.P2/debian/bind9.NEWS
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.NEWS	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.NEWS	1970-01-01 01:00:00.000000000 +0100
+@@ -1,14 +0,0 @@
+-bind9 (1:9.4.0-1) experimental; urgency=low
+-
+-  As of bind 9.4, allow-query-cache and allow-recursion default to the
+-  builtin acls 'localnets' and 'localhost'.  If you are setting up a
+-  name server for a network, you will almost certainly need to change
+-  this.
+-
+-  The change in default has been done to make caching servers less
+-  attractive as reflective amplifying targets for spoofed traffic.
+-  This still leaves authoritative servers exposed.
+-
+-  The best fix is for full BCP 38 deployment to remove spoofed traffic.
+-
+- -- LaMont Jones <lamont@debian.org>  Wed, 03 Oct 2007 00:52:44 -0600
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.postinst bind9-9.4.2.dfsg.P2/debian/bind9.postinst
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.postinst	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.postinst	1970-01-01 01:00:00.000000000 +0100
+@@ -1,69 +0,0 @@
+-#!/bin/sh
+-
+-set -e
+-
+-if [ "$1" = configure ]; then
+-    lastversion="$2";
+-
+-    # lets give them a bind user/group in all cases.
+-    getent group bind >/dev/null 2>&1 || addgroup --system bind
+-    getent passwd bind >/dev/null 2>&1 ||
+-	adduser --system --home /var/cache/bind --no-create-home \
+-		--disabled-password --ingroup bind bind
+-
+-    if [ -z "$lastversion" ] || dpkg --compare-versions "$lastversion" lt 1:9.4.2-2 ; then
+-	mkdir -p /var/lib/bind
+-	chown root:bind /var/lib/bind
+-	chmod 775 /var/lib/bind
+-    fi
+-
+-    if [ ! -s /etc/bind/rndc.key ]; then
+-	rndc-confgen -r /dev/urandom -a
+-    fi
+-
+-    localconf=""
+-    if [ ! -f /etc/default/bind9 ]; then
+-	for file in /etc/bind/named.conf /etc/bind/named.conf.local; do
+-	    theirs=$(md5sum $file | sed 's/ .*$//')
+-	    mine=$(dpkg --status bind9 | grep "^ $file " | sed -n 's/.* //p')
+-	    if [ "$mine" != "$theirs" ]; then
+-		localconf="y"
+-	    fi
+-	done
+-	if [ -n "$localconf" ]; then
+-	    echo 'OPTIONS=""' >> /etc/default/bind9
+-	else
+-	    echo 'OPTIONS="-u bind"' >> /etc/default/bind9
+-	fi
+-	echo '# Set RESOLVCONF=no to not run resolvconf' >> /etc/default/bind9
+-	echo 'RESOLVCONF=yes' >> /etc/default/bind9
+-    fi
+-
+-    # Deal with the aftermath of 9.2.1-5  - it's a hack, but hey..
+-    if [ "$lastversion" = "9.2.1-5" ]; then
+-	ugid=$(ls -l /etc/bind/rndc.key | awk '{print $3 $4}')
+-	if [ "$ugid" = "bindbind" ]; then
+-	    chown root:root /etc/bind/rndc.key
+-	    chown root:bind /var/run/bind/run
+-	    chown root:bind /var/cache/bind
+-	fi
+-    fi
+-
+-    uid=$(ls -ln /etc/bind/rndc.key | awk '{print $3}')
+-    if [ "$uid" = "0" ]; then
+-	[ -n "$localconf" ] || chown bind /etc/bind/rndc.key
+-	chgrp bind /etc/bind
+-	chmod g+s /etc/bind
+-	chgrp bind /etc/bind/rndc.key /var/run/bind/run /var/cache/bind
+-	chgrp bind /etc/bind/named.conf*
+-	chmod g+r /etc/bind/rndc.key /etc/bind/named.conf*
+-	chmod g+rwx /var/run/bind/run /var/cache/bind
+-    fi
+-
+-    # Reload AppArmor profile
+-    if [ -x /etc/init.d/apparmor ]; then
+-        invoke-rc.d apparmor force-reload || true
+-    fi
+-fi
+-
+-#DEBHELPER#
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.postrm bind9-9.4.2.dfsg.P2/debian/bind9.postrm
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.postrm	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.postrm	1970-01-01 01:00:00.000000000 +0100
+@@ -1,10 +0,0 @@
+-#!/bin/sh
+-
+-if [ "$1" = "purge" ]
+-then
+-	rm -f /etc/bind/rndc.key /etc/default/bind9
+-	rmdir /etc/bind >/dev/null 2>&1 || true
+-        rm -f /etc/apparmor.d/force-complain/usr.sbin.named >/dev/null 2>&1 || true
+-fi
+-
+-#DEBHELPER#
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9.preinst bind9-9.4.2.dfsg.P2/debian/bind9.preinst
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9.preinst	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/bind9.preinst	1970-01-01 01:00:00.000000000 +0100
+@@ -1,44 +0,0 @@
+-#!/bin/sh
+-# pre install script for the Debian bind9 package
+-
+-set -e
+-
+-# Check if we are upgrading while running a kernel before 2.2.18. If so abort
+-# immediately since we don't support those kernels anymore.
+-if [ "$1" = "upgrade" ] && dpkg --compare-versions "`uname -r`" lt 2.2.18 ; then
+-        cat <<EOF
+-ERROR: you are running a pre-2.2.18 kernel on this machine. Recent
+-versions of bind9 no longer support those kernels.
+-To prevent breaking nameservices on this system bind9 upgrade will abort.
+-EOF
+-        exit 1
+-fi
+-
+-APP_PROFILE="usr.sbin.named"
+-APP_CONFFILE="/etc/apparmor.d/$APP_PROFILE"
+-APP_COMPLAIN="/etc/apparmor.d/force-complain/$APP_PROFILE"
+-if [ "$1" = "upgrade" ]; then
+-    mkdir -p `dirname $APP_COMPLAIN` 2>/dev/null || true
+-    if dpkg --compare-versions $2 lt 1:9.3.4-2ubuntu2 ; then
+-        # force-complain for pre-apparmor upgrades
+-        ln -sf $APP_CONFFILE $APP_COMPLAIN
+-    elif dpkg --compare-versions $2 lt 1:9.4.2-3ubuntu1 ; then
+-        if [ -e "$APP_CONFFILE" ]; then
+-            md5sum="`md5sum \"$APP_CONFFILE\" | sed -e \"s/ .*//\"`"
+-            pkg_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $APP_CONFFILE'{s/.* //;p}}\" /var/lib/dpkg/status`"
+-            if [ "$md5sum" = "$pkg_md5sum" ]; then
+-		# force-complain when upgrade from pre-shipped profile and an existing
+-                # profile is same as in conffiles
+-                ln -sf $APP_CONFFILE $APP_COMPLAIN
+-            fi
+-        else
+-            # force-complain on upgrade from pre-shipped profile and
+-            # there is no existing profile
+-            ln -sf $APP_CONFFILE $APP_COMPLAIN
+-        fi
+-    fi
+-fi
+-
+-
+-#DEBHELPER#
+-exit 0
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.dirs bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.dirs
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.dirs	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.dirs	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,6 @@
++etc/apparmor.d/force-complain
++etc/bind
++usr/bin
++usr/sbin
++var/cache/bind
++var/run/bind/run
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.docs bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.docs
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.docs	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.docs	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,2 @@
++FAQ
++README
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.init bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.init
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.init	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.init	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,112 @@
++#!/bin/sh
++
++### BEGIN INIT INFO
++# Provides:          bind9
++# Required-Start:    $remote_fs
++# Required-Stop:     $remote_fs
++# Should-Start:      $network $syslog
++# Should-Stop:       $network $syslog
++# Default-Start:     2 3 4 5
++# Default-Stop:      0 1 6
++# Short-Description: Start and stop bind9
++# Description:       bind9 is a Domain Name Server (DNS)
++#        which translates ip addresses to and from internet names
++### END INIT INFO
++
++PATH=/sbin:/bin:/usr/sbin:/usr/bin
++
++# for a chrooted server: "-u bind -t /var/lib/named"
++# Don't modify this line, change or create /etc/default/bind9.
++OPTIONS=""
++RESOLVCONF=yes
++
++test -f /etc/default/bind9 && . /etc/default/bind9
++
++test -x /usr/sbin/rndc || exit 0
++
++. /lib/lsb/init-functions
++DISTRO=$(lsb_release -is 2>/dev/null || echo Debian)
++
++check_network() {
++    if [ -z "$(/sbin/ifconfig)" ]; then
++    	#log_action_msg "No networks configured."
++	return 1 
++    fi
++    return 0
++}
++
++case "$1" in
++    start)
++	log_daemon_msg "Starting domain name service..." "bind"
++
++	modprobe capability >/dev/null 2>&1 || true
++
++	# dirs under /var/run can go away on reboots.
++	mkdir -p /var/run/bind/run
++	chmod 775 /var/run/bind/run
++	chown root:bind /var/run/bind/run >/dev/null 2>&1 || true
++
++	if [ ! -x /usr/sbin/named ]; then
++	    log_action_msg "named binary missing - not starting"
++	    log_end_msg 1
++	    exit 1
++	fi
++
++	if ! check_network; then
++	    log_end_msg 1
++	    exit 1
++	fi
++
++	if start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/named \
++		--pidfile /var/run/bind/run/named.pid -- $OPTIONS; then
++	    if [ "X$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
++		echo "nameserver 127.0.0.1" | /sbin/resolvconf -a lo.named
++	    fi
++	    log_end_msg 0
++	else
++	    log_end_msg 1
++	fi
++    ;;
++
++    stop)
++	log_daemon_msg "Stopping domain name service..." "bind"
++	if ! check_network; then
++	    log_end_msg 1
++	    exit 1
++	fi
++
++	if [ "X$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
++	    /sbin/resolvconf -d lo.named
++	fi
++	/usr/sbin/rndc stop
++	log_end_msg $?
++    ;;
++
++    reload|force-reload)
++	log_daemon_msg "Reloading domain name service..." "bind"
++	if ! check_network; then
++	    log_end_msg 1
++	    exit 1
++	fi
++
++	/usr/sbin/rndc reload >/dev/null
++	log_end_msg $?
++    ;;
++
++    restart)
++	if ! check_network; then
++	    exit 1
++	fi
++
++	$0 stop
++	sleep 2
++	$0 start
++    ;;
++    
++    *)
++	log_action_msg "Usage: /etc/init.d/bind9 {start|stop|reload|restart|force-reload}"
++	exit 1
++    ;;
++esac
++
++exit 0
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.NEWS bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.NEWS
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.NEWS	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.NEWS	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,14 @@
++bind9 (1:9.4.0-1) experimental; urgency=low
++
++  As of bind 9.4, allow-query-cache and allow-recursion default to the
++  builtin acls 'localnets' and 'localhost'.  If you are setting up a
++  name server for a network, you will almost certainly need to change
++  this.
++
++  The change in default has been done to make caching servers less
++  attractive as reflective amplifying targets for spoofed traffic.
++  This still leaves authoritative servers exposed.
++
++  The best fix is for full BCP 38 deployment to remove spoofed traffic.
++
++ -- LaMont Jones <lamont@debian.org>  Wed, 03 Oct 2007 00:52:44 -0600
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.postinst bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.postinst
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.postinst	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.postinst	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,69 @@
++#!/bin/sh
++
++set -e
++
++if [ "$1" = configure ]; then
++    lastversion="$2";
++
++    # lets give them a bind user/group in all cases.
++    getent group bind >/dev/null 2>&1 || addgroup --system bind
++    getent passwd bind >/dev/null 2>&1 ||
++	adduser --system --home /var/cache/bind --no-create-home \
++		--disabled-password --ingroup bind bind
++
++    if [ -z "$lastversion" ] || dpkg --compare-versions "$lastversion" lt 1:9.4.2-2 ; then
++	mkdir -p /var/lib/bind
++	chown root:bind /var/lib/bind
++	chmod 775 /var/lib/bind
++    fi
++
++    if [ ! -s /etc/bind/rndc.key ]; then
++	rndc-confgen -r /dev/urandom -a
++    fi
++
++    localconf=""
++    if [ ! -f /etc/default/bind9 ]; then
++	for file in /etc/bind/named.conf /etc/bind/named.conf.local; do
++	    theirs=$(md5sum $file | sed 's/ .*$//')
++	    mine=$(dpkg --status bind9 | grep "^ $file " | sed -n 's/.* //p')
++	    if [ "$mine" != "$theirs" ]; then
++		localconf="y"
++	    fi
++	done
++	if [ -n "$localconf" ]; then
++	    echo 'OPTIONS=""' >> /etc/default/bind9
++	else
++	    echo 'OPTIONS="-u bind"' >> /etc/default/bind9
++	fi
++	echo '# Set RESOLVCONF=no to not run resolvconf' >> /etc/default/bind9
++	echo 'RESOLVCONF=yes' >> /etc/default/bind9
++    fi
++
++    # Deal with the aftermath of 9.2.1-5  - it's a hack, but hey..
++    if [ "$lastversion" = "9.2.1-5" ]; then
++	ugid=$(ls -l /etc/bind/rndc.key | awk '{print $3 $4}')
++	if [ "$ugid" = "bindbind" ]; then
++	    chown root:root /etc/bind/rndc.key
++	    chown root:bind /var/run/bind/run
++	    chown root:bind /var/cache/bind
++	fi
++    fi
++
++    uid=$(ls -ln /etc/bind/rndc.key | awk '{print $3}')
++    if [ "$uid" = "0" ]; then
++	[ -n "$localconf" ] || chown bind /etc/bind/rndc.key
++	chgrp bind /etc/bind
++	chmod g+s /etc/bind
++	chgrp bind /etc/bind/rndc.key /var/run/bind/run /var/cache/bind
++	chgrp bind /etc/bind/named.conf*
++	chmod g+r /etc/bind/rndc.key /etc/bind/named.conf*
++	chmod g+rwx /var/run/bind/run /var/cache/bind
++    fi
++
++    # Reload AppArmor profile
++    if [ -x /etc/init.d/apparmor ]; then
++        invoke-rc.d apparmor force-reload || true
++    fi
++fi
++
++#DEBHELPER#
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.postrm bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.postrm
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.postrm	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.postrm	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,10 @@
++#!/bin/sh
++
++if [ "$1" = "purge" ]
++then
++	rm -f /etc/bind/rndc.key /etc/default/bind9
++	rmdir /etc/bind >/dev/null 2>&1 || true
++        rm -f /etc/apparmor.d/force-complain/usr.sbin.named >/dev/null 2>&1 || true
++fi
++
++#DEBHELPER#
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.preinst bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.preinst
+--- bind9-9.4.2.dfsg.P2.orig/debian/bind9-dlz-bdbhpt.preinst	1970-01-01 01:00:00.000000000 +0100
++++ bind9-9.4.2.dfsg.P2/debian/bind9-dlz-bdbhpt.preinst	2009-05-06 16:32:50.000000000 +0200
+@@ -0,0 +1,44 @@
++#!/bin/sh
++# pre install script for the Debian bind9 package
++
++set -e
++
++# Check if we are upgrading while running a kernel before 2.2.18. If so abort
++# immediately since we don't support those kernels anymore.
++if [ "$1" = "upgrade" ] && dpkg --compare-versions "`uname -r`" lt 2.2.18 ; then
++        cat <<EOF
++ERROR: you are running a pre-2.2.18 kernel on this machine. Recent
++versions of bind9 no longer support those kernels.
++To prevent breaking nameservices on this system bind9 upgrade will abort.
++EOF
++        exit 1
++fi
++
++APP_PROFILE="usr.sbin.named"
++APP_CONFFILE="/etc/apparmor.d/$APP_PROFILE"
++APP_COMPLAIN="/etc/apparmor.d/force-complain/$APP_PROFILE"
++if [ "$1" = "upgrade" ]; then
++    mkdir -p `dirname $APP_COMPLAIN` 2>/dev/null || true
++    if dpkg --compare-versions $2 lt 1:9.3.4-2ubuntu2 ; then
++        # force-complain for pre-apparmor upgrades
++        ln -sf $APP_CONFFILE $APP_COMPLAIN
++    elif dpkg --compare-versions $2 lt 1:9.4.2-3ubuntu1 ; then
++        if [ -e "$APP_CONFFILE" ]; then
++            md5sum="`md5sum \"$APP_CONFFILE\" | sed -e \"s/ .*//\"`"
++            pkg_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $APP_CONFFILE'{s/.* //;p}}\" /var/lib/dpkg/status`"
++            if [ "$md5sum" = "$pkg_md5sum" ]; then
++		# force-complain when upgrade from pre-shipped profile and an existing
++                # profile is same as in conffiles
++                ln -sf $APP_CONFFILE $APP_COMPLAIN
++            fi
++        else
++            # force-complain on upgrade from pre-shipped profile and
++            # there is no existing profile
++            ln -sf $APP_CONFFILE $APP_COMPLAIN
++        fi
++    fi
++fi
++
++
++#DEBHELPER#
++exit 0
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/control bind9-9.4.2.dfsg.P2/debian/control
+--- bind9-9.4.2.dfsg.P2.orig/debian/control	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/control	2009-05-06 16:35:28.000000000 +0200
+@@ -8,11 +8,11 @@
+ XS-Vcs-Browser: http://git.debian.org/?p=users/lamont/bind9.git
+ XS-Vcs-Git: git://git.debian.org/~lamont/bind9.git
+ 
+-Package: bind9
++Package: bind9-dlz-bdbhpt
+ Architecture: any
+-Depends: ${shlibs:Depends}, netbase, adduser, libbind9-30 (=${binary:Version}), libdns35 (=${binary:Version}), libisccfg30 (=${binary:Version}), libisc35 (=${binary:Version}), libisccc30 (=${binary:Version}), lsb-base (>=3.0-6), liblwres30 (=${binary:Version}), libbind9-30 (=${binary:Version})
+-Conflicts: bind, apparmor-profiles (<< 2.1+1075-0ubuntu4)
+-Replaces: bind, dnsutils (<< 1:9.1.0-3), apparmor-profiles (<< 2.1+1075-0ubuntu4)
++Depends: ${shlibs:Depends}, netbase, adduser, libbind9-30 (=${binary:Version}), libdns35 (=${binary:Version}), libisccfg30 (=${binary:Version}), libisc35 (=${binary:Version}), libisccc30 (=${binary:Version}), lsb-base (>=3.0-6), liblwres30 (=${binary:Version}), libbind9-30 (=${binary:Version}), libdb4.6
++Conflicts: bind, bind9, apparmor-profiles (<< 2.1+1075-0ubuntu4)
++Replaces: bind, bind9, dnsutils (<< 1:9.1.0-3), apparmor-profiles (<< 2.1+1075-0ubuntu4)
+ Suggests: dnsutils, bind9-doc, resolvconf
+ Description: Internet Domain Name Server
+  ${Description}
+diff -urN bind9-9.4.2.dfsg.P2.orig/debian/rules bind9-9.4.2.dfsg.P2/debian/rules
+--- bind9-9.4.2.dfsg.P2.orig/debian/rules	2009-05-06 16:32:50.000000000 +0200
++++ bind9-9.4.2.dfsg.P2/debian/rules	2009-05-06 16:35:28.000000000 +0200
+@@ -36,7 +36,8 @@
+ 		--enable-static \
+ 		--with-openssl=/usr \
+ 		--with-gnu-ld \
+-		--enable-ipv6
++		--enable-ipv6 \
++		--with-dlz-bdb
+ 	touch configure-stamp
+ 
+ build: configure-stamp build-stamp
+@@ -61,14 +62,14 @@
+ 	rm -f build-stamp configure-stamp
+ 	dh_clean
+ 
+-ETCBIND=debian/bind9/etc/bind
+-ETCAPP=debian/bind9/etc/apparmor.d
++ETCBIND=debian/bind9-dlz-bdbhpt/etc/bind
++ETCAPP=debian/bind9-dlz-bdbhpt/etc/apparmor.d
+ install: build
+ 	dh_testdir
+ 	dh_testroot
+ 	dh_clean -k
+ 	dh_installdirs
+-	$(MAKE) install DESTDIR=`pwd`/debian/bind9
++	$(MAKE) install DESTDIR=`pwd`/debian/bind9-dlz-bdbhpt
+ 	install -c -o bin -g bin -m 444 debian/db.0 ${ETCBIND}/db.0
+ 	install -c -o bin -g bin -m 444 debian/db.0 ${ETCBIND}/db.255
+ 	install -c -o bin -g bin -m 444 debian/db.empty ${ETCBIND}
+@@ -80,7 +81,7 @@
+ 	install -c -o bin -g bin -m 440 debian/named.conf.local ${ETCBIND}
+ 	install -c -o bin -g bin -m 440 debian/named.conf.options ${ETCBIND}
+ 	cp doc/arm/*.html debian/bind9-doc/usr/share/doc/bind9-doc/arm
+-	install -m 644 -o root -g root debian/apparmor-profile ${ETCAPP}/usr.sbin.named
++	install -m 644 -o root -g root -D debian/apparmor-profile ${ETCAPP}/usr.sbin.named
+ 
+ # Build architecture-independent files here.
+ binary-indep: build install
+@@ -115,9 +116,9 @@
+ 	dh_installmanpages -pbind9 runmdn.1 mdnconv.1 zone2ldap.1 nslint.8
+ 	dh_installinfo -a
+ 	dh_installchangelogs -a # CHANGES # upstream changelog only in bind9-doc
+-	dh_movefiles --sourcedir=debian/bind9 -a
+-	( cd debian/bind9/usr ; rm -fr bin include lib )
+-	rm -rf debian/bind9/usr/share/man/man[13]
++	dh_movefiles --sourcedir=debian/bind9-dlz-bdbhpt -a
++	( cd debian/bind9-dlz-bdbhpt/usr ; rm -fr bin include lib )
++	rm -rf debian/bind9-dlz-bdbhpt/usr/share/man/man[13]
+ 	dh_link -a
+ 	dh_strip -a
+ 	dh_compress -a

@@ -41,4 +41,11 @@ if [ $ret != 0 ]; then
 	exit $ret
 fi
 
+cd ../bind_sync
+../buildpackages
+ret=$?
+if [ $ret != 0 ]; then
+	exit $ret
+fi
+
 cd ..

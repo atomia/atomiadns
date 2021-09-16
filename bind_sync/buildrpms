@@ -1,0 +1,28 @@
+#!/bin/sh
+
+if [ `dirname "$0"` != "." ]; then
+	echo "you have run this script from the dir it is placed in"
+	exit 1
+elif [ -z "$1" ]; then
+	echo "usage: $0 rhel4|rhel5"
+	exit 1
+fi
+
+rm -f /usr/src/redhat/SOURCES/atomiadns-*
+rm -f /usr/src/redhat/SPECS/atomiadns-*
+cp SPECS/*.spec /usr/src/redhat/SPECS
+
+startdir="$PWD"
+
+cd ..
+tar cfpz /usr/src/redhat/SOURCES/atomiadns-syncer.tar.gz --exclude "*/.svn" syncer
+
+cd /usr/src/redhat/SPECS
+rpmbuild --sign -ba atomiadns-bindsync.spec
+ret=$?
+
+cd "$startdir"
+cp /usr/src/redhat/RPMS/*/atomiadns-* ..
+cp /usr/src/redhat/SRPMS/atomiadns-* ..
+rm -f ../*-debuginfo-*
+exit $ret
