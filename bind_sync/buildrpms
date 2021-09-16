@@ -18,7 +18,7 @@ cd ..
 tar cfpz /usr/src/redhat/SOURCES/atomiadns-syncer.tar.gz --exclude "*/.svn" syncer
 
 cd /usr/src/redhat/SPECS
-rpmbuild --sign -ba bindsyncer.spec
+rpmbuild --sign -ba atomiadns-bindsync.spec
 ret=$?
 
 cd "$startdir"

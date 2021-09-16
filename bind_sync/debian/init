@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          bindsyncer-updated
+# Provides:          atomiadns-bindsync-updated
 # Required-Start:    $remote_fs
 # Required-Stop:     $remote_fs
 # Should-Start:      $network $syslog

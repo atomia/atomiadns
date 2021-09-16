@@ -13,7 +13,7 @@ On (only) one nameserver in the group that you want to sync to Afilias you shoul
 
 3. Execute the following commands:
 
-/etc/init.d/bindsyncer restart
+/etc/init.d/atomiadns-bindsync restart
 /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_allow_zone_transfer.sh
 ln -s /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_allow_zone_transfer.sh /etc/cron.hourly/afilias_allow_zone_transfer
 

@@ -4,7 +4,7 @@
 %define sourcedir syncer
 
 Summary: Atomia DNS Sync application
-Name: bindsyncer
+Name: atomiadns-bindsync
 Version: 1.1.51
 Release: 1%{?dist}
 License: Commercial

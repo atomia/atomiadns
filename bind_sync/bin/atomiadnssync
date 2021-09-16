@@ -51,7 +51,7 @@ Marks all slave zones as changed so that the update-process propagates them on a
 =item updated
 
 Fetches a list of changed zones and adds/removes them from the local BDB
-database.  This option is used by the daemon started at boot-time by /etc/init.d/bindsyncer.
+database.  This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-bindsync.
 You should never run this manually.
 
 =item eventchain
@@ -68,7 +68,7 @@ The event listeners are defined in the/etc/atomiadns.conf like:
 		on_delete /usr/local/atomiadns_events/delete_zone.sh
 	</change_event_chain>
 
-This option is used by the daemon started at boot-time by /etc/init.d/bindsyncer.
+This option is used by the daemon started at boot-time by /etc/init.d/atomiadns-bindsync.
 You should never run this manually.
 
 =item get_server
