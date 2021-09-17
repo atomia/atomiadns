@@ -15,7 +15,7 @@ cp SPECS/*.spec /usr/src/redhat/SPECS
 startdir="$PWD"
 
 cd ..
-tar cfpz /usr/src/redhat/SOURCES/atomiadns-syncer.tar.gz --exclude "*/.svn" syncer
+tar cfpz /usr/src/redhat/SOURCES/atomiadns-syncer.tar.gz --exclude "*/.svn" bind_sync
 
 cd /usr/src/redhat/SPECS
 rpmbuild --sign -ba atomiadns-bindsync.spec

@@ -1,7 +1,7 @@
 %define perl_vendorlib %(eval "`%{__perl} -V:installvendorlib`"; echo $installvendorlib)
 %define perl_vendorarch %(eval "`%{__perl} -V:installvendorarch`"; echo $installvendorarch)
 
-%define sourcedir syncer
+%define sourcedir bind_sync
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-bindsync
@@ -39,7 +39,7 @@ Atomia DNS Sync application.
 %{__rm} -f %{buildroot}%{perl_vendorarch}/auto/*/*/*/.packlist
 %{__mkdir} -p %{buildroot}/etc/systemd
 %{__mkdir} -p %{buildroot}/etc/systemd/system
-%{__cp} debian/atomiadns-atomiadnssync.service %{buildroot}/etc/systemd/system/atomiadns-atomiadnssync.service
+%{__cp} debian/atomiadns-bindsync.service %{buildroot}/etc/systemd/system/atomiadns-bindsync.service
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
@@ -55,7 +55,7 @@ Atomia DNS Sync application.
 %defattr(-,root,root,-)
 /usr/bin/atomiadnssync
 /usr/share/atomia/conf/atomiadns.conf.atomiadnssync
-/etc/systemd/system/atomiadns-atomiadnssync.service
+/etc/systemd/system/atomiadns-bindsync.service
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
 %doc %{_mandir}/man1/atomiadnssync.1.gz
 %attr(0640 root named) /var/named/atomiadns.named.conf
