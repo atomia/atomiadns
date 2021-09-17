@@ -17,7 +17,6 @@ diff -u -r1.326 bind.spec
  %package sdb
  Summary: BIND server with database backends and DLZ support
  Group:   System Environment/Daemons
-+Provides: bind-dlz-bdbhpt-driver
  
  %description sdb
  BIND (Berkeley Internet Name Domain) is an implementation of the DNS
