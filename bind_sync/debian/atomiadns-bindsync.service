@@ -4,7 +4,7 @@ Description=AtomiaDns Syncer service
 [Service]
 Type=simple
 EnvironmentFile=/etc/atomiadns.conf
-ExecStart=/bin/atomiadnssync updated 2>&1 | logger -t atomiadnssync_updated
+ExecStart=/usr/bin/atomiadnssync updated 2>&1 | logger -t atomiadnssync_updated
 
 [Install]
 WantedBy=multi-user.target
