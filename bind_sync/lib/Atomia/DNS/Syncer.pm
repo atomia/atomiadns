@@ -310,6 +310,7 @@ sub move_slavezone_into_place {
 	my $tempfile = shift;
 
 	rename($tempfile, $self->slavezones_config) || die "error moving temporary slavezone file into place: $!";
+	system("chmod a+rwx " . $self->slavezones_config);
 }
 
 sub signal_bind_reconfig {
