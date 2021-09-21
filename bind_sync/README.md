@@ -25,7 +25,7 @@ BIND server has to be installed on Ubuntu 16/18 or CentOS/Redhat 7.
 		#ubuntu
 		bind_user = bind
         ```
-5. Execute the command: *Service atomiadns-bindsync restart*.
+5. Execute the command: `service atomiadns-bindsync restart`.
 	
 ##### CentOS
 	
