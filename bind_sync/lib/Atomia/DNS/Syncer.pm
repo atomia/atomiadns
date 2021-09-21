@@ -18,6 +18,7 @@ has 'soap' => (is => 'rw', isa => 'Any', default => undef);
 has 'slavezones_config' => (is => 'rw', isa => 'Str');
 has 'slavezones_dir' => (is => 'rw', isa => 'Str');
 has 'rndc_path' => (is => 'rw', isa => 'Str');
+has 'bind_user' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
 	my $self = shift;
@@ -35,6 +36,9 @@ sub BUILD {
 
 	$self->rndc_path($self->config->{"rndc_path"});
 	die("you have to specify rndc_path as an existing file") unless defined($self->rndc_path) && -f $self->rndc_path;
+
+	$self->bind_user($self->config->{"bind_user"});
+	die("you have to specify bind_user") unless defined($self->bind_user);
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap_cacert = $self->config->{"soap_cacert"};
@@ -310,7 +314,18 @@ sub move_slavezone_into_place {
 	my $tempfile = shift;
 
 	rename($tempfile, $self->slavezones_config) || die "error moving temporary slavezone file into place: $!";
-	system("chmod a+rwx " . $self->slavezones_config);
+
+	if ($self->bind_user eq "bind") {
+		system("chmod 640 " . $self->slavezones_config);
+		system("chown root:bind " . $self->slavezones_config);
+	}
+	elsif ($self->bind_user eq "named") {
+		system("chmod 640 " . $self->slavezones_config);
+		system("chown root:named " . $self->slavezones_config);
+	}
+	else {
+		die "Bind user doesn't exist";
+	}
 }
 
 sub signal_bind_reconfig {
