@@ -321,7 +321,8 @@ sub move_slavezone_into_place {
 	}
 	elsif ($self->bind_user eq "named") {
 		system("chmod 640 " . $self->slavezones_config);
-		system("chown root:named " . $self->slavezones_config);	}
+		system("chown root:named " . $self->slavezones_config);	
+	}
 	else {
 		die "Bind user doesn't exist";
 	}
