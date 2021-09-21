@@ -316,14 +316,14 @@ sub move_slavezone_into_place {
 	rename($tempfile, $self->slavezones_config) || die "error moving temporary slavezone file into place: $!";
 
 	if ($self->bind_user eq "bind") {
-	    system("chmod 640 " . $self->slavezones_config);
-        system("chown root:bind " . $self->slavezones_config);
+		system("chmod 640 " . $self->slavezones_config);
+		system("chown root:bind " . $self->slavezones_config);
 	}
 	elsif ($self->bind_user eq "named") {
-	    system("chmod 640 " . $self->slavezones_config);
-        system("chown root:named " . $self->slavezones_config);	}
+		system("chmod 640 " . $self->slavezones_config);
+		system("chown root:named " . $self->slavezones_config);	}
 	else {
-	    die "Bind user doesn't exist";
+		die "Bind user doesn't exist";
 	}
 }
 
