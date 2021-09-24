@@ -15,7 +15,10 @@ BEGIN
 
 	SELECT zone.id INTO domain_id_var FROM zone WHERE name = domain;
 	IF NOT FOUND THEN
-		RAISE EXCEPTION 'domain % not found', domain;
+		SELECT slavezone.id INTO domain_id_var FROM slavezone WHERE name = domain;
+		IF NOT FOUND THEN
+			RAISE EXCEPTION 'domain % not found', domain;
+		END IF;
 	END IF;
 
 	INSERT INTO domainmetadata (nameserver_group_id, domain_id, kind, tsigkey_name) VALUES (nameserver_group_id_var, domain_id_var, kind, tsigkey_name);

@@ -8,12 +8,12 @@ DECLARE
 	r RECORD;
 	domain_id_check INT;
 BEGIN
-        SELECT id INTO domain_id_check FROM domainmetadata WHERE domain_id = CAST(domainid AS INT);
+        SELECT id INTO domain_id_check FROM domainmetadata WHERE id = CAST(domainid AS INT);
         IF NOT FOUND THEN
                 RAISE EXCEPTION 'Domain id % not found', domainid;
         END IF;
 
-	FOR r IN	SELECT domain_id, kind, tsigkey_name FROM domainmetadata WHERE domain_id = CAST(domainid AS INT)
+	FOR r IN	SELECT domain_id, kind, tsigkey_name FROM domainmetadata WHERE id = CAST(domainid AS INT)
 	LOOP
 		record_domain_id := r.domain_id;
 		record_kind := r.kind;

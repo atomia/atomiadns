@@ -7,7 +7,10 @@ DECLARE
 BEGIN
 	SELECT zone.id INTO domain_id_var FROM zone WHERE name = domain_name;
 	IF NOT FOUND THEN
-		RAISE EXCEPTION 'domain % not found', domain_name;
+		SELECT slavezone.id INTO domain_id_var FROM slavezone WHERE name = domain_name;
+		IF NOT FOUND THEN
+			RAISE EXCEPTION 'domain % not found', domain_name;
+		END IF;
 	END IF;
 
 	SELECT id INTO domainmetadata_id_var FROM domainmetadata WHERE domain_id = domain_id_var;

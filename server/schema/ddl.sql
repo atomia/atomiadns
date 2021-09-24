@@ -384,7 +384,7 @@ EXECUTE PROCEDURE tsigkey_update();
 CREATE TABLE domainmetadata (
 	id BIGSERIAL PRIMARY KEY NOT NULL,
 	nameserver_group_id INT NOT NULL REFERENCES nameserver,
-	domain_id INT NOT NULL UNIQUE REFERENCES zone,
+	domain_id INT NOT NULL,
 	kind VARCHAR(255) NOT NULL CONSTRAINT kind_format CHECK (kind IN ('TSIG-ALLOW-AXFR','AXFR-MASTER-TSIG')),
     tsigkey_name VARCHAR(255) NOT NULL CONSTRAINT tsig_name_format CHECK (tsigkey_name ~* '^[a-zA-Z0-9_-]*')
 );
@@ -399,18 +399,32 @@ CREATE TABLE domainmetadata_change (
 );
 
 CREATE OR REPLACE FUNCTION domainmetadata_update() RETURNS trigger AS $$
+DECLARE
+	domain_name_var varchar;
 BEGIN
 	IF TG_OP = 'DELETE' THEN
+		IF OLD.kind = 'TSIG-ALLOW-AXFR' THEN
+			SELECT zone.name INTO domain_name_var FROM zone WHERE zone.id = OLD.domain_id;
+		ELSE
+			SELECT slavezone.name INTO domain_name_var FROM slavezone WHERE slavezone.id = OLD.domain_id;
+		END IF;
+
 		INSERT INTO domainmetadata_change (nameserver_id, domain_id)
-		SELECT nameserver.id, OLD.domain_id FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		SELECT nameserver.id, OLD.id || ',' || domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
 		RETURN OLD;
 	ELSIF TG_OP = 'UPDATE' THEN
 		INSERT INTO domainmetadata_change (nameserver_id, domain_id)
-		SELECT nameserver.id, OLD.domain_id FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		SELECT nameserver.id, OLD.id FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+	END IF;
+
+	IF NEW.kind = 'TSIG-ALLOW-AXFR' THEN
+		SELECT zone.name INTO domain_name_var FROM zone WHERE zone.id = NEW.domain_id;
+	ELSE
+		SELECT slavezone.name INTO domain_name_var FROM slavezone WHERE slavezone.id = NEW.domain_id;
 	END IF;
 
 	INSERT INTO domainmetadata_change (nameserver_id, domain_id)
-	SELECT nameserver.id, NEW.domain_id FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
+	SELECT nameserver.id, NEW.id || ',' || domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
 
 	RETURN NEW;
 END; $$ LANGUAGE plpgsql;
