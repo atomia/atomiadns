@@ -420,7 +420,7 @@ BEGIN
 	IF NEW.kind = 'TSIG-ALLOW-AXFR' THEN
 		SELECT zone.name INTO domain_name_var FROM zone WHERE zone.id = NEW.domain_id;
 	ELSE
-		SELECT slavezone.name INTO domain_name_var FROM slavezone WHERE slavezone.id = new.domain_id;
+		SELECT slavezone.name INTO domain_name_var FROM slavezone WHERE slavezone.id = NEW.domain_id;
 	END IF;
 
 	INSERT INTO domainmetadata_change (nameserver_id, domain_id)
