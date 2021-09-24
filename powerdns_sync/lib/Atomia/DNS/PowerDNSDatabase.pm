@@ -468,15 +468,20 @@ sub remove_tsig_key {
 
 sub assign_tsig_key {
 	my $self = shift;
-	my $domain_id = shift;
+	my $domain_name = shift;
 	my $domainmetadata = shift;
 
-	die "bad input data to assign tsig key" unless defined($domain_id) && ref($domain_id) eq "" && defined($domainmetadata) && ref($domainmetadata) eq "HASH";
+	die "bad input data to assign tsig key" unless defined($domain_name) && ref($domain_name) eq "" && defined($domainmetadata) && ref($domainmetadata) eq "HASH";
 	die "tsig key name missing" unless defined($domainmetadata->{"tsigkey_name"}) && length($domainmetadata->{"tsigkey_name"}) > 0;
 	die "tsig type missing" unless defined($domainmetadata->{"kind"}) && length($domainmetadata->{"kind"}) > 0;
 
 	eval {
-		my $domain_id = $self->dbi->quote($domain_id);
+		$domain_name = $self->dbi->quote($domain_name);
+		my $domain_id = $self->dbi->selectrow_arrayref("SELECT id FROM domains WHERE name = $domain_name");
+		die "error fetching domain id from powerDNS domains table" unless defined($domain_id) && ref($domain_id) eq "ARRAY" && scalar(@$domain_id) == 1;
+		$domain_id = $domain_id->[0];
+
+		$domain_id = $self->dbi->quote($domain_id);
 		my $tsigkey_name = $self->dbi->quote($domainmetadata->{"tsigkey_name"});
 		my $kind = $self->dbi->quote($domainmetadata->{"kind"});
 
@@ -499,10 +504,15 @@ sub assign_tsig_key {
 
 sub unassign_tsig_key {
 	my $self = shift;
-	my $domain_id = shift;
+	my $domain_name = shift;
 
 	eval {
-		my $domain_id = $self->dbi->quote($domain_id);
+		$domain_name = $self->dbi->quote($domain_name);
+		my $domain_id = $self->dbi->selectrow_arrayref("SELECT id FROM domains WHERE name = $domain_name");
+		die "error fetching domain id from powerDNS domains table" unless defined($domain_id) && ref($domain_id) eq "ARRAY" && scalar(@$domain_id) == 1;
+		$domain_id = $domain_id->[0];
+
+		$domain_id = $self->dbi->quote($domain_id);
 		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id AND kind IN ('TSIG-ALLOW-AXFR', 'AXFR-MASTER-TSIG')") || die "error unassigning tsigkey: $DBI::errstr";
 		$self->dbi->commit();
 	};

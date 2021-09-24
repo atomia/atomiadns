@@ -506,20 +506,24 @@ sub reload_updated_domainmetadata {
 	return if scalar(@$change_table_domain_ids) == 0;
 
 	foreach my $change_table_domain_id (@$change_table_domain_ids) {
-		my $domain_id = $change_table_domain_id->{"domain_id"};
+		my $domainmetadata_id_and_domain_name = $change_table_domain_id->{"domain_id"};
+		
+		my @domainmetadata_id_and_domain_name_arr = split(',', $domainmetadata_id_and_domain_name);
+		my $domainmetadata_id = @domainmetadata_id_and_domain_name_arr[0];
+		my $domain_name = @domainmetadata_id_and_domain_name_arr[1];
 
 		my $domainmetadata;
 		eval {
-			$domainmetadata = $self->soap->GetDomainMetaData($domain_id);
+			$domainmetadata = $self->soap->GetDomainMetaData($domainmetadata_id);
 
 			die("error fetching domainmetata for $domainmetadata") unless defined($domainmetadata) && $domainmetadata->result && ref($domainmetadata->result) eq "ARRAY";
 			$domainmetadata = $domainmetadata->result;
 			die("bad response from GetDomainMetaData") unless scalar(@$domainmetadata) == 1;
 			$domainmetadata = $domainmetadata->[0];
 
-			die("error fetching domainmetadata for domain id: $domain_id") unless !defined($domainmetadata) || (ref($domainmetadata) eq "HASH" && defined($domainmetadata->{"tsigkey_name"}));
+			die("error fetching domainmetadata for domainmetadata.id: $domainmetadata_id") unless !defined($domainmetadata) || (ref($domainmetadata) eq "HASH" && defined($domainmetadata->{"tsigkey_name"}));
 
-			$self->sync_domainmetadata($domain_id, $domainmetadata);
+			$self->sync_domainmetadata($domain_name, $domainmetadata);
 			$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
 		};
 		
@@ -527,7 +531,7 @@ sub reload_updated_domainmetadata {
 			my $exception = $@;
 			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.DomainMetaDataNotFound') {
 				eval {
-					$self->sync_domainmetadata($domain_id, undef);
+					$self->sync_domainmetadata($domain_name, undef);
 					$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
 				};
 
@@ -547,13 +551,13 @@ sub reload_updated_domainmetadata {
 
 sub sync_domainmetadata {
 	my $self = shift;
-	my $domain_id = shift;
+	my $domain_name = shift;
 	my $domainmetadata = shift;
 
 	if (defined($domainmetadata)) {
-		$self->database->assign_tsig_key($domain_id, $domainmetadata);
+		$self->database->assign_tsig_key($domain_name, $domainmetadata);
 	} else {
-		$self->database->unassign_tsig_key($domain_id);
+		$self->database->unassign_tsig_key($domain_name);
 	}
 }
 
