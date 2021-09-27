@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-bindsync
-Version: 1.1.51
+Version: 1.1.52
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -106,3 +106,7 @@ if [ "$1" = 0 ]; then
 	/usr/bin/systemctl disable atomiadns-atomiadnssync
 fi
 exit 0
+
+%changelog
+* Mon Sep 27 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.52-1
+- Bump version to 1.1.52
