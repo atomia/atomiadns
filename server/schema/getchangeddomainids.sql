@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION GetChangedDomainIDs(
 DECLARE r RECORD;
 BEGIN
 	FOR r IN	SELECT domainmetadata_change.id, domain_id, changetime FROM domainmetadata_change INNER JOIN nameserver ON nameserver_id = nameserver.id
-			WHERE nameserver.name = nameservername AND status = 'PENDING' ORDER BY changetime ASC
+			WHERE nameserver.name = nameservername AND status = 'PENDING' ORDER BY changetime ASC, domainmetadata_change.id ASC
 	LOOP
 		change_id := r.id;
 		change_domain_id := r.domain_id;

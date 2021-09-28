@@ -505,6 +505,8 @@ sub reload_updated_domainmetadata {
 
 	return if scalar(@$change_table_domain_ids) == 0;
 
+	my @processed_domains;
+
 	foreach my $change_table_domain_id (@$change_table_domain_ids) {
 		my $domainmetadata_id_and_domain_name = $change_table_domain_id->{"domain_id"};
 		
@@ -522,17 +524,23 @@ sub reload_updated_domainmetadata {
 			$domainmetadata = $domainmetadata->[0];
 
 			die("error fetching domainmetadata for domainmetadata.id: $domainmetadata_id") unless !defined($domainmetadata) || (ref($domainmetadata) eq "HASH" && defined($domainmetadata->{"tsigkey_name"}));
-
-			$self->sync_domainmetadata($domain_name, $domainmetadata);
-			$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+			
+			if ( !grep( /^$domain_name$/, @processed_domains ) ) {
+				$self->sync_domainmetadata($domain_name, $domainmetadata);
+				$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+				push (@processed_domains, $domain_name);
+			}
 		};
 		
 		if ($@) {
 			my $exception = $@;
 			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.DomainMetaDataNotFound') {
 				eval {
-					$self->sync_domainmetadata($domain_name, undef);
-					$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+					if ( !grep( /^$domain_name$/, @processed_domains ) ) {
+						$self->sync_domainmetadata($domain_name, undef);
+						$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+						push (@processed_domains, $domain_name);
+					}
 				};
 
 				if ($@) {
