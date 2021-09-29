@@ -16,6 +16,7 @@ BIND server has to be installed on Ubuntu 16/18 or CentOS/Redhat 7.
 	1. In *named.conf.local*:
 		``` 
 		include "/etc/bind/slave/named-slavezones.conf.local";
+		include "/etc/bind/tsig_keys.conf";
 		```
 	2. In *atomiadns.conf*:
 		```
@@ -24,6 +25,7 @@ BIND server has to be installed on Ubuntu 16/18 or CentOS/Redhat 7.
 		rndc_path = /usr/sbin/rndc
 		#ubuntu
 		bind_user = bind
+		tsig_config = /etc/bind/tsig_keys.conf
         ```
 5. Execute the command: `service atomiadns-bindsync restart`.
 	
