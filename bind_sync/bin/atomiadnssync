@@ -260,8 +260,10 @@ SWITCH: {
 
 				while (1) {
 					last if $syncer->updates_disabled();
-					#$syncer->reload_updated_zones();
-					$syncer->reload_updated_slavezones();
+					    $syncer->reload_updated_domainmetadata();
+					    #$syncer->reload_updated_zones();
+                        $syncer->reload_updated_slavezones();
+                        $syncer->reload_updated_tsig_keys();
 					sleep 10;
 				}
 			};

@@ -18,4 +18,7 @@ chown -R bind:bind /etc/bind/slave
 touch /etc/bind/slave/named-slavezones.conf.local
 chown bind:bind /etc/bind/slave/named-slavezones.conf.local
 
+touch /etc/bind/tsig_keys.conf
+chown bind:bind /etc/bind/tsig_keys.conf
+
 /usr/sbin/update-rc.d atomiadns-bindsync defaults

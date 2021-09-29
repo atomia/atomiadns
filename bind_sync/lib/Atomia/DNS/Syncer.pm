@@ -19,6 +19,7 @@ has 'slavezones_config' => (is => 'rw', isa => 'Str');
 has 'slavezones_dir' => (is => 'rw', isa => 'Str');
 has 'rndc_path' => (is => 'rw', isa => 'Str');
 has 'bind_user' => (is => 'rw', isa => 'Str');
+has 'tsig_config' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
 	my $self = shift;
@@ -39,6 +40,9 @@ sub BUILD {
 
 	$self->bind_user($self->config->{"bind_user"});
 	die("you have to specify bind_user") unless defined($self->bind_user);
+
+	$self->tsig_config($self->config->{"tsig_config"});
+	die("you have to specify tsig_config as an existing file") unless defined($self->tsig_config) && -f $self->tsig_config;
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap_cacert = $self->config->{"soap_cacert"};
@@ -271,8 +275,9 @@ sub parse_slavezone_config {
 			my $slavepath = sprintf "%s/%s", $self->slavezones_dir, $zone;
 			next ROW if /^(type\s+slave|file\s+"$slavepath");$/;
 
-			if (/^masters\s+{([^}]*?);+};$/) {
+			if (/^masters\s*{([^}]*?);?\s*(key\s+([^}]*?);)?\s*};$/) {
 				$zones->{$zone} = $1;
+				$zones->{$zone."-key"} = $3;
 				$state = 'endofzone';
 			} else {
 				die "bad format of " . $self->slavezones_config . ", expecting $state";
@@ -303,7 +308,12 @@ sub write_slavezone_tempfile {
 	my $tempfile = File::Temp->new(TEMPLATE => 'atomiaslavesyncXXXXXXXX', SUFFIX => '.tmp', UNLINK => 0, DIR => dirname($self->slavezones_config)) || die "error creating temporary file: $!";
 
 	foreach my $zone (keys %$zones) {
-		printf $tempfile ("zone \"%s\" {\n\ttype slave;\n\tfile \"%s/%s\";\n\tmasters {%s;};\n};\n", $zone, $self->slavezones_dir, $zone, $zones->{$zone});
+		next if ($zone =~ /.*-key$/ );
+		if (!defined($zones->{$zone."-key"})) {
+			printf $tempfile ("zone \"%s\" {\n\ttype slave;\n\tfile \"%s/%s\";\n\tmasters {%s;};\n};\n", $zone, $self->slavezones_dir, $zone, $zones->{$zone});
+		} else {
+			printf $tempfile ("zone \"%s\" {\n\ttype slave;\n\tfile \"%s/%s\";\n\tmasters {%s key %s;};\n};\n", $zone, $self->slavezones_dir, $zone, $zones->{$zone}, $zones->{$zone."-key"});
+		}
 	}
 
 	return $tempfile->filename;
@@ -452,4 +462,220 @@ sub event_chain {
 	}
 }
 
+sub reload_updated_tsig_keys {
+	my $self = shift;
+
+	my $change_table_tsig_keys = $self->soap->GetChangedTSIGKeys($self->config->{"servername"} || die("you have to specify servername in config"));
+	die("error fetching updated tsig keys, got no or bad result from soap-server") unless defined($change_table_tsig_keys) &&
+		$change_table_tsig_keys->result && ref($change_table_tsig_keys->result) eq "ARRAY";
+	$change_table_tsig_keys = $change_table_tsig_keys->result;
+
+	return if scalar(@$change_table_tsig_keys) == 0;
+
+	my $config_tsig = $self->parse_tsig_config();
+
+	foreach my $change_table_tsig_key (@$change_table_tsig_keys) {
+		my $tsig_key_name = $change_table_tsig_key->{"name"};
+
+		my $tsig_key_data;
+		eval {
+			$tsig_key_data = $self->soap->GetTSIGKey($tsig_key_name);
+			die("error fetching tsig key data for $tsig_key_name") unless defined($tsig_key_data) && $tsig_key_data->result && ref($tsig_key_data->result) eq "ARRAY";
+			$tsig_key_data = $tsig_key_data->result;
+			die("bad response from GetTSIGKey") unless scalar(@$tsig_key_data) == 1;
+			$tsig_key_data = $tsig_key_data->[0];
+
+			die("error fetching tsig key data for $tsig_key_name") unless !defined($tsig_key_data) || (ref($tsig_key_data) eq "HASH" && defined($tsig_key_data->{"secret"}));
+
+			if (defined($tsig_key_data)) {
+				$config_tsig->{$tsig_key_name} = $tsig_key_data;
+			} else {
+				delete $config_tsig->{$tsig_key_name};
+			}
+
+			$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "OK", "");
+		};
+
+		if ($@) {
+			my $exception = $@;
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.TSIGKeyNotFound') {
+				eval {
+					delete $config_tsig->{$tsig_key_name};
+					$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "OK", "");
+				};
+
+				if ($@) {
+					my $errormessage = $@;
+					$errormessage = Dumper($errormessage) if ref($errormessage);
+					$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				}
+			} else {
+				my $errormessage = $exception;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
+				$self->soap->MarkTSIGKeyUpdated($change_table_tsig_key->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+			}
+		}
+	}
+
+	my $filename = $self->write_tsig_tempfile($config_tsig);
+	$self->move_tsig_into_place($filename);
+	$self->signal_bind_reconfig();
+}
+
+sub parse_tsig_config {
+	my $self = shift;
+
+	open TSIG, $self->tsig_config || die "error opening " . $self->tsig_config . ": $!";
+
+	my $state = 'startoftsig';
+	my $keys = {};
+	my $key = undef;
+
+	ROW: while (<TSIG>) {
+		next ROW if /^\s*$/;
+		chomp;
+		$_ =~ s/^\s+//g;
+
+		if ($state eq 'startoftsig') {
+			if (/^key\s+"([^"]*)"/) {
+				$key = $1;
+				$keys->{$key} = {};
+				$keys->{$key}->{"name"} = $1;
+				$state = 'keydata_alg';
+			} else {
+				die "bad format of " . $self->tsig_config . ", expecting $state";
+			}
+		} elsif ($state eq 'keydata_alg') {
+			if (/^algorithm\s+([^}]*?);$/) {
+				$keys->{$key}->{"algorithm"} = $1;
+				$state = 'keydata_secret';
+			} else {
+				die "bad format of " . $self->tsig_config . ", expecting $state";
+			}
+		} elsif ($state eq 'keydata_secret') {
+			if (/^secret\s+"([^}]*?)";$/) {
+				$keys->{$key}->{"secret"} = $1;
+				$state = 'endoftsig';
+			} else {
+				die "bad format of " . $self->tsig_config . ", expecting $state";
+			}
+		} elsif ($state eq 'endoftsig') {
+			if ($_ eq '};') {
+				$state = 'startoftsig';
+			} else {
+				die "bad format of " . $self->tsig_config . ", expecting $state";
+			}
+		} else {
+			die "unknown state: $state";
+		}
+	}
+
+	close TSIG || die "error closing " . $self->tsig_config . ": $!";
+
+	return $keys;
+}
+
+sub write_tsig_tempfile {
+	my $self = shift;
+	my $keys = shift;
+
+
+	my $tempfile = File::Temp->new(TEMPLATE => 'atomiaslavesyncXXXXXXXX', SUFFIX => '.tmp', UNLINK => 0, DIR => dirname($self->tsig_config)) || die "error creating temporary file: $!";
+
+	foreach my $tsig_key (keys %$keys) {
+		printf $tempfile ("key \"%s\" {\n\talgorithm %s;\n\tsecret \"%s\";\n};\n", $tsig_key, $keys->{$tsig_key}->{"algorithm"},$keys->{$tsig_key}->{"secret"});
+	}
+
+	return $tempfile->filename;
+}
+
+sub move_tsig_into_place {
+	my $self = shift;
+	my $tempfile = shift;
+
+	rename($tempfile, $self->tsig_config) || die "error moving temporary tsig_config file into place: $!";
+
+	if ($self->bind_user eq "bind") {
+		system("chmod 640 " . $self->tsig_config);
+		system("chown root:bind " . $self->tsig_config);
+	}
+	elsif ($self->bind_user eq "named") {
+		system("chmod 640 " . $self->tsig_config);
+		system("chown root:named " . $self->tsig_config);
+	}
+	else {
+		die "Bind user doesn't exist";
+	}
+}
+
+sub reload_updated_domainmetadata {
+	my $self = shift;
+
+	my $change_table_domain_ids = $self->soap->GetChangedDomainIDs($self->config->{"servername"} || die("you have to specify servername in config"));
+	die("error fetching updated domain ids, got no or bad result from soap-server") unless defined($change_table_domain_ids) &&
+		$change_table_domain_ids->result && ref($change_table_domain_ids->result) eq "ARRAY";
+	$change_table_domain_ids = $change_table_domain_ids->result;
+
+	return if scalar(@$change_table_domain_ids) == 0;
+
+	my $config_zones = $self->parse_slavezone_config();
+	my @processed_domains;
+
+	foreach my $change_table_domain_id (@$change_table_domain_ids) {
+		my $domainmetadata_id_and_domain_name = $change_table_domain_id->{"domain_id"};
+		
+		my @domainmetadata_id_and_domain_name_arr = split(',', $domainmetadata_id_and_domain_name);
+		my $domainmetadata_id = $domainmetadata_id_and_domain_name_arr[0];
+		my $domain_name = $domainmetadata_id_and_domain_name_arr[1];
+		
+		my $domainmetadata;
+		eval {
+			$domainmetadata = $self->soap->GetDomainMetaData($domainmetadata_id);
+
+			die("error fetching domainmetata for $domainmetadata") unless defined($domainmetadata) && $domainmetadata->result && ref($domainmetadata->result) eq "ARRAY";
+			$domainmetadata = $domainmetadata->result;
+			die("bad response from GetDomainMetaData") unless scalar(@$domainmetadata) == 1;
+			$domainmetadata = $domainmetadata->[0];
+
+			die("error fetching domainmetadata for domainmetadata.id: $domainmetadata_id") unless !defined($domainmetadata) || (ref($domainmetadata) eq "HASH" && defined($domainmetadata->{"tsigkey_name"}));
+
+			if ( !grep( /^$domain_name$/, @processed_domains ) ) {
+				if (defined($domainmetadata)) {
+					$config_zones->{$domain_name."-key"} = $domainmetadata->{"tsigkey_name"};
+				} else {
+					delete $config_zones->{$domain_name."-key"};
+				}
+				$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+				push (@processed_domains, $domain_name);
+			}
+		};
+		
+		if ($@) {
+			my $exception = $@;
+			if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.DomainMetaDataNotFound') {
+				eval {
+					if ( !grep( /^$domain_name$/, @processed_domains ) ) {
+						delete $config_zones->{$domain_name."-key"};
+						$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "OK", "");
+						push (@processed_domains, $domain_name);
+					}
+				};
+
+				if ($@) {
+					my $errormessage = $@;
+					$errormessage = Dumper($errormessage) if ref($errormessage);
+					$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+				}
+			} else {
+				my $errormessage = $exception;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
+				$self->soap->MarkDomainMetaDataUpdated($change_table_domain_id->{"id"}, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+			}
+		}
+	}
+
+	my $filename = $self->write_slavezone_tempfile($config_zones);
+	$self->move_slavezone_into_place($filename);
+	$self->signal_bind_reconfig();
+}
 1;

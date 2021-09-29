@@ -47,6 +47,7 @@ Atomia DNS Sync application.
 %{__mkdir} -p %{buildroot}/var/named/atomiadns_bdb
 %{__cp} conf/atomiadns.named.conf %{buildroot}/var/named
 %{__cp} conf/empty %{buildroot}/var/named/slaves/named-slavezones.conf.local
+%{__cp} conf/empty %{buildroot}/var/named/tsig_keys.conf
 
 %clean
 %{__rm} -rf %{buildroot}
@@ -62,6 +63,7 @@ Atomia DNS Sync application.
 %attr(0770 root named) %dir /var/named/slaves/zones
 %attr(0770 root named) %dir /var/named/atomiadns_bdb
 %attr(0660 root named) /var/named/slaves/named-slavezones.conf.local
+%attr(0660 root named) /var/named/tsig_keys.conf
 
 %pre
 getent group named > /dev/null || /usr/sbin/groupadd -g 25 -f -r named >/dev/null 2>&1
