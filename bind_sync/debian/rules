@@ -46,6 +46,9 @@ install-stamp:
 
 #Run commands before making package
 
+	mkdir -p $(TMP)/usr/share/atomia/conf
+	cp conf/atomiadns.conf $(TMP)/usr/share/atomia/conf/atomiadns-debian.conf
+	
 	mkdir -p $(TMP)/etc/bind
 	cp conf/named.conf.* $(TMP)/etc/bind
 

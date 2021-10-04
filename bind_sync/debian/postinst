@@ -12,6 +12,19 @@ if [ ! -f "/etc/atomiadns.conf" ]; then
 	cp /usr/share/atomiadns/atomiadns-bind-dlz-agent.conf /etc/atomiadns.conf
 fi
 
+if [ -f /etc/atomiadns.conf ]; then
+	if [ -z "$(grep "slavezones_config" /etc/atomiadns.conf)" ]; then
+		cat /usr/share/atomia/conf/atomiadns-debian.conf >> /etc/atomiadns.conf
+	fi
+else
+        cp /usr/share/atomia/conf/atomiadns-debian.conf /etc/atomiadns.conf
+fi
+
+if [ -f /etc/bind/named.conf.local ] && [ -z "$(grep named-slavezones.conf.local /etc/bind/named.conf.local)" ]; then
+	echo 'include "/etc/bind/slave/named-slavezones.conf.local";' >> /etc/bind/named.conf.local
+	echo 'include "/etc/bind/tsig_keys.conf";' >> /etc/bind/named.conf.local
+fi
+
 mkdir -p /etc/bind/slave/zones
 chown -R bind:bind /etc/bind/slave
 
