@@ -1,3 +1,9 @@
+atomiadns-nameserver (1.1.53) hardy; urgency=low
+
+  * Bump version to 1.1.53
+
+ -- Jovana Stamenkovic <jovana.stamenkovic@atomia.com>  Tue, 5 Oct 2021 03:41:23 -0700
+
 atomiadns-nameserver (1.1.52) hardy; urgency=low
 
   * Bump version to 1.1.52

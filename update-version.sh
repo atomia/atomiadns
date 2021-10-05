@@ -40,7 +40,7 @@ else
 fi
 
 # Update *.spec
-find dyndns syncer server powerdns_sync webapp -name "*.spec" -type f | while read f; do
+find dyndns syncer server powerdns_sync bind_sync webapp -name "*.spec" -type f | while read f; do
 	version_subs="%%s/^Version: .*/Version: $version/"
 	require_subs="%%s/^Requires: atomiadns-api >= .* atomiadns-database >= .*/Requires: atomiadns-api >= $version atomiadns-database >= $version/"
 	goto_changelog="/^%%changelog/+1i"
@@ -50,21 +50,21 @@ find dyndns syncer server powerdns_sync webapp -name "*.spec" -type f | while re
 done
 
 # Update */Makefile.PL
-find dyndns syncer server zonefileimporter powerdns_sync webapp -name "Makefile.PL" | while read f; do
+find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name "Makefile.PL" | while read f; do
 	version_subs="%%s/'VERSION' => '.*',/'VERSION' => '$version',/"
 	ed_script=`printf "$version_subs\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
 
 # Update */control
-find dyndns syncer server zonefileimporter powerdns_sync webapp -name "control" | while read f; do
+find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name "control" | while read f; do
 	version_subs='%%s/\\\\(atomiadns-[a-z]*\\\\) (>= [^)]*)/\\\\1 (>= '"$version"')/g'
 	ed_script=`printf "$version_subs\nw\nq\n"`
 	echo "$ed_script" | ed "$f"
 done
 
 # Update */changelog
-find dyndns syncer server zonefileimporter powerdns_sync webapp -name "changelog" | while read f; do
+find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name "changelog" | while read f; do
 	date=`date +"%a, %-d %b %Y %T %z"`
 	package=`grep " hardy; " "$f" | head -n 1 | cut -d " " -f 1`
 	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- $author  %s" "$package" "$version" "$message" "$date"`
