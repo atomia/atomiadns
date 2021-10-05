@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-bindsync
-Version: 1.1.52
+Version: 1.1.53
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -110,5 +110,7 @@ fi
 exit 0
 
 %changelog
+* Tue Oct 05 2021 Jovana Stamenkovic <jovana.stamenkovic@atomia.com> - 1.1.53-1
+- Bump version to 1.1.53
 * Mon Sep 27 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.52-1
 - Bump version to 1.1.52
