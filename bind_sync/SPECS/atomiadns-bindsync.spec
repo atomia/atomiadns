@@ -82,7 +82,7 @@ exit 0
 /usr/bin/systemctl enable atomiadns-atomiadnssync
 
 if [ -f /etc/atomiadns.conf ]; then
-	if [ -z "$(grep "^bdb_filename" /etc/atomiadns.conf)" ]; then
+	if [ -z "$(grep "^slavezones_config" /etc/atomiadns.conf)" ]; then
 		cat /usr/share/atomia/conf/atomiadns.conf.atomiadnssync >> /etc/atomiadns.conf
 	fi
 else
