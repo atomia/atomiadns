@@ -269,7 +269,7 @@ if [ $retval != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="90"
+		latest_version="91"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -621,7 +621,11 @@ if [ $retval != 0 ]; then
 				recreate_ddl_procedure "domainmetadata_update"
 				create_trigger "domainmetadata_trigger"
 			fi
-
+			
+			if ["$schema_version" -lt 91]; then
+				recreate_procedure "getzonewithrecordslimit"
+			fi
+			
 			set_schema_version "$latest_version"
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."

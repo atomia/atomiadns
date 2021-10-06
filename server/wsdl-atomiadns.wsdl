@@ -1632,6 +1632,24 @@ atomiaDomainMetaDataItem is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
+			<xsd:element name="GetZoneWithRecordsLimit">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="limit" type="xsd:int"><xsd:annotation><xsd:documentation>the maximum number of records to return</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="offset" type="xsd:int"><xsd:annotation><xsd:documentation>the offset of the first record to return</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneWithRecordsLimitResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />
@@ -2311,7 +2329,16 @@ atomiaDomainMetaDataItem is a struct with the following members:
 	<message name="UnassignTSIGKeyOutput">
 		<part name="parameters" element="tns:UnassignTSIGKeyResponse"/>
 	</message>
+	
+	<message name="GetZoneWithRecordsLimitInput">
+		<documentation>Fetches a zone with limited number of records from the database.</documentation>
+		<part name="parameters" element="tns:GetZoneWithRecordsLimit"/>
+	</message>
 
+	<message name="GetZoneWithRecordsLimitOutput">
+		<part name="parameters" element="tns:GetZoneWithRecordsLimitResponse"/>
+	</message>
+	
 	<message name="NoopInput">
 		<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
 		<part name="parameters" element="tns:Noop"/>
@@ -2964,6 +2991,15 @@ atomiaDomainMetaDataItem is a struct with the following members:
 		<operation name="UnassignTSIGKey">
 			<input message="tns:UnassignTSIGKeyInput"/>
 			<output message="tns:UnassignTSIGKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+		
+		<operation name="GetZoneWithRecordsLimit">
+			<input message="tns:GetZoneWithRecordsLimitInput"/>
+			<output message="tns:GetZoneWithRecordsLimitOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -3774,7 +3810,18 @@ atomiaDomainMetaDataItem is a struct with the following members:
 			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
 			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
-
+		
+		<operation name="GetZoneWithRecordsLimit">
+			<documentation>Fetches a zone with limited number of records from the database.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneWithRecordsLimit"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
+		</operation>
+		
 		<operation name="Noop">
 			<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#Noop"/>

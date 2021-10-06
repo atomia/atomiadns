@@ -15,6 +15,7 @@ our $signatures = {
 	"GetLabels" => "array[string] string",
 	"GetZone" => "zone string",
 	"GetZoneBulk" => "array[binaryzone] array",
+	"GetZoneWithRecordsLimit" => "zone string int int",
 	"GetZoneBinary" => "binaryzone string",
 	"GetZoneMetadata" => "array[zonemetadata] string",
 	"SetZoneMetadata" => "void string array array",

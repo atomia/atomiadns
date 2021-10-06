@@ -44,6 +44,7 @@ Atomia DNS Sync application.
 %{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__mkdir} -p %{buildroot}/var/named/slaves/zones
+%{__mkdir} -p %{buildroot}/var/named/zones
 %{__mkdir} -p %{buildroot}/var/named/atomiadns_bdb
 %{__cp} conf/atomiadns.named.conf %{buildroot}/var/named
 %{__cp} conf/empty %{buildroot}/var/named/slaves/named-slavezones.conf.local
@@ -61,6 +62,7 @@ Atomia DNS Sync application.
 %doc %{_mandir}/man1/atomiadnssync.1.gz
 %attr(0640 root named) /var/named/atomiadns.named.conf
 %attr(0770 root named) %dir /var/named/slaves/zones
+%attr(0770 root named) %dir /var/named/zones
 %attr(0770 root named) %dir /var/named/atomiadns_bdb
 %attr(0660 root named) /var/named/slaves/named-slavezones.conf.local
 %attr(0660 root named) /var/named/tsig_keys.conf

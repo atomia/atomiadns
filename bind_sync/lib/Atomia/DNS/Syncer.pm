@@ -20,6 +20,9 @@ has 'slavezones_dir' => (is => 'rw', isa => 'Str');
 has 'rndc_path' => (is => 'rw', isa => 'Str');
 has 'bind_user' => (is => 'rw', isa => 'Str');
 has 'tsig_config' => (is => 'rw', isa => 'Str');
+has 'zones_dir' => (is => 'rw', isa => 'Str');
+has 'zone_file_config' => (is => 'rw', isa => 'Str');
+has 'base_config_dir' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
 	my $self = shift;
@@ -43,6 +46,15 @@ sub BUILD {
 
 	$self->tsig_config($self->config->{"tsig_config"});
 	die("you have to specify tsig_config as an existing file") unless defined($self->tsig_config) && -f $self->tsig_config;
+	
+	$self->zones_dir($self->config->{"zones_dir_base_path"});
+	die("you have to specify zone directory base path") unless defined($self->zones_dir) && -d $self->zones_dir;
+
+	$self->zone_file_config($self->config->{"zone_file_local_conf_path"});
+	die("you have to specify named.conf.local path") unless defined($self->zone_file_config) && -f $self->zone_file_config;
+	
+	$self->base_config_dir($self->config->{"base_config_dir"});
+	die("you have to specify base_config_dir path") unless defined($self->base_config_dir) && -d $self->base_config_dir;
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap_cacert = $self->config->{"soap_cacert"};
@@ -79,9 +91,313 @@ sub BUILD {
 };
 
 sub full_reload_offline {
+	my $self = shift;
+	my $timestamp = shift;
+
+	eval {
+
+		my $zones = $self->sync_all_zones($timestamp);
+		$self->sync_records($zones);
+		$self->sync_zone_transfers();
+	};
+
+	if ($@) {
+		print "Caught exception in full_reload_offline: $@\n";
+	}
 }
 
 sub reload_updated_zones {
+	my $self = shift;
+
+	eval {
+
+		$self->sync_updated_zones();
+		$self->sync_zone_transfers();
+
+	};
+
+	if ($@) {
+		my $exception = $@;
+		$exception = Dumper($exception) if ref($exception);
+		print "Caught exception in reload_updated: $exception\n";
+	}
+}
+
+sub sync_zone_transfers {
+	my $self = shift;
+
+	my $allowed_transfers = $self->soap->GetAllowedZoneTransfer();
+
+	die "bad data returned from soap-server for GetAllowedZoneTransfer" unless defined($allowed_transfers);
+	$allowed_transfers = $allowed_transfers->result;
+	die "bad data returned from soap-server for GetAllowedZoneTransfer" unless defined($allowed_transfers) &&
+	ref($allowed_transfers) eq "ARRAY";
+
+	my $allowed_zones = {};
+	foreach my $allowed_transfer(@$allowed_transfers){
+		my $zonename = $allowed_transfer->{"zonename"};
+
+		if(!defined($allowed_zones->{$zonename})){
+			$allowed_zones->{$zonename} = [];
+		}
+
+		push @{$allowed_zones->{$zonename}}, $allowed_transfer->{"allowed_ip"};
+	}
+
+		
+	foreach my $zonename (keys %$allowed_zones) {
+		eval {
+			my $sub_zonefile = $self->get_zone_config_file($zonename);
+			my $zones = $self->parse_zone_config($sub_zonefile);
+			my $allowed_ips = $allowed_zones->{$zonename};
+
+			foreach my $ip(@$allowed_ips) {
+				if (index($zones->{$zonename}, "$ip;") == -1) {
+					$zones->{$zonename} = $zones->{$zonename}. $ip . ";" ;
+				} 
+			}	
+
+			my $filename = $self->write_zone_tempfile($zones);
+			$self->move_zone_into_place($filename, $sub_zonefile);
+
+		};
+	}
+	if ($@) {
+		my $abort_ret = 0;
+		my $errormessage = $@;
+		$errormessage = Dumper($errormessage) if ref($errormessage);
+
+		die("caught exception in sync_zone_transfers: $errormessage");
+	}
+
+	$self->signal_bind_reconfig();
+
+}
+
+sub sync_all_zones {
+	my $self = shift;
+	my $timestamp = shift;
+
+	my $zones = $self->soap->GetAllZones();
+	die("error fetching all zones, got no or bad result from soap-server") unless defined($zones) &&
+	$zones->result && ref($zones->result) eq "ARRAY";
+	$zones = $zones->result;
+
+	$self->clear_file($self->zone_file_config);
+
+	my $zones_mapping_to_files = {};
+
+	foreach my $zone (@$zones) {
+		die("bad zone fetched") unless defined($zone) && ref($zone) eq "HASH";
+		die("fetched zone.id had bad format") unless defined($zone->{"id"}) && $zone->{"id"} =~ /^\d+$/;
+		die("fetched zone.name had bad format") unless defined($zone->{"name"}) && length($zone->{"name"}) > 0;
+
+		$zone->{"changetime"} = $timestamp;
+
+		my $sub_zonefile = $self->get_zone_config_file($zone->{"name"});
+
+		if (!defined($zones_mapping_to_files->{$sub_zonefile}))
+		{
+			$zones_mapping_to_files->{$sub_zonefile} = [];
+		}
+
+		push @{$zones_mapping_to_files->{$sub_zonefile}}, $zone;
+	}
+
+	foreach my $sub_zonefile (keys %$zones_mapping_to_files) {	
+		
+		my @zones = @{$zones_mapping_to_files->{$sub_zonefile}};
+
+		my $config_created = $self->create_zone_config_file($sub_zonefile);
+
+		if ($config_created){
+			$self->add_include_string_into_config($sub_zonefile);
+		}
+		
+		my $parsed_zones = $self->parse_zone_config($sub_zonefile);
+
+		foreach my $zone (@zones)
+		{
+			my $zonename = $zone->{"name"};
+			$parsed_zones->{$zonename} = "";
+		}
+
+		my $filename = $self->write_zone_tempfile($parsed_zones);
+		$self->move_zone_into_place($filename, $sub_zonefile);
+	}
+
+	$self->signal_bind_reconfig();
+	return $zones;
+}
+
+sub sync_updated_zones {
+	my $self = shift;
+           
+	my $zones_batch_size = 10000;
+
+	if (defined($self->config->{"changed_zones_batch_size"})) {
+		$zones_batch_size = $self->config->{"changed_zones_batch_size"};
+	}
+
+	my $zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), $zones_batch_size);
+
+	die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
+		$zones->result && ref($zones->result) eq "ARRAY";
+	$zones = $zones->result;
+
+	my $changes_to_keep = [];
+	my $changes_to_keep_name = [];
+	my $zones_mapping_to_files = {};
+
+	foreach my $zone (@$zones) {
+		my $keep_zonename = $zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified");
+		my $keep_change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+		push @$changes_to_keep_name, $keep_zonename;
+		push @$changes_to_keep, $keep_change_id;
+
+		if (scalar(@$changes_to_keep) > 1000) {
+			$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
+			$changes_to_keep = [];
+			$changes_to_keep_name = [];
+		}
+		my $sub_zonefile = $self->get_zone_config_file($zone->{"name"});
+		
+		if (!defined($zones_mapping_to_files->{$sub_zonefile}))
+		{
+			$zones_mapping_to_files->{$sub_zonefile} = [];
+		}
+
+		push @{$zones_mapping_to_files->{$sub_zonefile}}, $zone;
+	}
+
+	if (scalar(@$changes_to_keep) > 0) {
+		$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
+	}
+
+	foreach my $sub_zonefile (keys %$zones_mapping_to_files) {
+
+		my @batch = @{$zones_mapping_to_files->{$sub_zonefile}};
+
+		my @get_zone_bulk_arg = map { $_->{"name"} } @batch;
+		my $fetched_records_for_zones = $self->fetch_records_for_zones(\@get_zone_bulk_arg);
+
+		my $changes_successful = [];
+		my $changes_status = [];
+		my $changes_message = [];
+
+		my $config_created = $self->create_zone_config_file($sub_zonefile);
+
+		if($config_created){
+			$self->add_include_string_into_config($sub_zonefile);
+		}
+
+		my $old_zones = $self->parse_zone_config($sub_zonefile);
+
+		foreach my $zone (@batch) {
+
+			my $change_id = undef;
+
+			eval {
+				$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
+				$self->remove_records($zone->{"name"} || die("bad data from GetUpdatedZones, zone not specified"));
+				my $num_records = $self->sync_records([ $zone ], $fetched_records_for_zones);
+				my $zonename = $zone->{"name"};
+
+				if ($num_records > 0) {
+					if (!$old_zones->{$zonename})
+					{
+						$old_zones->{$zonename} = "";
+					}
+				} else {
+					delete $old_zones->{$zonename};
+				}
+
+				push @$changes_successful, $change_id;
+				push @$changes_status, "OK";
+				push @$changes_message, "";
+			};
+
+			if ($@) {
+				my $abort_ret = 0;
+				my $errormessage = $@;
+				$errormessage = Dumper($errormessage) if ref($errormessage);
+				$self->soap->MarkUpdated($change_id, "ERROR", $errormessage) unless defined($errormessage) && $errormessage =~ /got fault of type transport error/;
+			}
+		}
+
+		my $filename = $self->write_zone_tempfile($old_zones);
+		$self->move_zone_into_place($filename, $sub_zonefile);
+
+		$self->soap->MarkUpdatedBulk($changes_successful, $changes_status, $changes_message) if scalar(@$changes_successful) > 0;
+	}
+
+	$self->signal_bind_reconfig();
+}
+
+sub sync_records {
+	my $self = shift;
+	my $zones = shift;
+	my $prefetched_records = shift;
+
+	my $synced_records = 0;
+
+	foreach my $zone (@$zones) {
+		my $records = [];
+
+		if (defined($self->config->{"zone_records_batch_size"})) {
+			my $records_batch = [];
+			my $offset = 0;
+			my $limit = $self->config->{"zone_records_batch_size"};
+
+			do { 
+				$records_batch = $self->fetch_limited_num_records_for_zone($zone->{"name"}, $limit, $offset);
+				$offset += $limit;
+				push @$records, @$records_batch if (scalar(@$records_batch) > 0);
+			} while (scalar(@$records_batch) > 0);
+		}
+		else {
+			if (defined($prefetched_records) && defined($prefetched_records->{$zone->{"name"}})) {
+				$records = $prefetched_records->{$zone->{"name"}};
+			}
+			else {
+				my $records = $self->fetch_records_for_zone($zone->{"name"});
+			}
+		}
+
+		my $record_order = [];
+		my $idx = 1;
+
+		foreach my $record (@$records) {
+			if ($record->{"type"} eq "SOA") {
+				$record->{"rdata"} =~ s/%serial(.*)/($zone->{"changetime"}$1)/g;
+				@$record_order[0] = $record;
+			}
+			else {
+				@$record_order[$idx] = $record;
+				$idx++;
+			}
+		}
+
+		my $record_string = "";
+
+		foreach my $record (@$record_order) {
+			my $record_data = $record->{"label"} . " " . $record->{"class"} . " " . $record->{"ttl"} . " " . $record->{"type"} ." ". $record->{"rdata"};
+			$record_string = $record_string . $record_data . "\n";
+		}
+
+		my $zone_records_path = $self->get_zone_record_path($zone->{"name"});
+
+		if (scalar(@$records) > 0)
+		{
+			open(my $zf, '>', $zone_records_path) or die $!;
+			print $zf $record_string;
+			close($zf);
+		}
+
+		$synced_records += scalar(@$records);
+	}
+
+	return $synced_records;
 }
 
 sub fetch_records_for_zone {
@@ -91,6 +407,33 @@ sub fetch_records_for_zone {
 	my $records = undef;
 	eval {
 		my $zone = $self->soap->GetZone($zonename);
+		die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
+		my @records = map { @{$_->{"records"}} } @{$zone->result};
+		$records = \@records;
+	};
+
+	if ($@) {
+		my $exception = $@;
+		if (ref($exception) && UNIVERSAL::isa($exception, 'SOAP::SOM') && $exception->faultcode eq 'soap:LogicalError.ZoneNotFound') {
+			return [];
+		} else {
+			die $exception;
+		}
+	}
+	
+	die "error fetching zones" unless defined($records) && ref($records) eq "ARRAY";
+	return $records;
+}
+
+sub fetch_limited_num_records_for_zone {
+	my $self = shift;
+	my $zonename = shift;
+	my $limit = shift;
+	my $offset = shift;
+
+	my $records = undef;
+	eval {
+		my $zone = $self->soap->GetZoneWithRecordsLimit($zonename, $limit, $offset);
 		die("error fetching zone for $zonename") unless defined($zone) && $zone->result && ref($zone->result) eq "ARRAY";
 		my @records = map { @{$_->{"records"}} } @{$zone->result};
 		$records = \@records;
@@ -142,6 +485,25 @@ sub fetch_records_for_zones {
 
 	return $zone_hash;
 }
+
+sub remove_records {
+	my $self = shift;
+	my $zonename = shift;
+
+	my $zone_records_path = $self->get_zone_record_path($zonename);
+
+	eval {
+		if ( -e $zone_records_path)
+		{
+			unlink($zone_records_path) or die "Can't remove zone file record $zone_records_path: $!";
+		}
+		else
+		{
+			die "File $zone_records_path doesn't exist";
+		}
+	};
+}
+
 sub updates_disabled {
 	my $self = shift;
 
@@ -462,6 +824,159 @@ sub event_chain {
 	}
 }
 
+sub add_include_string_into_config {
+	my $self = shift;
+	my $sub_zonefile = shift;
+
+	eval { 
+		open(my $zf, '>>', $self->zone_file_config) or die $!;
+		print $zf "include \"$sub_zonefile\";\n";
+		close $zf;
+	};
+	if($@)
+	{
+		die "Couldn't write to " . $self->zone_file_config . ":". $@;
+	}
+}
+
+sub get_zone_record_path {
+	my $self = shift;
+	my $zonename = shift;
+
+	my $subdir = substr($zonename, 0, 2);
+
+	my $zone_records_dir = $self->zones_dir . '/'. $subdir;
+
+	if ( !-d $zone_records_dir ) {
+		mkdir $zone_records_dir or die "Failed to create path: $zone_records_dir";
+	}
+
+	my $zone_config_file_path = $zone_records_dir . "/" . $zonename;
+
+	return $zone_config_file_path;
+
+}
+
+sub get_zone_config_file {
+
+	my $self = shift;
+	my $zonename = shift;
+
+	my $zone_config_path = $self->base_config_dir . '/'. substr($zonename,0,1).".conf";
+
+	return $zone_config_path;
+}
+
+sub create_zone_config_file {
+	my $self = shift;
+	my $zone_config_path = shift;
+
+	if (! -f $zone_config_path)
+	{
+		open TEMP,'>',$zone_config_path or die $!;
+		close TEMP;
+		return 1;
+	}
+
+	return 0;
+}
+
+sub write_zone_tempfile {
+	my $self = shift;
+	my $zones = shift;
+
+	my $tempfile = File::Temp->new(TEMPLATE => 'atomiazonessyncXXXXXXXX', SUFFIX => '.tmp', UNLINK => 0, DIR => dirname($self->zone_file_config)) || die "error creating temporary file: $!";
+
+	foreach my $zone (keys %$zones) {
+		my $zone_record_path = $self->get_zone_record_path($zone);
+
+		if( $zones->{$zone} eq "")
+		{
+			printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n};\n", $zone, $zone_record_path);
+		}
+		else{
+			printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n\tallow-transfer {%s};\n};\n", $zone, $zone_record_path, $zones->{$zone});
+		}
+	}
+
+	return $tempfile->filename;
+}
+
+sub move_zone_into_place {
+	my $self = shift;
+	my $tempfile = shift;
+	my $sub_zonefile = shift;
+
+	rename($tempfile, $sub_zonefile) || die "error moving temporary zone file into place: $!";
+	
+	if ($self->bind_user eq "bind") {
+		system("chmod 640 " . $sub_zonefile);
+		system("chown root:bind " . $sub_zonefile);
+	}
+	elsif ($self->bind_user eq "named") {
+		system("chmod 640 " . $sub_zonefile);
+		system("chown root:named " . $sub_zonefile);
+	}
+	else {
+		die "Bind user doesn't exist";
+	}
+}
+
+sub clear_file {
+	my $self = shift;
+	my $path = shift;
+	
+	open my $zf, ">", $path;
+	print $zf "";
+	close $zf;
+}
+
+sub parse_zone_config {
+	my $self = shift;
+	my $sub_zonefile = shift;
+
+	open (MASTERS, '<', $sub_zonefile) || die "error opening $sub_zonefile : $!";
+
+	my $state = 'startofzone';
+	my $zones = {};
+	my $zone = undef;
+
+	ROW: while (<MASTERS>) {
+		next ROW if /^\s*$/;
+		chomp;
+		$_ =~ s/^\s+//g;
+		if ($state eq 'startofzone') {
+			if (/^zone\s+"([^"]*)"/) {
+				$zone = $1;
+				$zones->{$zone} = "";
+				$state = 'allow-transfer';
+			}
+			else {
+				die "bad format of " . $sub_zonefile . ", expecting $state";
+			}
+		}
+		elsif ($state eq 'allow-transfer') {
+			my $zone_record_path = $self->get_zone_record_path($zone);
+			my $path = sprintf "%s", $zone_record_path;
+			next ROW if /^(type\s+master|file\s+"$path");$/;
+
+			if (/^allow-transfer\s+{([^}]*)\s*};$/) {
+				$zones->{$zone} = $1;
+			} elsif ($_ eq '};'){
+				$state = 'startofzone';
+			}
+			 else {
+				die "bad format of " . $sub_zonefile . ", expecting $state";
+			}
+		} else {
+			die "unknown state: $state";
+		}
+	}
+
+	close MASTERS || die "error closing " . $sub_zonefile . ": $!";
+
+	return $zones;
+}
 sub reload_updated_tsig_keys {
 	my $self = shift;
 
