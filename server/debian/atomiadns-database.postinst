@@ -622,7 +622,7 @@ if [ $retval != 0 ]; then
 				create_trigger "domainmetadata_trigger"
 			fi
 
-			if [ "$schema_version" -lt 90 ]; then
+			if [ "$schema_version" -lt 91 ]; then
 				execute_query "ALTER TABLE tsigkey DROP CONSTRAINT tsigkey_nameserver_group_id_fkey;"
 				execute_query "ALTER TABLE tsigkey ADD CONSTRAINT tsigkey_nameserver_group_id_fkey FOREIGN KEY (nameserver_group_id) REFERENCES nameserver_group;"
 				execute_query "ALTER TABLE domainmetadata DROP CONSTRAINT domainmetadata_nameserver_group_id_fkey;"
