@@ -5,7 +5,7 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.53
+Version: 1.1.54
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
@@ -53,6 +53,8 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Tue Oct 12 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.54-1
+- Bump version to 1.1.54
 * Tue Oct 05 2021 Jovana Stamenkovic <jovana.stamenkovic@atomia.com> - 1.1.53-1
 - Bump version to 1.1.53
 * Mon Sep 27 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.52-1
