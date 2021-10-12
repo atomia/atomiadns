@@ -40,7 +40,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (90);
+INSERT INTO atomiadns_schemaversion (version) VALUES (91);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -343,7 +343,7 @@ EXECUTE PROCEDURE slavezone_update();
 
 CREATE TABLE tsigkey (
 	id BIGSERIAL PRIMARY KEY NOT NULL,
-	nameserver_group_id INT NOT NULL REFERENCES nameserver,
+	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
     name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT tsig_name_format CHECK (name IS NULL OR name ~* '^[a-zA-Z0-9_-]*'),
 	secret VARCHAR(255) CONSTRAINT tsig_format CHECK (secret IS NULL OR secret ~* '^[a-zA-Z0-9+/=]*'),
 	algorithm VARCHAR(255)
@@ -383,7 +383,7 @@ EXECUTE PROCEDURE tsigkey_update();
 
 CREATE TABLE domainmetadata (
 	id BIGSERIAL PRIMARY KEY NOT NULL,
-	nameserver_group_id INT NOT NULL REFERENCES nameserver,
+	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
 	domain_id INT NOT NULL,
 	kind VARCHAR(255) NOT NULL CONSTRAINT kind_format CHECK (kind IN ('TSIG-ALLOW-AXFR','AXFR-MASTER-TSIG')),
     tsigkey_name VARCHAR(255) NOT NULL CONSTRAINT tsig_name_format CHECK (tsigkey_name ~* '^[a-zA-Z0-9_-]*')
