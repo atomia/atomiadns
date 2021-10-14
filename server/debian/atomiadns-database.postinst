@@ -629,6 +629,10 @@ if [ $retval != 0 ]; then
 				execute_query "ALTER TABLE domainmetadata ADD CONSTRAINT domainmetadata_nameserver_group_id_fkey FOREIGN KEY (nameserver_group_id) REFERENCES nameserver_group;"
 			fi
 
+			if [ "$schema_version" -lt 92 ]; then
+				recreate_procedure "unassigntsigkey"
+			fi
+
 			set_schema_version "$latest_version"
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
