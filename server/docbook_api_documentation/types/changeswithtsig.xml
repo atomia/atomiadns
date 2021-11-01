@@ -1,0 +1,3 @@
+<section xml:id="datatype-changeswithtsig">
+<title>changeswithtsig Datatype - Atomia DNS API</title>
+<para><link linkend="datatype-changeswithtsig">changeswithtsig</link> is an array of <link linkend="datatype-changedzonewithtsig">changedzonewithtsig</link>-structs.</para></section>

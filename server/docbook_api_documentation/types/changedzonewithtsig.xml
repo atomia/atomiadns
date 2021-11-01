@@ -1,0 +1,12 @@
+<section xml:id="datatype-changedzonewithtsig">
+<title>changedzonewithtsig Datatype - Atomia DNS API</title>
+<para>
+<link linkend="datatype-changedzonewithtsig">changedzonewithtsig</link> is a struct with the following members:
+<informaltable><colgroup /><thead><tr><td><para>Parameter</para></td><td><para>Type</para></td><td><para>Description</para></td></tr></thead><tbody>
+<tr><td>id</td><td>int</td><td>the id of the change-row</td></tr>
+<tr><td>name</td><td>string</td><td>the name of the zone this change-row applies to</td></tr>
+<tr><td>changetime</td><td>int</td><td>he unix timestamp of this change (will be used as serial in SOA)</td></tr>
+<tr><td>tsigkeyname</td><td>string</td><td>the name of the TSIG key for this zone</td></tr>
+</tbody></informaltable>
+
+				</para></section>

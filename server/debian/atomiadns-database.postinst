@@ -269,7 +269,7 @@ if [ $retval != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="92"
+		latest_version="93"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -631,6 +631,23 @@ if [ $retval != 0 ]; then
 
 			if [ "$schema_version" -lt 92 ]; then
 				recreate_procedure "unassigntsigkey"
+			fi
+
+			if [ "$schema_version" -lt 93 ]; then
+				execute_query "ALTER TABLE domainmetadata ADD UNIQUE(domain_id, kind);"
+				execute_query "ALTER TABLE tsigkey DROP CONSTRAINT tsigkey_name_key;"
+				execute_query "ALTER TABLE tsigkey ADD UNIQUE(nameserver_group_id, name);"
+				execute_query "ALTER TABLE domainmetadata DROP CONSTRAINT kind_format;"
+				execute_query "ALTER TABLE domainmetadata ADD CONSTRAINT kind_format CHECK (kind IN ('master','slave','TSIG-ALLOW-AXFR','AXFR-MASTER-TSIG'));"
+				execute_query "DROP TRIGGER IF EXISTS domainmetadata_trigger ON domainmetadata;"
+				execute_query "DROP FUNCTION IF EXISTS domainmetadata_update();"
+				execute_query "DROP FUNCTION IF EXISTS assigntsigkey(varchar,varchar,varchar,varchar);"
+				recreate_procedure "assigntsigkey"
+				recreate_procedure "unassigntsigkey"
+				recreate_ddl_procedure "domainmetadata_change_update"
+				create_trigger "domainmetadata_change_trigger"
+				recreate_procedure "getchangedzonesbatchwithtsig"
+				recreate_procedure "getchangedslavezoneswithtsig"
 			fi
 
 			set_schema_version "$latest_version"

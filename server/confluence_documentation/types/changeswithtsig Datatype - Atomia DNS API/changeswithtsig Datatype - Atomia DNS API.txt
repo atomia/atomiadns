@@ -1,0 +1,1 @@
+[changeswithtsig|changeswithtsig Datatype - Atomia DNS API] is an array of [changedzonewithtsig|changedzonewithtsig Datatype - Atomia DNS API]-structs.

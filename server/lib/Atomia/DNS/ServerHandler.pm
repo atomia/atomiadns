@@ -466,6 +466,33 @@ sub handleChanges {
 	return SOAP::Data->new(name => "changes", value => \@rowarray);
 }
 
+sub handleChangesWithTSIG {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $rows;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+	$rows = $sth->fetchall_arrayref({});
+	die("error polling database for changes: $DBI::errstr") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	my @rowarray = map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^change_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^change_//;
+				$_->{$key} = $value;
+			}
+		}
+	
+		SOAP::Data->new(name => "changedzonewithtsig", value => $_)
+	} @$rows;
+
+	return SOAP::Data->new(name => "changeswithtsig", value => \@rowarray);
+}
+
 sub handleAllowedTransfer {
 	my $self = shift;
 	my $method = shift;
@@ -1214,6 +1241,8 @@ sub handleOperation {
 		$retval = $self->handleSlaveZone($method, $signature, @_);
 	} elsif ($return_type eq "changes") {
 		$retval = $self->handleChanges($method, $signature, @_);
+	} elsif ($return_type eq "changeswithtsig") {
+		$retval = $self->handleChangesWithTSIG($method, $signature, @_);
 	} elsif ($return_type eq "zonestruct") {
 		$retval = $self->handleZoneStruct($method, $signature, @_);
 	} elsif ($return_type eq "int") {

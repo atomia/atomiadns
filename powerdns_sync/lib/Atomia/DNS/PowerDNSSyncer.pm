@@ -96,9 +96,19 @@ sub sync_dnssec_keys {
 sub reload_updated_zones {
 	my $self = shift;
 
-	my $zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
-	die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
-		$zones->result && ref($zones->result) eq "ARRAY";
+	my $zones;
+
+	if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+		$zones = $self->soap->GetChangedZonesBatchWithTSIG($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
+		die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
+			$zones->result && ref($zones->result) eq "ARRAY";
+	}
+	else {
+		$zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
+		die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
+			$zones->result && ref($zones->result) eq "ARRAY";
+	}
+	
 	$zones = $zones->result;
 
 	my $changes_to_keep = [];
@@ -300,10 +310,20 @@ sub full_reload_slavezones {
 sub reload_updated_slavezones {
 	my $self = shift;
 
-	my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
-	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
-		$zones->result && ref($zones->result) eq "ARRAY";
-	$zones = $zones->result;
+	my $zones;
+
+	if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+		$zones = $self->soap->GetChangedSlaveZonesWithTSIG($self->config->{"servername"} || die("you have to specify servername in config"));
+		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+			$zones->result && ref($zones->result) eq "ARRAY";
+		$zones = $zones->result;	
+	}
+	else {
+		$zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+			$zones->result && ref($zones->result) eq "ARRAY";
+		$zones = $zones->result;	
+	}
 
 	return if scalar(@$zones) == 0;
 
@@ -321,6 +341,13 @@ sub reload_updated_slavezones {
 			$zone = $zone->[0];
 
 			die("error fetching zone for $zonename") unless !defined($zone) || (ref($zone) eq "HASH" && defined($zone->{"master"}));
+
+			if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+				# dereference zone hash, append tsigkeyname, then reference it again and put it back into $zone
+				my %zone_hash = %$zone;
+				$zone_hash{tsigkeyname} = $zonerec->{"tsigkeyname"};
+				$zone = \%zone_hash;
+			}
 
 			$self->sync_slave_zone($zonename, $zone);
 			$self->soap->MarkSlaveZoneUpdated($zonerec->{"id"}, "OK", "");
@@ -563,9 +590,9 @@ sub sync_domainmetadata {
 	my $domainmetadata = shift;
 
 	if (defined($domainmetadata)) {
-		$self->database->assign_tsig_key($domain_name, $domainmetadata);
+		$self->database->assign_tsig_key_deprecated($domain_name, $domainmetadata);
 	} else {
-		$self->database->unassign_tsig_key($domain_name);
+		$self->database->unassign_tsig_key_deprecated($domain_name);
 	}
 }
 
