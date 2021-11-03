@@ -13,7 +13,7 @@ BEGIN
 			WHERE nameserver.name = nameservername AND status = 'PENDING'
 			GROUP BY zone
 			LIMIT changelimit) AS res
-			INNER JOIN zone ON res.zone = zone.name LEFT JOIN domainmetadata ON zone.id = domainmetadata.domain_id AND domainmetadata.kind = 'master'
+			LEFT JOIN zone ON res.zone = zone.name LEFT JOIN domainmetadata ON zone.id = domainmetadata.domain_id AND domainmetadata.kind = 'master'
 	LOOP
 		change_id := r.id;
 		change_name := r.zone;

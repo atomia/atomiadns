@@ -9,7 +9,7 @@ DECLARE r RECORD;
 BEGIN
 	FOR r IN	SELECT slavezone_change.id, zone, changetime, domainmetadata.tsigkey_name as tsigkeyname FROM slavezone_change 
 			INNER JOIN nameserver ON nameserver_id = nameserver.id
-			INNER JOIN slavezone ON zone = slavezone.name LEFT JOIN domainmetadata ON slavezone.id = domainmetadata.domain_id AND domainmetadata.kind = 'slave'
+			LEFT JOIN slavezone ON zone = slavezone.name LEFT JOIN domainmetadata ON slavezone.id = domainmetadata.domain_id AND domainmetadata.kind = 'slave'
 			WHERE nameserver.name = nameservername AND status = 'PENDING' 
 			ORDER BY changetime ASC, slavezone_change.id ASC
 	LOOP
