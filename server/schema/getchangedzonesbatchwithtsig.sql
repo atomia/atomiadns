@@ -8,11 +8,12 @@ CREATE OR REPLACE FUNCTION GetChangedZonesBatchWithTSIG(
 ) RETURNS SETOF record AS $$
 DECLARE r RECORD;
 BEGIN
-	FOR r IN	SELECT MAX(change.id) AS id, change.zone, MAX(changetime) AS changetime, MIN(domainmetadata.tsigkey_name) as tsigkeyname FROM change INNER JOIN nameserver ON nameserver_id = nameserver.id 
-			INNER JOIN zone ON change.zone = zone.name LEFT JOIN domainmetadata ON zone.id = domainmetadata.domain_id AND domainmetadata.kind = 'master'
+	FOR r IN	SELECT res.id, res.zone, res.changetime, domainmetadata.tsigkey_name as tsigkeyname FROM 
+			(SELECT MAX(change.id) AS id, change.zone, MAX(changetime) AS changetime FROM change INNER JOIN nameserver ON nameserver_id = nameserver.id 
 			WHERE nameserver.name = nameservername AND status = 'PENDING'
-			GROUP BY change.zone
-			LIMIT changelimit
+			GROUP BY zone
+			LIMIT changelimit) AS res
+			INNER JOIN zone ON res.zone = zone.name LEFT JOIN domainmetadata ON zone.id = domainmetadata.domain_id AND domainmetadata.kind = 'master'
 	LOOP
 		change_id := r.id;
 		change_name := r.zone;
