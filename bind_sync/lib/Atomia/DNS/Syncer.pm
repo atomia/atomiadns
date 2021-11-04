@@ -201,10 +201,22 @@ sub reload_updated_slavezones {
 
 	my $config_zones = $self->parse_slavezone_config();
 
-	my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+	my $zones;
+
+	if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+		$zones = $self->soap->GetChangedSlaveZonesWithTSIG($self->config->{"servername"} || die("you have to specify servername in config"));
+		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+		
+		$zones->result && ref($zones->result) eq "ARRAY";
+		$zones = $zones->result;
+	}
+	else {
+		$zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
 	
-	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) && $zones->result && ref($zones->result) eq "ARRAY";
-	$zones = $zones->result;
+		$zones->result && ref($zones->result) eq "ARRAY";
+		$zones = $zones->result;	
+	}
 
 	return if scalar(@$zones) == 0;
 
@@ -219,6 +231,12 @@ sub reload_updated_slavezones {
 			$zone = $zone->result;
 			die("bad response from GetSlaveZone") unless scalar(@$zone) == 1;
 			$zone = $zone->[0];
+
+			if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+				my %zone_hash = %$zone;
+				$zone_hash{tsigkeyname} = $zonerec->{"tsigkeyname"};
+				$zone = \%zone_hash;
+			}
 
 			push @$changes, $zonerec->{"id"};
 		};
@@ -236,6 +254,7 @@ sub reload_updated_slavezones {
 		if (defined($zone)) {
 			die("error fetching zone for $zonename") unless ref($zone) eq "HASH" && defined($zone->{"master"});
 			$config_zones->{$zonename} = $zone->{"master"};
+			$config_zones->{$zonename."-key"} = $zone->{"tsigkeyname"};
 		} else {
 			delete $config_zones->{$zonename};
 		}
