@@ -9,7 +9,7 @@ DECLARE
 BEGIN
 	SELECT zone.id INTO domain_id_master_var FROM zone WHERE name = domain_name;
 	SELECT slavezone.id INTO domain_id_slave_var FROM slavezone WHERE name = domain_name;
-	IF domain_id_master_var IS NULL OR domain_id_slave_var IS NULL THEN
+	IF domain_id_master_var IS NULL AND domain_id_slave_var IS NULL THEN
 		RAISE EXCEPTION 'domain % not found', domain_name;
 	END IF;
 
