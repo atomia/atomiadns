@@ -3,22 +3,28 @@ CREATE OR REPLACE FUNCTION UnassignTSIGKey (
 ) RETURNS void AS $$
 DECLARE
 	domainmetadata_id_var bigint;
-	domain_id_var bigint;
-	kind_var varchar := 'TSIG-ALLOW-AXFR';
+	domain_id_master_var bigint;
+	domain_id_slave_var bigint;
+	kind_var varchar := 'master';
 BEGIN
-	SELECT zone.id INTO domain_id_var FROM zone WHERE name = domain_name;
+	SELECT zone.id INTO domain_id_master_var FROM zone WHERE name = domain_name;
+	SELECT slavezone.id INTO domain_id_slave_var FROM slavezone WHERE name = domain_name;
+	IF domain_id_master_var IS NULL OR domain_id_slave_var IS NULL THEN
+		RAISE EXCEPTION 'domain % not found', domain_name;
+	END IF;
+
+	SELECT id INTO domainmetadata_id_var FROM domainmetadata WHERE domain_id = domain_id_master_var AND kind IN ('master', 'TSIG-ALLOW-AXFR');
 	IF NOT FOUND THEN
-		kind_var := 'AXFR-MASTER-TSIG';
-		SELECT slavezone.id INTO domain_id_var FROM slavezone WHERE name = domain_name;
+		kind_var := 'slave';
+		SELECT id INTO domainmetadata_id_var FROM domainmetadata WHERE domain_id = domain_id_slave_var AND kind IN ('slave', 'AXFR-MASTER-TSIG');
 		IF NOT FOUND THEN
-			RAISE EXCEPTION 'domain % not found', domain_name;
+			RAISE EXCEPTION 'domainmetadata for domain % not found', domain_name;
 		END IF;
 	END IF;
 
-	SELECT id INTO domainmetadata_id_var FROM domainmetadata WHERE domain_id = domain_id_var AND kind = kind_var;
-	IF NOT FOUND THEN
-		RAISE EXCEPTION 'domainmetadata for domain % not found', domain_name;
+	IF kind_var = 'master' THEN
+		DELETE FROM domainmetadata WHERE domain_id = domain_id_master_var AND kind IN ('master', 'TSIG-ALLOW-AXFR');
+	ELSE
+		DELETE FROM domainmetadata WHERE domain_id = domain_id_slave_var AND kind IN ('slave', 'AXFR-MASTER-TSIG');
 	END IF;
-
-	DELETE FROM domainmetadata WHERE domain_id = domain_id_var AND kind = kind_var;
 END; $$ LANGUAGE plpgsql;
