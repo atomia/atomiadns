@@ -203,7 +203,7 @@ sub reload_updated_slavezones {
 
 	my $zones;
 
-	if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+	if ($self->use_tsig_keys_for_slave_zones()) {
 		$zones = $self->soap->GetChangedSlaveZonesWithTSIG($self->config->{"servername"} || die("you have to specify servername in config"));
 		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
 		
@@ -232,7 +232,7 @@ sub reload_updated_slavezones {
 			die("bad response from GetSlaveZone") unless scalar(@$zone) == 1;
 			$zone = $zone->[0];
 
-			if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+			if ($self->use_tsig_keys_for_slave_zones()) {
 				my %zone_hash = %$zone;
 				$zone_hash{tsigkeyname} = $zonerec->{"tsigkeyname"};
 				$zone = \%zone_hash;
@@ -254,7 +254,10 @@ sub reload_updated_slavezones {
 		if (defined($zone)) {
 			die("error fetching zone for $zonename") unless ref($zone) eq "HASH" && defined($zone->{"master"});
 			$config_zones->{$zonename} = $zone->{"master"};
-			$config_zones->{$zonename."-key"} = $zone->{"tsigkeyname"};
+
+			if ($self->use_tsig_keys_for_slave_zones()) {
+				$config_zones->{$zonename."-key"} = $zone->{"tsigkeyname"};
+			}
 		} else {
 			delete $config_zones->{$zonename};
 		}
@@ -318,6 +321,18 @@ sub parse_slavezone_config {
 	close SLAVES || die "error closing " . $self->slavezones_config . ": $!";
 
 	return $zones;
+}
+
+sub use_tsig_keys_for_slave_zones {
+	my $self = shift;
+
+	if (defined($self->config->{"use_tsig_for_slave_zones"}) &&
+			$self->config->{"use_tsig_for_slave_zones"} eq "1") {		
+		
+		return 1;
+	}
+
+	return 0;
 }
 
 sub write_slavezone_tempfile {
