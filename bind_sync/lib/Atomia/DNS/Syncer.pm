@@ -126,6 +126,10 @@ sub reload_updated_zones {
 sub sync_zone_transfers {
 	my $self = shift;
 
+	if ($self->use_tsig_keys_for_master_zones()) {
+		return;
+	}
+
 	my $allowed_transfers = $self->soap->GetAllowedZoneTransfer();
 
 	die "bad data returned from soap-server for GetAllowedZoneTransfer" unless defined($allowed_transfers);
@@ -239,7 +243,18 @@ sub sync_updated_zones {
 		$zones_batch_size = $self->config->{"changed_zones_batch_size"};
 	}
 
-	my $zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), $zones_batch_size);
+	my $zones;
+
+	if ($self->use_tsig_keys_for_master_zones()) {
+		$zones = $self->soap->GetChangedZonesBatchWithTSIG($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
+		die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
+		$zones->result && ref($zones->result) eq "ARRAY";
+	}
+	else {
+		$zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
+		die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
+		$zones->result && ref($zones->result) eq "ARRAY";
+	}
 
 	die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
 		$zones->result && ref($zones->result) eq "ARRAY";
@@ -303,10 +318,19 @@ sub sync_updated_zones {
 				my $num_records = $self->sync_records([ $zone ], $fetched_records_for_zones);
 				my $zonename = $zone->{"name"};
 
+				if ($self->use_tsig_keys_for_master_zones()) {
+					my %zone_hash = %$zone;
+					$zone_hash{tsigkeyname} = $zone->{"tsigkeyname"};
+					$zone = \%zone_hash;
+				}
+
 				if ($num_records > 0) {
-					if (!$old_zones->{$zonename})
-					{
+					if (!$old_zones->{$zonename}) {
 						$old_zones->{$zonename} = "";
+
+						if ($self->use_tsig_keys_for_master_zones()) {
+							$old_zones->{$zonename . "-key"} = $zone->{"tsigkeyname"};
+						}
 					}
 				} else {
 					delete $old_zones->{$zonename};
@@ -824,6 +848,18 @@ sub event_chain {
 	}
 }
 
+sub use_tsig_keys_for_master_zones {
+	my $self = shift;
+
+	if (defined($self->config->{"use_tsig_for_master_zones"}) &&
+			$self->config->{"use_tsig_for_master_zones"} eq "1") {		
+		
+		return 1;
+	}
+
+	return 0;
+}
+
 sub add_include_string_into_config {
 	my $self = shift;
 	my $sub_zonefile = shift;
@@ -888,14 +924,22 @@ sub write_zone_tempfile {
 	my $tempfile = File::Temp->new(TEMPLATE => 'atomiazonessyncXXXXXXXX', SUFFIX => '.tmp', UNLINK => 0, DIR => dirname($self->zone_file_config)) || die "error creating temporary file: $!";
 
 	foreach my $zone (keys %$zones) {
+		next if ($zone =~ /.*-key$/ );
 		my $zone_record_path = $self->get_zone_record_path($zone);
 
-		if( $zones->{$zone} eq "")
-		{
-			printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n};\n", $zone, $zone_record_path);
-		}
-		else{
-			printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n\tallow-transfer {%s};\n};\n", $zone, $zone_record_path, $zones->{$zone});
+		if ($self->use_tsig_keys_for_master_zones()) {
+			if (!defined($zones->{$zone."-key"})) {
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n};\n", $zone, $zone_record_path);
+			} else {
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n\tallow-transfer {key %s;};\n};\n", $zone, $zone_record_path, $zones->{$zone."-key"});
+			}
+		} else {
+			if( $zones->{$zone} eq "") {
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n};\n", $zone, $zone_record_path);
+			}
+			else {
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n\tallow-transfer {%s};\n};\n", $zone, $zone_record_path, $zones->{$zone});
+			}
 		}
 	}
 
@@ -960,14 +1004,24 @@ sub parse_zone_config {
 			my $path = sprintf "%s", $zone_record_path;
 			next ROW if /^(type\s+master|file\s+"$path");$/;
 
-			if (/^allow-transfer\s+{([^}]*)\s*};$/) {
-				$zones->{$zone} = $1;
-			} elsif ($_ eq '};'){
-				$state = 'startofzone';
-			}
-			 else {
-				die "bad format of " . $sub_zonefile . ", expecting $state";
-			}
+			if ($self->use_tsig_keys_for_master_zones()) {
+				if (/^allow-transfer\s*{([^}]*?);?\s*(key\s+([^}]*?);)?\s*};$/) {
+					$zones->{$zone} = $1;
+					$zones->{$zone."-key"} = $3;
+				} elsif ($_ eq '};'){
+					$state = 'startofzone';
+				} else {
+					die "bad format of " . $sub_zonefile . ", expecting $state";
+				}
+			} else {
+				if (/^allow-transfer\s+{([^}]*)\s*};$/) {
+					$zones->{$zone} = $1;
+				} elsif ($_ eq '};'){
+					$state = 'startofzone';
+				} else {
+					die "bad format of " . $sub_zonefile . ", expecting $state";				
+				}
+			} 
 		} else {
 			die "unknown state: $state";
 		}
