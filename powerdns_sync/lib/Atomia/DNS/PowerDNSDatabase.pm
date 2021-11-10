@@ -405,7 +405,7 @@ sub remove_slave_zone {
 
 	eval {
 		my $name = $self->dbi->quote($zonename);
-		$self->dbi->do("DELETE domains, records, k FROM domains LEFT JOIN records ON domains.id = records.domain_id LEFT JOIN outbound_tsig_keys k ON k.domain_id = domains.id WHERE domains.name = $name") || die "error removing zone: $DBI::errstr";
+		$self->dbi->do("DELETE domains, records, k FROM domains LEFT JOIN records ON domains.id = records.domain_id LEFT JOIN outbound_tsig_keys k ON k.domain_id = domains.id WHERE domains.name = $name AND domains.type = 'SLAVE'") || die "error removing zone: $DBI::errstr";
 		$self->dbi->commit();
 	};
 
