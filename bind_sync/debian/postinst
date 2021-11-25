@@ -25,8 +25,14 @@ if [ -f /etc/bind/named.conf.local ] && [ -z "$(grep named-slavezones.conf.local
 	echo 'include "/etc/bind/tsig_keys.conf";' >> /etc/bind/named.conf.local
 fi
 
+mkdir -p /etc/bind/zones
+chown -R bind:bind /etc/bind/zones
+
 mkdir -p /etc/bind/slave/zones
 chown -R bind:bind /etc/bind/slave
+
+mkdir -p /etc/bind/keys
+chown -R bind:bind /etc/bind/keys
 
 touch /etc/bind/slave/named-slavezones.conf.local
 chown bind:bind /etc/bind/slave/named-slavezones.conf.local

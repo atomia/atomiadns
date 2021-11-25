@@ -74,6 +74,7 @@ methodawk='BEGIN {
 	methods["GetDomainMetaData"] = "Gets data for assigning a TSIG key.";
 	methods["MarkDomainMetaDataUpdated"] = "Marks a domain meta data as updated after asigning a TSIG key.";
 	methods["UnassignTSIGKey"] = "Unassigns a TSIG key to a domain.";
+	methods["GetZoneWithRecordsLimit"] = "Fetches a list of all records for a zone, but limit response to a number of records.";
 	methods["Noop"] = "Do nothing. Meant for generating token without doing anything when authenticating.";
 }'
 

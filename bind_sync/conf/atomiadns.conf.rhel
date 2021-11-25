@@ -3,3 +3,7 @@ slavezones_dir = /var/named/slaves/zones
 rndc_path = /usr/sbin/rndc
 bind_user = named
 tsig_config = /var/named/tsig_keys.conf
+base_config_dir = /var/named
+zones_dir_base_path = /var/named/zones
+zone_file_local_conf_path = /etc/named.conf
+dnssec_keys_dir = /var/named/keys

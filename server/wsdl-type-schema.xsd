@@ -1546,7 +1546,25 @@ atomiaZSKInfo is a struct with the following members:
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
-
+			
+			<xsd:element name="GetZoneWithRecordsLimit">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonename" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="limit" type="xsd:string"><xsd:annotation><xsd:documentation>the maximum number of records to return</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="offset" type="xsd:string"><xsd:annotation><xsd:documentation>the offset of the first record to return</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="GetZoneWithRecordsLimitResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="atomiaZone"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+			
 			<xsd:element name="Noop">
 				<xsd:complexType>
 					<xsd:all />
