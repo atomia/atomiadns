@@ -11,6 +11,7 @@ use SOAP::Lite;
 use Data::Dumper;
 use File::Basename;
 use File::Temp;
+use MIME::Base64;
 
 has 'config' => (is => 'rw', isa => 'Any', default => undef);
 has 'configfile' => (is => 'ro', isa => 'Any', default => "/etc/atomiadns.conf");
@@ -23,6 +24,7 @@ has 'tsig_config' => (is => 'rw', isa => 'Str');
 has 'zones_dir' => (is => 'rw', isa => 'Str');
 has 'zone_file_config' => (is => 'rw', isa => 'Str');
 has 'base_config_dir' => (is => 'rw', isa => 'Str');
+has 'dnssec_keys_dir' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
 	my $self = shift;
@@ -55,6 +57,9 @@ sub BUILD {
 	
 	$self->base_config_dir($self->config->{"base_config_dir"});
 	die("you have to specify base_config_dir path") unless defined($self->base_config_dir) && -d $self->base_config_dir;
+
+	$self->dnssec_keys_dir($self->config->{"dnssec_keys_dir"});
+	die("you have to specify dnssec_keys_dir path") unless defined($self->dnssec_keys_dir) && -d $self->dnssec_keys_dir;
 
 	my $soap_uri = $self->config->{"soap_uri"} || die("soap_uri not specified in " . $self->configfile);
 	my $soap_cacert = $self->config->{"soap_cacert"};
@@ -236,7 +241,7 @@ sub sync_all_zones {
 
 sub sync_updated_zones {
 	my $self = shift;
-           
+
 	my $zones_batch_size = 10000;
 
 	if (defined($self->config->{"changed_zones_batch_size"})) {
@@ -328,12 +333,57 @@ sub sync_updated_zones {
 					if (!$old_zones->{$zonename}) {
 						$old_zones->{$zonename} = "";
 
+						my $current_active_key = $self->get_current_active_key();
+
+						if (defined($current_active_key) && defined($self->config->{"dnssec_public_key"})) {
+
+							my $zone_dnssec_file_name = $self->get_zone_dnssec_filename($zonename);
+							die "Both dnssec_public_key and  dnssec_keytag should be defined" if !defined($zone_dnssec_file_name);
+
+							my $zonedir = $self->dnssec_keys_dir . "/" . substr($zonename, 0, 2);
+								
+							if ( !-d $zonedir ) {
+								mkdir $zonedir or die "Failed to create path: $zonedir";
+							}
+
+							my $key_file = "$zonedir/$zone_dnssec_file_name.key";
+							my $private_file = "/$zonedir/$zone_dnssec_file_name.private";
+
+							open(my $zf, '>', $key_file) or die $!;
+							print $zf "$zonename\. IN DNSKEY " . $self->config->{"dnssec_public_key"};
+							close $zf;
+
+							open(my $zf1, '>', $private_file) or die $!;
+							print $zf1 $current_active_key->{"keydata"};
+							close $zf1;
+
+							$self->add_dnssec_files_priviliges($private_file, $key_file);
+
+						}
+
 						if ($self->use_tsig_keys_for_master_zones()) {
 							$old_zones->{$zonename . "-key"} = $zone->{"tsigkeyname"};
 						}
 					}
 				} else {
 					delete $old_zones->{$zonename};
+
+					my $zone_dnssec_file_name = $self->get_zone_dnssec_filename($zonename);
+					die "Both dnssec_public_key and  dnssec_keytag should be defined" if !defined($zone_dnssec_file_name);
+					my $subdir = substr($zonename, 0, 2);
+
+					my $key_file = $self->dnssec_keys_dir . "/$subdir/$zone_dnssec_file_name.key";
+					my $private_file = $self->dnssec_keys_dir . "/$subdir/$zone_dnssec_file_name.private";
+
+					unlink($key_file) if ( -f $key_file);
+					unlink($private_file) if ( -f $private_file);
+
+					my $zone_records_file = $self->zones_dir . "/$subdir/$zonename";
+
+					unlink($zone_records_file . "\.signed") if ( -f $zone_records_file . "\.signed");
+					unlink($zone_records_file . "\.jbk") if ( -f $zone_records_file . "\.jbk");
+					unlink($zone_records_file . "\.signed\.jnl") if ( -f $zone_records_file . "\.signed\.jnl");
+					unlink($zone_records_file . "\.jnl") if ( -f $zone_records_file . "\.jnl");
 				}
 
 				push @$changes_successful, $change_id;
@@ -356,6 +406,22 @@ sub sync_updated_zones {
 	}
 
 	$self->signal_bind_reconfig();
+}
+
+sub get_zone_dnssec_filename {
+	my $self = shift;
+	my $zonename = shift;
+
+	my $zone_dnssec_file_name = undef;
+	
+	if (defined($self->config->{"dnssec_public_key"}) && defined($self->config->{"dnssec_keytag"})) {
+		my $dnssec_public_key =$self->config->{"dnssec_public_key"};
+		my @dnssec_public_key_elements = split ' ', $dnssec_public_key;
+		my $dnssec_keytag = $self->config->{"dnssec_keytag"};
+		$zone_dnssec_file_name = "K$zonename\." . "+00" . $dnssec_public_key_elements[2] . "+". $dnssec_keytag;
+	}
+
+	return $zone_dnssec_file_name;
 }
 
 sub sync_records {
@@ -885,6 +951,17 @@ sub get_zone_record_path {
 
 	if ( !-d $zone_records_dir ) {
 		mkdir $zone_records_dir or die "Failed to create path: $zone_records_dir";
+
+		if ($self->bind_user eq "bind") {
+			system("chmod 740 " . $zone_records_dir);
+			system("chown bind:bind " . $zone_records_dir);
+		}
+		elsif ($self->bind_user eq "named") {
+			system("chmod 740 " . $zone_records_dir);
+			system("chown root:named " . $zone_records_dir);
+		} else {
+			die "Bind user doesn't exist";
+		}
 	}
 
 	my $zone_config_file_path = $zone_records_dir . "/" . $zonename;
@@ -927,18 +1004,25 @@ sub write_zone_tempfile {
 		next if ($zone =~ /.*-key$/ );
 		my $zone_record_path = $self->get_zone_record_path($zone);
 
+		my $allow_dnssec = '';
+
+		if (defined($self->config->{"bind_sync_keys"}) && $self->config->{"bind_sync_keys"} eq "1") {
+			my $key_dir = $self->dnssec_keys_dir . "/" . substr($zone, 0, 2);
+			$allow_dnssec = "\n\tauto-dnssec maintain;\n\tinline-signing yes;\n\tkey-directory \"$key_dir\";";
+		}
+
 		if ($self->use_tsig_keys_for_master_zones()) {
 			if (!defined($zones->{$zone."-key"})) {
-				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n};\n", $zone, $zone_record_path);
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";$allow_dnssec\n};\n", $zone, $zone_record_path);
 			} else {
-				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n\tallow-transfer {key %s;};\n};\n", $zone, $zone_record_path, $zones->{$zone."-key"});
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";$allow_dnssec\n\tallow-transfer {key %s;};\n};\n", $zone, $zone_record_path, $zones->{$zone."-key"});
 			}
 		} else {
 			if( $zones->{$zone} eq "") {
-				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n};\n", $zone, $zone_record_path);
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";$allow_dnssec\n};\n", $zone, $zone_record_path);
 			}
 			else {
-				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";\n\tallow-transfer {%s};\n};\n", $zone, $zone_record_path, $zones->{$zone});
+				printf $tempfile ("zone \"%s\" {\n\ttype master;\n\tfile \"%s\";$allow_dnssec\n\tallow-transfer {%s};\n};\n", $zone, $zone_record_path, $zones->{$zone});
 			}
 		}
 	}
@@ -960,8 +1044,7 @@ sub move_zone_into_place {
 	elsif ($self->bind_user eq "named") {
 		system("chmod 640 " . $sub_zonefile);
 		system("chown root:named " . $sub_zonefile);
-	}
-	else {
+	} else {
 		die "Bind user doesn't exist";
 	}
 }
@@ -1002,7 +1085,8 @@ sub parse_zone_config {
 		elsif ($state eq 'allow-transfer') {
 			my $zone_record_path = $self->get_zone_record_path($zone);
 			my $path = sprintf "%s", $zone_record_path;
-			next ROW if /^(type\s+master|file\s+"$path");$/;
+			my $key_path = $self->dnssec_keys_dir . "/" . substr($zone, 0, 2);
+			next ROW if /^(type\s+master|file\s+"$path"|auto-dnssec maintain|inline-signing yes|key-directory "$key_path");$/;
 
 			if ($self->use_tsig_keys_for_master_zones()) {
 				if (/^allow-transfer\s*{([^}]*?);?\s*(key\s+([^}]*?);)?\s*};$/) {
@@ -1247,4 +1331,129 @@ sub reload_updated_domainmetadata {
 	$self->move_slavezone_into_place($filename);
 	$self->signal_bind_reconfig();
 }
+
+sub sync_dnssec_keys {
+	my $self = shift;
+
+	if (!defined($self->config->{"bind_sync_keys"}) || $self->config->{"bind_sync_keys"} eq "0") {
+		return;
+	}
+
+	my $new_private_key = $self->get_current_active_key();
+	my $new_public_key = $self->config->{"dnssec_public_key"};
+
+	if (!defined($new_private_key) || !defined($new_public_key)) {
+		return;
+	}
+
+	my @private_keys_files = grep { -f } glob  $self->dnssec_keys_dir . "/*/*.private"; 
+	my $changed = 0;
+
+	foreach my $private_file (@private_keys_files) {
+		eval {
+			open my $fp, '<', $private_file or die "Can't open file $!";
+			my $file_content = do { local $/; <$fp> };
+			close $fp;
+		
+			if ((defined($new_private_key->{"keydata"})) && ($file_content ne $new_private_key->{"keydata"})) {
+
+				my $key_file = $private_file;
+				$key_file =~ s/private$/key/g;
+		
+				my $zonename = undef;
+				if ($private_file =~ /K([^\+]*)/) {
+					$zonename = $1;
+					$zonename =~ s/\.$//g;
+				}
+
+				die ".key filename is not valid" if !defined($zonename);
+
+				my $zone_dnssec_file_name = $self->get_zone_dnssec_filename($zonename);
+				die "Both dnssec_public_key and  dnssec_keytag should be defined" if !defined($zone_dnssec_file_name);
+
+				my $subdir = substr($zonename, 0, 2);
+				my $new_key_file = $self->dnssec_keys_dir . "/$subdir/$zone_dnssec_file_name.key";
+				my $new_private_file = $self->dnssec_keys_dir . "/$subdir/$zone_dnssec_file_name.private";
+
+				die "The new key tag cannot be the same as the old one!" if (($new_key_file eq $key_file) || ($new_private_file eq $private_file));
+
+				open $fp, '>', $new_private_file or die "Can't open file $!";
+				print $fp $new_private_key->{"keydata"};
+				close $fp;
+
+				open my $fp1, '>', $new_key_file or die "Can't open file $!";
+				print $fp1 "$zonename\. IN DNSKEY $new_public_key";
+				close $fp1;
+
+				$self->add_dnssec_files_priviliges($private_file, $key_file);
+
+				unlink($key_file) if ( -f $key_file);
+				unlink($private_file) if ( -f $private_file);
+				
+				my $zone_records_file = $self->zones_dir . "/$subdir/$zonename";
+
+				unlink($zone_records_file . "\.signed") if ( -f $zone_records_file . "\.signed");
+				unlink($zone_records_file . "\.jbk") if ( -f $zone_records_file . "\.jbk");
+				unlink($zone_records_file . "\.signed\.jnl") if ( -f $zone_records_file . "\.signed\.jnl");
+				unlink($zone_records_file . "\.jnl") if ( -f $zone_records_file . "\.jnl");
+
+				$changed = 1;
+			}
+		};
+		if ($@) {
+			die "dnssec sync failed: $@";
+		}
+	}
+
+	if ($changed) {
+		$self->signal_bind_reconfig();
+	}
+}
+
+sub add_dnssec_files_priviliges {
+	my $self = shift;
+	my $private_file = shift;
+	my $key_file = shift;
+
+	if ($self->bind_user eq "bind") {
+		system("chmod 640 " . $key_file);
+		system("chown root:bind " . $key_file);
+		system("chmod 640 " . $private_file);
+		system("chown root:bind " . $private_file);
+	} elsif ($self->bind_user eq "named") {
+		system("chmod 640 " . $key_file);
+		system("chown root:named " . $key_file);	
+		system("chmod 640 " . $private_file);
+		system("chown root:named " . $private_file);
+	} else {
+			die "Bind user doesn't exist";
+	}
+}
+
+sub get_current_active_key {
+	my $self = shift;
+
+	my $keyset = $self->soap->GetDNSSECKeys();
+	die("error fetching DNSSEC keyset, got no or bad result from soap-server") unless defined($keyset) &&
+		$keyset->result && ref($keyset->result) eq "ARRAY";
+	$keyset = $keyset->result;
+
+	my $activated_keys = [];
+	foreach my $key (@$keyset) {
+		if ($key->{"activated"} eq "1" && $key->{"keytype"} eq "KSK") {
+			push @$activated_keys, $key;
+		}
+	}
+
+	@$activated_keys = sort { $b->{"activated_at"} cmp $a->{"activated_at"}} @$activated_keys;
+
+	my $current_active_key = undef;
+
+    if (scalar(@$activated_keys) >= 1){
+		$current_active_key = @$activated_keys[0];
+	} 
+
+	return $current_active_key;
+}
+
 1;

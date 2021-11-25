@@ -31,6 +31,9 @@ chown -R bind:bind /etc/bind/zones
 mkdir -p /etc/bind/slave/zones
 chown -R bind:bind /etc/bind/slave
 
+mkdir -p /etc/bind/keys
+chown -R bind:bind /etc/bind/keys
+
 touch /etc/bind/slave/named-slavezones.conf.local
 chown bind:bind /etc/bind/slave/named-slavezones.conf.local
 
