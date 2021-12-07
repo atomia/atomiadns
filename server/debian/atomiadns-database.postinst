@@ -269,7 +269,7 @@ if [ $retval != 0 ]; then
 		echo "database zonedata already exist, but doesn't contain the atomiadns schema. You will have to make sure that the schema matches $basedir/schema manually"
 		exit 1
 	else
-		latest_version="92"
+		latest_version="93"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version, keeping the database as it is."
@@ -630,6 +630,10 @@ if [ $retval != 0 ]; then
 			fi
 
 			if [ "$schema_version" -lt 92 ]; then
+				recreate_procedure "unassigntsigkey"
+			fi
+
+			if [ "$schema_version" -lt 93 ]; then
 				recreate_procedure "unassigntsigkey"
 			fi
 
