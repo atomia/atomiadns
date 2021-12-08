@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.56) hardy; urgency=low
+
+  * Bump version to 1.1.56
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Wed, 8 Dec 2021 00:56:30 -0800
+
 atomiadns-dyndns (1.1.55) hardy; urgency=low
 
   * Bump version to 1.1.55
