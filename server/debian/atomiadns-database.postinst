@@ -75,6 +75,7 @@ createschema() {
 
 	psql_version=`$psql -qAt zonedata -c "show server_version_num" 2> /dev/null`
 
+	# create role
 	if $psql zonedata -t -c "SELECT * FROM pg_catalog.pg_user WHERE usename = '$db_username'" 2> /dev/null | grep "$db_username" > /dev/null; then
 		echo "The role with username $db_username already exists, ignoring."
 	else
@@ -92,30 +93,49 @@ createschema() {
 		fi
 	fi
 	
-	if [ $remote_db -eq 1 ]; then
-		existing_languages=`createlang -U $db_username -h $db_hostname -d zonedata -l 2>&1`
-		retval=$?
-	else
-		existing_languages=`$sudo createlang -d zonedata -l 2>&1`
-		retval=$?
-	fi
-
-	if [ $retval != 0 ]; then
-		echo "error finding existing languages in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
-		exit 1
-	elif echo "$existing_languages" | grep plpgsql > /dev/null; then
-		echo "language plpgsql already added by default when zonedata was created, skipping"
-	else
+	# create language (plpgsql)
+	if [[ $psql_version -lt 100000 ]]; then	
 		if [ $remote_db -eq 1 ]; then
-			createlang -U $db_username -h $db_hostname -d zonedata plpgsql > /dev/null 2>&1
-			temp=$?
+			existing_languages=`createlang -U $db_username -h $db_hostname -d zonedata -l 2>&1`
+			retval=$?
 		else
-			$sudo createlang -d zonedata plpgsql > /dev/null 2>&1
-			temp=$?
+			existing_languages=`$sudo createlang -d zonedata -l 2>&1`
+			retval=$?
 		fi
-		if [ $temp != 0 ]; then
-			echo "error adding plpgsql as language in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
+
+		if [ $retval != 0 ]; then
+			echo "Error finding existing languages in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
 			exit 1
+		elif echo "$existing_languages" | grep plpgsql > /dev/null; then
+			echo "Language plpgsql already added by default when zonedata was created, skipping"
+		else
+			if [ $remote_db -eq 1 ]; then
+				createlang -U $db_username -h $db_hostname -d zonedata plpgsql > /dev/null 2>&1
+				temp=$?
+			else
+				$sudo createlang -d zonedata plpgsql > /dev/null 2>&1
+				temp=$?
+			fi
+			if [ $temp != 0 ]; then
+				echo "Error adding plpgsql as language in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
+				exit 1
+			fi
+		fi
+	else
+		existing_languages=`$psql -qAt zonedata -c "SELECT lanname FROM pg_language" 2> /dev/null`
+		retval=$?
+
+		if [ $retval != 0 ]; then
+			echo "Error finding existing languages, you will have to make sure that the schema matches $basedir/schema manually"
+			exit 1
+		elif echo "$existing_languages" | grep plpgsql > /dev/null; then
+			echo "Language plpgsql already added by default when zonedata was created, skipping"
+		else
+			$psql -qAt zonedata -c "CREATE LANGUAGE plpgsql" 2> /dev/null
+			if [ $? != 0 ]; then
+				echo "Error adding plpgsql as language in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
+				exit 1
+			fi
 		fi
 	fi
 
