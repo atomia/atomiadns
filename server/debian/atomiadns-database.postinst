@@ -131,7 +131,7 @@ createschema() {
 		elif echo "$existing_languages" | grep plpgsql > /dev/null; then
 			echo "Language plpgsql already added by default when zonedata was created, skipping"
 		else
-			$psql -qAt zonedata -c "CREATE LANGUAGE plpgsql" 2> /dev/null
+			$psql -qAt zonedata -c "CREATE EXTENSION plpgsql" 2> /dev/null
 			if [ $? != 0 ]; then
 				echo "Error adding plpgsql as language in zonedata, you will have to make sure that the schema matches $basedir/schema manually"
 				exit 1
