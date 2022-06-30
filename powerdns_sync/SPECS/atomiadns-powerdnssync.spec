@@ -18,6 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires(pre): shadow-utils
 Requires: perl-Moose >= 2.0
+%{?el8:Requires: perl-Proc-Daemon perl-Config-General perl-SOAP-Lite perl-DBI perl-Net-DNS}
 
 BuildArch: noarch
 BuildRequires: perl
