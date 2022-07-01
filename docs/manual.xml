@@ -1728,6 +1728,11 @@ atomiadnssync OPTION
           </listitem>
           <listitem>
             <para>
+              <link linkend="usage-powerdns-installation-rhel">Installation on Red Hat Enterprise Linux</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
               <link linkend="usage-powerdns-installation-software">Software used by Atomia DNS PowerDNS Nameserver</link>
             </para>
           </listitem>
@@ -1896,6 +1901,75 @@ soap_password = somepass
                   <programlisting>
                   	/usr/local/etc/rc.d/pdns start
                  </programlisting>
+                </informalexample>
+              </listitem>
+            </orderedlist>
+        </section>
+        <section xml:id="usage-powerdns-installation-rhel">
+            <title>Installation on Red Hat Enterprise Linux</title>
+            <orderedlist>
+              <listitem>
+                <para>
+                  Install the latest Red Hat Enterprise Linux relase. The instructions where tested with Red Hat Enterprise Linux release 8.6 (Ootpa), 
+                  but should work on other versions as well.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Setup the needed Atomia repository which contains required rpms.
+                </para>
+              </listitem>
+              <listitem>
+                <para>
+                  Enable codeready builder for RHEL.
+                </para>
+                <informalexample>
+                  <programlisting>subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Install MySQL server</para>
+                <informalexample>
+                  <programlisting>yum install mysql-server</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Install PowerDNS and PowerDNS MySQL backend</para>
+                <informalexample>
+                  <programlisting>curl -O https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-15.el8.noarch.rpm
+yum localinstall epel-release-8-15.el8.noarch.rpm
+yum install pdns
+yum install pdns-backend-mysql</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Install AtomiaDNS PowerDNSSync and setup config</para>
+                <informalexample>
+                  <programlisting>yum install atomiadns-powerdnssync
+echo "servername = `hostname`" >> /etc/atomiadns.conf
+echo 'soap_uri=http://INSERT_IP_OF_API_SERVER/atomiadns' >> /etc/atomiadns.conf
+echo 'soap_username=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_USERNAME' >> /etc/atomiadns.conf
+echo 'soap_password=YOUR_OPTIONAL_BUT_OBVIOUSLY_HIGHLY_RECOMMENDED_API_SERVER_PASSWORD' >> /etc/atomiadns.conf</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Start the services</para>
+                <informalexample>
+                  <programlisting>service mysqld start
+service atomiadns-powerdnssync start</programlisting>
+                </informalexample>
+              </listitem>
+              <listitem>
+                <para>Initialize the database</para>
+                <informalexample>
+                  <programlisting>mysql -u root
+  create schema powerdns;
+  CREATE USER 'powerdns'@'localhost' IDENTIFIED BY 'atomiadns123';
+  GRANT ALL PRIVILEGES ON powerdns.* TO 'powerdns'@'localhost';
+  \q
+
+wget https://raw.githubusercontent.com/atomia/atomiadns/develop/powerdns_sync/schema/powerdns.sql
+mysql -u root powerdns &lt; powerdns.sql</programlisting>
                 </informalexample>
               </listitem>
             </orderedlist>
