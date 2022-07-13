@@ -81,7 +81,7 @@ createschema() {
 	else
 		echo "Autogenerating the $db_username role"
 
-		if [[ $psql_version -lt 100000 ]]; then
+		if [ $psql_version -lt 100000 ]; then
 			$psql zonedata -c "CREATE ROLE $db_username WITH LOGIN UNENCRYPTED PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
 		else
 			$psql zonedata -c "CREATE ROLE $db_username WITH LOGIN PASSWORD '$password' SUPERUSER" > /dev/null 2>&1
@@ -94,7 +94,7 @@ createschema() {
 	fi
 	
 	# create language (plpgsql)
-	if [[ $psql_version -lt 100000 ]]; then	
+	if [ $psql_version -lt 100000 ]; then	
 		if [ $remote_db -eq 1 ]; then
 			existing_languages=`createlang -U $db_username -h $db_hostname -d zonedata -l 2>&1`
 			retval=$?
