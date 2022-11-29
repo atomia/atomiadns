@@ -244,7 +244,7 @@ CREATE TABLE comments (
   type                  VARCHAR(10) NOT NULL,
   modified_at           INT NOT NULL,
   account               VARCHAR(40) NOT NULL,
-  comment               VARCHAR(64000) NOT NULL,
+  comment               VARCHAR(1024) NOT NULL,
   PRIMARY KEY(id)
 ) Engine=InnoDB;
 
