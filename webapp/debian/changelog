@@ -1,3 +1,9 @@
+atomiadns-webapp (1.1.57) hardy; urgency=low
+
+  * Bump version to 1.1.57
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 10 Oct 2022 09:57:13 +0000
+
 atomiadns-webapp (1.1.56) hardy; urgency=low
 
   * Bump version to 1.1.56
