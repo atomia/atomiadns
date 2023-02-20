@@ -9,7 +9,7 @@ if [ -z "$distributor" ]; then
 elif [ x"$distributor" = x"Ubuntu" -o x"$distributor" = x"Debian" ]; then
         ./build-apt.sh
 	exit $?
-elif [ x"$distributor" = x"RedHatEnterpriseServer" -o x"$distributor" = x"CentOS" ]; then
+elif [ x"$distributor" = x"RedHatEnterpriseServer" -o x"$distributor" = x"CentOS" -o x"$distributor" = x"AlmaLinux" ]; then
         ./build-rpm.sh
 	exit $?
 fi
