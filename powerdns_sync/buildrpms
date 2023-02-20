@@ -18,7 +18,7 @@ cd ..
 tar cfpz /usr/src/redhat/SOURCES/atomiadns-powerdns_sync.tar.gz --exclude "*/.svn" powerdns_sync
 
 cd /usr/src/redhat/SPECS
-rpmbuild --sign -ba atomiadns-powerdnssync.spec
+rpmbuild -ba atomiadns-powerdnssync.spec
 ret=$?
 
 cd "$startdir"

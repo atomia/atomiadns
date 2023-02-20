@@ -18,25 +18,25 @@ cd ..
 tar cfpz /usr/src/redhat/SOURCES/atomiadns-server.tar.gz --exclude "*/confluence_documentation" --exclude "*/.svn" server
 
 cd /usr/src/redhat/SPECS
-rpmbuild --sign -ba atomiadns-api.spec
+rpmbuild -ba atomiadns-api.spec
 ret=$?
 if [ $ret != 0 ]; then
 	exit $ret
 fi
 
-rpmbuild --sign -ba atomiadns-client.spec
+rpmbuild -ba atomiadns-client.spec
 ret=$?
 if [ $ret != 0 ]; then
 	exit $ret
 fi
 
-rpmbuild --sign -bb atomiadns-database.spec
+rpmbuild -bb atomiadns-database.spec
 ret=$?
 if [ $ret != 0 ]; then
 	exit $ret
 fi
 
-rpmbuild --sign -bb atomiadns-masterserver.spec
+rpmbuild -bb atomiadns-masterserver.spec
 ret=$?
 if [ $ret != 0 ]; then
 	exit $ret

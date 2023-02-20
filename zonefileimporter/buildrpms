@@ -18,7 +18,7 @@ cd ..
 tar cfpz /usr/src/redhat/SOURCES/atomiadns-zoneimport.tar.gz --exclude "*/.svn" zonefileimporter
 
 cd /usr/src/redhat/SPECS
-rpmbuild --sign -bb atomiadns-zoneimport.spec
+rpmbuild -bb atomiadns-zoneimport.spec
 ret=$?
 
 cd "$startdir"
