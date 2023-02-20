@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 
 if [ `dirname "$0"` != "." ]; then
 	echo "you have run this script from the dir it is placed in"
