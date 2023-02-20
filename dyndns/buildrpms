@@ -19,7 +19,8 @@ cd ..
 tar cfpz /usr/src/redhat/SOURCES/atomiadns-dyndns.tar.gz --exclude "*/.svn" dyndns
 
 cd /usr/src/redhat/SPECS
-rpmbuild --sign -ba atomiadns-dyndns.spec
+#rpmbuild --sign -ba atomiadns-dyndns.spec
+rpmbuild -ba atomiadns-dyndns.spec
 ret=$?
 
 cd "$startdir"
