@@ -2,7 +2,8 @@
 
 rm -f *.deb *.rpm
 
-distributor=`lsb_release -i | awk '{ print $NF }'`
+distributor=`awk -F= '$1=="NAME" { print $2 ;}' /etc/os-release | tr -d '"'`
+
 if [ -z "$distributor" ]; then
         echo "lsb_release -i failed to give distro identifier"
         exit 1
