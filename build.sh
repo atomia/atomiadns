@@ -3,7 +3,7 @@
 rm -f *.deb *.rpm
 
 # Fix for OS that does not have lsb_release
-which lsb_release  2>&1 /dev/null
+which lsb_release
 if [ $? -ne 0 ]; then
         distributor=`awk -F= '$1=="NAME" { print $2 ;}' /etc/os-release | tr -d '"'`
 else
