@@ -20,6 +20,9 @@ tar cfpz /usr/src/redhat/SOURCES/atomiadns-zoneimport.tar.gz --exclude "*/.svn" 
 cd /usr/src/redhat/SPECS
 
 # New way to build packages that supports RHEL6-9
+OS="$1"
+OS_VERSION=`echo "$OS" | awk '{print tolower($0)}' | awk -Frhel '{ print $2 }'`
+echo "INFO: OS is $OS"
 PACKAGES="atomiadns-zoneimport.spec"
 for PACKAGE_SPEC in $PACKAGES; do
 	PACKAGE_NAME=`echo $PACKAGE_SPEC | awk -F. '{ print $1 }'`

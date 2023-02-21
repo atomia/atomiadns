@@ -8,9 +8,6 @@ elif [ -z "$1" ]; then
 	exit 1
 fi
 
-OS="$1"
-OS_VERSION=`echo "$OS" | awk '{print tolower($0)}' | awk -Frhel '{ print $2 }'`
-echo "INFO: OS ar $OS"
 rm -f /usr/src/redhat/SOURCES/atomiadns-*
 rm -f /usr/src/redhat/SPECS/atomiadns-*
 cp SPECS/*.spec /usr/src/redhat/SPECS
@@ -23,6 +20,9 @@ tar cfpz /usr/src/redhat/SOURCES/atomiadns-server.tar.gz --exclude "*/confluence
 cd /usr/src/redhat/SPECS
 
 # New way to build packages that supports RHEL6-9
+OS="$1"
+OS_VERSION=`echo "$OS" | awk '{print tolower($0)}' | awk -Frhel '{ print $2 }'`
+echo "INFO: OS is $OS"
 PACKAGES="atomiadns-api.spec atomiadns-api.spec atomiadns-client.spec atomiadns-database.spec atomiadns-masterserver.spec"
 for PACKAGE_SPEC in $PACKAGES; do
 	PACKAGE_NAME=`echo $PACKAGE_SPEC | awk -F. '{ print $1 }'`
