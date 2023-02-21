@@ -4,7 +4,7 @@ if [ `dirname "$0"` != "." ]; then
 	echo "you have run this script from the dir it is placed in"
 	exit 1
 elif [ -z "$1" ]; then
-	echo "usage: $0 rhel4|rhel5"
+	echo "usage: $0 rhel6|rhel7|rhel8|rhel9"
 	exit 1
 fi
 
@@ -18,11 +18,37 @@ cd ..
 tar cfpz /usr/src/redhat/SOURCES/atomiadns-syncer.tar.gz --exclude "*/.svn" bind_sync
 
 cd /usr/src/redhat/SPECS
-rpmbuild -ba atomiadns-bindsync.spec
-ret=$?
+
+# New way to build packages that supports RHEL6-9
+PACKAGES="atomiadns-bindsync.spec"
+for PACKAGE_SPEC in $PACKAGES; do
+	PACKAGE_NAME=`echo $PACKAGE_SPEC | awk -F. '{ print $1 }'`
+	echo "INFO: Running rpmbuild for $PACKAGE_NAME"
+	if [ "$OS_VERSION" -lt 8 ]; then
+		# Build and sign pacakages in older RHEL versions
+		rpmbuild --sign -ba "$PACKAGE_SPEC"
+		if [ $? -ne 0 ]; then
+			echo "ERROR: Could not run rpmbuild!"
+			exit $ret
+		fi
+	else
+		# Build packages
+		rpmbuild --sign -ba "$PACKAGE_SPEC"
+		if [ $? -ne 0 ]; then
+			echo "ERROR: Could not run rpmbuild!"
+			exit $ret
+		fi
+		# Sign built package
+		echo "INFO: Signing package"
+		rpm --addsign /usr/src/redhat/RPMS/*/"$PACKAGE_NAME"*.rpm
+		if [ $? -ne 0 ]; then
+			echo "ERROR: Could not sign package!"
+			exit $ret
+		fi
+	fi
+done
 
 cd "$startdir"
 cp /usr/src/redhat/RPMS/*/atomiadns-* ..
 cp /usr/src/redhat/SRPMS/atomiadns-* ..
 rm -f ../*-debuginfo-*
-exit $ret
