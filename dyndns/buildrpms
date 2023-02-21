@@ -37,7 +37,7 @@ for PACKAGE_SPEC in $PACKAGES; do
 		fi
 	else
 		# Build packages
-		rpmbuild --sign -ba "$PACKAGE_SPEC"
+		rpmbuild -ba "$PACKAGE_SPEC"
 		if [ $? -ne 0 ]; then
 			echo "ERROR: Could not run rpmbuild!"
 			exit $ret
