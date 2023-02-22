@@ -8,7 +8,6 @@ elif [ -z "$1" ]; then
 	exit 1
 fi
 
-# Include the helpers
 source ../build-helpers.sh
 
 rm -f /usr/src/redhat/SOURCES/atomiadns-*
@@ -22,7 +21,6 @@ tar cfpz /usr/src/redhat/SOURCES/atomiadns-syncer.tar.gz --exclude "*/.svn" sync
 
 cd /usr/src/redhat/SPECS
 
-# New way to build packages that supports RHEL6-9
 PACKAGES="atomiadns-nameserver.spec"
 build_rpm_helper "$1" "$PACKAGES"
 ret=$?
