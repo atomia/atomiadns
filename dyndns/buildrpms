@@ -9,6 +9,9 @@ elif [ -z "$1" ]; then
 	exit 1
 fi
 
+# Include the helpers
+source ../build-helpers.sh
+
 rm -f /usr/src/redhat/SOURCES/atomiadns-*
 rm -f /usr/src/redhat/SPECS/atomiadns-*
 cp SPECS/*.spec /usr/src/redhat/SPECS
@@ -21,36 +24,12 @@ tar cfpz /usr/src/redhat/SOURCES/atomiadns-dyndns.tar.gz --exclude "*/.svn" dynd
 cd /usr/src/redhat/SPECS
 
 # New way to build packages that supports RHEL6-9
-OS="$1"
-OS_VERSION=`echo "$OS" | awk '{print tolower($0)}' | awk -Frhel '{ print $2 }'`
-echo "INFO: OS is $OS"
 PACKAGES="atomiadns-dyndns.spec"
-for PACKAGE_SPEC in $PACKAGES; do
-	PACKAGE_NAME=`echo $PACKAGE_SPEC | awk -F. '{ print $1 }'`
-	echo "INFO: Running rpmbuild for $PACKAGE_NAME"
-	if [ "$OS_VERSION" -lt 8 ]; then
-		# Build and sign pacakages in older RHEL versions
-		rpmbuild --sign -ba "$PACKAGE_SPEC"
-		if [ $? -ne 0 ]; then
-			echo "ERROR: Could not run rpmbuild!"
-			exit $ret
-		fi
-	else
-		# Build packages
-		rpmbuild -ba "$PACKAGE_SPEC"
-		if [ $? -ne 0 ]; then
-			echo "ERROR: Could not run rpmbuild!"
-			exit $ret
-		fi
-		# Sign built package
-		echo "INFO: Signing package"
-		rpm --addsign /usr/src/redhat/RPMS/*/"$PACKAGE_NAME"*.rpm
-		if [ $? -ne 0 ]; then
-			echo "ERROR: Could not sign package!"
-			exit $ret
-		fi
-	fi
-done
+build_rpm_helper "$1" "$PACKAGES"
+ret=$?
+if [ $ret -ne 0 ]; then
+	exit $ret
+fi
 
 cd "$startdir"
 cp /usr/src/redhat/RPMS/*/atomiadns-* ..
