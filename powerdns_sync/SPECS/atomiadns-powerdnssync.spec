@@ -17,7 +17,7 @@ Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires(pre): shadow-utils
-Requires: perl-Moose >= 2.0
+Requires: perl-Moose >= 2.0 perl-DBI
 
 BuildArch: noarch
 BuildRequires: perl
