@@ -126,7 +126,7 @@ if [ $showdb_ret = 0 ] && [ -n "$db_exists" ]; then
 			exit 1
 		fi
 	else
-		latest_version="16"
+		latest_version="17"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -456,6 +456,21 @@ ALTER VIEW powerdns.cryptokeys AS
 					PRIMARY KEY (id)
 					) Engine=InnoDB CHARACTER SET 'latin1';"
 				execute_query "CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);"
+			fi
+			if [ "$schema_version" -lt 17 ]; then
+				execute_query "ALTER VIEW powerdns.cryptokeys AS
+					SELECT
+						c.id AS id,
+						d.id AS domain_id,
+						c.flags AS flags,
+						c.active AS active,
+						1 AS published,
+						c.content AS content
+					FROM (
+						powerdns.domains d
+						JOIN powerdns.global_cryptokeys c
+					)
+					WHERE d.type IN ('NATIVE', 'MASTER');"
 			fi
 
 			set_schema_version "$latest_version"
