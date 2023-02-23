@@ -7,19 +7,19 @@ rm -f *rpm
 rm -f /usr/src/redhat/RPMS/*/atomiadns-*
 rm -f /usr/src/redhat/SRPMS/atomiadns-*
 
-cd dyndns
-./buildrpms rhel"$version"
-ret=$?
-if [ $ret != 0 ]; then
-	exit $ret
-fi
+#cd dyndns
+#./buildrpms rhel"$version"
+#ret=$?
+#if [ $ret != 0 ]; then
+#	exit $ret
+#fi
 
-cd ../syncer
-./buildrpms rhel"$version"
-ret=$?
-if [ $ret != 0 ]; then
-	exit $ret
-fi
+#cd ../syncer
+#./buildrpms rhel"$version"
+#ret=$?
+#if [ $ret != 0 ]; then
+#	exit $ret
+#fi
 
 cd ../server
 ./buildrpms rhel"$version"
