@@ -23,7 +23,6 @@ RUN_DEPENDS	+=	p5-SOAP-Lite>=0.710.08:${PORTSDIR}/net/p5-SOAP-Lite
 RUN_DEPENDS	+=	p5-Moose>=0.94:${PORTSDIR}/devel/p5-Moose
 RUN_DEPENDS	+=	p5-Net-DNS-ZoneFile-Fast>=0:${PORTSDIR}/dns/p5-Net-DNS-ZoneFile-Fast
 RUN_DEPENDS	+=	p5-Net-DNS>=0:${PORTSDIR}/dns/p5-Net-DNS
-RUN_DEPENDS	+=	p5-MIME-Base32>=0:${PORTSDIR}/converters/p5-MIME-Base32
 RUN_DEPENDS	+=	p5-DBD-mysql>=0:${PORTSDIR}/databases/p5-DBD-mysql
 
 USE_RC_SUBR	+=	atomiapowerdnssync
