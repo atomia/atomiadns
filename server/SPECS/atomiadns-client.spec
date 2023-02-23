@@ -21,7 +21,6 @@ BuildRequires: perl
 BuildRequires: perl(ExtUtils::MakeMaker)
 
 Requires: perl-libwww-perl
-%{?el8:Requires: perl-Authen-PAM perl-Net-DNS perl-DBD-Pg}
 
 %description
 The Atomia DNS API command line client is used for connecting to the Atomia DNS SOAP server
