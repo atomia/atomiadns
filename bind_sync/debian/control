@@ -9,4 +9,4 @@ Standards-Version: 3.6.1
 Package: atomiadns-bindsync
 Architecture: all
 Depends: perl-modules, perl-base, libconfig-general-perl, libsoap-lite-perl, libmoose-perl
-Description: Atomia DNS Sync application
+Description: Atomia DNS Bindsync application

@@ -4,21 +4,21 @@
 
 =head1 NAME
 
-atomiadnssync - An application for synchronizing a local BDB database with the master zone database using SOAP.
+atomiabindsync - An application for synchronizing a local BDB database with the master zone database using SOAP.
 
 =head1 SYNOPSIS
 
 =over 8
 
-=item atomiadnssync full_reload_offline SERIAL DESTINATION
+=item atomiabindsync full_reload_offline SERIAL DESTINATION
 
-=item atomiadnssync OPTION
+=item atomiabindsync OPTION
 
 =back
 
 =head1 DESCRIPTION
 
-atomiadnssync is an application for synchronizing a local BDB database with the
+atomiabindsync is an application for synchronizing a local BDB database with the
 master zone database using SOAP.
 
 It contains options for both doing a full reload of all zones in the master
@@ -139,27 +139,27 @@ Specifies the directory where zone files for the slave zones are stored.
 To do a full reload to a new folder without missing any updates (assuming the
 default bdb_environment_path), do:
 
-1. atomiadnssync disable_updates
+1. atomiabindsync disable_updates
 
 2. Verify manually that no pending changes exist.
 
 3. Write down the output (unix timestamp) of `date +%s`
 
-4. Run `atomiadnssync full_reload_offline the_timestamp /var/lib/bind/atomiadns_bdb_new
+4. Run `atomiabindsync full_reload_offline the_timestamp /var/lib/bind/atomiadns_bdb_new
 
 5. rm -rf /var/lib/bind/atomiadns_bdb_old ; mv /var/lib/bind/atomiadns_bdb /var/lib/bind/atomiadns_bdb_old ; mv /var/lib/bind/atomiadns_bdb_new /var/lib/bind/atomiadns_bdb
 
 6. rndc reload
 
-7. atomiadnssync enable_updates
+7. atomiabindsync enable_updates
 
 Or to accomplish the same thing using the online reload feature (much better and the preferred way):
 
-atomiadnssync full_reload_online
+atomiabindsync full_reload_online
 
 To add the server as a subscriber:
 
-atomiadnssync add_server somegroup
+atomiabindsync add_server somegroup
 
 =head1 AUTHOR
 
@@ -269,7 +269,7 @@ SWITCH: {
 			};
 
 			if ($@) {
-				print "caught exception in atomiadnssync updated: $@\n";
+				print "caught exception in atomiabindsync updated: $@\n";
 				sleep 5;
 			} else {
 				# Updates disabled, exit.
@@ -293,7 +293,7 @@ SWITCH: {
 			};
 
 			if ($@) {
-				print "caught exception in atomiadnssync eventchain: $@\n";
+				print "caught exception in atomiabindsync eventchain: $@\n";
 				sleep 5;
 			} else {
 				# Updates disabled, exit.

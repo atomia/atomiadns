@@ -3,7 +3,7 @@
 
 %define sourcedir bind_sync
 
-Summary: Atomia DNS Sync application
+Summary: Atomia DNS Bindsync application
 Name: atomiadns-bindsync
 Version: 1.1.57
 Release: 1%{?dist}
@@ -24,7 +24,7 @@ BuildRequires: perl
 BuildRequires: perl(ExtUtils::MakeMaker)
 
 %description
-Atomia DNS Sync application.
+Atomia DNS Bindsync application.
 
 %prep
 %setup -n %{sourcedir}
@@ -41,7 +41,7 @@ Atomia DNS Sync application.
 %{__mkdir} -p %{buildroot}/etc/systemd/system
 %{__cp} debian/atomiadns-bindsync.service %{buildroot}/etc/systemd/system/atomiadns-bindsync.service
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
-%{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
+%{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__mkdir} -p %{buildroot}/var/named/slaves/zones
 %{__mkdir} -p %{buildroot}/var/named/atomiadns_bdb
@@ -54,11 +54,11 @@ Atomia DNS Sync application.
 
 %files
 %defattr(-,root,root,-)
-/usr/bin/atomiadnssync
-/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
+/usr/bin/atomiabindsync
+/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 /etc/systemd/system/atomiadns-bindsync.service
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
-%doc %{_mandir}/man1/atomiadnssync.1.gz
+%doc %{_mandir}/man1/atomiabindsync.1.gz
 %attr(0640 root named) /var/named/atomiadns.named.conf
 %attr(0770 root named) %dir /var/named/slaves/zones
 %attr(0770 root named) %dir /var/named/atomiadns_bdb
@@ -79,14 +79,14 @@ fi
 exit 0
 
 %post
-/usr/bin/systemctl enable atomiadns-atomiadnssync
+/usr/bin/systemctl enable atomiadns-bindsync
 
 if [ -f /etc/atomiadns.conf ]; then
 	if [ -z "$(grep "^slavezones_config" /etc/atomiadns.conf)" ]; then
-		cat /usr/share/atomia/conf/atomiadns.conf.atomiadnssync >> /etc/atomiadns.conf
+		cat /usr/share/atomia/conf/atomiadns.conf.atomiabindsync >> /etc/atomiadns.conf
 	fi
 else
-	cp /usr/share/atomia/conf/atomiadns.conf.atomiadnssync /etc/atomiadns.conf
+	cp /usr/share/atomia/conf/atomiadns.conf.atomiabindsync /etc/atomiadns.conf
 fi
 
 if [ -f /etc/named.conf ] && [ -z "$(grep atomiadns.named.conf /etc/named.conf)" ]; then
@@ -94,7 +94,7 @@ if [ -f /etc/named.conf ] && [ -z "$(grep atomiadns.named.conf /etc/named.conf)"
 fi
 
 if [ "$1" -gt 1 ]; then
-	/usr/bin/systemctl restart atomiadns-atomiadnssync
+	/usr/bin/systemctl restart atomiadns-bindsync
 fi
 
 chgrp named /var/run/named
@@ -104,8 +104,8 @@ exit 0
 
 %preun
 if [ "$1" = 0 ]; then
-	/usr/bin/systemctl stop atomiadns-atomiadnssync
-	/usr/bin/systemctl disable atomiadns-atomiadnssync
+	/usr/bin/systemctl stop atomiadns-bindysync
+	/usr/bin/systemctl disable atomiadns-bindsync
 fi
 exit 0
 
