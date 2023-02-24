@@ -100,10 +100,12 @@ fi
 chgrp named /var/run/named
 chmod g+w /var/run/named
 
-/usr/sbin/rndc-confgen -a
-chown root:named /etc/rndc.key
-chmod 640 /etc/rndc.key
-service named restart
+if [ ! -f "/etc/rndc.key" ]; then
+	/usr/sbin/rndc-confgen -a
+	chown root:named /etc/rndc.key
+	chmod 640 /etc/rndc.key
+	service named restart
+fi
 
 exit 0
 
