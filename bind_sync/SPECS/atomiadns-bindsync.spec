@@ -17,7 +17,7 @@ Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires(pre): shadow-utils
-Requires: perl-Moose >= 2.0 perl-Config-General perl-SOAP-Lite
+Requires: perl-Moose >= 2.0 perl-Config-General perl-SOAP-Lite bind
 
 BuildArch: noarch
 BuildRequires: perl
@@ -99,6 +99,11 @@ fi
 
 chgrp named /var/run/named
 chmod g+w /var/run/named
+
+/usr/sbin/rndc-confgen -a
+chown root:named /etc/rndc.key
+chmod 640 /etc/rndc.key
+service named restart
 
 exit 0
 

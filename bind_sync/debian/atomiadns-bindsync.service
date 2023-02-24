@@ -3,7 +3,6 @@ Description=AtomiaDns Bindsync service
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/atomiadns.conf
 ExecStart=/usr/bin/atomiabindsync updated 2>&1 | logger -t atomiabindsync
 
 [Install]
