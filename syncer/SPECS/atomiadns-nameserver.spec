@@ -5,7 +5,7 @@
 
 Summary: Atomia DNS Sync application
 Name: atomiadns-nameserver
-Version: 1.1.57
+Version: 1.1.58
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -108,6 +108,8 @@ fi
 exit 0
 
 %changelog
+* Wed Mar 01 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
+- Bump version to 1.1.58
 * Mon Oct 10 2022 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.57-1
 - Bump version to 1.1.57
 * Wed Dec 08 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.56-1
