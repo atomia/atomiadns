@@ -1,3 +1,9 @@
+atomiadns-bindsync (1.1.58) hardy; urgency=low
+
+  * Bump version to 1.1.58
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Wed, 1 Mar 2023 04:41:37 -0500
+
 atomiadns-bindsync (1.1.57) hardy; urgency=low
 
   * Bump version to 1.1.57
