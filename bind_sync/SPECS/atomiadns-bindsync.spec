@@ -44,7 +44,7 @@ Atomia DNS Bindsync application.
 %{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__mkdir} -p %{buildroot}/var/named
-%{__cp} conf/atomiadns.named.conf %{buildroot}/var/named
+%{__cp} conf/atomiadns.named.conf %{buildroot}/usr/share/atomia/conf/
 
 %clean
 %{__rm} -rf %{buildroot}
@@ -56,7 +56,7 @@ Atomia DNS Bindsync application.
 /etc/systemd/system/atomiadns-bindsync.service
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
 %doc %{_mandir}/man1/atomiabindsync.1.gz
-%attr(0640 root named) %config /var/named/atomiadns.named.conf
+%attr(0640 root named) /usr/share/atomia/conf/atomiadns.named.conf
 
 %pre
 getent group named > /dev/null || /usr/sbin/groupadd -g 25 -f -r named >/dev/null 2>&1
@@ -111,6 +111,8 @@ chown root:named /var/named/tsig_keys.conf
 touch /var/named/slaves/named-slavezones.conf.local
 chmod 660 /var/named/slaves/named-slavezones.conf.local
 chown root:named /var/named/slaves/named-slavezones.conf.local
+
+cp -fp /usr/share/atomia/conf/atomiadns.named.conf /var/named/atomiadns.named.conf
 
 exit 0
 
