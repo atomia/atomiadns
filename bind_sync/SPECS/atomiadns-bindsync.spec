@@ -43,11 +43,7 @@ Atomia DNS Bindsync application.
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
-%{__mkdir} -p %{buildroot}/var/named/slaves/zones
-%{__mkdir} -p %{buildroot}/var/named/atomiadns_bdb
 %{__cp} conf/atomiadns.named.conf %{buildroot}/var/named
-%{__cp} conf/empty %{buildroot}/var/named/slaves/named-slavezones.conf.local
-%{__cp} conf/empty %{buildroot}/var/named/tsig_keys.conf
 
 %clean
 %{__rm} -rf %{buildroot}
@@ -60,10 +56,6 @@ Atomia DNS Bindsync application.
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
 %doc %{_mandir}/man1/atomiabindsync.1.gz
 %attr(0640 root named) /var/named/atomiadns.named.conf
-%attr(0770 root named) %dir /var/named/slaves/zones
-%attr(0770 root named) %dir /var/named/atomiadns_bdb
-%attr(0660 root named) /var/named/slaves/named-slavezones.conf.local
-%attr(0660 root named) /var/named/tsig_keys.conf
 
 %pre
 getent group named > /dev/null || /usr/sbin/groupadd -g 25 -f -r named >/dev/null 2>&1
@@ -89,8 +81,8 @@ else
 	cp /usr/share/atomia/conf/atomiadns.conf.atomiabindsync /etc/atomiadns.conf
 fi
 
-if [ -f /etc/named.conf ] && [ -z "$(grep atomiadns.named.conf /etc/named.conf)" ]; then
-	echo 'include "atomiadns.named.conf";' >> /etc/named.conf
+if [ -f /etc/named.conf ] && [ -z "$(grep 'atomiadns.named.conf' /etc/named.conf)" ]; then
+	echo 'include "/var/named/atomiadns.named.conf";' >> /etc/named.conf
 fi
 
 if [ "$1" -gt 1 ]; then
@@ -107,11 +99,23 @@ if [ ! -f "/etc/rndc.key" ]; then
 	service named restart
 fi
 
+mkdir -p /var/named/slaves/zones
+chmod 770 /var/named/slaves/zones
+chown root:named /var/named/slaves/zones
+
+touch /var/named/tsig_keys.conf
+chmod 660 /var/named/tsig_keys.conf
+chown root:named /var/named/tsig_keys.conf
+
+touch /var/named/slaves/named-slavezones.conf.local
+chmod 660 /var/named/slaves/named-slavezones.conf.local
+chown root:named /var/named/slaves/named-slavezones.conf.local
+
 exit 0
 
 %preun
 if [ "$1" = 0 ]; then
-	/usr/bin/systemctl stop atomiadns-bindysync
+	/usr/bin/systemctl stop atomiadns-bindsync
 	/usr/bin/systemctl disable atomiadns-bindsync
 fi
 exit 0
