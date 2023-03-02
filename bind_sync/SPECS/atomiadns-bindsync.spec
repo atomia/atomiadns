@@ -43,6 +43,7 @@ Atomia DNS Bindsync application.
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
 %{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
+%{__mkdir} -p %{buildroot}/var/named
 %{__cp} conf/atomiadns.named.conf %{buildroot}/var/named
 
 %clean
