@@ -56,7 +56,7 @@ Atomia DNS Bindsync application.
 /etc/systemd/system/atomiadns-bindsync.service
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
 %doc %{_mandir}/man1/atomiabindsync.1.gz
-%attr(0640 root named) /var/named/atomiadns.named.conf
+%attr(0640 root named) %config /var/named/atomiadns.named.conf
 
 %pre
 getent group named > /dev/null || /usr/sbin/groupadd -g 25 -f -r named >/dev/null 2>&1
