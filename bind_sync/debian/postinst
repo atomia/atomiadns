@@ -21,11 +21,11 @@ if [ -z "$(grep '/etc/bind/atomiadns.named.conf' /etc/bind/named.conf.local)" ];
 	echo 'include "/etc/bind/atomiadns.named.conf";' >> /etc/bind/named.conf.local
 fi
 
-mkdir -p /etc/bind/slave/zones
-chown -R bind:bind /etc/bind/slave
+mkdir -p /etc/bind/slaves/zones
+chown -R bind:bind /etc/bind/slaves
 
-touch /etc/bind/slave/named-slavezones.conf.local
-chown bind:bind /etc/bind/slave/named-slavezones.conf.local
+touch /etc/bind/slaves/named-slavezones.conf.local
+chown bind:bind /etc/bind/slaves/named-slavezones.conf.local
 
 touch /etc/bind/tsig_keys.conf
 chown bind:bind /etc/bind/tsig_keys.conf

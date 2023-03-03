@@ -1,6 +1,6 @@
 
-slavezones_config = /etc/bind/slave/named-slavezones.conf.local
-slavezones_dir = /etc/bind/slave/zones
+slavezones_config = /etc/bind/slaves/named-slavezones.conf.local
+slavezones_dir = /etc/bind/slaves/zones
 rndc_path = /usr/sbin/rndc
 bind_user = bind
 tsig_config = /etc/bind/tsig_keys.conf

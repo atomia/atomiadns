@@ -15,13 +15,13 @@ BIND server has to be installed on Ubuntu 16/18 or CentOS/Redhat 7.
 4. Set manually:
 	1. In *named.conf.local*:
 		``` 
-		include "/etc/bind/slave/named-slavezones.conf.local";
+		include "/etc/bind/slaves/named-slavezones.conf.local";
 		include "/etc/bind/tsig_keys.conf";
 		```
 	2. In *atomiadns.conf*:
 		```
-		slavezones_dir = /etc/bind/slave/zones
-		slavezones_config = /etc/bind/slave/named-slavezones.conf.local
+		slavezones_dir = /etc/bind/slaves/zones
+		slavezones_config = /etc/bind/slaves/named-slavezones.conf.local
 		rndc_path = /usr/sbin/rndc
 		#ubuntu
 		bind_user = bind
