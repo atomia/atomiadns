@@ -54,7 +54,6 @@ install-stamp:
 
 	mkdir -p $(TMP)/usr/share/atomiadns
 	cp conf/atomiadns.conf $(TMP)/usr/share/atomiadns/atomiadns-bind-dlz-agent.conf
-	cp -a eventlibrary $(TMP)/usr/share/atomiadns
 	find $(TMP)/usr/share/atomiadns -type d -name .svn -exec rm -rf "{}" "+" 
 
 	# Add commands to install the package into debian/$PACKAGE_NAME here
