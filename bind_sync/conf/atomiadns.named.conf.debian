@@ -5,5 +5,5 @@
 // next upgrade of the package!
 //
 
-include "/etc/bind/slaves/named-slavezones.conf.local";
+include "/etc/bind/slave/named-slavezones.conf.local";
 include "/etc/bind/tsig_keys.conf";
