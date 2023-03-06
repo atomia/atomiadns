@@ -12,7 +12,7 @@ Group: System Environment/Daemons
 URL: http://www.atomia.com/atomiadns/
 Source: atomiadns-server.tar.gz
 
-Packager: Jimmy Bergman <jimmy@atomia.com>
+Packager: Atomia AB <info@atomia.com>
 Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -37,7 +37,10 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
-* Wed Mar 01 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
+* Mon Mar 06 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
+- Add support for RHEL8
+- Fix missing dependencies
+- Add support for PostgreSQL 10.x
 - Bump version to 1.1.58
 * Mon Oct 10 2022 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.57-1
 - Bump version to 1.1.57

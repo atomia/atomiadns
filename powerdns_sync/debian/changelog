@@ -1,8 +1,13 @@
-atomiadns-powerdnssync (1.1.58) hardy; urgency=low
+atomiadns-powerdnssync (1.1.58) focal; urgency=low
 
+  * Add support for RHEL8
+  * Fix obsolete dependencies and add missing ones
+  * Add published column in PowerDNS cryptokeys table to support new PowerDNS schema
+  * Changed app name in log files to atomiapowerdnssync
+  * Bump atomia powerdns DB schema to v17
   * Bump version to 1.1.58
 
- -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Wed, 1 Mar 2023 04:41:37 -0500
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 6 Mar 2023 12:00:00 +0000
 
 atomiadns-powerdnssync (1.1.57) hardy; urgency=low
 
