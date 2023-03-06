@@ -1,3 +1,17 @@
+atomiadns-bindsync (1.1.58) focal; urgency=low
+
+  * Add support for RHEL8
+  * Change binary to atomiabindsync
+  * Service name changed to atomiadns-bindsync
+  * Fix path consistency between RHEL and Ubuntu for bind slave zones
+  * Autogenerate rndc.key on package install if the key doesn't already exist
+  * Fix conflicting config files between atomiadns-bindsync and bind nameserver
+  * Fix missing dependencies
+  * Changed app name in log files to atomiabindsync
+  * Bump version to 1.1.58
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 6 Mar 2023 12:00:00 +0000
+
 atomiadns-bindsync (1.1.57) hardy; urgency=low
 
   * Bump version to 1.1.57

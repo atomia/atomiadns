@@ -3,28 +3,28 @@
 
 %define sourcedir bind_sync
 
-Summary: Atomia DNS Sync application
+Summary: Atomia DNS Bindsync application
 Name: atomiadns-bindsync
-Version: 1.1.57
+Version: 1.1.58
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
 URL: http://www.atomia.com/atomiadns/
 Source: atomiadns-syncer.tar.gz
 
-Packager: Jimmy Bergman <jimmy@atomia.com>
+Packager: Atomia AB <info@atomia.com>
 Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires(pre): shadow-utils
-Requires: perl-Moose >= 2.0
+Requires: perl-Moose >= 2.0 perl-Config-General perl-SOAP-Lite bind
 
 BuildArch: noarch
 BuildRequires: perl
 BuildRequires: perl(ExtUtils::MakeMaker)
 
 %description
-Atomia DNS Sync application.
+Atomia DNS Bindsync application.
 
 %prep
 %setup -n %{sourcedir}
@@ -41,29 +41,22 @@ Atomia DNS Sync application.
 %{__mkdir} -p %{buildroot}/etc/systemd/system
 %{__cp} debian/atomiadns-bindsync.service %{buildroot}/etc/systemd/system/atomiadns-bindsync.service
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
-%{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
+%{__cp} conf/atomiadns.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 %{__mkdir} -p %{buildroot}/usr/share/atomia/conf
-%{__mkdir} -p %{buildroot}/var/named/slaves/zones
-%{__mkdir} -p %{buildroot}/var/named/atomiadns_bdb
-%{__cp} conf/atomiadns.named.conf %{buildroot}/var/named
-%{__cp} conf/empty %{buildroot}/var/named/slaves/named-slavezones.conf.local
-%{__cp} conf/empty %{buildroot}/var/named/tsig_keys.conf
+%{__mkdir} -p %{buildroot}/var/named
+%{__cp} conf/atomiadns.named.conf.rhel %{buildroot}/usr/share/atomia/conf/atomiadns.named.conf
 
 %clean
 %{__rm} -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-/usr/bin/atomiadnssync
-/usr/share/atomia/conf/atomiadns.conf.atomiadnssync
+/usr/bin/atomiabindsync
+/usr/share/atomia/conf/atomiadns.conf.atomiabindsync
 /etc/systemd/system/atomiadns-bindsync.service
 %{perl_vendorlib}/Atomia/DNS/Syncer.pm
-%doc %{_mandir}/man1/atomiadnssync.1.gz
-%attr(0640 root named) /var/named/atomiadns.named.conf
-%attr(0770 root named) %dir /var/named/slaves/zones
-%attr(0770 root named) %dir /var/named/atomiadns_bdb
-%attr(0660 root named) /var/named/slaves/named-slavezones.conf.local
-%attr(0660 root named) /var/named/tsig_keys.conf
+%doc %{_mandir}/man1/atomiabindsync.1.gz
+%attr(0640 root named) /usr/share/atomia/conf/atomiadns.named.conf
 
 %pre
 getent group named > /dev/null || /usr/sbin/groupadd -g 25 -f -r named >/dev/null 2>&1
@@ -79,37 +72,68 @@ fi
 exit 0
 
 %post
-/usr/bin/systemctl enable atomiadns-atomiadnssync
+/usr/bin/systemctl enable atomiadns-bindsync
 
 if [ -f /etc/atomiadns.conf ]; then
 	if [ -z "$(grep "^slavezones_config" /etc/atomiadns.conf)" ]; then
-		cat /usr/share/atomia/conf/atomiadns.conf.atomiadnssync >> /etc/atomiadns.conf
+		cat /usr/share/atomia/conf/atomiadns.conf.atomiabindsync >> /etc/atomiadns.conf
 	fi
 else
-	cp /usr/share/atomia/conf/atomiadns.conf.atomiadnssync /etc/atomiadns.conf
+	cp /usr/share/atomia/conf/atomiadns.conf.atomiabindsync /etc/atomiadns.conf
 fi
 
-if [ -f /etc/named.conf ] && [ -z "$(grep atomiadns.named.conf /etc/named.conf)" ]; then
-	echo 'include "atomiadns.named.conf";' >> /etc/named.conf
+if [ -f /etc/named.conf ] && [ -z "$(grep 'atomiadns.named.conf' /etc/named.conf)" ]; then
+	echo 'include "/var/named/atomiadns.named.conf";' >> /etc/named.conf
 fi
 
 if [ "$1" -gt 1 ]; then
-	/usr/bin/systemctl restart atomiadns-atomiadnssync
+	/usr/bin/systemctl restart atomiadns-bindsync
 fi
 
 chgrp named /var/run/named
 chmod g+w /var/run/named
 
+if [ ! -f "/etc/rndc.key" ]; then
+	/usr/sbin/rndc-confgen -a
+	chown root:named /etc/rndc.key
+	chmod 640 /etc/rndc.key
+	service named restart
+fi
+
+mkdir -p /var/named/slaves/zones
+chmod 770 /var/named/slaves/zones
+chown root:named /var/named/slaves/zones
+
+touch /var/named/tsig_keys.conf
+chmod 660 /var/named/tsig_keys.conf
+chown root:named /var/named/tsig_keys.conf
+
+touch /var/named/slaves/named-slavezones.conf.local
+chmod 660 /var/named/slaves/named-slavezones.conf.local
+chown root:named /var/named/slaves/named-slavezones.conf.local
+
+cp -fp /usr/share/atomia/conf/atomiadns.named.conf /var/named/atomiadns.named.conf
+
 exit 0
 
 %preun
 if [ "$1" = 0 ]; then
-	/usr/bin/systemctl stop atomiadns-atomiadnssync
-	/usr/bin/systemctl disable atomiadns-atomiadnssync
+	/usr/bin/systemctl stop atomiadns-bindsync
+	/usr/bin/systemctl disable atomiadns-bindsync
 fi
 exit 0
 
 %changelog
+* Mon Mar 06 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
+- Add support for RHEL8
+- Change binary to atomiabindsync
+- Service name changed to atomiadns-bindsync
+- Fix path consistency between RHEL and Ubuntu for bind slave zones
+- Autogenerate rndc.key on package install if the key doesn't already exist
+- Fix conflicting config files between atomiadns-bindsync and bind nameserver
+- Fix missing dependencies
+- Changed app name in log files to atomiabindsync
+- Bump version to 1.1.58
 * Mon Oct 10 2022 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.57-1
 - Bump version to 1.1.57
 * Wed Dec 08 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.56-1

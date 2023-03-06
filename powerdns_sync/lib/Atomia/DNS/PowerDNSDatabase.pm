@@ -4,7 +4,6 @@ package Atomia::DNS::PowerDNSDatabase;
 
 use Moose;
 use DBI;
-use MIME::Base32;
 use Digest::SHA qw(sha1);
 
 has 'config' => (is => 'ro', isa => 'HashRef');
@@ -68,6 +67,23 @@ sub dbi {
         }
 }
 
+sub encode_base32 {
+	my $arg = shift;
+	return '' unless defined($arg);    # mimic MIME::Base64
+
+	$arg = unpack('B*', $arg);
+	$arg =~ s/(.....)/000$1/g;
+	my $l = length($arg);
+	if ($l & 7) {
+		my $e = substr($arg, $l & ~7);
+		$arg = substr($arg, 0, $l & ~7);
+		$arg .= "000$e" . '0' x (5 - length $e);
+	}
+	$arg = pack('B*', $arg);
+	$arg =~ tr|\0-\37|A-Z2-7|;
+	return $arg;
+}
+
 sub parse_record {
 	my $self = shift;
 	my $record = shift;
@@ -93,7 +109,7 @@ sub parse_record {
 			$nsec3 = sha1($nsec3, $self->nsec3_salt);
 		}
 
-		$ordername = lc(MIME::Base32::encode($nsec3));
+		$ordername = lc(encode_base32($nsec3));
 	}
 
 	$ordername = $self->dbi->quote($ordername);
