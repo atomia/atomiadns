@@ -5,14 +5,14 @@
 
 Summary: Command line client for Atomia DNS
 Name: atomiadns-client
-Version: 1.1.57
+Version: 1.1.58
 Release: 1%{?dist}
 License: Commercial
 Group: Applications/Internet
 URL: http://www.atomia.com/atomiadns/
 Source: atomiadns-server.tar.gz
 
-Packager: Jimmy Bergman <jimmy@atomia.com>
+Packager: Atomia AB <info@atomia.com>
 Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -20,7 +20,7 @@ BuildArch: noarch
 BuildRequires: perl
 BuildRequires: perl(ExtUtils::MakeMaker)
 
-Requires: perl-libwww-perl
+Requires: perl-libwww-perl perl-Config-General perl-SOAP-Lite
 
 %description
 The Atomia DNS API command line client is used for connecting to the Atomia DNS SOAP server
@@ -53,6 +53,11 @@ cd ..
 %doc %{_mandir}/man1/dnssec_zsk_rollover.1.gz
 
 %changelog
+* Mon Mar 06 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
+- Add support for RHEL8
+- Fix missing dependencies
+- Add support for PostgreSQL 10.x
+- Bump version to 1.1.58
 * Mon Oct 10 2022 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.57-1
 - Bump version to 1.1.57
 * Wed Dec 08 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.56-1

@@ -3,7 +3,7 @@ Section: non-free/perl
 Priority: optional
 Build-Depends: debhelper (>= 4.0.2)
 Build-Depends-Indep: perl (>= 5.8.6), perl-modules
-Maintainer: Jimmy Bergman <jimmy@pingdom.com>
+Maintainer: Atomia AB <info@atomia.com>
 Standards-Version: 3.6.1
 
 Package: atomiadns-masterserver

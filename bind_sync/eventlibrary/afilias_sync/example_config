@@ -1,6 +1,0 @@
-<change_event_chain>
-        event_listener_subscribername eventchain
-        event_listener_nameservergroup default
-        on_update /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_add_zone.sh
-        on_delete /usr/share/atomiadns/eventlibrary/afilias_sync/afilias_delete_zone.sh
-</change_event_chain>
