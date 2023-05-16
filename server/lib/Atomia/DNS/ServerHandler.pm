@@ -599,6 +599,35 @@ sub handleTSIGKey {
 	return SOAP::Data->new(name => "tsigkeys", value => $tsigkeys);
 }
 
+sub handleZoneStatusArray {
+	my $self = shift;
+	my $method = shift;
+	my $signature = shift;
+
+	my $sth = $self->handleAll($method, $signature, 0, undef, @_);
+
+	my $rows = $sth->fetchall_arrayref({});
+	die("no rows returned from database") unless defined($rows) && ref($rows) eq "ARRAY" && !$DBI::err;
+
+	map {
+		foreach my $key (keys %$_) {
+			if ($key =~ /^record_/) {
+				my $value = $_->{$key};
+				delete($_->{$key});
+				$key =~ s/^record_//;
+				$_->{$key} = $value;
+			}
+		}
+	} @$rows;
+
+	my $zonestatusarray = [];
+	foreach my $row (@$rows) {
+		push (@$zonestatusarray, SOAP::Data->new(name => "zonestatusarray", value => $row));
+	}
+
+	return SOAP::Data->new(name => "zonestatusarray", value => $zonestatusarray);
+}
+
 sub handleDomainMetaData {
 	my $self = shift;
 	my $method = shift;
@@ -914,6 +943,8 @@ sub mapExceptionToFault {
 		$self->generateException('LogicalError', 'EmptyLabel', $exception);
 	} elsif ($exception =~ /TSIG key .* not found/) {
 		$self->generateException('LogicalError', 'TSIGKeyNotFound', $exception);
+	} elsif ($exception =~ /zonestatusarray .* not found/) {
+		$self->generateException('LogicalError', 'zonestatusarrayKeyNotFound', $exception);
 	} elsif ($exception =~ /Domain id .* not found/) {
 		$self->generateException('LogicalError', 'DomainMetaDataNotFound', $exception);
 # InvalidParametersError.*
@@ -1232,6 +1263,8 @@ sub handleOperation {
 		$retval = $self->handleZoneMetadata($method, $signature, @_);
 	} elsif ($return_type eq "tsigkey") {
 		$retval = $self->handleTSIGKey($method, $signature, @_);
+	} elsif ($return_type eq "zonestatusarray") {
+		$retval = $self->handleZoneStatusArray($method, $signature, @_);
 	} elsif ($return_type eq "domainmetadata") {
         $retval = $self->handleDomainMetaData($method, $signature, @_);
 	} else {

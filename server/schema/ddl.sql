@@ -434,3 +434,6 @@ ON domainmetadata
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
 EXECUTE PROCEDURE domainmetadata_update();
+
+ALTER TABLE zone
+ADD COLUMN status VARCHAR DEFAULT 'active';

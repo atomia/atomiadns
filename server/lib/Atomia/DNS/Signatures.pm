@@ -77,7 +77,9 @@ our $signatures = {
 	"MarkDomainMetaDataUpdated" => "void bigint string string",
 	"UnassignTSIGKey" => "void string",
 	"TestOp" => "void string string string string",
-	"Noop" => "string"
+	"Noop" => "string",
+	"SetZoneStatus" => "void string string",
+	"GetZoneStatusBulk" => "zonestatusarray array[string]"
 };
 
 our $authorization_rules = {
