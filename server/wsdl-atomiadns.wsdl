@@ -1487,10 +1487,12 @@ atomiaDomainMetaDataItem is a struct with the following members:
 
 			<xsd:element name="AddTSIGKey">
 				<xsd:complexType>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsig_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the TSIG key</xsd:documentation></xsd:annotation></xsd:element>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsig_secret" type="xsd:string"><xsd:annotation><xsd:documentation>the secret hash for the key</xsd:documentation></xsd:annotation></xsd:element>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsig_algorithm" type="xsd:string"><xsd:annotation><xsd:documentation>the algorithm used for the hash</xsd:documentation></xsd:annotation></xsd:element>
-					<xsd:element minOccurs="1" maxOccurs="1" name="nameserver_group_name" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the TSIG key</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_secret" type="xsd:string"><xsd:annotation><xsd:documentation>the secret hash for the key</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_algorithm" type="xsd:string"><xsd:annotation><xsd:documentation>the algorithm used for the hash</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver_group_name" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
 
@@ -1653,20 +1655,18 @@ atomiaDomainMetaDataItem is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
-						<xsd:element name="SetZoneStatus">
+			<xsd:element name="SetZoneStatus">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:int"><xsd:annotation><xsd:documentation>suspended if the zone should be suspended or active if it is to be active</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"><xsd:annotation><xsd:documentation>suspended if the zone should be suspended or active if it is to be active</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
 
 			<xsd:element name="SetZoneStatusResponse">
 				<xsd:complexType>
-					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"/>
-					</xsd:all>
+					<xsd:all />
 				</xsd:complexType>
 			</xsd:element>
 

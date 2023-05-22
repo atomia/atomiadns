@@ -10,7 +10,7 @@ BEGIN
                 RAISE EXCEPTION 'zone % not found', zonename;
         END IF;
 
-				IF zonestatus != 'active' OR zonestatus != 'suspended' THEN
+				IF zonestatus != 'active' AND zonestatus != 'suspended' THEN
 					RAISE EXCEPTION 'zonestatus % is not allowed', zonestatus;
         END IF;
 

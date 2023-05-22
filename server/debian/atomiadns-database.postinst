@@ -664,6 +664,12 @@ if [ $retval != 0 ]; then
 				recreate_procedure "unassigntsigkey"
 			fi
 
+			if [ "$schema_version" -lt 94 ]; then
+				alter_table_addcolumn "zone" "status VARCHAR DEFAULT 'active'"
+				recreate_procedure "getzonestatusbulk"
+				recreate_procedure "setzonestatus"
+			fi
+
 			set_schema_version "$latest_version"
 		else
 			echo "database zonedata already exist, but contains a bad schema version ($schema_version), this should never happen and indicates a bug."
