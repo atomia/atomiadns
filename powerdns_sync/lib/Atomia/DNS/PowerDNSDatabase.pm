@@ -246,7 +246,7 @@ sub add_zone {
 			}
 
 			my $disable_records = 0;
-			if ($zone_status eq 'suspended') {
+			if (defined($zone_status) && $zone_status eq 'suspended') {
 				$disable_records = 1;
 			}
 
