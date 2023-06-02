@@ -239,7 +239,10 @@ sub add_zone {
 				$first_in_batch = 0;
 			}
 
-			$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";
+			if($first_in_batch == 0)
+			{
+				$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";
+			}
 		}
 
 		$self->dbi->commit();
