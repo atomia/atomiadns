@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.58
+Version: 1.1.59
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.58 atomiadns-database >= 1.1.58
+Requires: atomiadns-api >= 1.1.59 atomiadns-database >= 1.1.59
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Fri Jun 02 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.59-1
+- Bump version to 1.1.59
 * Mon Mar 06 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
 - Add support for RHEL8
 - Fix missing dependencies
