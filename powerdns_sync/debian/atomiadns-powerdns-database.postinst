@@ -126,7 +126,7 @@ if [ $showdb_ret = 0 ] && [ -n "$db_exists" ]; then
 			exit 1
 		fi
 	else
-		latest_version="17"
+		latest_version="18"
 
 		if [ "$schema_version" = "$latest_version" ]; then
 			echo "The installed schema is the latest version ($latest_version), keeping the database as it is."
@@ -471,6 +471,13 @@ ALTER VIEW powerdns.cryptokeys AS
 						JOIN powerdns.global_cryptokeys c
 					)
 					WHERE d.type IN ('NATIVE', 'MASTER');"
+			fi
+
+			if [ "$schema_version" -lt 18 ]; then
+				execute_query "ALTER TABLE domains ADD options VARCHAR(64000) DEFAULT NULL;"
+				execute_query "ALTER TABLE domains ADD catalog VARCHAR(255) DEFAULT NULL;"
+				execute_query "ALTER TABLE domains MODIFY type VARCHAR(8) NOT NULL;"
+				execute_query "CREATE INDEX catalog_idx ON domains(catalog);"
 			fi
 
 			set_schema_version "$latest_version"
