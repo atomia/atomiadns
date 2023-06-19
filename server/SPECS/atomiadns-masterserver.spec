@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.59
+Version: 1.1.60
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.59 atomiadns-database >= 1.1.59
+Requires: atomiadns-api >= 1.1.60 atomiadns-database >= 1.1.60
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,10 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Mon Jun 19 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.60-1
+- Bump version to 1.1.60
+- [FIX] Added support for PowerDNS 4.7.
+- [IMPROVEMENT] Added support for suspending a zone.
 * Fri Jun 02 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.59-1
 - Bump version to 1.1.59
 - Fix synchronization for large zones
