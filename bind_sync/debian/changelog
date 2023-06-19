@@ -1,3 +1,11 @@
+atomiadns-bindsync (1.1.60) hardy; urgency=low
+
+  * Bump version to 1.1.60
+  * Added support for PowerDNS 4.7.
+  * Added support for suspending a zone.
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 19 Jun 2023 01:51:25 -0700
+
 atomiadns-bindsync (1.1.59) hardy; urgency=low
 
   * Bump version to 1.1.59

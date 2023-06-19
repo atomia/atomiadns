@@ -5,7 +5,7 @@
 
 Summary: Database schema for Atomia DNS
 Name: atomiadns-database
-Version: 1.1.59
+Version: 1.1.60
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -52,6 +52,10 @@ The Atomia DNS database schema.
 sh /usr/share/atomiadns/atomiadns-database.postinst.sh
 
 %changelog
+* Mon Jun 19 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.60-1
+- Bump version to 1.1.60
+- Added support for PowerDNS 4.7.
+- Added support for suspending a zone.
 * Fri Jun 02 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.59-1
 - Bump version to 1.1.59
 - Fix synchronization for large zones
