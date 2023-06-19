@@ -116,6 +116,9 @@ sub reload_updated_zones {
 		}
 	}
 
+	my $zonestatusarray = $self->soap->GetZoneStatusBulk($changes_to_keep_name);
+	$zonestatusarray = $zonestatusarray->result;
+
 	if (scalar(@$changes_to_keep) > 0) {
 		$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
 	}
@@ -128,6 +131,7 @@ sub reload_updated_zones {
 		$num = $bulk_size if $num > $bulk_size;
 
 		my @batch = @{$zones}[$offset .. ($offset + $num - 1)];
+		my @zonestatusbatch = @{$zonestatusarray};
 
 		my @get_zone_bulk_arg = map { $_->{"name"} } @batch;
 		my $fetched_records_for_zones = $self->fetch_records_for_zones(\@get_zone_bulk_arg);
@@ -144,6 +148,13 @@ sub reload_updated_zones {
 				$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
 
 				my $zone_name = $zone->{"name"};
+				my $zone_status = 'active';
+
+				foreach my $zonestatusitem (@zonestatusbatch) {
+					if ($zone_name eq $zonestatusitem->{zonename}) {
+						$zone_status = $zonestatusitem->{zonestatus};
+					}
+				}
 
 				if (defined($self->config->{"powerdns_presigned_dnssec"}) && $self->config->{"powerdns_presigned_dnssec"} eq "1") {
 					my $mod_handler = $self->config->{"powerdns_presigned_dnssec_mod_script"};
@@ -177,7 +188,7 @@ sub reload_updated_zones {
 						$self->database->remove_zone($zone);
 					}
 				} else {
-					$self->sync_zone($zone, $fetched_records_for_zones->{$zone_name});
+					$self->sync_zone($zone, $fetched_records_for_zones->{$zone_name}, $zone_status);
 				}
 
 				push @$changes_successful, $change_id;
@@ -234,10 +245,11 @@ sub sync_zone {
 	my $self = shift;
 	my $zone = shift;
 	my $records = shift;
+	my $zone_status = shift;
 
 	if (scalar(@$records) > 0) {
 		my $zone_type = defined($self->config->{"powerdns_zone_type"}) && $self->config->{"powerdns_zone_type"} eq "MASTER" ? "MASTER" : "NATIVE";
-		$self->database->add_zone($zone, $records, $zone_type, 0, $self->config->{"powerdns_zone_nsec_format"});
+		$self->database->add_zone($zone, $records, $zone_type, 0, $self->config->{"powerdns_zone_nsec_format"}, $zone_status);
 	} else {
 		$self->database->remove_zone($zone);
 	}
