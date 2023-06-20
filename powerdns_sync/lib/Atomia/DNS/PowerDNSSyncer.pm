@@ -119,6 +119,11 @@ sub reload_updated_zones {
 	my $zonestatusarray = $self->soap->GetZoneStatusBulk($changes_to_keep_name);
 	$zonestatusarray = $zonestatusarray->result;
 
+	my $zone_status_hash = {};
+	foreach my $zone_status (@$zonestatusarray) {
+		$zone_status_hash->{$zone_status->{'zonename'}} = $zone_status->{'zonestatus'};
+	}
+
 	if (scalar(@$changes_to_keep) > 0) {
 		$self->soap->MarkAllUpdatedExceptBulk($changes_to_keep_name, $changes_to_keep);
 	}
@@ -149,11 +154,8 @@ sub reload_updated_zones {
 
 				my $zone_name = $zone->{"name"};
 				my $zone_status = 'active';
-
-				foreach my $zonestatusitem (@zonestatusbatch) {
-					if ($zone_name eq $zonestatusitem->{zonename}) {
-						$zone_status = $zonestatusitem->{zonestatus};
-					}
+				if(exists($zone_status_hash->{$zone_name}) && $zone_status_hash->{$zone_name} eq "suspended"){
+					$zone_status = $zone_status_hash->{$zone_name};
 				}
 
 				if (defined($self->config->{"powerdns_presigned_dnssec"}) && $self->config->{"powerdns_presigned_dnssec"} eq "1") {
