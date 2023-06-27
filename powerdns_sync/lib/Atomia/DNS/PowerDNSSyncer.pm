@@ -121,7 +121,9 @@ sub reload_updated_zones {
 
 	my $zone_status_hash = {};
 	foreach my $zone_status (@$zonestatusarray) {
-		$zone_status_hash->{$zone_status->{'zonename'}} = $zone_status->{'zonestatus'};
+		if(defined($zone_status->{'zonename'}) && defined($zone_status->{'zonestatus'})){
+			$zone_status_hash->{$zone_status->{'zonename'}} = $zone_status->{'zonestatus'};
+		}
 	}
 
 	if (scalar(@$changes_to_keep) > 0) {
@@ -136,7 +138,6 @@ sub reload_updated_zones {
 		$num = $bulk_size if $num > $bulk_size;
 
 		my @batch = @{$zones}[$offset .. ($offset + $num - 1)];
-		my @zonestatusbatch = @{$zonestatusarray};
 
 		my @get_zone_bulk_arg = map { $_->{"name"} } @batch;
 		my $fetched_records_for_zones = $self->fetch_records_for_zones(\@get_zone_bulk_arg);
