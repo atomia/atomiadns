@@ -8,11 +8,11 @@ DECLARE
 BEGIN
 	IF zonenames IS NOT NULL AND array_length(zonenames, 1) > 0 THEN
 		FOR i IN array_lower(zonenames, 1) .. array_upper(zonenames, 1) LOOP
-					zonename := zonenames[i];
-					SELECT status INTO zonestatus FROM zone WHERE name = zonenames[i];
-					IF NOT FOUND THEN
-									RAISE EXCEPTION 'zone % not found', zonename;
-					END IF;
+			zonename := zonenames[i];
+			SELECT status INTO zonestatus FROM zone WHERE name = zonenames[i];
+			IF NOT FOUND THEN
+				zonestatus := 'nonexistent';
+			END IF;
 		RETURN NEXT;
 		END LOOP;
 	END IF;
