@@ -4,7 +4,6 @@ package Atomia::DNS::PowerDNSDatabase;
 
 use Moose;
 use DBI;
-use MIME::Base32;
 use Digest::SHA qw(sha1);
 
 has 'config' => (is => 'ro', isa => 'HashRef');
@@ -68,6 +67,23 @@ sub dbi {
         }
 }
 
+sub encode_base32 {
+	my $arg = shift;
+	return '' unless defined($arg);    # mimic MIME::Base64
+
+	$arg = unpack('B*', $arg);
+	$arg =~ s/(.....)/000$1/g;
+	my $l = length($arg);
+	if ($l & 7) {
+		my $e = substr($arg, $l & ~7);
+		$arg = substr($arg, 0, $l & ~7);
+		$arg .= "000$e" . '0' x (5 - length $e);
+	}
+	$arg = pack('B*', $arg);
+	$arg =~ tr|\0-\37|A-Z2-7|;
+	return $arg;
+}
+
 sub parse_record {
 	my $self = shift;
 	my $record = shift;
@@ -93,7 +109,7 @@ sub parse_record {
 			$nsec3 = sha1($nsec3, $self->nsec3_salt);
 		}
 
-		$ordername = lc(MIME::Base32::encode($nsec3));
+		$ordername = lc(encode_base32($nsec3));
 	}
 
 	$ordername = $self->dbi->quote($ordername);
@@ -130,6 +146,7 @@ sub add_zone {
 	my $zone_type = shift;
 	my $presigned = shift;
 	my $nsec_type = shift;
+	my $zone_status = shift;
 
 	die "bad indata to add_zone" unless defined($zone) && ref($zone) eq "HASH" && defined($records) && ref($records) eq "ARRAY";
 
@@ -223,7 +240,18 @@ sub add_zone {
 				$first_in_batch = 0;
 			}
 
-			$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";
+			if($first_in_batch == 0)
+			{
+				$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";
+			}
+
+			my $disable_records = 0;
+			if (defined($zone_status) && $zone_status eq 'suspended') {
+				$disable_records = 1;
+			}
+
+			$query = "UPDATE records SET disabled = $disable_records WHERE domain_id = $domain_id AND type NOT IN ('NS', 'SOA')";
+			$self->dbi->do($query) || die "error updating record disabled property, query=$query: $DBI::errstr";
 		}
 
 		if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
@@ -427,7 +455,7 @@ sub remove_slave_zone {
 
 	eval {
 		my $name = $self->dbi->quote($zonename);
-		$self->dbi->do("DELETE domains, records, k FROM domains LEFT JOIN records ON domains.id = records.domain_id LEFT JOIN outbound_tsig_keys k ON k.domain_id = domains.id WHERE domains.name = $name") || die "error removing zone: $DBI::errstr";
+		$self->dbi->do("DELETE domains, records, k FROM domains LEFT JOIN records ON domains.id = records.domain_id LEFT JOIN outbound_tsig_keys k ON k.domain_id = domains.id WHERE domains.name = $name AND domains.type = 'SLAVE'") || die "error removing zone: $DBI::errstr";
 		$self->dbi->commit();
 	};
 

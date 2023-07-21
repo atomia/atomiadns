@@ -1,7 +1,7 @@
 -- # Our versioning table
 DROP TABLE IF EXISTS powerdns_schemaversion;
 CREATE TABLE powerdns_schemaversion (version INT);
-INSERT INTO powerdns_schemaversion VALUES (16);
+INSERT INTO powerdns_schemaversion VALUES (18);
 
 -- MySQL dump 10.13  Distrib 5.1.41, for debian-linux-gnu (x86_64)
 --
@@ -244,7 +244,7 @@ CREATE TABLE comments (
   type                  VARCHAR(10) NOT NULL,
   modified_at           INT NOT NULL,
   account               VARCHAR(40) NOT NULL,
-  comment               VARCHAR(64000) NOT NULL,
+  comment               VARCHAR(1024) NOT NULL,
   PRIMARY KEY(id)
 ) Engine=InnoDB;
 
@@ -482,3 +482,23 @@ secret                VARCHAR(255),
 PRIMARY KEY (id)
 ) Engine=InnoDB CHARACTER SET 'latin1';
 CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);
+
+ALTER VIEW powerdns.cryptokeys AS
+SELECT
+  c.id AS id,
+  d.id AS domain_id,
+  c.flags AS flags,
+  c.active AS active,
+  1 AS published,
+  c.content AS content
+FROM (
+  powerdns.domains d
+  JOIN powerdns.global_cryptokeys c
+)
+WHERE d.type IN ('NATIVE', 'MASTER');
+
+ALTER TABLE domains ADD options VARCHAR(64000) DEFAULT NULL;
+ALTER TABLE domains ADD catalog VARCHAR(255) DEFAULT NULL;
+ALTER TABLE domains MODIFY type VARCHAR(8) NOT NULL;
+
+CREATE INDEX catalog_idx ON domains(catalog);

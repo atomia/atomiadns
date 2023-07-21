@@ -76,6 +76,8 @@ methodawk='BEGIN {
 	methods["UnassignTSIGKey"] = "Unassigns a TSIG key from a domain.";
 	methods["GetChangedZonesBatchWithTSIG"] = "Fetches a list of all changed zones for a nameserver, but limit response to a number of changes and include a TSIG key name for the selected zone.";
 	methods["GetChangedSlaveZonesWithTSIG"] = "Fetches a list of all changed slave-zones for a nameserver and includes a TSIG key name for the selected slave-zone.";
+	methods["GetZoneStatusBulk"] = "Gets zones status.";
+	methods["SetZoneStatus"] = "Sets zone status.";
 	methods["Noop"] = "Do nothing. Meant for generating token without doing anything when authenticating.";
 }'
 

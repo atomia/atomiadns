@@ -27,6 +27,9 @@ endif
 ifeq ($(shell lsb_release -r |  cut -f2 ),18.04)
         SUBSTVARS = -Vdist:Depends=""
 endif
+ifeq ($(shell lsb_release -r |  cut -f2 ),20.04)
+        SUBSTVARS = -Vdist:Depends=""
+endif
 
 build: build-stamp
 build-stamp:

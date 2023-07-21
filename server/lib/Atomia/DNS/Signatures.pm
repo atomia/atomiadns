@@ -79,7 +79,9 @@ our $signatures = {
 	"GetChangedZonesBatchWithTSIG" => "changeswithtsig string int",
 	"GetChangedSlaveZonesWithTSIG" => "changeswithtsig string",
 	"TestOp" => "void string string string string",
-	"Noop" => "string"
+	"Noop" => "string",
+	"SetZoneStatus" => "void string string",
+	"GetZoneStatusBulk" => "zonestatusarray array[string]"
 };
 
 our $authorization_rules = {

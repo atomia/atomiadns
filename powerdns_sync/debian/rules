@@ -15,12 +15,20 @@ ifndef PERL
 PERL = /usr/bin/perl
 endif
 
+INITNAME = ""
+SUBSTVARS = -Vdist:Depends=""
+
 ifeq ($(shell lsb_release -r |  cut -f2 ),16.04)
-        INITNAME = --name=atomiadns-powerdnssync
-	SUBSTVARS = -Vdist:Depends="libdbi-perl, libdbd-mysql-perl"
-else
-	INITNAME = ""
-	SUBSTVARS = -Vdist:Depends=""
+	INITNAME = --name=atomiadns-powerdnssync
+	SUBSTVARS = -Vdist:Depends="libdbi-perl, libdbd-mysql-perl"	
+endif
+ifeq ($(shell lsb_release -r |  cut -f2 ),18.04)
+	INITNAME = --name=atomiadns-powerdnssync
+	SUBSTVARS = -Vdist:Depends="libdbi-perl, libdbd-mysql-perl"	
+endif
+ifeq ($(shell lsb_release -r |  cut -f2 ),20.04)
+	INITNAME = --name=atomiadns-powerdnssync
+	SUBSTVARS = -Vdist:Depends="libdbi-perl, libdbd-mysql-perl"	
 endif
 
 SYNCER_DIR=$(CURDIR)/debian/atomiadns-powerdnssync

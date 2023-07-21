@@ -5,19 +5,19 @@
 
 Summary: Atomia DNS PowerDNS Sync application
 Name: atomiadns-powerdnssync
-Version: 1.1.55
+Version: 1.1.60
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
 URL: http://www.atomia.com/atomiadns/
 Source: atomiadns-powerdns_sync.tar.gz
 
-Packager: Jimmy Bergman <jimmy@atomia.com>
+Packager: Atomia AB <info@atomia.com>
 Vendor: Atomia AB RPM Repository http://rpm.atomia.com/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Requires(pre): shadow-utils
-Requires: perl-Moose >= 2.0
+Requires: perl-Moose >= 2.0 perl-DBI perl-DBD-MySQL perl-Config-General perl-SOAP-Lite perl-Proc-Daemon perl-Net-DNS
 
 BuildArch: noarch
 BuildRequires: perl
@@ -85,6 +85,24 @@ fi
 exit 0
 
 %changelog
+* Mon Jun 19 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.60-1
+- Bump version to 1.1.60
+- Added support for PowerDNS 4.7.
+- Added support for suspending a zone.
+* Fri Jun 02 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.59-1
+- Bump version to 1.1.59
+- Fix synchronization for large zones
+* Mon Mar 06 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.58-1
+- Add support for RHEL8
+- Fix obsolete dependencies and add missing ones
+- Add published column in PowerDNS cryptokeys table to support new PowerDNS schema
+- Changed app name in log files to atomiapowerdnssync
+- Bump atomia powerdns DB schema to v17
+- Bump version to 1.1.58
+* Mon Oct 10 2022 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.57-1
+- Bump version to 1.1.57
+* Wed Dec 08 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.56-1
+- Bump version to 1.1.56
 * Wed Oct 13 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.55-1
 - Bump version to 1.1.55
 * Tue Oct 12 2021 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.54-1
