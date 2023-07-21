@@ -428,6 +428,27 @@ atomiaDomainMetaDataItem is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
+			<xsd:complexType name="atomiaZoneStatus">
+				<xsd:annotation>
+					<xsd:documentation> atomiaZoneStatus is a struct with the following members: || Member ||
+						Type || Description || | name | string | the name of the zone | | zonestatus | string | active the
+						zone is active, suspended the zone is suspended | {excerpt:hidden=true}{excerpt} </xsd:documentation>
+				</xsd:annotation>
+				<xsd:all>
+					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string" />
+					<xsd:element minOccurs="1" maxOccurs="1" name="zonestatus" type="xsd:string" />
+				</xsd:all>
+			</xsd:complexType>
+
+			<xsd:complexType name="atomiaZoneStatusArray">
+				<xsd:annotation>
+					<xsd:documentation>atomiaZoneStatusArray is an array of atomiaZoneStatus-structs.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="item" type="atomiaZoneStatus" />
+				</xsd:sequence>
+			</xsd:complexType>
+
 			<xsd:element name="GetUpdatesDisabled">
 				<xsd:complexType>
 					<xsd:all />
@@ -1466,10 +1487,12 @@ atomiaDomainMetaDataItem is a struct with the following members:
 
 			<xsd:element name="AddTSIGKey">
 				<xsd:complexType>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsig_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the TSIG key</xsd:documentation></xsd:annotation></xsd:element>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsig_secret" type="xsd:string"><xsd:annotation><xsd:documentation>the secret hash for the key</xsd:documentation></xsd:annotation></xsd:element>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsig_algorithm" type="xsd:string"><xsd:annotation><xsd:documentation>the algorithm used for the hash</xsd:documentation></xsd:annotation></xsd:element>
-					<xsd:element minOccurs="1" maxOccurs="1" name="nameserver_group_name" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the TSIG key</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_secret" type="xsd:string"><xsd:annotation><xsd:documentation>the secret hash for the key</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsig_algorithm" type="xsd:string"><xsd:annotation><xsd:documentation>the algorithm used for the hash</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver_group_name" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
 
@@ -1628,6 +1651,37 @@ atomiaDomainMetaDataItem is a struct with the following members:
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetZoneStatus">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zone" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="status" type="xsd:string"><xsd:annotation><xsd:documentation>suspended if the zone should be suspended or active if it is to be active</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="SetZoneStatusResponse">
+				<xsd:complexType>
+					<xsd:all />
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneStatusBulk">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zones" type="xsdAtomiaStringArray"><xsd:annotation><xsd:documentation>the name of the zones</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetZoneStatusBulkResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="zonestatusarray" type="atomiaZoneStatusArray"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -2312,6 +2366,24 @@ atomiaDomainMetaDataItem is a struct with the following members:
 		<part name="parameters" element="tns:UnassignTSIGKeyResponse"/>
 	</message>
 
+	<message name="SetZoneStatusInput">
+		<documentation>Set zone status.</documentation>
+		<part name="parameters" element="tns:SetZoneStatus"/>
+	</message>
+
+	<message name="SetZoneStatusOutput">
+		<part name="parameters" element="tns:SetZoneStatusResponse"/>
+	</message>
+
+	<message name="GetZoneStatusBulkInput">
+		<documentation>Set zone status.</documentation>
+		<part name="parameters" element="tns:GetZoneStatusBulk"/>
+	</message>
+
+	<message name="GetZoneStatusBulkOutput">
+		<part name="parameters" element="tns:GetZoneStatusBulkResponse"/>
+	</message>
+
 	<message name="NoopInput">
 		<documentation>Do nothing. Meant for generating token without doing anything when authenticating.</documentation>
 		<part name="parameters" element="tns:Noop"/>
@@ -2964,6 +3036,24 @@ atomiaDomainMetaDataItem is a struct with the following members:
 		<operation name="UnassignTSIGKey">
 			<input message="tns:UnassignTSIGKeyInput"/>
 			<output message="tns:UnassignTSIGKeyOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="SetZoneStatus">
+			<input message="tns:SetZoneStatusInput"/>
+			<output message="tns:SetZoneStatusOutput"/>
+			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
+			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
+			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
+			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
+		</operation>
+
+		<operation name="GetZoneStatusBulk">
+			<input message="tns:GetZoneStatusBulkInput"/>
+			<output message="tns:GetZoneStatusBulkOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -3767,6 +3857,28 @@ atomiaDomainMetaDataItem is a struct with the following members:
 		<operation name="UnassignTSIGKey">
 			<documentation>Removes a TSIG key.</documentation>
 			<soap:operation soapAction="urn:Atomia::DNS::Server#UnassignTSIGKey"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
+		</operation>
+
+		<operation name="SetZoneStatus">
+			<documentation>Set the zone status.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#SetZoneStatus"/>
+			<input><soap:body use="literal"/></input>
+			<output><soap:body use="literal"/></output>
+			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
+			<fault name="InvalidParametersErrorFault"><soap:fault name="InvalidParametersErrorFault" use="literal" /></fault>
+			<fault name="SystemErrorFault"><soap:fault name="SystemErrorFault" use="literal" /></fault>
+			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
+		</operation>
+
+		<operation name="GetZoneStatusBulk">
+			<documentation>Get the zone status bulk.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZoneStatusBulk"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>

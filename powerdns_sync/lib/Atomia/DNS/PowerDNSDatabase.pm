@@ -146,6 +146,7 @@ sub add_zone {
 	my $zone_type = shift;
 	my $presigned = shift;
 	my $nsec_type = shift;
+	my $zone_status = shift;
 
 	die "bad indata to add_zone" unless defined($zone) && ref($zone) eq "HASH" && defined($records) && ref($records) eq "ARRAY";
 
@@ -239,7 +240,18 @@ sub add_zone {
 				$first_in_batch = 0;
 			}
 
-			$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";
+			if($first_in_batch == 0)
+			{
+				$self->dbi->do($query) || die "error inserting record batch $batch, query=$query: $DBI::errstr";
+			}
+
+			my $disable_records = 0;
+			if (defined($zone_status) && $zone_status eq 'suspended') {
+				$disable_records = 1;
+			}
+
+			$query = "UPDATE records SET disabled = $disable_records WHERE domain_id = $domain_id AND type NOT IN ('NS', 'SOA')";
+			$self->dbi->do($query) || die "error updating record disabled property, query=$query: $DBI::errstr";
 		}
 
 		$self->dbi->commit();
