@@ -131,7 +131,7 @@ CREATE TABLE zone (
         name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT zone_format CHECK (name ~* '^([a-z0-9_][a-z0-9_-]*)([.][a-z0-9_][a-z0-9_-]*)*$'),
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
 	account_id INT NULL REFERENCES account,
-	status VARCHAR DEFAULT 'active'
+	status VARCHAR(32) DEFAULT 'active'
 );
 
 CREATE TABLE slavezone (
