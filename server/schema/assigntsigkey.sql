@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION AssignTSIGKey(
 	domain varchar,
 	tsigkey_name varchar,
+	kind varchar,
 	nameserver_group_name varchar
 ) RETURNS void AS $$
 DECLARE

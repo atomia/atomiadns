@@ -254,7 +254,7 @@ sub add_zone {
 			$self->dbi->do($query) || die "error updating record disabled property, query=$query: $DBI::errstr";
 		}
 
-		if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1") {
+		if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
 			if(defined($zone->{"tsigkeyname"}) && length($zone->{"tsigkeyname"}) > 0) {
 				$self->assign_tsig_key($domain_id, $zone->{"tsigkeyname"}, 'TSIG-ALLOW-AXFR');
 			}
@@ -420,7 +420,7 @@ sub add_slave_zone {
 		$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
 
 		my $domain_id;
-		if (defined($tsig) || (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1")) {
+		if (defined($tsig) || (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0")) {
 			$domain_id = $self->dbi(1)->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
 		}
 
@@ -429,7 +429,7 @@ sub add_slave_zone {
 			$self->dbi->do($query) || die "error inserting tsig row using $query: $DBI::errstr";
 		}
 
-		if (defined($self->config->{"use_tsig_keys"}) && $self->config->{"use_tsig_keys"} eq "1" ) {
+		if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
 			if(defined($options->{"tsigkeyname"}) && length($options->{"tsigkeyname"}) > 0) {
 				$self->assign_tsig_key($domain_id, $options->{"tsigkeyname"}, 'AXFR-MASTER-TSIG');
 			}
@@ -581,9 +581,9 @@ sub assign_tsig_key{
 	my $tsigkey_name = shift;
 	my $tsigkey_kind = shift;
 
-	die "bad input data to assign tsig key" unless defined($domain_id) && ref($domain_id) eq "" 
-		&& defined($tsigkey_name) && ref($tsigkey_name) eq "" 
-		&& defined($tsigkey_kind) && ref($tsigkey_kind) eq "";
+	die "bad or missing domain_id during assign tsig key" unless defined($domain_id) && ref($domain_id) eq "";
+	die "bad or missing tsigkey_name during assign tsig key" unless defined($tsigkey_name) && ref($tsigkey_name) eq "";
+	die "bad or missing tsigkey_kind during assign tsig key" unless defined($tsigkey_kind) && ref($tsigkey_kind) eq "";
 
 	$domain_id = $self->dbi->quote($domain_id);
 	$tsigkey_name = $self->dbi->quote($tsigkey_name);

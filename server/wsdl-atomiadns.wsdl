@@ -1600,6 +1600,7 @@ atomiaDomainMetaDataItem is a struct with the following members:
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="domain" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the zone</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkey_name" type="xsd:string"><xsd:annotation><xsd:documentation>the name of the TSIG key</xsd:documentation></xsd:annotation></xsd:element>
+						<xsd:element minOccurs="1" maxOccurs="1" name="kind" type="xsd:string"><xsd:annotation><xsd:documentation>type of the TSIG key</xsd:documentation></xsd:annotation></xsd:element>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver_group_name" type="xsd:string"><xsd:annotation><xsd:documentation>the nameserver group that should host the zone</xsd:documentation></xsd:annotation></xsd:element>
 					</xsd:all>
 				</xsd:complexType>
