@@ -5,7 +5,7 @@
 
 Summary: SOAP-server for Atomia DNS
 Name: atomiadns-api
-Version: 1.1.60
+Version: 1.1.61
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -85,6 +85,8 @@ fi
 exit 0
 
 %changelog
+* Thu Oct 12 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.61-1
+- Bump version to 1.1.61
 * Mon Jun 19 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.60-1
 - Bump version to 1.1.60
 - Added support for PowerDNS 4.7.
