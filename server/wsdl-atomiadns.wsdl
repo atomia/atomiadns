@@ -233,28 +233,26 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="atomiaChangedZoneWithTSIG">
+			<xsd:complexType name="atomiaTSIGKeyItem">
 				<xsd:annotation><xsd:documentation>
-atomiaChangedZoneWithTSIG is a struct with the following members:
+atomiaTSIGKeyItem is a struct with the following members:
 || Member || Type || Description ||
-| id | int | the id of the change-row |
-| name | string | the name of the zone this change-row applies to |
-| changetime | int | he unix timestamp of this change (will be used as serial in SOA) |
-| tsigkeyname | string | the name of the TSIG key for this zone |
+| zone_id | int | the id of the zone |
+| zone_name | int | the name of the zone |
+| tsigkey_name | string | the name of the TSIG key for this zone |
 {excerpt:hidden=true}{excerpt}
 				</xsd:documentation></xsd:annotation>
 				<xsd:all>
-					<xsd:element minOccurs="1" maxOccurs="1" name="id" type="xsd:long"/>
-					<xsd:element minOccurs="1" maxOccurs="1" name="name" type="xsd:string"/>
-					<xsd:element minOccurs="1" maxOccurs="1" name="changetime" type="xsd:int"/>
-					<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeyname" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zone_id" type="xsd:long"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="zone_name" type="xsd:string"/>
+					<xsd:element minOccurs="1" maxOccurs="1" name="tsigkey_name" type="xsd:string"/>
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="atomiaChangesWithTSIG">
-				<xsd:annotation><xsd:documentation>atomiaChangesWithTSIG is an array of atomiaChangedZoneWithTSIG-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaTSIGKeyList">
+				<xsd:annotation><xsd:documentation>atomiaTSIGKeyList is an array of atomiaTSIGKeyItem-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="changedzonewithtsig" type="atomiaChangedZoneWithTSIG" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="tsigkeyitem" type="atomiaTSIGKeyItem" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -1680,24 +1678,7 @@ atomiaDomainMetaDataItem is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
-			<xsd:element name="GetChangedZonesBatchWithTSIG">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
-						<xsd:element minOccurs="1" maxOccurs="1" name="num" type="xsd:int"><xsd:annotation><xsd:documentation>the maximum number of changes to return</xsd:documentation></xsd:annotation></xsd:element>
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="GetChangedZonesBatchWithTSIGResponse">
-				<xsd:complexType>
-					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changeswithtsig" type="atomiaChangesWithTSIG"/>
-					</xsd:all>
-				</xsd:complexType>
-			</xsd:element>
-
-			<xsd:element name="GetChangedSlaveZonesWithTSIG">
+			<xsd:element name="GetZonesTSIGKeys">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
@@ -1705,10 +1686,26 @@ atomiaDomainMetaDataItem is a struct with the following members:
 				</xsd:complexType>
 			</xsd:element>
 
-			<xsd:element name="GetChangedSlaveZonesWithTSIGResponse">
+			<xsd:element name="GetZonesTSIGKeysResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="changeswithtsig" type="atomiaChangesWithTSIG"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeylist" type="atomiaTSIGKeyList"/>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetSlavezonesTSIGKeys">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="nameserver" type="xsd:string"><xsd:annotation><xsd:documentation>the servername to fetch changes for</xsd:documentation></xsd:annotation></xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetSlavezonesTSIGKeysResponse">
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeylist" type="atomiaTSIGKeyList"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -2424,22 +2421,22 @@ atomiaDomainMetaDataItem is a struct with the following members:
 		<part name="parameters" element="tns:UnassignTSIGKeyResponse"/>
 	</message>
 
-	<message name="GetChangedZonesBatchWithTSIGInput">
-		<documentation>Fetches a list of all changed zones for a nameserver, but limit response to a number of changes and include a TSIG key name for the selected zone.</documentation>
-		<part name="parameters" element="tns:GetChangedZonesBatchWithTSIG"/>
+	<message name="GetZonesTSIGKeysInput">
+		<documentation>Fetches all TSIG key names, along with zone id and zone name for all zones, for a selected nameserver.</documentation>
+		<part name="parameters" element="tns:GetZonesTSIGKeys"/>
 	</message>
 
-	<message name="GetChangedZonesBatchWithTSIGOutput">
-		<part name="parameters" element="tns:GetChangedZonesBatchWithTSIGResponse"/>
+	<message name="GetZonesTSIGKeysOutput">
+		<part name="parameters" element="tns:GetZonesTSIGKeysResponse"/>
 	</message>
 
-	<message name="GetChangedSlaveZonesWithTSIGInput">
-		<documentation>Fetches a list of all changed slave-zones for a nameserver and includes a TSIG key name for the selected slave-zone.</documentation>
-		<part name="parameters" element="tns:GetChangedSlaveZonesWithTSIG"/>
+	<message name="GetSlavezonesTSIGKeysInput">
+		<documentation>Fetches all TSIG key names, along with slavezone id and slavezone name for all slavezones, for a selected nameserver.</documentation>
+		<part name="parameters" element="tns:GetSlavezonesTSIGKeys"/>
 	</message>
 
-	<message name="GetChangedSlaveZonesWithTSIGOutput">
-		<part name="parameters" element="tns:GetChangedSlaveZonesWithTSIGResponse"/>
+	<message name="GetSlavezonesTSIGKeysOutput">
+		<part name="parameters" element="tns:GetSlavezonesTSIGKeysResponse"/>
 	</message>
 
 	<message name="SetZoneStatusInput">
@@ -3118,18 +3115,18 @@ atomiaDomainMetaDataItem is a struct with the following members:
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
-		<operation name="GetChangedZonesBatchWithTSIG">
-			<input message="tns:GetChangedZonesBatchWithTSIGInput"/>
-			<output message="tns:GetChangedZonesBatchWithTSIGOutput"/>
+		<operation name="GetZonesTSIGKeys">
+			<input message="tns:GetZonesTSIGKeysInput"/>
+			<output message="tns:GetZonesTSIGKeysOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
 			<fault message="tns:InternalErrorFaultMessage" name="InternalErrorFault" />
 		</operation>
 
-		<operation name="GetChangedSlaveZonesWithTSIG">
-			<input message="tns:GetChangedSlaveZonesWithTSIGInput"/>
-			<output message="tns:GetChangedSlaveZonesWithTSIGOutput"/>
+		<operation name="GetSlavezonesTSIGKeys">
+			<input message="tns:GetSlavezonesTSIGKeysInput"/>
+			<output message="tns:GetSlavezonesTSIGKeysOutput"/>
 			<fault message="tns:LogicalErrorFaultMessage" name="LogicalErrorFault" />
 			<fault message="tns:InvalidParametersErrorFaultMessage" name="InvalidParametersErrorFault" />
 			<fault message="tns:SystemErrorFaultMessage" name="SystemErrorFault" />
@@ -3959,9 +3956,9 @@ atomiaDomainMetaDataItem is a struct with the following members:
 			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
-		<operation name="GetChangedZonesBatchWithTSIG">
-			<documentation>Fetches a list of all changed zones for a nameserver, but limit response to a number of changes and include a TSIG key name for the selected zone.</documentation>
-			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedZonesBatchWithTSIG"/>
+		<operation name="GetZonesTSIGKeys">
+			<documentation>Fetches all TSIG key names, along with zone id and zone name for all zones.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetZonesTSIGKeys"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>
@@ -3970,9 +3967,9 @@ atomiaDomainMetaDataItem is a struct with the following members:
 			<fault name="InternalErrorFault"><soap:fault name="InternalErrorFault" use="literal" /></fault>
 		</operation>
 
-		<operation name="GetChangedSlaveZonesWithTSIG">
-			<documentation>Fetches a list of all changed slave-zones for a nameserver and includes a TSIG key name for the selected slave-zone.</documentation>
-			<soap:operation soapAction="urn:Atomia::DNS::Server#GetChangedSlaveZonesWithTSIG"/>
+		<operation name="GetSlavezonesTSIGKeys">
+			<documentation>Fetches all TSIG key names, along with slavezone id and slavezone name for all slavezones, for a selected nameserver.</documentation>
+			<soap:operation soapAction="urn:Atomia::DNS::Server#GetSlavezonesTSIGKeys"/>
 			<input><soap:body use="literal"/></input>
 			<output><soap:body use="literal"/></output>
 			<fault name="LogicalErrorFault"><soap:fault name="LogicalErrorFault" use="literal" /></fault>

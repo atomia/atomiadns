@@ -22,6 +22,6 @@
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/ds_set.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/external_keyset.xml" />
 <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/zskinfo.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/changedzonewithtsig.xml" />
-<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/changeswithtsig.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/tsigkeyitem.xml" />
+<xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="types/tsigkeylist.xml" />
 </section>

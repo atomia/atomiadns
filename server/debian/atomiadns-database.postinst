@@ -683,8 +683,8 @@ if [ $retval != 0 ]; then
 				recreate_procedure "unassigntsigkey"
 				recreate_ddl_procedure "domainmetadata_change_update"
 				create_trigger "domainmetadata_change_trigger"
-				recreate_procedure "getchangedzonesbatchwithtsig"
-				recreate_procedure "getchangedslavezoneswithtsig"
+				recreate_procedure "getzonestsigkeys"
+				recreate_procedure "getslavezonestsigkeys"
 			fi
 
 			set_schema_version "$latest_version"

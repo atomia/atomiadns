@@ -20,6 +20,6 @@
 <listitem><para><link linkend="datatype-ds_set">ds_set Datatype - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="datatype-external_keyset">external_keyset Datatype - Atomia DNS API</link></para></listitem>
 <listitem><para><link linkend="datatype-zskinfo">zskinfo Datatype - Atomia DNS API</link></para></listitem>
-<listitem><para><link linkend="datatype-changedzonewithtsig">changedzonewithtsig Datatype - Atomia DNS API</link></para></listitem>
-<listitem><para><link linkend="datatype-changeswithtsig">changeswithtsig Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-tsigkeyitem">tsigkeyitem Datatype - Atomia DNS API</link></para></listitem>
+<listitem><para><link linkend="datatype-tsigkeylist">tsigkeylist Datatype - Atomia DNS API</link></para></listitem>
 </itemizedlist>

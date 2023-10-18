@@ -35,8 +35,8 @@ my $type_mappings = {
 	"atomiaFindResponse" => "findresponse",
 	"atomiaMetadata" => "zonemetadata",
 	"atomiaMetadataArray" => "zonemetadata[]",
-	"atomiaChangesWithTSIG" => "changeswithtsig",
-	"atomiaChangedZoneWithTSIG" => "changedzonewithtsig",
+	"atomiaTSIGKeyList" => "tsigkeylist",
+	"atomiaTSIGKeyItem" => "tsigkeyitem",
 };
 
 use XML::XPath;

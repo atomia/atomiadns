@@ -1,9 +1,7 @@
 
-[changedzonewithtsig|changedzonewithtsig Datatype - Atomia DNS API] is a struct with the following members:
+[tsigkeyitem|tsigkeyitem Datatype - Atomia DNS API] is a struct with the following members:
 || Member || Type || Description ||
-| id | int | the id of the change-row |
-| name | string | the name of the zone this change-row applies to |
-| changetime | int | he unix timestamp of this change (will be used as serial in SOA) |
-| tsigkeyname | string | the name of the TSIG key for this zone |
+| zone_id | int | the id of the zone |
+| zone_name | int | the name of the zone |
+| tsigkey_name | string | the name of the TSIG key for this zone |
 {excerpt:hidden=true}{excerpt}
-				
