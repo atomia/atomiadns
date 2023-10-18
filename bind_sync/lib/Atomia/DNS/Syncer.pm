@@ -203,19 +203,25 @@ sub reload_updated_slavezones {
 
 	my $zones;
 	
-	if (defined($self->config->{"disable_tsig_keys"}) && $self->config->{"disable_tsig_keys"} eq "1") {
-		$zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
-		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+	$zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
+
+	$zones->result && ref($zones->result) eq "ARRAY";
+	$zones = $zones->result;
 	
-		$zones->result && ref($zones->result) eq "ARRAY";
-		$zones = $zones->result;
+	my $tsigkeys_result;
+
+	if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
+		$tsigkeys_result = $self->soap->GetSlavezonesTSIGKeys($self->config->{"servername"} || die("you have to specify servername in config"));
+		$tsigkeys_result = $tsigkeys_result->result;
 	}
-	else {
-		$zones = $self->soap->GetChangedSlaveZonesWithTSIG($self->config->{"servername"} || die("you have to specify servername in config"));
-		die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
-		
-		$zones->result && ref($zones->result) eq "ARRAY";
-		$zones = $zones->result;
+
+	my %tsigkeys;
+	foreach my $tsigkey (@$tsigkeys_result) {
+		my $zone_name = $tsigkey->{"zone_name"};
+		my $tsigkey_name = $tsigkey->{"tsigkey_name"};
+
+		$tsigkeys{$zone_name} = $tsigkey_name;
 	}
 
 	return if scalar(@$zones) == 0;
@@ -233,9 +239,12 @@ sub reload_updated_slavezones {
 			$zone = $zone->[0];
 
 			if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
-				my %zone_hash = %$zone;
-				$zone_hash{tsigkeyname} = $zonerec->{"tsigkeyname"};
-				$zone = \%zone_hash;
+				if (exists $tsigkeys{$zonename}) {
+					# dereference zone hash, append tsigkeyname, then reference it again and put it back into $zone in order to have tsigkeyname available later
+					my %zone_hash = %$zone;
+					$zone_hash{tsigkeyname} = $tsigkeys{$zonename};
+					$zone = \%zone_hash;
+				}
 			}
 
 			push @$changes, $zonerec->{"id"};

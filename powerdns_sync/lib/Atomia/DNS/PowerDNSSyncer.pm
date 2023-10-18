@@ -379,7 +379,7 @@ sub reload_updated_slavezones {
 			die("error fetching zone for $zonename") unless !defined($zone) || (ref($zone) eq "HASH" && defined($zone->{"master"}));
 
 			if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
-				# dereference zone hash, append tsigkeyname, then reference it again and put it back into $zone
+				# dereference zone hash, append tsigkeyname, then reference it again and put it back into $zone in order to have tsigkeyname available later
 				if (exists $tsigkeys{$zonename}) {
 					my %zone_hash = %$zone;
 					$zone_hash{tsigkeyname} = $tsigkeys{$zonename};
