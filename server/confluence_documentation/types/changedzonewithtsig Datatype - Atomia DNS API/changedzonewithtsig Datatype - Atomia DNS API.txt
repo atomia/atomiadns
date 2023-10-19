@@ -1,0 +1,7 @@
+
+[tsigkeyassignmentitem|tsigkeyassignmentitem Datatype - Atomia DNS API] is a struct with the following members:
+|| Member || Type || Description ||
+| zone_id | int | the id of the zone |
+| zone_name | int | the name of the zone |
+| tsigkey_name | string | the name of the TSIG key for this zone |
+{excerpt:hidden=true}{excerpt}

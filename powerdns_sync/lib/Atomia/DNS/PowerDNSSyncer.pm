@@ -96,9 +96,27 @@ sub sync_dnssec_keys {
 sub reload_updated_zones {
 	my $self = shift;
 
-	my $zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
+	my $zones;
+
+	$zones = $self->soap->GetChangedZonesBatch($self->config->{"servername"} || die("you have to specify servername in config"), 10000);
 	die("error fetching updated zones, got no or bad result from soap-server") unless defined($zones) &&
 		$zones->result && ref($zones->result) eq "ARRAY";
+	
+	my $tsigkeys_result;
+
+	if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
+		$tsigkeys_result = $self->soap->GetZonesTSIGKeys($self->config->{"servername"} || die("you have to specify servername in config"));
+		$tsigkeys_result = $tsigkeys_result->result;
+	}
+	
+	my %tsigkeys;
+	foreach my $tsigkey (@$tsigkeys_result) {
+		my $zone_name = $tsigkey->{"zone_name"};
+		my $tsigkey_name = $tsigkey->{"tsigkey_name"};
+
+		$tsigkeys{$zone_name} = $tsigkey_name;
+	}
+
 	$zones = $zones->result;
 
 	my $changes_to_keep = [];
@@ -149,6 +167,12 @@ sub reload_updated_zones {
 		foreach my $zone (@batch) {
 			my $transaction = undef;
 			my $change_id = undef;
+
+			if (exists $tsigkeys{$zone->{"name"}}) {
+				my $tsigkey_name = $tsigkeys{$zone->{"name"}};
+
+				$zone->{"tsigkeyname"} = $tsigkey_name;
+			}
 
 			eval {
 				$change_id = $zone->{"id"} || die("bad data from GetUpdatedZones, id not specified");
@@ -315,10 +339,27 @@ sub full_reload_slavezones {
 sub reload_updated_slavezones {
 	my $self = shift;
 
-	my $zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
+	my $zones;
+
+	$zones = $self->soap->GetChangedSlaveZones($self->config->{"servername"} || die("you have to specify servername in config"));
 	die("error fetching updated slave zones, got no or bad result from soap-server") unless defined($zones) &&
 		$zones->result && ref($zones->result) eq "ARRAY";
 	$zones = $zones->result;
+
+	my $tsigkeys_result;
+
+	if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
+		$tsigkeys_result = $self->soap->GetSlavezonesTSIGKeys($self->config->{"servername"} || die("you have to specify servername in config"));
+		$tsigkeys_result = $tsigkeys_result->result;
+	}
+
+	my %tsigkeys;
+	foreach my $tsigkey (@$tsigkeys_result) {
+		my $zone_name = $tsigkey->{"zone_name"};
+		my $tsigkey_name = $tsigkey->{"tsigkey_name"};
+
+		$tsigkeys{$zone_name} = $tsigkey_name;
+	}
 
 	return if scalar(@$zones) == 0;
 
@@ -336,6 +377,15 @@ sub reload_updated_slavezones {
 			$zone = $zone->[0];
 
 			die("error fetching zone for $zonename") unless !defined($zone) || (ref($zone) eq "HASH" && defined($zone->{"master"}));
+
+			if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
+				# dereference zone hash, append tsigkeyname, then reference it again and put it back into $zone in order to have tsigkeyname available later
+				if (exists $tsigkeys{$zonename}) {
+					my %zone_hash = %$zone;
+					$zone_hash{tsigkeyname} = $tsigkeys{$zonename};
+					$zone = \%zone_hash;
+				}
+			}
 
 			$self->sync_slave_zone($zonename, $zone);
 			$self->soap->MarkSlaveZoneUpdated($zonerec->{"id"}, "OK", "");
@@ -578,9 +628,9 @@ sub sync_domainmetadata {
 	my $domainmetadata = shift;
 
 	if (defined($domainmetadata)) {
-		$self->database->assign_tsig_key($domain_name, $domainmetadata);
+		$self->database->assign_tsig_key_deprecated($domain_name, $domainmetadata);
 	} else {
-		$self->database->unassign_tsig_key($domain_name);
+		$self->database->unassign_tsig_key_deprecated($domain_name);
 	}
 }
 

@@ -40,7 +40,7 @@ CREATE TABLE atomiadns_schemaversion (
 	version INT
 );
 
-INSERT INTO atomiadns_schemaversion (version) VALUES (94);
+INSERT INTO atomiadns_schemaversion (version) VALUES (95);
 
 CREATE TABLE allow_zonetransfer (
         id SERIAL PRIMARY KEY NOT NULL,
@@ -345,9 +345,10 @@ EXECUTE PROCEDURE slavezone_update();
 CREATE TABLE tsigkey (
 	id BIGSERIAL PRIMARY KEY NOT NULL,
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
-    name VARCHAR(255) NOT NULL UNIQUE CONSTRAINT tsig_name_format CHECK (name IS NULL OR name ~* '^[a-zA-Z0-9_-]*'),
+    name VARCHAR(255) NOT NULL CONSTRAINT tsig_name_format CHECK (name IS NULL OR name ~* '^[a-zA-Z0-9_-]*'),
 	secret VARCHAR(255) CONSTRAINT tsig_format CHECK (secret IS NULL OR secret ~* '^[a-zA-Z0-9+/=]*'),
-	algorithm VARCHAR(255)
+	algorithm VARCHAR(255),
+	UNIQUE(nameserver_group_id, name)
 );
 
 CREATE TABLE tsigkey_change (
@@ -386,52 +387,44 @@ CREATE TABLE domainmetadata (
 	id BIGSERIAL PRIMARY KEY NOT NULL,
 	nameserver_group_id INT NOT NULL REFERENCES nameserver_group,
 	domain_id INT NOT NULL,
-	kind VARCHAR(255) NOT NULL CONSTRAINT kind_format CHECK (kind IN ('TSIG-ALLOW-AXFR','AXFR-MASTER-TSIG')),
-    tsigkey_name VARCHAR(255) NOT NULL CONSTRAINT tsig_name_format CHECK (tsigkey_name ~* '^[a-zA-Z0-9_-]*')
+	kind VARCHAR(255) NOT NULL CONSTRAINT kind_format CHECK (kind IN ('master','slave')),
+    tsigkey_name VARCHAR(255) NOT NULL CONSTRAINT tsig_name_format CHECK (tsigkey_name ~* '^[a-zA-Z0-9_-]*'),
+	UNIQUE(domain_id, kind)
 );
 
-CREATE TABLE domainmetadata_change (
-	id BIGSERIAL PRIMARY KEY NOT NULL,
-	nameserver_id INT NOT NULL REFERENCES nameserver,
-	domain_id VARCHAR(255) NOT NULL,
-	status changetype NOT NULL DEFAULT 'PENDING',
-	errormessage TEXT NULL,
-	changetime INT NOT NULL DEFAULT EXTRACT(EPOCH FROM CURRENT_TIMESTAMP)
-);
-
-CREATE OR REPLACE FUNCTION domainmetadata_update() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION domainmetadata_change_update() RETURNS trigger AS $$
 DECLARE
 	domain_name_var varchar;
 BEGIN
 	IF TG_OP = 'DELETE' THEN
-		IF OLD.kind = 'TSIG-ALLOW-AXFR' THEN
+		IF OLD.kind IN ('master', 'TSIG-ALLOW-AXFR') THEN
 			SELECT zone.name INTO domain_name_var FROM zone WHERE zone.id = OLD.domain_id;
+			INSERT INTO change (nameserver_id, zone)
+				SELECT nameserver.id, domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
 		ELSE
 			SELECT slavezone.name INTO domain_name_var FROM slavezone WHERE slavezone.id = OLD.domain_id;
+			INSERT INTO slavezone_change (nameserver_id, zone)
+				SELECT nameserver.id, domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
 		END IF;
-
-		INSERT INTO domainmetadata_change (nameserver_id, domain_id)
-		SELECT nameserver.id, OLD.id || ',' || domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
+		
 		RETURN OLD;
-	ELSIF TG_OP = 'UPDATE' THEN
-		INSERT INTO domainmetadata_change (nameserver_id, domain_id)
-		SELECT nameserver.id, OLD.id FROM nameserver WHERE nameserver.nameserver_group_id = OLD.nameserver_group_id;
 	END IF;
 
-	IF NEW.kind = 'TSIG-ALLOW-AXFR' THEN
+	IF NEW.kind = 'master' THEN
 		SELECT zone.name INTO domain_name_var FROM zone WHERE zone.id = NEW.domain_id;
+		INSERT INTO change (nameserver_id, zone)
+			SELECT nameserver.id, domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
 	ELSE
 		SELECT slavezone.name INTO domain_name_var FROM slavezone WHERE slavezone.id = NEW.domain_id;
+		INSERT INTO slavezone_change (nameserver_id, zone)
+			SELECT nameserver.id, domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
 	END IF;
-
-	INSERT INTO domainmetadata_change (nameserver_id, domain_id)
-	SELECT nameserver.id, NEW.id || ',' || domain_name_var FROM nameserver WHERE nameserver.nameserver_group_id = NEW.nameserver_group_id;
 
 	RETURN NEW;
 END; $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER domainmetadata_trigger AFTER INSERT OR UPDATE OR DELETE
+CREATE CONSTRAINT TRIGGER domainmetadata_change_trigger AFTER INSERT OR DELETE
 ON domainmetadata
 DEFERRABLE INITIALLY DEFERRED
 FOR EACH ROW
-EXECUTE PROCEDURE domainmetadata_update();
+EXECUTE PROCEDURE domainmetadata_change_update();

@@ -253,6 +253,15 @@ sub add_zone {
 			$self->dbi->do($query) || die "error updating record disabled property, query=$query: $DBI::errstr";
 		}
 
+		if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
+			if(defined($zone->{"tsigkeyname"}) && length($zone->{"tsigkeyname"}) > 0) {
+				$self->assign_tsig_key($domain_id, $zone->{"tsigkeyname"}, 'TSIG-ALLOW-AXFR');
+			}
+			else {
+				$self->unassign_tsig_key($domain_id);
+			}	
+		}
+
 		$self->dbi->commit();
 	};
 
@@ -409,10 +418,23 @@ sub add_slave_zone {
 
 		$self->dbi->do($query) || die "error inserting domain row: $DBI::errstr";
 
+		my $domain_id;
+		if (defined($tsig) || (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0")) {
+			$domain_id = $self->dbi(1)->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
+		}
+
 		if (defined($tsig)) {
-			my $domain_id = $self->dbi(1)->last_insert_id(undef, undef, "domains", undef) || die "error retrieving last_insert_id";
 			$query = "INSERT INTO outbound_tsig_keys (domain_id, secret, name) VALUES ($domain_id, $tsig, $tsig_name)";
 			$self->dbi->do($query) || die "error inserting tsig row using $query: $DBI::errstr";
+		}
+
+		if (!defined($self->config->{"disable_tsig_keys"}) || $self->config->{"disable_tsig_keys"} eq "0") {
+			if(defined($options->{"tsigkeyname"}) && length($options->{"tsigkeyname"}) > 0) {
+				$self->assign_tsig_key($domain_id, $options->{"tsigkeyname"}, 'AXFR-MASTER-TSIG');
+			}
+			else {
+				$self->unassign_tsig_key($domain_id);
+			}	
 		}
 
 		$self->dbi->commit();
@@ -493,7 +515,7 @@ sub remove_tsig_key {
 	}
 }
 
-sub assign_tsig_key {
+sub assign_tsig_key_deprecated {
 	my $self = shift;
 	my $domain_name = shift;
 	my $domainmetadata = shift;
@@ -529,7 +551,7 @@ sub assign_tsig_key {
 	}
 }
 
-sub unassign_tsig_key {
+sub unassign_tsig_key_deprecated {
 	my $self = shift;
 	my $domain_name = shift;
 
@@ -550,6 +572,42 @@ sub unassign_tsig_key {
 		
 		die "caught exception $exception, rollback successfull";
 	}
+}
+
+sub assign_tsig_key{
+	my $self = shift;
+	my $domain_id = shift;
+	my $tsigkey_name = shift;
+	my $tsigkey_kind = shift;
+
+	die "bad or missing domain_id during assign tsig key" unless defined($domain_id) && ref($domain_id) eq "";
+	die "bad or missing tsigkey_name during assign tsig key" unless defined($tsigkey_name) && ref($tsigkey_name) eq "";
+	die "bad or missing tsigkey_kind during assign tsig key" unless defined($tsigkey_kind) && ref($tsigkey_kind) eq "";
+
+	$domain_id = $self->dbi->quote($domain_id);
+	$tsigkey_name = $self->dbi->quote($tsigkey_name);
+	$tsigkey_kind = $self->dbi->quote($tsigkey_kind);
+
+	my $query;
+	my $domain_id_check = $self->dbi->selectrow_arrayref("SELECT id FROM domainmetadata WHERE domain_id = $domain_id AND kind = $tsigkey_kind");
+	if (defined($domain_id_check) && ref($domain_id_check) eq "ARRAY") {
+		# row already exists, update it
+		$query = "UPDATE domainmetadata SET content = $tsigkey_name WHERE domain_id = $domain_id AND kind = $tsigkey_kind";
+	}
+	else {
+		# row doesn't exist, add it
+		$query = "INSERT INTO domainmetadata (domain_id, kind, content) VALUES ($domain_id, $tsigkey_kind, $tsigkey_name)";
+	}
+
+	$self->dbi->do($query) || die "error inserting row: $DBI::errstr";
+}
+
+sub unassign_tsig_key {
+	my $self = shift;
+	my $domain_id = shift;
+
+	$domain_id = $self->dbi->quote($domain_id);
+	$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id AND kind IN ('TSIG-ALLOW-AXFR', 'AXFR-MASTER-TSIG')") || die "error unassigning tsigkey: $DBI::errstr";
 }
 
 1;
