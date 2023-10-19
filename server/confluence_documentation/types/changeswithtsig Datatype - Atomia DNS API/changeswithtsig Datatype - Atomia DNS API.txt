@@ -1,1 +1,1 @@
-[tsigkeylist|tsigkeylist Datatype - Atomia DNS API] is an array of [tsigkeyitem|tsigkeyitem Datatype - Atomia DNS API]-structs.
+[tsigkeyassignmentlist|tsigkeyassignmentlist Datatype - Atomia DNS API] is an array of [tsigkeyassignmentitem|tsigkeyassignmentitem Datatype - Atomia DNS API]-structs.

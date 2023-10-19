@@ -1,5 +1,5 @@
 
-[tsigkeyitem|tsigkeyitem Datatype - Atomia DNS API] is a struct with the following members:
+[tsigkeyassignmentitem|tsigkeyassignmentitem Datatype - Atomia DNS API] is a struct with the following members:
 || Member || Type || Description ||
 | zone_id | int | the id of the zone |
 | zone_name | int | the name of the zone |

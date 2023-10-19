@@ -225,9 +225,9 @@ atomiaChangedZone is a struct with the following members:
 				</xsd:sequence>
 			</xsd:complexType>
 
-			<xsd:complexType name="atomiaTSIGKeyItem">
+			<xsd:complexType name="atomiaTSIGKeyAssignmentItem">
 				<xsd:annotation><xsd:documentation>
-atomiaTSIGKeyItem is a struct with the following members:
+atomiaTSIGKeyAssignmentItem is a struct with the following members:
 || Member || Type || Description ||
 | zone_id | int | the id of the zone |
 | zone_name | int | the name of the zone |
@@ -241,10 +241,10 @@ atomiaTSIGKeyItem is a struct with the following members:
 				</xsd:all>
 			</xsd:complexType>
 
-			<xsd:complexType name="atomiaTSIGKeyList">
-				<xsd:annotation><xsd:documentation>atomiaTSIGKeyList is an array of atomiaTSIGKeyItem-structs.</xsd:documentation></xsd:annotation>
+			<xsd:complexType name="atomiaTSIGKeyAssignmentList">
+				<xsd:annotation><xsd:documentation>atomiaTSIGKeyAssignmentList is an array of atomiaTSIGKeyAssignmentItem-structs.</xsd:documentation></xsd:annotation>
 				<xsd:sequence>
-					<xsd:element minOccurs="1" maxOccurs="unbounded" name="tsigkeyitem" type="atomiaTSIGKeyItem" />
+					<xsd:element minOccurs="1" maxOccurs="unbounded" name="tsigkeyassignmentitem" type="atomiaTSIGKeyAssignmentItem" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -1581,7 +1581,7 @@ atomiaZSKInfo is a struct with the following members:
 			<xsd:element name="GetZonesTSIGKeysResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeylist" type="atomiaTSIGKeyList"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeyassignmentlist" type="atomiaTSIGKeyAssignmentList"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
@@ -1597,7 +1597,7 @@ atomiaZSKInfo is a struct with the following members:
 			<xsd:element name="GetSlavezonesTSIGKeysResponse">
 				<xsd:complexType>
 					<xsd:all>
-						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeylist" type="atomiaTSIGKeyList"/>
+						<xsd:element minOccurs="1" maxOccurs="1" name="tsigkeyassignmentlist" type="atomiaTSIGKeyAssignmentList"/>
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>

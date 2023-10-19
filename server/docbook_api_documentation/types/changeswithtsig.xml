@@ -1,3 +1,3 @@
-<section xml:id="datatype-tsigkeylist">
-<title>tsigkeylist Datatype - Atomia DNS API</title>
-<para><link linkend="datatype-tsigkeylist">tsigkeylist</link> is an array of <link linkend="datatype-tsigkeyitem">tsigkeyitem</link>-structs.</para></section>
+<section xml:id="datatype-tsigkeyassignmentlist">
+<title>tsigkeyassignmentlist Datatype - Atomia DNS API</title>
+<para><link linkend="datatype-tsigkeyassignmentlist">tsigkeyassignmentlist</link> is an array of <link linkend="datatype-tsigkeyassignmentitem">tsigkeyassignmentitem</link>-structs.</para></section>
