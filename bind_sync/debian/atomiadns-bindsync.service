@@ -1,10 +1,9 @@
 [Unit]
-Description=AtomiaDns Syncer service
+Description=AtomiaDns Bindsync service
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/atomiadns.conf
-ExecStart=/usr/bin/atomiadnssync updated 2>&1 | logger -t atomiadnssync_updated
+ExecStart=/usr/bin/atomiabindsync updated 2>&1 | logger -t atomiabindsync
 
 [Install]
 WantedBy=multi-user.target

@@ -1,3 +1,27 @@
+atomiadns-dyndns (1.1.61) hardy; urgency=low
+
+  * Bump version to 1.1.61
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Thu, 12 Oct 2023 05:50:59 -0700
+
+atomiadns-dyndns (1.1.60) hardy; urgency=low
+
+  * Bump version to 1.1.60
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 19 Jun 2023 01:51:25 -0700
+
+atomiadns-dyndns (1.1.59) hardy; urgency=low
+
+  * Bump version to 1.1.59
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Fri, 2 Jun 2023 04:32:19 -0700
+
+atomiadns-dyndns (1.1.58) hardy; urgency=low
+
+  * Bump version to 1.1.58
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Wed, 1 Mar 2023 04:41:37 -0500
+
 atomiadns-dyndns (1.1.57) hardy; urgency=low
 
   * Bump version to 1.1.57

@@ -1,3 +1,38 @@
+atomiadns-bindsync (1.1.61) hardy; urgency=low
+
+  * Bump version to 1.1.61
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Thu, 12 Oct 2023 05:50:59 -0700
+
+atomiadns-bindsync (1.1.60) hardy; urgency=low
+
+  * Bump version to 1.1.60
+  * Added support for PowerDNS 4.7.
+  * Added support for suspending a zone.
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 19 Jun 2023 01:51:25 -0700
+
+atomiadns-bindsync (1.1.59) hardy; urgency=low
+
+  * Bump version to 1.1.59
+  * Fix synchronization for large zones
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Fri, 2 Jun 2023 04:32:19 -0700
+
+atomiadns-bindsync (1.1.58) focal; urgency=low
+
+  * Add support for RHEL8
+  * Change binary to atomiabindsync
+  * Service name changed to atomiadns-bindsync
+  * Fix path consistency between RHEL and Ubuntu for bind slave zones
+  * Autogenerate rndc.key on package install if the key doesn't already exist
+  * Fix conflicting config files between atomiadns-bindsync and bind nameserver
+  * Fix missing dependencies
+  * Changed app name in log files to atomiabindsync
+  * Bump version to 1.1.58
+
+ -- Nemanja Zivkovic <nemanja.zivkovic@atomia.com>  Mon, 6 Mar 2023 12:00:00 +0000
+
 atomiadns-bindsync (1.1.57) hardy; urgency=low
 
   * Bump version to 1.1.57
