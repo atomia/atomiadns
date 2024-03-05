@@ -510,11 +510,16 @@ sub assign_tsig_key {
 
 		$domain_id = $self->dbi->quote($domain_id);
 		my $tsigkey_name = $self->dbi->quote($domainmetadata->{"tsigkey_name"});
-		my $kind = $self->dbi->quote($domainmetadata->{"kind"});
+		my $tsigkey_kind = $self->dbi->quote($domainmetadata->{"kind"});
 
-		$self->dbi->do("DELETE FROM domainmetadata WHERE domain_id = $domain_id") || die "error removing previous assignment to the same domain in assign_tsig_key: $DBI::errstr";
-
-		my $query = "INSERT INTO domainmetadata (domain_id, kind, content) VALUES ($domain_id, $kind, $tsigkey_name)";
+		my $query;
+		my $domain_id_check = $self->dbi->selectrow_arrayref("SELECT id FROM domainmetadata WHERE domain_id = $domain_id AND kind = $tsigkey_kind");
+		if (defined($domain_id_check) && ref($domain_id_check) eq "ARRAY") {
+			$query = "UPDATE domainmetadata SET content = $tsigkey_name WHERE domain_id = $domain_id AND kind = $tsigkey_kind";
+		}
+		else {
+			$query = "INSERT INTO domainmetadata (domain_id, kind, content) VALUES ($domain_id, $tsigkey_kind, $tsigkey_name)";
+		}
 
 		$self->dbi->do($query) || die "error inserting row: $DBI::errstr";
 
