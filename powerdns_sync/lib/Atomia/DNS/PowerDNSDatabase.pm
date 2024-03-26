@@ -16,7 +16,7 @@ sub BUILD {
 	my $self = shift;
 	$self->nsec3_iterations(defined($self->config->{"powerdns_nsec3_iterations"}) ? $self->config->{"powerdns_nsec3_iterations"} : 1);
 	my $salt = $self->config->{"powerdns_nsec3_salt"} || "ab";
-	die "powerdns_nsec3_salt should be one byte in hex format, like 7f" unless defined($salt) && $salt =~ /^[0-9A-F]{2}$/i;
+	die "powerdns_nsec3_salt should be one byte in hex format, like 7f or - to skip salting" unless defined($salt) && $salt =~ /^([0-9A-F]{2}|-)$/i;
 	$self->nsec3_salt(chr(hex($salt)));
 	$self->nsec3_salt_pres($salt);
 }
@@ -103,10 +103,10 @@ sub parse_record {
 		my $nsec3 = $label eq '@' ? $zone->{"name"} : lc($label . "." . $zone->{"name"});
 		my @parts = split(/\./, $nsec3);
 		$nsec3 = join("", map { pack("Ca*", length($_), $_) } @parts) . "\0";
-		$nsec3 = sha1($nsec3, $self->nsec3_salt);
+		$nsec3 = $self->nsec3_salt_pres eq '-' ? sha1($nsec3) : sha1($nsec3, $self->nsec3_salt);
 
 		for (my $idx = 0; $idx < $self->nsec3_iterations; $idx++) {
-			$nsec3 = sha1($nsec3, $self->nsec3_salt);
+			$nsec3 = $self->nsec3_salt_pres eq '-' ? sha1($nsec3) : sha1($nsec3, $self->nsec3_salt);
 		}
 
 		$ordername = lc(encode_base32hex($nsec3));
