@@ -11,6 +11,7 @@ has 'conn' => (is => 'rw', isa => 'Object');
 has 'nsec3_iterations' => (is => 'rw', isa => 'Int');
 has 'nsec3_salt' => (is => 'rw', isa => 'Str');
 has 'nsec3_salt_pres' => (is => 'rw', isa => 'Str');
+has 'nsec3_opt_out' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
 	my $self = shift;
@@ -19,6 +20,9 @@ sub BUILD {
 	die "powerdns_nsec3_salt should be one byte in hex format, like 7f or - to skip salting" unless defined($salt) && $salt =~ /^([0-9A-F]{2}|-)$/i;
 	$self->nsec3_salt(chr(hex($salt)));
 	$self->nsec3_salt_pres($salt);
+
+	my $opt_out = $self->config->{"powerdns_nsec3_opt_out"} || "1";
+	$self->nsec3_opt_out($opt_out);
 }
 
 sub validate_config {
@@ -311,7 +315,7 @@ sub set_dnssec_metadata {
 		} elsif (defined($presigned) && !$presigned && !$db_correct_nsec) {
 			$self->dbi->do("DELETE FROM global_domainmetadata");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('SOA-EDIT', 'INCEPTION-EPOCH')");
-			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3PARAM', '1 1 " . $self->nsec3_iterations . " " . $self->nsec3_salt_pres . "')") if $nsec_type ne 'NSEC';
+			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3PARAM', '1 " . $self->nsec3_opt_out . " " . $self->nsec3_iterations . " " . $self->nsec3_salt_pres . "')") if $nsec_type ne 'NSEC';
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3NARROW', '1')") if $nsec_type eq 'NSEC3NARROW';
 			$self->dbi->commit();
 		} elsif (!defined($presigned) && !$db_correct_notify) {
