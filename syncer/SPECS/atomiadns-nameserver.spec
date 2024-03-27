@@ -108,7 +108,7 @@ fi
 exit 0
 
 %changelog
-* Ons Mar 27 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.63-1
+* Wed Mar 27 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.63-1
 - Add atomiapowerdnssync update_dnssec_settings
 * Thu Oct 12 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.61-1
 - Bump version to 1.1.61
