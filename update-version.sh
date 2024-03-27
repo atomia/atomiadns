@@ -1,5 +1,8 @@
 #!/bin/sh
 
+LANG=C
+export LANG
+
 faketty() {
 	if uname -a | grep -q Darwin; then
 		script -q /dev/null $@
