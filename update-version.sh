@@ -1,5 +1,13 @@
 #!/bin/sh
 
+faketty() {
+	if uname -a | grep -q Darwin; then
+		script -q /dev/null $@
+	else
+		$@
+	fi
+}
+
 if [ -z "$1" ] || [ -z "$2" ]; then
 	echo "usage: $0 version message"
 	echo "current version: "`grep ^Version syncer/SPECS/atomiadns-nameserver.spec | cut -d " " -f 2`
@@ -46,21 +54,21 @@ find dyndns syncer server powerdns_sync bind_sync webapp -name "*.spec" -type f 
 	goto_changelog="/^%%changelog/+1i"
 	change_header="* $(date +"%a %b %d %Y") $author - ${version}-1"
 	ed_script=`printf "$version_subs\n$require_subs\n$goto_changelog\n$change_header\n- $message\n.\nw\nq\n"`
-	echo "$ed_script" | ed "$f"
+	echo "$ed_script" | faketty ed "$f"
 done
 
 # Update */Makefile.PL
 find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name "Makefile.PL" | while read f; do
 	version_subs="%%s/'VERSION' => '.*',/'VERSION' => '$version',/"
 	ed_script=`printf "$version_subs\nw\nq\n"`
-	echo "$ed_script" | ed "$f"
+	echo "$ed_script" | faketty ed "$f"
 done
 
 # Update */control
 find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name "control" | while read f; do
 	version_subs='%%s/\\\\(atomiadns-[a-z]*\\\\) (>= [^)]*)/\\\\1 (>= '"$version"')/g'
 	ed_script=`printf "$version_subs\nw\nq\n"`
-	echo "$ed_script" | ed "$f"
+	echo "$ed_script" | faketty ed "$f"
 done
 
 # Update */changelog
@@ -69,7 +77,9 @@ find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name 
 	package=`grep " hardy; " "$f" | head -n 1 | cut -d " " -f 1`
 	changelog=`printf "%s (%s) hardy; urgency=low\n\n  * %s\n\n -- $author  %s" "$package" "$version" "$message" "$date"`
 	ed_script=`printf "1i\n%s\n\n.\nw\nq\n" "$changelog"`
-	echo "$ed_script" | ed "$f"
+	if ! grep -q "[(]$version[)]" "$f"; then
+		echo "$ed_script" | faketty ed "$f"
+	fi
 done
 
 # Update package.json

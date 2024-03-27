@@ -39,6 +39,8 @@ Complete master SOAP server for Atomia DNS
 %changelog
 * Ons Mar 27 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.63-1
 - Add atomiapowerdnssync update_dnssec_settings
+* Ons Mar 27 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.63-1
+- Add atomiapowerdnssync update_dnssec_settings
 * Tis Mar 26 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.62-1
 - Fix NSEC3 ordername with PowerDNS
 * Thu Oct 12 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.61-1
