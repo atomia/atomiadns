@@ -39,6 +39,10 @@ Marks all zones as changed so that the update-process propagates them on all nam
 
 Marks all slave zones as changed so that the update-process propagates them on all nameservers.
 
+=item update_dnssec_settings
+
+Forces an update of the DNSSEC settings in the global_domainmetadata table.
+
 =item updated
 
 Fetches a list of changed zones and adds/removes them from the PowerDNS database.
@@ -125,7 +129,7 @@ $| = 1;
 
 if (scalar(@ARGV) < 1) {
 	print "usage: $0 mode\n";
-	print "where mode is one of full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates, import_zonefile, set_external_dnssec_keys\n";
+	print "where mode is one of full_reload_online, full_reload_slavezones, add_server, remove_server, get_server, disable_updates, enable_updates, import_zonefile, set_external_dnssec_keys, update_dnssec_settings\n";
 	exit 1;
 }
 
@@ -211,6 +215,19 @@ SWITCH: {
 			} else {
 				handle_exception($exception);
 			}
+		}
+		last SWITCH;
+	};
+
+	/^update_dnssec_settings$/i && do {
+		eval {
+			my $syncer = Atomia::DNS::PowerDNSSyncer->new(configfile => "/etc/atomiadns.conf");
+			$syncer->sync_dnssec_keys(1);
+		};
+
+		my $exception = $@;
+		if ($exception) {
+			handle_exception($exception);
 		}
 		last SWITCH;
 	};

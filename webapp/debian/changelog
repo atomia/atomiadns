@@ -1,3 +1,9 @@
+atomiadns-webapp (1.1.63) hardy; urgency=low
+
+  * Add atomiapowerdnssync update_dnssec_settings
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Ons, 27 Mar 2024 15:00:52 +0100
+
 atomiadns-webapp (1.1.62) hardy; urgency=low
 
   * Fix NSEC3 ordername with PowerDNS

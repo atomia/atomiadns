@@ -5,7 +5,7 @@
 
 Summary: Complete master SOAP server for Atomia DNS
 Name: atomiadns-masterserver
-Version: 1.1.62
+Version: 1.1.63
 Release: 1%{?dist}
 License: Commercial
 Group: System Environment/Daemons
@@ -18,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildArch: noarch
 
-Requires: atomiadns-api >= 1.1.62 atomiadns-database >= 1.1.62
+Requires: atomiadns-api >= 1.1.63 atomiadns-database >= 1.1.63
 
 %description
 Complete master SOAP server for Atomia DNS
@@ -37,6 +37,8 @@ Complete master SOAP server for Atomia DNS
 %files
 
 %changelog
+* Ons Mar 27 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.63-1
+- Add atomiapowerdnssync update_dnssec_settings
 * Tis Mar 26 2024 Jimmy Bergman <jimmy@sigint.se> - 1.1.62-1
 - Fix NSEC3 ordername with PowerDNS
 * Thu Oct 12 2023 Nemanja Zivkovic <nemanja.zivkovic@atomia.com> - 1.1.61-1

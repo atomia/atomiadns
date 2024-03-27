@@ -77,6 +77,7 @@ sub sync_zone_transfers {
 
 sub sync_dnssec_keys {
 	my $self = shift;
+	my $force = shift;
 
 	if (!defined($self->config->{"powerdns_sync_keys"}) || $self->config->{"powerdns_sync_keys"} ne "0") {
 		my $keyset = $self->soap->GetDNSSECKeys();
@@ -85,11 +86,11 @@ sub sync_dnssec_keys {
 		$keyset = $keyset->result;
 
 		$self->database->sync_keyset($keyset);
-		$self->database->set_dnssec_metadata(0, undef, $self->config->{"powerdns_zone_nsec_format"});
+		$self->database->set_dnssec_metadata(0, undef, $self->config->{"powerdns_zone_nsec_format"}, $force);
 	} elsif (defined($self->config->{"powerdns_presigned_dnssec"}) && $self->config->{"powerdns_presigned_dnssec"} eq "1") {
-		$self->database->set_dnssec_metadata(1, $self->config->{"powerdns_master_also_notify"}, $self->config->{"powerdns_zone_nsec_format"});
+		$self->database->set_dnssec_metadata(1, $self->config->{"powerdns_master_also_notify"}, $self->config->{"powerdns_zone_nsec_format"}, $force);
 	} elsif (defined($self->config->{"powerdns_master_also_notify"})) {
-		$self->database->set_dnssec_metadata(undef, $self->config->{"powerdns_master_also_notify"}, $self->config->{"powerdns_zone_nsec_format"});
+		$self->database->set_dnssec_metadata(undef, $self->config->{"powerdns_master_also_notify"}, $self->config->{"powerdns_zone_nsec_format"}, $force);
 	}
 }
 
@@ -526,8 +527,8 @@ sub reload_updated_domainmetadata {
 		my $domainmetadata_id_and_domain_name = $change_table_domain_id->{"domain_id"};
 		
 		my @domainmetadata_id_and_domain_name_arr = split(',', $domainmetadata_id_and_domain_name);
-		my $domainmetadata_id = @domainmetadata_id_and_domain_name_arr[0];
-		my $domain_name = @domainmetadata_id_and_domain_name_arr[1];
+		my $domainmetadata_id = $domainmetadata_id_and_domain_name_arr[0];
+		my $domain_name = $domainmetadata_id_and_domain_name_arr[1];
 
 		my $domainmetadata;
 		eval {
