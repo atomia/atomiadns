@@ -18,10 +18,10 @@ sub BUILD {
 	$self->nsec3_iterations(defined($self->config->{"powerdns_nsec3_iterations"}) ? $self->config->{"powerdns_nsec3_iterations"} : 1);
 	my $salt = $self->config->{"powerdns_nsec3_salt"} || "ab";
 	die "powerdns_nsec3_salt should be one byte in hex format, like 7f or - to skip salting" unless defined($salt) && $salt =~ /^([0-9A-F]{2}|-)$/i;
-	$self->nsec3_salt(chr(hex($salt)));
+	$self->nsec3_salt(chr(hex($salt))) if $salt ne '-';
 	$self->nsec3_salt_pres($salt);
 
-	my $opt_out = $self->config->{"powerdns_nsec3_opt_out"} || "1";
+	my $opt_out = defined($self->config->{"powerdns_nsec3_opt_out"}) ? $self->config->{"powerdns_nsec3_opt_out"} : "1";
 	$self->nsec3_opt_out($opt_out);
 }
 
@@ -291,6 +291,7 @@ sub set_dnssec_metadata {
 	my $presigned = shift;
 	my $also_notify = shift;
 	my $nsec_type = shift;
+	my $force = shift;
 
 	$presigned = 0 if defined($presigned) && $presigned != 1;
 	$also_notify = '' unless defined($also_notify) && $also_notify =~ /^[\d.]+$/;
@@ -307,18 +308,18 @@ sub set_dnssec_metadata {
 	my $db_correct_notify = ($num_metadata->[3] == ($also_notify ne '' ? 1 : 0) && $num_metadata->[0] == 1);
 
 	eval {
-		if (defined($presigned) && $presigned && !$db_is_presigned) {
+		if (defined($presigned) && $presigned && (defined($force) || !$db_is_presigned)) {
 			$self->dbi->do("DELETE FROM global_domainmetadata");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('PRESIGNED', '1')");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('ALSO-NOTIFY', '$also_notify')") unless $also_notify eq '';
 			$self->dbi->commit();
-		} elsif (defined($presigned) && !$presigned && !$db_correct_nsec) {
+		} elsif (defined($presigned) && !$presigned && (defined($force) || !$db_correct_nsec)) {
 			$self->dbi->do("DELETE FROM global_domainmetadata");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('SOA-EDIT', 'INCEPTION-EPOCH')");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3PARAM', '1 " . $self->nsec3_opt_out . " " . $self->nsec3_iterations . " " . $self->nsec3_salt_pres . "')") if $nsec_type ne 'NSEC';
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3NARROW', '1')") if $nsec_type eq 'NSEC3NARROW';
 			$self->dbi->commit();
-		} elsif (!defined($presigned) && !$db_correct_notify) {
+		} elsif (!defined($presigned) && (defined($force) || !$db_correct_notify)) {
 			$self->dbi->do("DELETE FROM global_domainmetadata");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('ALSO-NOTIFY', '$also_notify')") unless $also_notify eq '';
 		}
