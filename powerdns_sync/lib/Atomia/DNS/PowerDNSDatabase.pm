@@ -11,14 +11,18 @@ has 'conn' => (is => 'rw', isa => 'Object');
 has 'nsec3_iterations' => (is => 'rw', isa => 'Int');
 has 'nsec3_salt' => (is => 'rw', isa => 'Str');
 has 'nsec3_salt_pres' => (is => 'rw', isa => 'Str');
+has 'nsec3_opt_out' => (is => 'rw', isa => 'Str');
 
 sub BUILD {
 	my $self = shift;
 	$self->nsec3_iterations(defined($self->config->{"powerdns_nsec3_iterations"}) ? $self->config->{"powerdns_nsec3_iterations"} : 1);
 	my $salt = $self->config->{"powerdns_nsec3_salt"} || "ab";
-	die "powerdns_nsec3_salt should be one byte in hex format, like 7f" unless defined($salt) && $salt =~ /^[0-9A-F]{2}$/i;
+	die "powerdns_nsec3_salt should be one byte in hex format, like 7f or - to skip salting" unless defined($salt) && $salt =~ /^([0-9A-F]{2}|-)$/i;
 	$self->nsec3_salt(chr(hex($salt)));
 	$self->nsec3_salt_pres($salt);
+
+	my $opt_out = $self->config->{"powerdns_nsec3_opt_out"} || "1";
+	$self->nsec3_opt_out($opt_out);
 }
 
 sub validate_config {
@@ -67,21 +71,21 @@ sub dbi {
         }
 }
 
-sub encode_base32 {
-	my $arg = shift;
-	return '' unless defined($arg);    # mimic MIME::Base64
+sub encode_base32hex {
+    my $arg = shift;
+    return '' unless defined($arg);    # mimic MIME::Base64
 
-	$arg = unpack('B*', $arg);
-	$arg =~ s/(.....)/000$1/g;
-	my $l = length($arg);
-	if ($l & 7) {
-		my $e = substr($arg, $l & ~7);
-		$arg = substr($arg, 0, $l & ~7);
-		$arg .= "000$e" . '0' x (5 - length $e);
-	}
-	$arg = pack('B*', $arg);
-	$arg =~ tr|\0-\37|A-Z2-7|;
-	return $arg;
+    $arg = unpack('B*', $arg);
+    $arg =~ s/(.....)/000$1/g;
+    my $l = length($arg);
+    if ($l & 7) {
+        my $e = substr($arg, $l & ~7);
+        $arg = substr($arg, 0, $l & ~7);
+        $arg .= "000$e" . '0' x (5 - length $e);
+    }
+    $arg = pack('B*', $arg);
+    $arg =~ tr|\0-\37|0-9A-V|;
+    return $arg;
 }
 
 sub parse_record {
@@ -103,13 +107,13 @@ sub parse_record {
 		my $nsec3 = $label eq '@' ? $zone->{"name"} : lc($label . "." . $zone->{"name"});
 		my @parts = split(/\./, $nsec3);
 		$nsec3 = join("", map { pack("Ca*", length($_), $_) } @parts) . "\0";
-		$nsec3 = sha1($nsec3, $self->nsec3_salt);
+		$nsec3 = $self->nsec3_salt_pres eq '-' ? sha1($nsec3) : sha1($nsec3, $self->nsec3_salt);
 
 		for (my $idx = 0; $idx < $self->nsec3_iterations; $idx++) {
-			$nsec3 = sha1($nsec3, $self->nsec3_salt);
+			$nsec3 = $self->nsec3_salt_pres eq '-' ? sha1($nsec3) : sha1($nsec3, $self->nsec3_salt);
 		}
 
-		$ordername = lc(encode_base32($nsec3));
+		$ordername = lc(encode_base32hex($nsec3));
 	}
 
 	$ordername = $self->dbi->quote($ordername);
@@ -311,7 +315,7 @@ sub set_dnssec_metadata {
 		} elsif (defined($presigned) && !$presigned && !$db_correct_nsec) {
 			$self->dbi->do("DELETE FROM global_domainmetadata");
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('SOA-EDIT', 'INCEPTION-EPOCH')");
-			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3PARAM', '1 1 " . $self->nsec3_iterations . " " . $self->nsec3_salt_pres . "')") if $nsec_type ne 'NSEC';
+			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3PARAM', '1 " . $self->nsec3_opt_out . " " . $self->nsec3_iterations . " " . $self->nsec3_salt_pres . "')") if $nsec_type ne 'NSEC';
 			$self->dbi->do("INSERT INTO global_domainmetadata (kind, content) VALUES ('NSEC3NARROW', '1')") if $nsec_type eq 'NSEC3NARROW';
 			$self->dbi->commit();
 		} elsif (!defined($presigned) && !$db_correct_notify) {

@@ -73,4 +73,4 @@ find dyndns syncer server zonefileimporter powerdns_sync bind_sync webapp -name 
 done
 
 # Update package.json
-sed -i 's/\("version": "\)[^"]*"/\1'"$version"'"/' */package.json
+sed -i.bak 's/\("version": "\)[^"]*"/\1'"$version"'"/' */package.json

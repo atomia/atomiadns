@@ -1,3 +1,9 @@
+atomiadns-dyndns (1.1.62) hardy; urgency=low
+
+  * Fix NSEC3 ordername with PowerDNS
+
+ -- Jimmy Bergman <jimmy@sigint.se>  Tis, 26 Mar 2024 13:16:25 +0100
+
 atomiadns-dyndns (1.1.61) hardy; urgency=low
 
   * Bump version to 1.1.61
