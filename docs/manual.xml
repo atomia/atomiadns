@@ -92,7 +92,7 @@
             <listitem>
               <para>
                 <emphasis role="strong">PowerDNS:</emphasis>
-                The nameserver software used, can be found at <link xlink:href="http://powerdnssec.org/downloads/packages/">http://powerdnssec.org/downloads/packages/</link>.
+                The nameserver software used, can be found at <link xlink:href="http://repo.powerdns.com/">http://repo.powerdns.com/</link>.
               </para>
             </listitem>
           </orderedlist>
@@ -1797,22 +1797,15 @@ soap_password = somepass
             <listitem>
               <para>
                 Go to
-                <link xlink:href="http://powerdnssec.org/downloads/packages/">http://powerdnssec.org/downloads/packages/</link>
-                and download the latest .deb package
+                <link xlink:href="http://repo.powerdns.com/">http://repo.powerdns.com/</link>
+                and follow those instructions to add the repo and install PowerDNS Authoritative Server
               </para>
-            </listitem>
-            <listitem>
-              <para>Install it using (replace filename):</para>
-              <informalexample>
-                <programlisting>dpkg -i pdns-static_3.0-rc1-1_amd64.deb</programlisting>
-              </informalexample>
               <orderedlist>
                 <listitem>
                   <para>When it asks if you want to replace /etc/powerdns/pdns.conf, just press enter to keep the version that atomiadns-powerdns-database preconfigured for you.</para>
                 </listitem>
               </orderedlist>
             </listitem>
-          </orderedlist>
         </section>
         <section xml:id="usage-powerdns-installation-freebsd">
             <title>Installation on FreeBSD</title>
@@ -2312,4 +2305,3 @@ EOF
   </section>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../server/docbook_api_documentation/apidocs.xml" />
 </article>
-
